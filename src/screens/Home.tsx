@@ -19,7 +19,7 @@ export default function Home({ keysReady, onStart, onGoSettings }: Props) {
           onClick={onGoSettings}
           className="mb-5 w-full rounded-2xl bg-amber-500/15 p-4 text-left text-sm text-amber-100 ring-1 ring-amber-500/30"
         >
-          🔑 Antes de empezar, pega tus claves de Anthropic y OpenAI en <b>Ajustes</b>. Toca aquí.
+          🔑 Antes de empezar, pega tu clave de Gemini en <b>Ajustes</b>. Toca aquí.
         </button>
       )}
 

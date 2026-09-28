@@ -2,10 +2,10 @@
 
 Tu profesor de inglés por voz con IA. App Android personal (no se publica en ninguna tienda).
 
-- **Profe:** Claude (`claude-sonnet-5`)
-- **Tu voz → texto:** OpenAI Whisper (`whisper-1`, con tiempos por palabra)
+- **Profe:** Google Gemini (por defecto `gemini-3.8-flash`; se puede cambiar en Ajustes). Recibe tu audio y, en una sola llamada, lo transcribe, te corrige y te responde.
+- **Pausas y ritmo:** se calculan en el propio teléfono analizando el audio, sin coste.
 - **Voz del profe:** el motor de texto a voz de Android (en-US)
-- **Datos:** todo se guarda en el teléfono. Tus claves API solo viven en el teléfono y nunca van dentro del APK.
+- **Datos:** todo se guarda en el teléfono. Tu clave API solo vive en el teléfono y nunca va dentro del APK.
 
 ---
 
@@ -26,9 +26,8 @@ D:\My Apps\HABLA\android\app\build\outputs\apk\debug\app-debug.apk
 3. Android dirá que no permite instalar apps de esta fuente. Toca **Ajustes** y activa **"Permitir de esta fuente"** para Archivos (o Drive). Vuelve atrás.
 4. Toca **Instalar**. Si aparece Google Play Protect diciendo que la app es desconocida, toca **"Más detalles" → "Instalar de todos modos"**. Es normal: la app no viene de Play Store.
 5. Abre **Habla**. Irás directo a **Ajustes**:
-   - Pega tu `ANTHROPIC_API_KEY` (empieza por `sk-ant-`).
-   - Pega tu `OPENAI_API_KEY` (empieza por `sk-`).
-   - Toca **Guardar y comprobar**. Debe salir ✅.
+   - Pega tu `GEMINI_API_KEY` (empieza por `AIza`). Se crea en https://aistudio.google.com → *Get API key*.
+   - Toca **Guardar y comprobar**. Debe salir ✅ junto con el modelo elegido.
 6. La primera vez que pulses el botón de hablar, Android te pedirá permiso para el **micrófono**. Toca **"Mientras se usa la app"**.
 
 ## 🔄 Actualizar a una versión nueva (sin perder tus datos)
@@ -36,7 +35,7 @@ D:\My Apps\HABLA\android\app\build\outputs\apk\debug\app-debug.apk
 1. **Por seguridad**, antes de actualizar: en la app ve a **Ajustes → Mis datos → ⬆️ Exportar** y guarda el JSON en Drive o en el PC.
 2. Copia el APK nuevo al teléfono igual que la primera vez.
 3. Tócalo e instálalo **encima** de la app que ya tienes. **No desinstales antes.** Android dirá "¿Quieres instalar una actualización?" → **Instalar**.
-4. Tu progreso y tus claves siguen ahí.
+4. Tu progreso y tu clave siguen ahí.
 
 > **¿Por qué se conservan los datos?** Todos los APK se firman con la misma clave, la que está en `D:\My Apps\HABLA\keystore\`. Android solo deja actualizar encima si la firma coincide.
 >
@@ -46,7 +45,7 @@ D:\My Apps\HABLA\android\app\build\outputs\apk\debug\app-debug.apk
 
 - **Exportar:** *Ajustes → Mis datos → ⬆️ Exportar*. Guarda `habla-backup-AAAA-MM-DD.json` en `Documentos/Habla` (si Android lo permite) y abre "Compartir" para que lo mandes a Drive, a tu correo o al PC.
 - **Importar:** *Ajustes → Mis datos → ⬇️ Importar* → elige el JSON. **Sustituye** todo el progreso actual por el del archivo.
-- Las copias **no incluyen tus claves API**. Después de reinstalar tendrás que pegarlas de nuevo.
+- Las copias **no incluyen tu clave API**. Después de reinstalar tendrás que pegarla de nuevo.
 
 Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o reinstalar.
 
@@ -66,8 +65,8 @@ Otros controles:
 
 ## 💸 Coste aproximado
 
-- Whisper: unos 0,006 US$ por minuto de audio.
-- Claude Sonnet 5: una sesión de 15 minutos suele costar unos pocos céntimos.
+- Gemini Flash: una sesión de 15 minutos suele costar unos pocos céntimos (el audio se cobra como tokens de entrada).
+- La capa gratuita de Google AI Studio puede cubrir un uso personal moderado, con límites por minuto y por día. Si ves "límite de uso alcanzado", espera un minuto.
 
 ---
 
@@ -96,15 +95,15 @@ Antes de cada actualización, sube `versionCode` y `versionName` en `android/app
 ```
 src/
   lib/
-    claude.ts      Claude API (CapacitorHttp + JSON Schema)
-    whisper.ts     Whisper (multipart nativo con CapacitorHttp)
+    gemini.ts      Gemini API (CapacitorHttp + JSON Schema) y lista de modelos
+    speech.ts      análisis local del audio: si hubo voz, tiempo de habla, pausas ≥ 1 s
     teacher.ts     prompt del profe, esquema de corrección
     scenarios.ts   los 6 escenarios
     recorder.ts    MediaRecorder (webm/opus)
     tts.ts         voz nativa de Android
     db.ts          IndexedDB (Dexie): sesiones, turnos, errores, perfil
     backup.ts      exportar / importar JSON
-    settings.ts    claves y preferencias (@capacitor/preferences)
+    settings.ts    clave, modelo y preferencias (@capacitor/preferences)
   screens/         Home, Conversation, SettingsScreen
 android/           proyecto nativo (Capacitor 8, Android 36)
 keystore/          firma del APK (fuera de git; haz copia)

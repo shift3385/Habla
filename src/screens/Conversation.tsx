@@ -1,15 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
 import TalkButton, { type Phase } from '../components/TalkButton'
-import type { ChatMessage } from '../lib/claude'
 import { db, type Turn } from '../lib/db'
+import type { ChatMessage } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
 import { saveSettings, type Settings } from '../lib/settings'
+import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
 import { buildSystemPrompt, START_MESSAGE, teacherTurn } from '../lib/teacher'
 import { speak, stopSpeaking } from '../lib/tts'
-import { isEmptyTranscript, transcribe } from '../lib/whisper'
+
+interface PendingAnswer {
+  base64: string
+  mimeType: string
+  seconds: number
+  analysis: SpeechAnalysis | null
+}
 
 interface Props {
   scenarioId: string
@@ -34,6 +41,7 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
   const sessionId = useRef<number | null>(null)
   const system = useRef('')
   const history = useRef<ChatMessage[]>([])
+  const pending = useRef<PendingAnswer | null>(null)
   const settingsRef = useRef(settings)
   useEffect(() => {
     settingsRef.current = settings
@@ -55,19 +63,48 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
     setPhase((p) => (p === 'speaking' ? 'idle' : p))
   }, [])
 
-  /** Pide al profe la siguiente intervención con el historial actual. */
+  /**
+   * Pide al profe la siguiente intervención. Con `answer` (tu audio), Gemini lo transcribe,
+   * te corrige y responde en una sola llamada. Si falla, el audio queda guardado para "Reintentar".
+   */
   const askTeacher = useCallback(
-    async (userTurnId?: number) => {
+    async (answer?: PendingAnswer) => {
       setPhase('thinking')
       setCanRetry(false)
       try {
-        const res = await teacherTurn(settingsRef.current.anthropicKey, system.current, history.current)
+        const { geminiKey, geminiModel } = settingsRef.current
+        const res = await teacherTurn(
+          geminiKey,
+          geminiModel,
+          system.current,
+          history.current,
+          answer && { base64: answer.base64, mimeType: answer.mimeType },
+        )
         const sid = sessionId.current!
+        pending.current = null
 
-        if (res.correction && userTurnId !== undefined) {
-          await db.turns.update(userTurnId, { correction: res.correction })
-          await db.mistakes.add({ ...res.correction, sessionId: sid, turnId: userTurnId, createdAt: Date.now() })
-          setTurns((ts) => ts.map((t) => (t.id === userTurnId ? { ...t, correction: res.correction! } : t)))
+        if (answer) {
+          if (!res.heardSpeech || !res.transcript) {
+            setHint('No te he entendido. Prueba otra vez, un poco más cerca del micrófono.')
+            setPhase('idle')
+            return
+          }
+          const turn: Turn = {
+            sessionId: sid,
+            role: 'user',
+            text: res.transcript,
+            audioSeconds: answer.seconds,
+            speechSeconds: answer.analysis?.speechSeconds,
+            pauses: answer.analysis?.pauses,
+            createdAt: Date.now(),
+            ...(res.correction ? { correction: res.correction } : {}),
+          }
+          turn.id = await db.turns.add(turn)
+          if (res.correction) {
+            await db.mistakes.add({ ...res.correction, sessionId: sid, turnId: turn.id!, createdAt: Date.now() })
+          }
+          setTurns((ts) => [...ts, turn])
+          history.current.push({ role: 'user', content: res.transcript })
         }
 
         history.current.push({ role: 'assistant', content: res.reply })
@@ -143,24 +180,21 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
     }
     setPhase('transcribing')
     try {
-      const t = await transcribe(settingsRef.current.openaiKey, blob)
-      if (isEmptyTranscript(t)) {
-        setHint('No te he entendido. Prueba otra vez, un poco más cerca del micrófono.')
+      // Análisis local: si no hay voz, ni siquiera se llama a Gemini.
+      const analysis = await analyzeSpeech(blob)
+      if (analysis && !analysis.hasSpeech) {
+        setHint('No te he oído. Habla un poco más fuerte o más cerca del micrófono.')
         setPhase('idle')
         return
       }
-      const turn: Turn = {
-        sessionId: sessionId.current!,
-        role: 'user',
-        text: t.text,
-        words: t.words,
-        audioSeconds: seconds,
-        createdAt: Date.now(),
+      const answer: PendingAnswer = {
+        base64: await blobToBase64(blob),
+        mimeType: blob.type.split(';')[0] || 'audio/webm',
+        seconds,
+        analysis,
       }
-      turn.id = await db.turns.add(turn)
-      setTurns((ts) => [...ts, turn])
-      history.current.push({ role: 'user', content: t.text })
-      await askTeacher(turn.id)
+      pending.current = answer
+      await askTeacher(answer)
     } catch (e) {
       setError((e as Error).message)
       setPhase('idle')
@@ -169,8 +203,7 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
 
   const retry = () => {
     setError(null)
-    const lastUser = [...turns].reverse().find((t) => t.role === 'user')
-    askTeacher(lastUser?.id)
+    askTeacher(pending.current ?? undefined)
   }
 
   const changeRate = (rate: number) => {

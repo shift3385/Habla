@@ -6,8 +6,8 @@ const LABELS: Record<Phase, string> = {
   starting: 'Preparando…',
   idle: 'Mantén presionado para hablar',
   recording: 'Te escucho… suelta al terminar',
-  transcribing: 'Transcribiendo…',
-  thinking: 'El profe está pensando…',
+  transcribing: 'Procesando audio…',
+  thinking: 'El profe te escucha y piensa…',
   speaking: 'Mantén presionado para interrumpir y hablar',
 }
 

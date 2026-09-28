@@ -1,11 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
 
-export interface WordTiming {
-  word: string
-  start: number // segundos
-  end: number
-}
-
 export type MistakeCategory =
   | 'article'
   | 'uncountable'
@@ -39,8 +33,9 @@ export interface Turn {
   role: 'user' | 'teacher'
   text: string
   createdAt: number
-  words?: WordTiming[] // solo turnos del usuario (timestamps de Whisper)
   audioSeconds?: number // duración grabada
+  speechSeconds?: number // de la primera a la última palabra (análisis local)
+  pauses?: number[] // silencios ≥ 1 s dentro del habla, en segundos
   correction?: Correction
 }
 

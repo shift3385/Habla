@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
-import { checkAnthropicKey, checkOpenAIKey } from '../lib/keycheck'
+import { listModels, pickDefaultModel, type ModelInfo } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { saveSettings, type Settings } from '../lib/settings'
 import { englishVoices, speak, type VoiceOption } from '../lib/tts'
@@ -14,11 +14,11 @@ interface Props {
 type Status = { kind: 'ok' | 'error' | 'info'; text: string } | null
 
 export default function SettingsScreen({ settings, onSettingsChange }: Props) {
-  const [anthropicKey, setAnthropicKey] = useState(settings.anthropicKey)
-  const [openaiKey, setOpenaiKey] = useState(settings.openaiKey)
-  const [showKeys, setShowKeys] = useState(false)
+  const [geminiKey, setGeminiKey] = useState(settings.geminiKey)
+  const [showKey, setShowKey] = useState(false)
   const [keyStatus, setKeyStatus] = useState<Status>(null)
   const [checking, setChecking] = useState(false)
+  const [models, setModels] = useState<ModelInfo[]>([])
   const [voices, setVoices] = useState<VoiceOption[]>([])
   const [backupStatus, setBackupStatus] = useState<Status>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -27,6 +27,13 @@ export default function SettingsScreen({ settings, onSettingsChange }: Props) {
   useEffect(() => {
     englishVoices().then(setVoices)
     getProfile().then(setProfile)
+    if (settings.geminiKey) {
+      listModels(settings.geminiKey)
+        .then(setModels)
+        .catch(() => {})
+    }
+    // Solo al abrir la pantalla.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const update = (patch: Partial<Settings>) => {
@@ -35,14 +42,23 @@ export default function SettingsScreen({ settings, onSettingsChange }: Props) {
     saveSettings(s)
   }
 
-  const saveKeys = async () => {
-    update({ anthropicKey: anthropicKey.trim(), openaiKey: openaiKey.trim() })
+  const saveKey = async () => {
+    const key = geminiKey.trim()
+    update({ geminiKey: key })
     setChecking(true)
-    setKeyStatus({ kind: 'info', text: 'Guardadas. Comprobando…' })
-    const [a, o] = await Promise.all([checkAnthropicKey(anthropicKey), checkOpenAIKey(openaiKey)])
-    setChecking(false)
-    if (!a && !o) setKeyStatus({ kind: 'ok', text: '✅ Las dos claves funcionan. ¡A hablar!' })
-    else setKeyStatus({ kind: 'error', text: [a, o].filter(Boolean).join(' ') })
+    setKeyStatus({ kind: 'info', text: 'Guardada. Comprobando…' })
+    try {
+      const list = await listModels(key)
+      setModels(list)
+      // Si el modelo elegido no existe para esta clave, elijo uno bueno automáticamente.
+      const model = list.some((m) => m.id === settings.geminiModel) ? settings.geminiModel : pickDefaultModel(list)
+      update({ geminiKey: key, geminiModel: model })
+      setKeyStatus({ kind: 'ok', text: `✅ La clave funciona. Modelo: ${model}. ¡A hablar!` })
+    } catch (e) {
+      setKeyStatus({ kind: 'error', text: (e as Error).message })
+    } finally {
+      setChecking(false)
+    }
   }
 
   const doExport = async () => {
@@ -79,38 +95,49 @@ export default function SettingsScreen({ settings, onSettingsChange }: Props) {
     <div className="h-full overflow-y-auto px-4 py-5">
       <h1 className="mb-4 text-2xl font-bold">Ajustes</h1>
 
-      <Section title="🔑 Claves API">
+      <Section title="🔑 Gemini">
         <p className="mb-3 text-xs text-slate-400">
-          Se guardan solo en este teléfono. No se incluyen en las copias de seguridad.
+          Consigue tu clave en aistudio.google.com → "Get API key". Se guarda solo en este teléfono y no se incluye en
+          las copias de seguridad.
         </p>
-        <Field label="ANTHROPIC_API_KEY">
+        <Field label="GEMINI_API_KEY">
           <input
-            type={showKeys ? 'text' : 'password'}
-            value={anthropicKey}
-            onChange={(e) => setAnthropicKey(e.target.value)}
-            placeholder="sk-ant-…"
-            autoComplete="off"
-            className="input"
-          />
-        </Field>
-        <Field label="OPENAI_API_KEY">
-          <input
-            type={showKeys ? 'text' : 'password'}
-            value={openaiKey}
-            onChange={(e) => setOpenaiKey(e.target.value)}
-            placeholder="sk-…"
+            type={showKey ? 'text' : 'password'}
+            value={geminiKey}
+            onChange={(e) => setGeminiKey(e.target.value)}
+            placeholder="AIza…"
             autoComplete="off"
             className="input"
           />
         </Field>
         <label className="mb-3 flex items-center gap-2 text-sm text-slate-300">
-          <input type="checkbox" checked={showKeys} onChange={(e) => setShowKeys(e.target.checked)} />
-          Mostrar claves
+          <input type="checkbox" checked={showKey} onChange={(e) => setShowKey(e.target.checked)} />
+          Mostrar clave
         </label>
-        <button onClick={saveKeys} disabled={checking} className="btn-primary">
+        <button onClick={saveKey} disabled={checking} className="btn-primary">
           {checking ? 'Comprobando…' : 'Guardar y comprobar'}
         </button>
         <StatusLine s={keyStatus} />
+
+        <Field label="Modelo">
+          <select
+            value={settings.geminiModel}
+            onChange={(e) => update({ geminiModel: e.target.value })}
+            className="input mt-3"
+          >
+            {!models.some((m) => m.id === settings.geminiModel) && (
+              <option value={settings.geminiModel}>{settings.geminiModel}</option>
+            )}
+            {models.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.id}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <p className="text-xs text-slate-400">
+          Recomendado: el Flash más reciente. Los "lite" responden más rápido pero corrigen peor.
+        </p>
       </Section>
 
       <Section title="🗣️ Voz del profe">
