@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
 import TalkButton, { type Phase } from '../components/TalkButton'
 import { db, type Turn } from '../lib/db'
-import type { ChatMessage } from '../lib/gemini'
+import type { ApiError, ChatMessage } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
@@ -34,6 +34,7 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
   const [error, setError] = useState<string | null>(null)
   const [hint, setHint] = useState<string | null>(null)
   const [canRetry, setCanRetry] = useState(false)
+  const [retryHasAudio, setRetryHasAudio] = useState(false)
   const [revealed, setRevealed] = useState<Set<number>>(new Set())
   const [finished, setFinished] = useState(false)
 
@@ -72,14 +73,21 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
       setPhase('thinking')
       setCanRetry(false)
       try {
-        const { geminiKey, geminiModel } = settingsRef.current
+        const { geminiKey, geminiModel, geminiFallbackModel } = settingsRef.current
         const res = await teacherTurn(
           geminiKey,
-          geminiModel,
+          { primary: geminiModel, fallback: geminiFallbackModel },
           system.current,
           history.current,
           answer && { base64: answer.base64, mimeType: answer.mimeType },
+          ({ attempt, total, model, switchedModel }) =>
+            setHint(
+              switchedModel
+                ? `Gemini sigue saturado: probando con ${model} (${attempt}/${total})…`
+                : `Gemini está saturado, reintentando (${attempt}/${total})…`,
+            ),
         )
+        setHint(null)
         const sid = sessionId.current!
         pending.current = null
 
@@ -113,8 +121,16 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
         setTurns((ts) => [...ts, teacher])
         await say(res.reply)
       } catch (e) {
-        setError((e as Error).message)
+        setHint(null)
+        const err = e as ApiError
+        setError(
+          err.transient
+            ? `Gemini sigue sin responder tras varios intentos (${err.status || 'sin conexión'}). ` +
+                (answer ? 'Tu audio está guardado: no hace falta repetirlo.' : '')
+            : err.message,
+        )
         setCanRetry(true)
+        setRetryHasAudio(!!answer)
         setPhase('idle')
       }
     },
@@ -332,8 +348,8 @@ export default function Conversation({ scenarioId, settings, onSettingsChange, o
           <div className="mb-3 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-200">
             {error}
             {canRetry && (
-              <button onClick={retry} className="ml-2 underline">
-                Reintentar
+              <button onClick={retry} className="mt-2 block w-full rounded-lg bg-white/10 py-2 font-medium">
+                {retryHasAudio ? '🔁 Reenviar mi audio' : '🔁 Reintentar'}
               </button>
             )}
           </div>

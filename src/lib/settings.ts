@@ -1,5 +1,5 @@
 import { Preferences } from '@capacitor/preferences'
-import { DEFAULT_MODEL } from './gemini'
+import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL } from './gemini'
 
 // La clave API vive solo en el almacenamiento local del teléfono (Preferences).
 // Nunca se escribe en el código, en IndexedDB ni en las copias de seguridad.
@@ -7,6 +7,7 @@ import { DEFAULT_MODEL } from './gemini'
 export interface Settings {
   geminiKey: string
   geminiModel: string
+  geminiFallbackModel: string // se usa si el principal está saturado (503)
   ttsRate: number // 0.5 – 1.5
   voiceIndex: number | null // índice de getSupportedVoices(); null = voz por defecto en-US
   earMode: boolean // texto del profe oculto hasta tocarlo
@@ -15,6 +16,7 @@ export interface Settings {
 const DEFAULTS: Settings = {
   geminiKey: '',
   geminiModel: DEFAULT_MODEL,
+  geminiFallbackModel: DEFAULT_FALLBACK_MODEL,
   ttsRate: 0.9,
   voiceIndex: null,
   earMode: false,

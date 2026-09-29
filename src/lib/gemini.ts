@@ -1,6 +1,7 @@
 import { CapacitorHttp } from '@capacitor/core'
 
 export const DEFAULT_MODEL = 'gemini-3.8-flash'
+export const DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash-lite'
 const BASE = 'https://generativelanguage.googleapis.com/v1beta'
 
 export interface ChatMessage {
@@ -20,11 +21,16 @@ export interface GeminiContent {
 
 export class ApiError extends Error {
   status: number
-  constructor(message: string, status: number) {
+  /** Errores pasajeros (saturación, cortes de red, respuesta cortada): vale la pena reintentar. */
+  transient: boolean
+  constructor(message: string, status: number, transient = TRANSIENT_STATUS.has(status)) {
     super(message)
     this.status = status
+    this.transient = transient
   }
 }
+
+const TRANSIENT_STATUS = new Set([0, 429, 500, 502, 503, 504])
 
 export function toContents(history: ChatMessage[]): GeminiContent[] {
   return history.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }))
@@ -75,9 +81,56 @@ export async function askGemini<T>(apiKey: string, model: string, opts: AskOptio
   const parsed = safeParse(text)
   if (!parsed) {
     const why = cand?.finishReason === 'MAX_TOKENS' ? ' (respuesta cortada)' : ''
-    throw new ApiError(`Respuesta de Gemini incompleta${why}. Inténtalo de nuevo.`, 200)
+    throw new ApiError(`Respuesta de Gemini incompleta${why}. Inténtalo de nuevo.`, 200, true)
   }
   return parsed as T
+}
+
+export interface RetryInfo {
+  attempt: number // 2, 3, … (el 1 es el intento normal)
+  total: number
+  model: string
+  switchedModel: boolean
+}
+
+/**
+ * askGemini con reintentos automáticos ante errores pasajeros (503 saturado, 429, 5xx, red):
+ * 3 intentos con el modelo principal y 2 con el de respaldo, con esperas crecientes.
+ * Los errores definitivos (clave inválida, contenido bloqueado…) se lanzan al momento.
+ */
+export async function askGeminiWithRetry<T>(
+  apiKey: string,
+  models: { primary: string; fallback?: string },
+  opts: AskOptions,
+  onRetry?: (info: RetryInfo) => void,
+): Promise<T> {
+  const plan = [models.primary, models.primary, models.primary]
+  if (models.fallback && models.fallback !== models.primary) plan.push(models.fallback, models.fallback)
+
+  let delay = 1500
+  let lastError: ApiError | null = null
+  for (let i = 0; i < plan.length; i++) {
+    const model = plan[i]
+    if (i > 0) {
+      onRetry?.({ attempt: i + 1, total: plan.length, model, switchedModel: model !== models.primary })
+      await sleep(delay)
+      delay = Math.min(delay * 2, 8000)
+    }
+    try {
+      return await askGemini<T>(apiKey, model, opts)
+    } catch (e) {
+      if (!(e instanceof ApiError)) throw e
+      lastError = e
+      // Si el modelo de respaldo no existe para esta clave, no insistimos con él.
+      if (e.status === 404 && model !== models.primary) break
+      if (!e.transient) throw e
+    }
+  }
+  throw lastError ?? new ApiError('Gemini no respondió.', 0)
+}
+
+function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms))
 }
 
 export interface ModelInfo {
@@ -103,6 +156,17 @@ export async function listModels(apiKey: string): Promise<ModelInfo[]> {
     .map((m) => ({ id: m.name.replace(/^models\//, ''), displayName: m.displayName ?? m.name }))
     .filter((m) => m.id.startsWith('gemini') && !/tts|image|embed|live|audio|native|robotics|computer/.test(m.id))
     .sort((a, b) => b.id.localeCompare(a.id, undefined, { numeric: true }))
+}
+
+/** Modelo de respaldo: preferiblemente un Flash-Lite (otra capacidad, rápido); si no, otro Flash distinto. */
+export function pickFallbackModel(models: ModelInfo[], primary: string): string {
+  const ids = models.map((m) => m.id).filter((id) => id !== primary && !/preview|exp/.test(id))
+  return (
+    ids.find((id) => /^gemini-[\d.]+-flash-lite$/.test(id)) ??
+    ids.find((id) => /^gemini-[\d.]+-flash$/.test(id)) ??
+    ids.find((id) => id.includes('flash')) ??
+    ''
+  )
 }
 
 /** Elige un modelo razonable de la lista: el Flash más reciente (no Lite), si no el primero. */

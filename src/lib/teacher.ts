@@ -1,5 +1,12 @@
 import type { Correction, Mistake, MistakeCategory, Profile } from './db'
-import { askGemini, toContents, type ChatMessage, type GeminiContent, type JsonSchema } from './gemini'
+import {
+  askGeminiWithRetry,
+  toContents,
+  type ChatMessage,
+  type GeminiContent,
+  type JsonSchema,
+  type RetryInfo,
+} from './gemini'
 import type { Scenario } from './scenarios'
 
 const CATEGORIES: MistakeCategory[] = [
@@ -121,10 +128,11 @@ export interface AudioInput {
  */
 export async function teacherTurn(
   apiKey: string,
-  model: string,
+  models: { primary: string; fallback?: string },
   system: string,
   history: ChatMessage[],
   audio?: AudioInput,
+  onRetry?: (info: RetryInfo) => void,
 ): Promise<TeacherResponse> {
   const contents: GeminiContent[] = toContents(history)
   if (audio) {
@@ -134,7 +142,12 @@ export async function teacherTurn(
     })
   }
 
-  const raw = await askGemini<RawTeacherResponse>(apiKey, model, { system, contents, schema: TEACHER_SCHEMA })
+  const raw = await askGeminiWithRetry<RawTeacherResponse>(
+    apiKey,
+    models,
+    { system, contents, schema: TEACHER_SCHEMA },
+    onRetry,
+  )
   const c = raw.correction
   const hasError =
     c?.has_error && c.original?.trim() && c.corrected?.trim() && c.original.trim() !== c.corrected.trim()

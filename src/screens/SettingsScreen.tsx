@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
-import { listModels, pickDefaultModel, type ModelInfo } from '../lib/gemini'
+import { listModels, pickDefaultModel, pickFallbackModel, type ModelInfo } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { saveSettings, type Settings } from '../lib/settings'
 import { englishVoices, speak, type VoiceOption } from '../lib/tts'
@@ -52,7 +52,11 @@ export default function SettingsScreen({ settings, onSettingsChange }: Props) {
       setModels(list)
       // Si el modelo elegido no existe para esta clave, elijo uno bueno automáticamente.
       const model = list.some((m) => m.id === settings.geminiModel) ? settings.geminiModel : pickDefaultModel(list)
-      update({ geminiKey: key, geminiModel: model })
+      const fallback =
+        list.some((m) => m.id === settings.geminiFallbackModel) && settings.geminiFallbackModel !== model
+          ? settings.geminiFallbackModel
+          : pickFallbackModel(list, model)
+      update({ geminiKey: key, geminiModel: model, geminiFallbackModel: fallback })
       setKeyStatus({ kind: 'ok', text: `✅ La clave funciona. Modelo: ${model}. ¡A hablar!` })
     } catch (e) {
       setKeyStatus({ kind: 'error', text: (e as Error).message })
@@ -135,8 +139,31 @@ export default function SettingsScreen({ settings, onSettingsChange }: Props) {
             ))}
           </select>
         </Field>
-        <p className="text-xs text-slate-400">
+        <p className="mb-3 text-xs text-slate-400">
           Recomendado: el Flash más reciente. Los "lite" responden más rápido pero corrigen peor.
+        </p>
+
+        <Field label="Modelo de respaldo (si el principal está saturado)">
+          <select
+            value={settings.geminiFallbackModel}
+            onChange={(e) => update({ geminiFallbackModel: e.target.value })}
+            className="input"
+          >
+            <option value="">Ninguno (solo reintentar el principal)</option>
+            {settings.geminiFallbackModel && !models.some((m) => m.id === settings.geminiFallbackModel) && (
+              <option value={settings.geminiFallbackModel}>{settings.geminiFallbackModel}</option>
+            )}
+            {models
+              .filter((m) => m.id !== settings.geminiModel)
+              .map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.id}
+                </option>
+              ))}
+          </select>
+        </Field>
+        <p className="text-xs text-slate-400">
+          Si Google responde "saturado" (503), la app reintenta sola 3 veces y después prueba este modelo.
         </p>
       </Section>
 
