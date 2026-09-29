@@ -162,9 +162,17 @@ export function describeError(status: number, data: unknown, model?: string): st
   const d = data as GeminiResponse | null
   const msg = d?.error?.message
   if (isKeyError(d) || status === 401) return 'La clave de Gemini no es válida. Revísala en Ajustes.'
-  if (status === 403) return 'Tu clave de Gemini no tiene permiso para esta API. Revisa el proyecto en Google AI Studio.'
+  if (status === 403) {
+    return (
+      'Tu clave de Gemini no tiene permiso para esta API. Crea una clave nueva en aistudio.google.com/apikey ' +
+      `o quita las restricciones de la clave en Google Cloud.${msg ? ` Detalle de Google: ${msg}` : ''}`
+    )
+  }
   if (status === 404) return `El modelo "${model ?? ''}" no está disponible. Elige otro en Ajustes.`
   if (status === 429) return 'Gemini: límite de uso alcanzado. Espera un minuto o revisa tu cuota en Google AI Studio.'
+  if (status === 400 && /location|region|country/i.test(msg ?? '')) {
+    return 'Gemini no está disponible desde tu país con esta clave. Detalle de Google: ' + msg
+  }
   if (status >= 500) return `Gemini tiene problemas ahora mismo (${status}). Inténtalo en un momento.`
   return `Gemini devolvió un error ${status}${msg ? `: ${msg}` : ''}`
 }
