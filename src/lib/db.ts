@@ -154,12 +154,40 @@ export interface Lookup {
   createdAt: number
 }
 
+/** Estado FSRS guardado con fechas en milisegundos (serializa bien en IndexedDB y en las copias JSON). */
+export interface StoredFsrs {
+  due: number
+  stability: number
+  difficulty: number
+  elapsed_days: number
+  scheduled_days: number
+  learning_steps: number
+  reps: number
+  lapses: number
+  state: number // 0 nueva · 1 aprendiendo · 2 repaso · 3 reaprendiendo
+  last_review: number | null
+}
+
+/** Tarjeta de repaso: frase en español → cómo se dice en inglés. */
+export interface SrsCard {
+  id?: number
+  source: 'mistake' | 'lookup'
+  sourceId: number
+  promptEs: string
+  answerEn: string
+  hintEs: string
+  createdAt: number
+  due: number // copia de fsrs.due para poder indexar
+  fsrs: StoredFsrs
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
   mistakes: EntityTable<Mistake, 'id'>
   profile: EntityTable<Profile, 'id'>
   lookups: EntityTable<Lookup, 'id'>
+  cards: EntityTable<SrsCard, 'id'>
 }
 
 db.version(1).stores({
@@ -174,4 +202,9 @@ db.version(2).stores({
   lookups: '++id, createdAt',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups'] as const
+// v3: tarjetas de repaso espaciado (FSRS).
+db.version(3).stores({
+  cards: '++id, due, &[source+sourceId]',
+})
+
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards'] as const

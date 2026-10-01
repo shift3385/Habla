@@ -24,9 +24,11 @@ function sessionTitle(s: Session) {
 export default function ProgressScreen({
   settings,
   registerBack,
+  onReview,
 }: {
   settings: Settings
   registerBack: (h: (() => void) | null) => void
+  onReview: () => void
 }) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [week, setWeek] = useState<number[]>([0, 0, 0, 0, 0, 0, 0])
@@ -140,6 +142,12 @@ export default function ProgressScreen({
       {seg === 'errors' && (
         <div key="errors" className="anim-up flex flex-col gap-2">
           {errors.length === 0 && <Empty text="Aquí aparecerán las correcciones que te haga tu profe." />}
+          {errors.length > 0 && (
+            <button onClick={onReview} className="btn-acc flex h-12 items-center justify-center gap-2 rounded-3xl text-[15px]">
+              <Icon name="cards" size={18} />
+              Repasar mis errores en voz alta
+            </button>
+          )}
           {errors.map((e, i) => (
             <button
               key={i}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { APP_VERSION, RELEASES } from '../lib/changelog'
 import { SCENARIOS } from '../lib/scenarios'
+import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import type { Settings } from '../lib/settings'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { TOPIC_CATEGORIES } from '../lib/topics'
@@ -16,6 +17,7 @@ interface Props {
   onStart: (scenarioId: string, categoryId?: string) => void
   onGoSettings: () => void
   onOpenNews: () => void
+  onReview: () => void
 }
 
 function greeting() {
@@ -25,7 +27,7 @@ function greeting() {
 
 const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
 
-export default function Home({ settings, t, update, onStart, onGoSettings, onOpenNews }: Props) {
+export default function Home({ settings, t, update, onStart, onGoSettings, onOpenNews, onReview }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
   const [hwOpen, setHwOpen] = useState(false)
@@ -33,8 +35,14 @@ export default function Home({ settings, t, update, onStart, onGoSettings, onOpe
   const teacher = TEACHERS[settings.teacher]
   const orbColors = t[settings.teacher]
 
+  const [due, setDue] = useState<DueSummary | null>(null)
+
   useEffect(() => {
     loadDashboard().then(setDash)
+    syncCards()
+      .then(dueSummary)
+      .then(setDue)
+      .catch(() => {})
   }, [])
 
   const goal = settings.dailyGoalMinutes
@@ -157,6 +165,21 @@ export default function Home({ settings, t, update, onStart, onGoSettings, onOpe
             <Icon name="back" size={14} className="rotate-[-90deg]" />
           </button>
         </div>
+      )}
+
+      {due && due.total > 0 && (
+        <button onClick={onReview} className="glass mt-2.5 flex w-full items-center gap-3 rounded-[22px] py-2.5 pr-2.5 pl-3.5 text-left">
+          <span className="field txt-acc2 grid h-9 w-9 flex-none place-items-center rounded-full">
+            <Icon name="cards" size={17} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14.5px] font-semibold">Repaso de hoy</span>
+            <span className="txt-sub block text-[12.5px]">
+              {due.total} {due.total === 1 ? 'frase' : 'frases'} para decir en inglés · 2–5 min
+            </span>
+          </span>
+          <span className="btn-acc flex h-9 items-center rounded-[18px] px-3.5 text-[13px]">Repasar</span>
+        </button>
       )}
 
       {dash?.lastHomework && (

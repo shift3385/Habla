@@ -17,6 +17,16 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.7',
+    date: '2026-10-01',
+    title: 'Repaso de tus errores en voz alta',
+    added: [
+      'Cuaderno de errores con repetición espaciada (FSRS): cada corrección y cada palabra guardada vuelven en el momento justo',
+      'Ejercicio oral: ves la frase en español, la dices en inglés y el profe te corrige',
+      '"Repaso de hoy" en el Inicio y botón Repasar en Progreso → Errores',
+    ],
+  },
+  {
     v: '4.6',
     date: '2026-10-01',
     title: 'Nueva animación de preparación y página Acerca de',

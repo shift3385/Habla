@@ -111,6 +111,15 @@ Otros controles:
 - **En clase:** toca cualquier palabra de lo que dice el profe y la consulta se abre al momento, con la frase como contexto.
 - Pulsa **Guardar** para quedarte con la palabra. Las guardadas aparecen en *Palabras → Guardadas* y en *Progreso → Palabras*.
 
+### Repaso espaciado (cuaderno de errores)
+- Cada corrección del profe y cada palabra que guardas se convierten en una **tarjeta de repaso**. Las correcciones repetidas cuentan como una sola.
+- En el Inicio aparece **"Repaso de hoy"** cuando tienes frases pendientes. También puedes entrar desde *Progreso → Errores → Repasar*.
+- **Cómo funciona:**
+  1. Ves la frase en **español** y la **dices en inglés**. Toca el micrófono para empezar y otra vez para terminar.
+  2. El profe te escucha y te dice si está **correcto**, **casi** o **aún no**, con una explicación. Acepta otras formas correctas de decirlo.
+  3. Oyes la respuesta correcta y eliges cuándo volver a verla: **Otra vez / Difícil / Bien / Fácil**. La nota sugerida viene marcada y cada botón muestra el intervalo.
+- El algoritmo **FSRS** programa cada frase justo antes de que la olvides. Como máximo hay 10 frases nuevas por sesión; las de **Otra vez** vuelven al final de la misma sesión.
+
 ### Informe y progreso
 - Al terminar, el informe muestra:
   - Tu **nota de fluidez (0–100)**, que combina velocidad, largo de respuestas, pausas y precisión.
@@ -182,6 +191,6 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **Migración a Gemini** con reintentos automáticos y modelo de respaldo
 - [x] **Fase 2:** métricas de fluidez, nota, informe y tarea para mañana; temas dinámicos con noticias reales; racha, meta diaria y pestaña Progreso
 - [x] **Rediseño** (Claude Design): temas Ember / Lumi / Aurora en claro y oscuro, profes Emma y Leo, bienvenida, pantallas sin scroll
-- [ ] **Fase 3:** cuaderno de errores con repetición espaciada (FSRS) y ejercicio oral de español a inglés
+- [x] **Fase 3:** cuaderno de errores con repetición espaciada (FSRS) y ejercicio oral de español a inglés (v4.7)
 - [ ] **Fase 4:** plan de 12 semanas y lección del día (la racha y la gráfica ya están hechas)
 - [ ] **Fase 5:** re-test cada 4 semanas (gramática, audición y habla) que actualiza tu nivel

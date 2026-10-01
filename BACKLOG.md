@@ -98,7 +98,7 @@ La app ya la usan otras personas.
 
 | # | Propuesta | Por qué | Esfuerzo |
 |---|---|---|---|
-| A | **Repaso espaciado (FSRS)** de errores y palabras guardadas. Ya está planificado como fase 3. | Sin repaso se olvida lo corregido; es lo que fija el aprendizaje. | Medio |
+| A | ✅ **Repaso espaciado (FSRS)** de errores y palabras guardadas, **hecho en v4.7** (fase 3). Ejercicio oral evaluado por Gemini, nota sugerida y cola de sesión. | Sin repaso se olvida lo corregido; es lo que fija el aprendizaje. | Medio |
 | B | **Pronunciación / shadowing:** el profe dice una frase, tú la repites y Gemini puntúa la pronunciación palabra por palabra. | Ataca directamente "hablar", la habilidad más baja de un perfil típico. | Medio |
 | C | **Situaciones a medida:** describes una situación real que tienes por delante (entrevista, médico, reunión con un cliente) y el profe la ensaya contigo. | Práctica útil e inmediata; muy motivadora. | Bajo |
 | D | **Plan diario y recordatorios:** lección del día y una notificación local para no romper la racha. Ya está planificado como fase 4. | Constancia, que es el factor nº 1 para aprender un idioma. | Medio |

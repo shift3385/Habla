@@ -9,6 +9,7 @@ import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
 import ProfileSetup from './screens/ProfileSetup'
 import ProgressScreen from './screens/ProgressScreen'
+import ReviewScreen from './screens/ReviewScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import WordsScreen from './screens/WordsScreen'
 import { getProfile, isPersonalized } from './lib/profile'
@@ -35,6 +36,7 @@ export default function App() {
   const [personalized, setPersonalized] = useState(false)
   const [retest, setRetest] = useState(false)
   const [about, setAbout] = useState<'main' | 'news' | null>(null)
+  const [review, setReview] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
   const tabRef = useRef(tab)
   useEffect(() => {
@@ -127,6 +129,22 @@ export default function App() {
     )
   }
 
+  if (review) {
+    return (
+      <Shell t={t}>
+        <ReviewScreen
+          settings={settings}
+          t={t}
+          registerBack={registerBack}
+          onExit={() => {
+            backHandler.current = null
+            setReview(false)
+          }}
+        />
+      </Shell>
+    )
+  }
+
   if (lesson) {
     return (
       <Shell t={t}>
@@ -176,10 +194,11 @@ export default function App() {
                 onStart={start}
                 onGoSettings={() => setTab('settings')}
                 onOpenNews={() => openAbout('news')}
+                onReview={() => setReview(true)}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
-            {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} />}
+            {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} onReview={() => setReview(true)} />}
             {tab === 'settings' && (
               <SettingsScreen
                 settings={settings}
