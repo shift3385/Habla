@@ -7,6 +7,7 @@ import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
 import ProgressScreen from './screens/ProgressScreen'
 import SettingsScreen from './screens/SettingsScreen'
+import WordsScreen from './screens/WordsScreen'
 import { getProfile } from './lib/profile'
 import { loadSettings, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
@@ -14,7 +15,7 @@ import Background from './ui/Background'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, themeVars } from './ui/theme'
 
-type Tab = 'home' | 'progress' | 'settings'
+type Tab = 'home' | 'words' | 'progress' | 'settings'
 
 interface Lesson {
   key: number // cada clase monta un componente nuevo: nunca arrastra la anterior
@@ -137,6 +138,7 @@ export default function App() {
         {tab === 'home' && (
           <Home settings={settings} t={t} update={update} onStart={start} onGoSettings={() => setTab('settings')} />
         )}
+        {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
         {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} />}
         {tab === 'settings' && (
           <SettingsScreen settings={settings} t={t} update={update} registerBack={registerBack} onRetest={() => setRetest(true)} />
@@ -164,16 +166,20 @@ function Shell({ t, children }: { t: ReturnType<typeof themeVars>; children: Rea
 
 const TABS: { key: Tab; label: string; icon: IconName }[] = [
   { key: 'home', label: 'Hablar', icon: 'mic' },
+  { key: 'words', label: 'Palabras', icon: 'book' },
   { key: 'progress', label: 'Progreso', icon: 'bars' },
   { key: 'settings', label: 'Ajustes', icon: 'sliders' },
 ]
 
+/** Barra flotante: la pestaña activa ocupa más y muestra su nombre; las demás, solo el icono. */
 function TabBar({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void }) {
   return (
     <nav
-      className="absolute right-5 left-5 z-[5] grid h-[66px] grid-cols-3 gap-1 rounded-[33px] p-1.5"
+      className="absolute right-5 left-5 z-[5] grid h-[66px] gap-1 rounded-[33px] p-1.5"
       style={{
         bottom: 'calc(env(safe-area-inset-bottom) + 18px)',
+        gridTemplateColumns: TABS.map((x) => (x.key === tab ? '1.9fr' : '1fr')).join(' '),
+        transition: 'grid-template-columns .35s ease',
         background: 'var(--tab)',
         border: '1px solid var(--gb)',
         boxShadow: '0 12px 40px rgba(0,0,0,.25), var(--sh)',
@@ -189,9 +195,10 @@ function TabBar({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void }) {
             onClick={() => onChange(x.key)}
             className={`flex items-center justify-center gap-[7px] rounded-[27px] text-sm ${sel ? 'btn-acc' : 'txt-sub font-medium'}`}
             style={sel ? { boxShadow: '0 6px 18px var(--glow)' } : undefined}
+            aria-label={x.label}
           >
             <Icon name={x.icon} size={19} stroke={sel ? 1.8 : 1.7} />
-            {x.label}
+            {sel && x.label}
           </button>
         )
       })}

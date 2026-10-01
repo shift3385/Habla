@@ -2,7 +2,10 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
 import ReportView from '../components/ReportView'
+import LookupSheet from '../components/LookupSheet'
 import TalkButton, { type Phase } from '../components/TalkButton'
+import TappableText from '../components/TappableText'
+import { sentenceAround } from '../lib/lookup'
 import { db, type LevelEvent, type Session, type Topic, type Turn } from '../lib/db'
 import { levelIdx, updateLevelsFromPractice } from '../lib/levels'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
@@ -59,6 +62,8 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   const [revealed, setRevealed] = useState<Set<number>>(new Set())
   const [translated, setTranslated] = useState<Set<number>>(new Set())
   const [ideas, setIdeas] = useState<Idea[] | null>(null)
+  const [lookupReq, setLookupReq] = useState<{ query: string; context: string } | null>(null)
+  const [level, setLevel] = useState('B1')
   const [ideasLoading, setIdeasLoading] = useState(false)
   const [recordStart, setRecordStart] = useState(0)
   const [elapsed, setElapsed] = useState(0)
@@ -205,6 +210,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         getProfile(),
         db.mistakes.orderBy('createdAt').reverse().limit(12).toArray(),
       ])
+      setLevel(profile.levels.overall)
 
       let tp: Topic | undefined
       if (scenario.topic) {
@@ -363,9 +369,9 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
 
   // Botón "atrás" de Android: en el chat termina la sesión (con informe); en el informe vuelve al inicio.
   useEffect(() => {
-    registerBack(view === 'report' ? onExit : () => finish())
+    registerBack(lookupReq ? () => setLookupReq(null) : view === 'report' ? onExit : () => finish())
     return () => registerBack(null)
-  }, [view, finish, onExit, registerBack])
+  }, [view, finish, onExit, registerBack, lookupReq])
 
   const userTurns = turns.filter((x) => x.role === 'user')
   const orbColors = t[settings.teacher]
@@ -567,7 +573,9 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
                   Texto oculto · toca para ver
                 </button>
               ) : (
-                <div className="text-base leading-[1.42]">{m.text}</div>
+                <div className="text-base leading-[1.42]">
+                  <TappableText text={m.text} onWord={(w, start) => setLookupReq({ query: w, context: sentenceAround(m.text, start) })} />
+                </div>
               )}
               {showEs && m.translation && <div className="txt-sub mt-1.5 text-sm leading-snug">{m.translation}</div>}
               {fix && (
@@ -649,6 +657,19 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         )}
         <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} />
       </div>
+
+      {lookupReq && (
+        <LookupSheet
+          query={lookupReq.query}
+          context={lookupReq.context}
+          apiKey={settings.geminiKey}
+          models={models()}
+          level={level}
+          ttsRate={settings.ttsRate}
+          voiceIndex={settings.voiceIndex}
+          onClose={() => setLookupReq(null)}
+        />
+      )}
     </div>
   )
 }

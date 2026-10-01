@@ -97,6 +97,13 @@ Otros controles:
 - **🔊 Repetir**: vuelve a escuchar una frase del profe.
 - **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta.
 
+### Palabras (consultas en contexto)
+- En la pestaña **Palabras**, escribe una palabra o expresión y, si puedes, **la frase donde la viste**. No es un traductor literal: te explica qué significa **en esa frase** y por qué.
+- La respuesta incluye además la pronunciación (con audio), otros significados con ejemplos, el registro, las combinaciones típicas y un aviso si es un falso amigo.
+- También funciona al revés: escribe una palabra en español y te dice cómo se diría en inglés en ese contexto.
+- **En clase:** toca cualquier palabra de lo que dice el profe y la consulta se abre al momento, con la frase como contexto.
+- Pulsa **Guardar** para quedarte con la palabra. Las guardadas aparecen en *Palabras → Guardadas* y en *Progreso → Palabras*.
+
 ### Informe y progreso
 - Al terminar, el informe muestra:
   - Tu **nota de fluidez (0–100)**, que combina velocidad, largo de respuestas, pausas y precisión.

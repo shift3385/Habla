@@ -96,6 +96,9 @@ export async function wordsCollected(): Promise<{ en: string; es: string }[]> {
     seen.add(k)
     out.push({ en, es })
   }
+  // Primero las palabras que guardaste al consultarlas.
+  const saved = (await db.lookups.orderBy('createdAt').reverse().toArray()).filter((l) => l.saved)
+  saved.forEach((l) => add(l.result.headword, l.result.translation))
   for (const s of sessions) {
     if (!s.metrics?.turns) continue
     s.topic?.vocab.forEach((v) => add(v.en, v.es))

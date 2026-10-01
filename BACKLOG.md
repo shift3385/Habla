@@ -29,7 +29,16 @@ Un test riguroso, como la evaluación inicial que hicimos, que asigne un nivel M
 - [ ] **Adaptación del profe:** vocabulario, velocidad de la voz, largo de las frases, cuánto corrige y qué estructuras practicar.
 - [ ] Reutilizar el mismo motor para el **re-test cada 4 semanas** (fase 5 de la hoja de ruta).
 
-## 2. Consultas de palabras en contexto 🟢 (idea del usuario)
+## 2. Consultas de palabras en contexto ✅ hecho en v4.2 (idea del usuario)
+
+> **Implementado:**
+> - Pestaña **Palabras**: palabra más frase opcional; funciona del inglés al español y del español al inglés.
+> - En clase, al tocar cualquier palabra del profe se abre la consulta con su frase como contexto.
+> - La respuesta incluye el significado aquí y por qué, la fonética, el audio, otros significados con ejemplos, el registro, las colocaciones y el aviso de falso amigo.
+> - Historial de consultas y palabras guardadas, que también aparecen en *Progreso → Palabras*.
+> - Código: `src/lib/lookup.ts`, `src/screens/WordsScreen.tsx`, `src/components/LookupSheet.tsx`, `src/components/TappableText.tsx`.
+>
+> **Pendiente:** dictar la palabra por voz, consultar desde el resumen del tema y el informe, y llevar las palabras guardadas al repaso espaciado (propuesta A).
 
 No es un traductor literal: explica qué significa una palabra **en la frase concreta** donde apareció.
 

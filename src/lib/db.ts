@@ -127,11 +127,36 @@ export interface LevelEvent {
   reason: 'practice' | 'test'
 }
 
+export interface LookupResult {
+  headword: string
+  ipa: string
+  partOfSpeech: string
+  translation: string // equivalente natural en el otro idioma, en este contexto
+  meaningEs: string // qué significa aquí
+  whyEs: string // por qué en este contexto significa eso
+  otherMeanings: { meaningEs: string; exampleEn: string; exampleEs: string }[]
+  register: string
+  collocations: string[]
+  falseFriendEs: string // aviso si es falso amigo (vacío si no)
+  exampleEn: string
+  exampleEs: string
+}
+
+export interface Lookup {
+  id?: number
+  query: string
+  context: string
+  result: LookupResult
+  saved: boolean
+  createdAt: number
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
   mistakes: EntityTable<Mistake, 'id'>
   profile: EntityTable<Profile, 'id'>
+  lookups: EntityTable<Lookup, 'id'>
 }
 
 db.version(1).stores({
@@ -141,4 +166,9 @@ db.version(1).stores({
   profile: 'id',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile'] as const
+// v2: historial de consultas de palabras en contexto.
+db.version(2).stores({
+  lookups: '++id, createdAt',
+})
+
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups'] as const
