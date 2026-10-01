@@ -6,7 +6,7 @@ export interface Point {
   detail?: string
 }
 
-const MARK = '#ea580c' // validado contra el fondo oscuro (#0f172a)
+const MARK = 'var(--acc)' // acento del tema (validado contra el fondo de cada tema)
 
 /** Línea de una sola serie (nota de fluidez por sesión) con tooltip al tocar cada punto. */
 export default function TrendChart({ points, max = 100, unit = '' }: { points: Point[]; max?: number; unit?: string }) {
@@ -29,20 +29,20 @@ export default function TrendChart({ points, max = 100, unit = '' }: { points: P
       <div className="mb-1 h-10 text-sm">
         {a && (
           <p>
-            <span className="text-lg font-bold text-slate-50">
+            <span className="text-lg font-semibold">
               {a.value}
               {unit}
             </span>{' '}
-            <span className="text-slate-400">· {a.label}</span>
-            {a.detail && <span className="block text-xs text-slate-400">{a.detail}</span>}
+            <span className="txt-sub">· {a.label}</span>
+            {a.detail && <span className="txt-sub block text-xs">{a.detail}</span>}
           </p>
         )}
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Evolución de tu nota de fluidez">
         {[0, 50, 100].map((g) => (
           <g key={g}>
-            <line x1={pad.l} x2={W - pad.r} y1={y(g)} y2={y(g)} stroke="rgba(255,255,255,0.07)" />
-            <text x={pad.l - 6} y={y(g) + 3} textAnchor="end" fontSize="9" fill="#94a3b8">
+            <line x1={pad.l} x2={W - pad.r} y1={y(g)} y2={y(g)} stroke="var(--gb)" />
+            <text x={pad.l - 6} y={y(g) + 3} textAnchor="end" fontSize="9" fill="var(--sub)">
               {g}
             </text>
           </g>
@@ -50,19 +50,19 @@ export default function TrendChart({ points, max = 100, unit = '' }: { points: P
         <path d={area} fill={MARK} opacity={0.12} />
         <path d={path} fill="none" stroke={MARK} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {active !== null && (
-          <line x1={x(active)} x2={x(active)} y1={pad.t} y2={pad.t + ih} stroke="rgba(255,255,255,0.25)" strokeDasharray="3 3" />
+          <line x1={x(active)} x2={x(active)} y1={pad.t} y2={pad.t + ih} stroke="var(--sub)" strokeDasharray="3 3" />
         )}
         {points.map((p, i) => (
           <g key={i} onClick={() => setActive(i)} style={{ cursor: 'pointer' }}>
             <circle cx={x(i)} cy={y(p.value)} r={14} fill="transparent" />
-            <circle cx={x(i)} cy={y(p.value)} r={i === active ? 5 : 4} fill={MARK} stroke="#0f172a" strokeWidth={2} />
+            <circle cx={x(i)} cy={y(p.value)} r={i === active ? 5 : 4} fill={MARK} stroke="var(--bg)" strokeWidth={2} />
           </g>
         ))}
-        <text x={pad.l} y={H - 6} fontSize="9" fill="#94a3b8">
+        <text x={pad.l} y={H - 6} fontSize="9" fill="var(--sub)">
           {points[0].label}
         </text>
         {points.length > 1 && (
-          <text x={W - pad.r} y={H - 6} fontSize="9" fill="#94a3b8" textAnchor="end">
+          <text x={W - pad.r} y={H - 6} fontSize="9" fill="var(--sub)" textAnchor="end">
             {points[points.length - 1].label}
           </text>
         )}

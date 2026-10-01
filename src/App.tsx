@@ -1,11 +1,17 @@
 import { App as CapApp } from '@capacitor/app'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { SystemBars, SystemBarsStyle } from '@capacitor/core'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
+import Onboarding from './screens/Onboarding'
 import ProgressScreen from './screens/ProgressScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import { getProfile } from './lib/profile'
-import { hasKeys, loadSettings, type Settings } from './lib/settings'
+import { loadSettings, saveSettings, type Settings } from './lib/settings'
+import { setTeacherVoice } from './lib/tts'
+import Background from './ui/Background'
+import { Icon, type IconName } from './ui/icons'
+import { cssVars, TEACHERS, themeVars } from './ui/theme'
 
 type Tab = 'home' | 'progress' | 'settings'
 
@@ -26,14 +32,34 @@ export default function App() {
   }, [tab])
 
   useEffect(() => {
-    loadSettings().then((s) => {
-      setSettings(s)
-      if (!hasKeys(s)) setTab('settings')
-    })
+    loadSettings().then(setSettings)
     getProfile() // siembra el perfil inicial la primera vez
   }, [])
 
-  // Botón "atrás" de Android: en clase lo gestiona la clase; en otra pestaña vuelve a Inicio; en Inicio sale.
+  const update = useCallback((patch: Partial<Settings>) => {
+    setSettings((s) => {
+      if (!s) return s
+      const next = { ...s, ...patch }
+      saveSettings(next)
+      return next
+    })
+  }, [])
+
+  const t = useMemo(() => (settings ? themeVars(settings.theme, settings.mode) : null), [settings])
+
+  // Tema → variables CSS en <html> (las usa todo, incluido el body), barra de estado y voz del profe.
+  useEffect(() => {
+    if (!settings || !t) return
+    const root = document.documentElement
+    for (const [k, v] of Object.entries(cssVars(t))) root.style.setProperty(k, v)
+    root.style.colorScheme = settings.mode
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t.bg)
+    SystemBars.setStyle({ style: settings.mode === 'dark' ? SystemBarsStyle.Dark : SystemBarsStyle.Light }).catch(() => {})
+    const teacher = TEACHERS[settings.teacher]
+    setTeacherVoice(teacher.lang, settings.teacher === 'leo' ? 0.9 : 1.05)
+  }, [settings, t])
+
+  // Botón "atrás" de Android: primero la pantalla activa; si no, vuelve a Inicio; en Inicio sale.
   useEffect(() => {
     const sub = CapApp.addListener('backButton', () => {
       if (backHandler.current) backHandler.current()
@@ -49,17 +75,26 @@ export default function App() {
     backHandler.current = h
   }, [])
 
-  if (!settings) return null
+  if (!settings || !t) return null
+
+  if (!settings.onboarded) {
+    return (
+      <Shell t={t}>
+        <Onboarding settings={settings} t={t} update={update} onDone={() => setTab('home')} />
+      </Shell>
+    )
+  }
 
   if (lesson) {
     return (
-      <div className="mx-auto h-full max-w-xl pt-[env(safe-area-inset-top)]">
+      <Shell t={t}>
         <Conversation
           key={lesson.key}
           scenarioId={lesson.scenarioId}
           categoryId={lesson.categoryId}
           settings={settings}
-          onSettingsChange={setSettings}
+          t={t}
+          update={update}
           onExit={() => {
             backHandler.current = null
             setLesson(null)
@@ -67,41 +102,76 @@ export default function App() {
           }}
           registerBack={registerBack}
         />
-      </div>
+      </Shell>
     )
   }
 
+  const start = (scenarioId: string, categoryId?: string) => setLesson({ key: Date.now(), scenarioId, categoryId })
+
   return (
-    <div className="mx-auto flex h-full max-w-xl flex-col pt-[env(safe-area-inset-top)]">
-      <div className="min-h-0 flex-1">
+    <Shell t={t}>
+      <div className="no-scrollbar relative z-[2] h-full overflow-y-auto px-5 pt-[calc(env(safe-area-inset-top)+10px)] pb-[calc(env(safe-area-inset-bottom)+112px)]">
         {tab === 'home' && (
-          <Home
-            keysReady={hasKeys(settings)}
-            dailyGoalMinutes={settings.dailyGoalMinutes}
-            onStart={(scenarioId, categoryId) => setLesson({ key: Date.now(), scenarioId, categoryId })}
-            onGoSettings={() => setTab('settings')}
-          />
+          <Home settings={settings} t={t} update={update} onStart={start} onGoSettings={() => setTab('settings')} />
         )}
-        {tab === 'progress' && <ProgressScreen settings={settings} />}
-        {tab === 'settings' && <SettingsScreen settings={settings} onSettingsChange={setSettings} />}
+        {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} />}
+        {tab === 'settings' && (
+          <SettingsScreen settings={settings} t={t} update={update} registerBack={registerBack} />
+        )}
       </div>
-      <nav className="grid grid-cols-3 border-t border-white/10 bg-slate-950 pb-[env(safe-area-inset-bottom)]">
-        <TabButton active={tab === 'home'} onClick={() => setTab('home')} icon="🎙️" label="Hablar" />
-        <TabButton active={tab === 'progress'} onClick={() => setTab('progress')} icon="📈" label="Progreso" />
-        <TabButton active={tab === 'settings'} onClick={() => setTab('settings')} icon="⚙️" label="Ajustes" />
-      </nav>
+      <TabBar
+        tab={tab}
+        onChange={(k) => {
+          backHandler.current = null
+          setTab(k)
+        }}
+      />
+    </Shell>
+  )
+}
+
+function Shell({ t, children }: { t: ReturnType<typeof themeVars>; children: React.ReactNode }) {
+  return (
+    <div className="relative mx-auto h-full max-w-xl overflow-hidden" style={{ color: 'var(--tx)' }}>
+      <Background t={t} />
+      {children}
     </div>
   )
 }
 
-function TabButton(props: { active: boolean; onClick: () => void; icon: string; label: string }) {
+const TABS: { key: Tab; label: string; icon: IconName }[] = [
+  { key: 'home', label: 'Hablar', icon: 'mic' },
+  { key: 'progress', label: 'Progreso', icon: 'bars' },
+  { key: 'settings', label: 'Ajustes', icon: 'sliders' },
+]
+
+function TabBar({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void }) {
   return (
-    <button
-      onClick={props.onClick}
-      className={`flex flex-col items-center py-2 text-xs ${props.active ? 'text-orange-400' : 'text-slate-400'}`}
+    <nav
+      className="absolute right-5 left-5 z-[5] grid h-[66px] grid-cols-3 gap-1 rounded-[33px] p-1.5"
+      style={{
+        bottom: 'calc(env(safe-area-inset-bottom) + 18px)',
+        background: 'var(--tab)',
+        border: '1px solid var(--gb)',
+        boxShadow: '0 12px 40px rgba(0,0,0,.25), var(--sh)',
+        WebkitBackdropFilter: 'blur(28px)',
+        backdropFilter: 'blur(28px)',
+      }}
     >
-      <span className="text-xl">{props.icon}</span>
-      {props.label}
-    </button>
+      {TABS.map((x) => {
+        const sel = x.key === tab
+        return (
+          <button
+            key={x.key}
+            onClick={() => onChange(x.key)}
+            className={`flex items-center justify-center gap-[7px] rounded-[27px] text-sm ${sel ? 'btn-acc' : 'txt-sub font-medium'}`}
+            style={sel ? { boxShadow: '0 6px 18px var(--glow)' } : undefined}
+          >
+            <Icon name={x.icon} size={19} stroke={sel ? 1.8 : 1.7} />
+            {x.label}
+          </button>
+        )
+      })}
+    </nav>
   )
 }

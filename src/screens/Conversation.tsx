@@ -1,23 +1,24 @@
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
-import LiveWave from '../components/LiveWave'
 import ReportView from '../components/ReportView'
 import TalkButton, { type Phase } from '../components/TalkButton'
-import TeacherAvatar from '../components/TeacherAvatar'
-import TopicCard from '../components/TopicCard'
 import { db, type Session, type Topic, type Turn } from '../lib/db'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
 import type { ApiError, ChatMessage, Models, RetryInfo } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
-import { saveSettings, type Settings } from '../lib/settings'
+import type { Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
+import { Icon, type IconName } from '../ui/icons'
+import Orb from '../ui/Orb'
+import { TEACHERS, type ThemeVars } from '../ui/theme'
+import Wave from '../ui/Wave'
 
 interface PendingAnswer {
   base64: string
@@ -30,7 +31,8 @@ interface Props {
   scenarioId: string
   categoryId?: string // para escenarios con tema; sin él, categoría al azar
   settings: Settings
-  onSettingsChange: (s: Settings) => void
+  t: ThemeVars
+  update: (patch: Partial<Settings>) => void
   onExit: () => void
   registerBack: (handler: (() => void) | null) => void
 }
@@ -41,12 +43,14 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, settings, onSettingsChange, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, settings, t, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
+  const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
   const [topic, setTopic] = useState<Topic | undefined>()
+  const [cardOpen, setCardOpen] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [hint, setHint] = useState<string | null>(null)
   const [canRetry, setCanRetry] = useState(false)
@@ -57,7 +61,6 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
   const [ideasLoading, setIdeasLoading] = useState(false)
   const [recordStart, setRecordStart] = useState(0)
   const [elapsed, setElapsed] = useState(0)
-  const [micStream, setMicStream] = useState<MediaStream | null>(null)
 
   // Informe final
   const [view, setView] = useState<'chat' | 'report'>('chat')
@@ -74,7 +77,7 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
   useEffect(() => {
     settingsRef.current = settings
   }, [settings])
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
   const started = useRef(false)
 
   const models = (): Models => ({
@@ -89,13 +92,14 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
     )
 
   useEffect(() => {
-    if (view === 'chat') bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const el = listRef.current
+    if (view === 'chat' && el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   }, [turns, phase, ideas, view])
 
   // Cronómetro mientras grabas
   useEffect(() => {
     if (phase !== 'recording') return
-    const id = setInterval(() => setElapsed((performance.now() - recordStart) / 1000), 200)
+    const id = setInterval(() => setElapsed((performance.now() - recordStart) / 1000), 250)
     return () => clearInterval(id)
   }, [phase, recordStart])
 
@@ -152,6 +156,7 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
             await db.mistakes.add({ ...res.correction, sessionId: sid, turnId: turn.id!, createdAt: Date.now() })
           }
           setTurns((ts) => [...ts, turn])
+          setCardOpen(false) // la tarjeta del tema se pliega sola al responder
           history.current.push({ role: 'user', content: res.transcript })
         }
 
@@ -199,13 +204,13 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
         db.mistakes.orderBy('createdAt').reverse().limit(12).toArray(),
       ])
 
-      let t: Topic | undefined
+      let tp: Topic | undefined
       if (scenario.topic) {
         const cat = categoryId ? getCategory(categoryId) : await randomCategory()
-        setStatus(cat.live ? `${cat.emoji} Buscando algo reciente sobre ${cat.title.toLowerCase()}…` : `${cat.emoji} Eligiendo un tema…`)
+        setStatus(cat.live ? `Buscando algo reciente sobre ${cat.title.toLowerCase()}…` : 'Eligiendo un tema…')
         try {
-          t = await generateTopic(settingsRef.current.geminiKey, models(), cat, retryHint)
-          setTopic(t)
+          tp = await generateTopic(settingsRef.current.geminiKey, models(), cat, retryHint)
+          setTopic(tp)
         } catch {
           // Sin tema: el profe elige uno él mismo.
         }
@@ -213,8 +218,8 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
       }
       setStatus('')
 
-      system.current = buildSystemPrompt(profile, scenario, recent, t)
-      sessionId.current = (await db.sessions.add({ scenario: scenario.id, startedAt: Date.now(), topic: t })) ?? null
+      system.current = buildSystemPrompt(profile, scenario, recent, tp, TEACHERS[settingsRef.current.teacher].persona)
+      sessionId.current = (await db.sessions.add({ scenario: scenario.id, startedAt: Date.now(), topic: tp })) ?? null
       history.current = [{ role: 'user', content: START_MESSAGE }]
       await askTeacher()
     })()
@@ -242,7 +247,6 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
       try {
         if (!recorder.current.isOpen) await recorder.current.open()
         recorder.current.start()
-        setMicStream(recorder.current.mediaStream)
         setRecordStart(performance.now())
         setElapsed(0)
         setPhase('recording')
@@ -289,7 +293,7 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
     await starting.current
     await recorder.current.stop() // se descarta el audio
     setPhase('idle')
-    setHint('🗑 Grabación descartada')
+    setHint('Grabación descartada')
   }
 
   const retry = () => {
@@ -297,9 +301,9 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
     askTeacher(pending.current ?? undefined)
   }
 
-  const lastTeacher = [...turns].reverse().find((t) => t.role === 'teacher')
+  const lastTeacher = [...turns].reverse().find((x) => x.role === 'teacher')
 
-  const showIdeas = async () => {
+  const toggleIdeas = async () => {
     if (!lastTeacher || ideasLoading) return
     if (ideas) {
       setIdeas(null)
@@ -315,16 +319,8 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
     }
   }
 
-  const changeRate = (rate: number) => {
-    const s = { ...settings, ttsRate: rate }
-    onSettingsChange(s)
-    saveSettings(s)
-  }
-
   const toggleEar = () => {
-    const s = { ...settings, earMode: !settings.earMode }
-    onSettingsChange(s)
-    saveSettings(s)
+    update({ earMode: !settings.earMode })
     setRevealed(new Set())
   }
 
@@ -365,29 +361,56 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
     return () => registerBack(null)
   }, [view, finish, onExit, registerBack])
 
-  const userTurns = turns.filter((t) => t.role === 'user')
-  const live = userTurns.length ? sessionMetrics(turns) : null
+  const userTurns = turns.filter((x) => x.role === 'user')
+  const orbColors = t[settings.teacher]
+  const chatStatus =
+    phase === 'recording'
+      ? 'Te escucha…'
+      : phase === 'thinking' || phase === 'transcribing'
+        ? 'Pensando…'
+        : phase === 'speaking'
+          ? 'Hablando…'
+          : 'Tu profe de inglés'
+
+  // Tarjeta del tema / práctica
+  const cat = topic ? getCategory(topic.category) : null
+  const card: { icon: IconName; label: string; title: string; sub: string } = topic
+    ? { icon: cat!.icon, label: cat!.title, title: topic.title, sub: topic.summary }
+    : scenario.id === 'open'
+      ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherInfo.name} sigue tu conversación` }
+      : scenario.topic
+        ? { icon: scenario.icon, label: scenario.title, title: status || 'Tema sorpresa', sub: '' }
+        : { icon: scenario.icon, label: 'Práctica guiada', title: scenario.title, sub: scenario.subtitle }
 
   if (view === 'report' && session?.metrics) {
     return (
-      <div className="flex h-full flex-col">
-        <header className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
-          <span className="text-2xl">🏁</span>
-          <h1 className="flex-1 font-semibold">Tu informe</h1>
-        </header>
-        <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="relative z-[2] flex h-full flex-col pt-[env(safe-area-inset-top)]">
+        <div className="flex items-center gap-2.5 px-[18px] pt-1.5 pb-2.5">
+          <button onClick={onExit} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Volver al inicio">
+            <Icon name="back" size={20} stroke={1.8} />
+          </button>
+          <div className="flex-1 text-xl font-semibold tracking-[-.4px]">Tu informe</div>
+          <Orb size={34} colors={orbColors} />
+        </div>
+        <div className="no-scrollbar flex-1 overflow-y-auto px-[18px] pb-[calc(env(safe-area-inset-bottom)+24px)]">
           <ReportView
             metrics={session.metrics}
             report={session.report}
             reportLoading={reportLoading}
             reportError={reportError}
-            onRetryReport={() => db.turns.where('sessionId').equals(session.id!).sortBy('createdAt').then((ts) => buildReport(session, ts))}
-            corrections={userTurns.map((t) => t.correction).filter((c) => !!c)}
+            onRetryReport={() =>
+              db.turns
+                .where('sessionId')
+                .equals(session.id!)
+                .sortBy('createdAt')
+                .then((ts) => buildReport(session, ts))
+            }
+            corrections={userTurns.map((x) => x.correction).filter((c) => !!c)}
             topic={session.topic}
             ttsRate={settings.ttsRate}
             voiceIndex={settings.voiceIndex}
           />
-          <button onClick={onExit} className="btn-primary mt-5 mb-4">
+          <button onClick={onExit} className="btn-acc mt-4 h-[54px] w-full rounded-full text-[16px]">
             Volver al inicio
           </button>
         </div>
@@ -396,174 +419,218 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <header className="flex items-center gap-3 border-b border-white/10 px-4 py-2.5">
-        <TeacherAvatar phase={phase} />
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate leading-tight font-semibold">
-            {scenario.emoji} {scenario.title}
-          </h1>
-          <p className="text-xs text-slate-400">
-            {live
-              ? `${live.turns} ${live.turns === 1 ? 'respuesta' : 'respuestas'} · ${live.wpm} ppm · ${live.avgWords} pal./resp.`
-              : phase === 'speaking'
-                ? 'Hablando…'
-                : 'Tu profe de inglés'}
-          </p>
-        </div>
-        <button onClick={finish} className="rounded-lg bg-white/10 px-3 py-1.5 text-sm">
-          Terminar
+    <div className="anim-up relative z-[2] flex h-full flex-col pt-[env(safe-area-inset-top)]">
+      {/* Cabecera */}
+      <div className="flex items-center gap-2.5 px-[18px] pt-1.5 pb-2.5">
+        <button onClick={finish} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Terminar y salir">
+          <Icon name="back" size={20} stroke={1.8} />
         </button>
-      </header>
-
-      <div className="flex items-center gap-3 border-b border-white/5 px-4 py-2 text-xs text-slate-300">
-        <label className="flex flex-1 items-center gap-2">
-          🐢
-          <input
-            type="range"
-            min={0.5}
-            max={1.5}
-            step={0.05}
-            value={settings.ttsRate}
-            onChange={(e) => changeRate(Number(e.target.value))}
-            className="flex-1 accent-orange-500"
-          />
-          🐇 <span className="w-8 tabular-nums">{settings.ttsRate.toFixed(2)}×</span>
-        </label>
-        <button
-          onClick={toggleEar}
-          className={`rounded-full px-3 py-1 ${settings.earMode ? 'bg-brand text-white' : 'bg-white/10'}`}
-        >
-          👂 Modo oído
+        <div className="flex flex-1 items-center justify-center gap-2.5">
+          <Orb size={34} colors={orbColors} active={phase === 'speaking' || phase === 'thinking'} />
+          <div>
+            <div className="text-base font-semibold">{teacherInfo.name}</div>
+            <div className="txt-sub text-xs">{chatStatus}</div>
+          </div>
+        </div>
+        <button onClick={finish} className="glass h-11 flex-none rounded-[22px] px-4 text-sm font-medium">
+          Terminar
         </button>
       </div>
 
-      <main className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-        {topic && <TopicCard topic={topic} ttsRate={settings.ttsRate} voiceIndex={settings.voiceIndex} />}
+      {/* Velocidad + modo oído */}
+      <div className="flex items-center gap-2.5 px-[18px] pb-2.5">
+        <Icon name="speaker" size={18} color="var(--sub)" />
+        <input
+          type="range"
+          min={0.5}
+          max={1.5}
+          step={0.05}
+          value={settings.ttsRate}
+          onChange={(e) => update({ ttsRate: Number(e.target.value) })}
+          className="flex-1"
+          style={{ accentColor: 'var(--acc)' }}
+          aria-label="Velocidad de la voz"
+        />
+        <span className="txt-sub w-10 text-[13px] tabular-nums">{settings.ttsRate.toFixed(2)}×</span>
+        <button
+          onClick={toggleEar}
+          className={`flex h-[34px] items-center gap-1.5 rounded-[17px] px-3 text-[13px] ${settings.earMode ? 'btn-acc' : 'glass'}`}
+        >
+          <Icon name="ear" size={15} stroke={1.8} />
+          Modo oído
+        </button>
+      </div>
+
+      {/* Tarjeta del tema: se pliega sola al responder */}
+      <div className="flex-none px-[18px] pb-2">
+        <div className="glass rounded-[24px] py-3 pr-3 pl-3.5">
+          <button onClick={() => setCardOpen((o) => !o)} className="flex w-full items-center gap-3 text-left">
+            <span className="field txt-acc2 grid h-9 w-9 flex-none place-items-center rounded-full">
+              <Icon name={card.icon} size={17} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="txt-acc2 block text-[10.5px] tracking-[1.2px] uppercase">{card.label}</span>
+              <span className="block truncate text-base font-semibold">{card.title}</span>
+            </span>
+            <span
+              className="txt-sub grid h-[30px] w-[30px] flex-none place-items-center rounded-full transition-transform duration-300"
+              style={{ border: '1px solid var(--gb)', transform: cardOpen ? 'rotate(180deg)' : 'none' }}
+            >
+              <Icon name="chevD" size={15} stroke={2} />
+            </span>
+          </button>
+          {cardOpen && (card.sub || topic?.vocab.length) ? (
+            <div className="anim-up pl-12">
+              {topic?.titleEs && <div className="txt-sub mt-1 text-[13px]">{topic.titleEs}</div>}
+              {card.sub && <div className="mt-1 text-[13px] leading-snug">{card.sub}</div>}
+              {topic && topic.vocab.length > 0 && (
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {topic.vocab.map((v) => (
+                    <button
+                      key={v.en}
+                      onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}
+                      className="field flex h-8 items-center gap-1.5 rounded-2xl px-2.5 text-[13px]"
+                    >
+                      <Icon name="speaker" size={13} stroke={1.8} />
+                      <b className="font-semibold">{v.en}</b>
+                      <span className="txt-sub">· {v.es}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {topic?.sources && topic.sources.length > 0 && (
+                <div className="txt-sub mt-2 truncate text-[11px]">Fuente: {topic.sources.map((s) => s.title).join(' · ')}</div>
+              )}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Mensajes */}
+      <div ref={listRef} className="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-[18px] pt-1.5 pb-4">
         {phase === 'starting' && status && (
-          <div className="flex flex-col items-center gap-3 py-10 text-center text-slate-300">
-            <TeacherAvatar phase="thinking" size={72} />
-            <p className="animate-pulse">{status}</p>
+          <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+            <Orb size={120} colors={orbColors} active />
+            <p className="txt-sub animate-pulse text-sm">{status}</p>
           </div>
         )}
 
-        {turns.map((t) =>
-          t.role === 'teacher' ? (
-            <div key={t.id} className="flex items-start gap-2">
-              <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-slate-800 px-3 py-2">
-                {settings.earMode && !revealed.has(t.id!) ? (
-                  <button
-                    onClick={() => setRevealed((r) => new Set(r).add(t.id!))}
-                    className="text-left text-sm text-slate-400 italic"
-                  >
-                    👂 Escucha… (toca para ver el texto)
-                  </button>
-                ) : (
-                  <p>{t.text}</p>
-                )}
-                {translated.has(t.id!) && t.translation && (
-                  <p className="mt-1 border-t border-white/10 pt-1 text-sm text-slate-400">{t.translation}</p>
-                )}
-                <div className="mt-1 flex gap-3 text-xs text-slate-400">
-                  <button onClick={() => say(t.text)} disabled={phase !== 'idle' && phase !== 'speaking'}>
-                    🔊 Repetir
-                  </button>
-                  {t.translation && (
-                    <button
-                      onClick={() =>
-                        setTranslated((s) => {
-                          const n = new Set(s)
-                          if (n.has(t.id!)) n.delete(t.id!)
-                          else n.add(t.id!)
-                          return n
-                        })
-                      }
-                    >
-                      🌐 {translated.has(t.id!) ? 'Ocultar' : 'ES'}
-                    </button>
-                  )}
+        {turns.map((m, i) => {
+          if (m.role === 'user') {
+            const tm = turnMetrics(m)
+            return (
+              <div key={m.id} className="anim-up flex flex-col items-end">
+                <div
+                  className="max-w-[80%] rounded-[24px_24px_8px_24px] px-4 py-3 text-base leading-[1.4]"
+                  style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 8px 22px var(--glow)' }}
+                >
+                  {m.text}
+                </div>
+                <div className="txt-sub mt-1 mr-1 flex gap-2.5 text-[11px] tabular-nums">
+                  {tm.wpm !== null && <span>{tm.wpm} ppm</span>}
+                  <span>{tm.words} palabras</span>
+                  <span>
+                    {tm.pauses} {tm.pauses === 1 ? 'pausa' : 'pausas'}
+                  </span>
                 </div>
               </div>
-            </div>
-          ) : (
-            <UserBubble key={t.id} turn={t} />
-          ),
-        )}
-
-        {ideas && (
-          <div className="rounded-2xl bg-amber-400/10 p-3 ring-1 ring-amber-300/20">
-            <p className="mb-2 text-xs text-amber-200">💡 Empieza así y continúa con tus ideas (toca para oírla):</p>
-            <div className="space-y-2">
-              {ideas.map((i) => (
-                <button
-                  key={i.en}
-                  onClick={() => speak(i.en, settings.ttsRate, settings.voiceIndex)}
-                  className="block w-full rounded-xl bg-black/20 px-3 py-2 text-left"
-                >
-                  <span className="block text-slate-100">{i.en}…</span>
-                  <span className="block text-xs text-slate-400">{i.es}</span>
+            )
+          }
+          // La corrección de tu respuesta aparece dentro de la siguiente burbuja del profe, como en el diseño.
+          const prev = turns[i - 1]
+          const fix = prev?.role === 'user' ? prev.correction : undefined
+          const hidden = settings.earMode && !revealed.has(m.id!)
+          const showEs = translated.has(m.id!)
+          return (
+            <div key={m.id} className="glass anim-up max-w-[86%] self-start rounded-[24px_24px_24px_8px] px-4 pt-3.5 pb-2.5">
+              {hidden ? (
+                <button onClick={() => setRevealed((r) => new Set(r).add(m.id!))} className="txt-sub flex items-center gap-2.5 text-sm">
+                  <Wave n={9} color="var(--sub)" on={false} w={3} h={18} />
+                  Texto oculto · toca para ver
                 </button>
-              ))}
+              ) : (
+                <div className="text-base leading-[1.42]">{m.text}</div>
+              )}
+              {showEs && m.translation && <div className="txt-sub mt-1.5 text-sm leading-snug">{m.translation}</div>}
+              {fix && (
+                <div className="mt-2.5">
+                  <CorrectionView c={fix} />
+                </div>
+              )}
+              <div className="mt-2 flex gap-3.5">
+                <button
+                  onClick={() => say(m.text)}
+                  disabled={phase !== 'idle' && phase !== 'speaking'}
+                  className="txt-sub flex items-center gap-1 text-[12.5px]"
+                >
+                  <Icon name="speaker" size={14} stroke={1.8} />
+                  Repetir
+                </button>
+                {m.translation && (
+                  <button
+                    onClick={() =>
+                      setTranslated((s) => {
+                        const n = new Set(s)
+                        if (n.has(m.id!)) n.delete(m.id!)
+                        else n.add(m.id!)
+                        return n
+                      })
+                    }
+                    className="flex items-center gap-1 text-[12.5px]"
+                    style={{ color: showEs ? 'var(--acc2)' : 'var(--sub)' }}
+                  >
+                    <Icon name="globe" size={14} />
+                    ES
+                  </button>
+                )}
+              </div>
             </div>
+          )
+        })}
+
+        {(phase === 'thinking' || phase === 'transcribing') && (
+          <div className="glass flex gap-[5px] self-start rounded-[24px_24px_24px_8px] px-[18px] py-3.5">
+            {[0, 0.2, 0.4].map((d) => (
+              <span key={d} className="h-[7px] w-[7px] rounded-full" style={{ background: 'var(--tx)', animation: `hb-dot 1.2s ${d}s infinite` }} />
+            ))}
           </div>
         )}
-        <div ref={bottomRef} />
-      </main>
+      </div>
 
-      <footer className="border-t border-white/10 px-4 pt-2 pb-5">
+      {/* Zona inferior: ideas, avisos y micrófono */}
+      <div className="flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
+        {ideas && (
+          <div className="anim-up flex w-full flex-col gap-2">
+            {ideas.map((i) => (
+              <button
+                key={i.en}
+                onClick={() => speak(i.en, settings.ttsRate, settings.voiceIndex)}
+                className="glass rounded-[19px] px-3.5 py-2 text-left text-[13.5px]"
+              >
+                {i.en}…<span className="txt-sub block text-xs">{i.es}</span>
+              </button>
+            ))}
+          </div>
+        )}
         {error && (
-          <div className="mb-3 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-200">
-            {error}
+          <div className="glass w-full rounded-[20px] px-3.5 py-2.5 text-sm">
+            <span style={{ color: '#f87171' }}>{error}</span>
             {canRetry && (
-              <button onClick={retry} className="mt-2 block w-full rounded-lg bg-white/10 py-2 font-medium">
-                {retryHasAudio ? '🔁 Reenviar mi audio' : '🔁 Reintentar'}
+              <button onClick={retry} className="btn-acc mt-2 h-10 w-full rounded-[20px] text-sm">
+                {retryHasAudio ? 'Reenviar mi audio' : 'Reintentar'}
               </button>
             )}
           </div>
         )}
-        {hint && !error && <div className="mb-2 text-center text-sm text-amber-200">{hint}</div>}
-
-        <div className="flex h-10 items-center justify-center">
-          {phase === 'recording' ? (
-            <div className="flex items-center gap-2">
-              <LiveWave stream={micStream} active />
-              <span className="w-10 text-sm text-red-300 tabular-nums">{elapsed.toFixed(0)} s</span>
-            </div>
-          ) : (
-            lastTeacher &&
-            (phase === 'idle' || phase === 'speaking') && (
-              <button
-                onClick={showIdeas}
-                className="rounded-full bg-white/10 px-4 py-1.5 text-sm text-slate-200 active:bg-white/20"
-              >
-                {ideasLoading ? '💡 Pensando…' : ideas ? '✕ Ocultar ideas' : '💡 ¿Qué digo?'}
-              </button>
-            )
-          )}
-        </div>
-        <TalkButton phase={phase} onPress={onPress} onRelease={onRelease} onCancel={onCancel} />
-      </footer>
-    </div>
-  )
-}
-
-function UserBubble({ turn }: { turn: Turn }) {
-  const m = turnMetrics(turn)
-  return (
-    <div className="flex flex-col items-end">
-      <div className="max-w-[88%] rounded-2xl rounded-tr-sm bg-gradient-to-br from-orange-500 to-orange-700 px-3 py-2 text-white">
-        {turn.text}
+        {hint && !error && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+        {lastTeacher && (phase === 'idle' || phase === 'speaking') && (
+          <button onClick={toggleIdeas} className="glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px]">
+            <Icon name="bulb" size={15} stroke={1.8} color="var(--acc)" />
+            {ideasLoading ? 'Pensando…' : ideas ? 'Ocultar ideas' : '¿Qué digo?'}
+          </button>
+        )}
+        <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} />
       </div>
-      <div className="mt-1 flex gap-2 text-[11px] text-slate-400">
-        {m.wpm !== null && <span>⚡ {m.wpm} ppm</span>}
-        <span>📝 {m.words} palabras</span>
-        <span>⏸ {m.pauses} {m.pauses === 1 ? 'pausa' : 'pausas'}</span>
-      </div>
-      {turn.correction && (
-        <div className="w-[88%]">
-          <CorrectionView c={turn.correction} />
-        </div>
-      )}
     </div>
   )
 }

@@ -1,10 +1,11 @@
 @import "tailwindcss";
+@import "@fontsource/outfit/300.css";
+@import "@fontsource/outfit/400.css";
+@import "@fontsource/outfit/500.css";
+@import "@fontsource/outfit/600.css";
+@import "@fontsource/outfit/700.css";
 
-@theme {
-  --color-ink: #0f172a;
-  --color-brand: #f97316;
-  --color-brand-dark: #c2410c;
-}
+/* Las variables (--bg, --tx, --acc…) las pone App.tsx según el tema y el modo elegidos. */
 
 html,
 body,
@@ -14,22 +15,137 @@ body,
 
 body {
   margin: 0;
-  background: #0b1120;
-  color: #e2e8f0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg, #0a0605);
+  color: var(--tx, #fff);
+  font-family: Outfit, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }
 
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+@keyframes hb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes hb-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+@keyframes hb-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(34px, -24px) scale(1.12);
+  }
+}
+@keyframes hb-wave {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@keyframes hb-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hb-in {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hb-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
 @layer components {
+  /* Superficie de cristal del diseño */
+  .glass {
+    background: var(--g);
+    border: 1px solid var(--gb);
+    box-shadow: var(--sh);
+    -webkit-backdrop-filter: blur(22px);
+    backdrop-filter: blur(22px);
+  }
+  /* Botón relleno con el color de acento */
+  .btn-acc {
+    background: var(--acc);
+    color: var(--ink);
+    border: 0;
+    box-shadow: 0 8px 22px var(--glow);
+    font-weight: 600;
+  }
+  .btn-acc:disabled {
+    opacity: 0.5;
+  }
+  /* Campos y círculos de icono */
+  .field {
+    background: var(--field);
+    border: 1px solid var(--gb);
+    color: var(--tx);
+  }
+  .txt-sub {
+    color: var(--sub);
+  }
+  .txt-acc {
+    color: var(--acc);
+  }
+  .txt-acc2 {
+    color: var(--acc2);
+  }
+  .anim-up {
+    animation: hb-up 0.45s ease both;
+  }
+  .anim-in {
+    animation: hb-in 0.35s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  }
   .input {
-    @apply w-full rounded-xl bg-slate-800 px-3 py-2.5 text-slate-100 ring-1 ring-white/10 outline-none focus:ring-2 focus:ring-orange-500;
+    @apply h-[50px] w-full rounded-[18px] px-4 text-[15px] outline-none;
+    background: var(--field);
+    border: 1px solid var(--gb);
+    color: var(--tx);
   }
-  .btn-primary {
-    @apply w-full rounded-xl bg-brand px-4 py-3 font-semibold text-white active:bg-brand-dark disabled:opacity-60;
+  .input:focus {
+    border-color: var(--acc);
   }
-  .btn-secondary {
-    @apply rounded-xl bg-white/10 px-4 py-3 font-medium text-slate-100 active:bg-white/20;
+  select.input {
+    appearance: none;
+  }
+  select.input option {
+    color: #111;
   }
 }
 
@@ -38,4 +154,11 @@ body {
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   touch-action: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

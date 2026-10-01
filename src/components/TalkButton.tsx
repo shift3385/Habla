@@ -1,5 +1,7 @@
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { useRef, useState } from 'react'
+import { Icon } from '../ui/icons'
+import Wave from '../ui/Wave'
 
 export type Phase = 'starting' | 'idle' | 'recording' | 'transcribing' | 'thinking' | 'speaking'
 
@@ -8,7 +10,7 @@ const LABELS: Record<Phase, string> = {
   idle: 'Mantén presionado para hablar',
   recording: 'Suelta para enviar',
   transcribing: 'Procesando audio…',
-  thinking: 'El profe te escucha y piensa…',
+  thinking: 'Tu profe está pensando…',
   speaking: 'Mantén presionado para interrumpir y hablar',
 }
 
@@ -18,6 +20,7 @@ const CANCEL_DX = 110
 
 interface Props {
   phase: Phase
+  elapsed: number // segundos grabando
   onPress: () => void // empieza a grabar
   onRelease: () => void // envía
   onCancel: () => void // descarta la grabación
@@ -27,25 +30,25 @@ function haptic() {
   Haptics.impact({ style: ImpactStyle.Heavy }).catch(() => {})
 }
 
+function clock(s: number) {
+  const n = Math.floor(s)
+  return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`
+}
+
 /**
- * Botón de hablar estilo WhatsApp:
+ * Botón de hablar estilo WhatsApp, con el aspecto del rediseño:
  * - mantener y soltar → envía
  * - mantener y deslizar ↑ → bloquea: puedes soltar y seguir hablando; tocar ➤ envía
  * - mantener y deslizar ← → cancela
  */
-export default function TalkButton({ phase, onPress, onRelease, onCancel }: Props) {
+export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel }: Props) {
   const busy = phase === 'starting' || phase === 'transcribing' || phase === 'thinking'
   const recording = phase === 'recording'
   const [lockedRaw, setLocked] = useState(false)
   // El bloqueo solo vale mientras se graba; si la grabación acaba por otra vía (error, envío), deja de aplicar.
   const locked = lockedRaw && recording
   const [drag, setDrag] = useState({ x: 0, y: 0 })
-  const gesture = useRef<{ active: boolean; x0: number; y0: number; done: boolean }>({
-    active: false,
-    x0: 0,
-    y0: 0,
-    done: false,
-  })
+  const gesture = useRef({ active: false, x0: 0, y0: 0, done: false })
 
   const reset = () => {
     gesture.current.active = false
@@ -96,52 +99,57 @@ export default function TalkButton({ phase, onPress, onRelease, onCancel }: Prop
     if (!g.done) onRelease()
   }
 
-  const showGestureHints = recording && !locked
+  const holding = recording && !locked
   const lockProgress = Math.min(1, drag.y / LOCK_DY)
   const cancelProgress = Math.min(1, drag.x / CANCEL_DX)
+  const wavesOn = recording || phase === 'speaking'
+
+  const label = locked
+    ? `Bloqueado · ${clock(elapsed)} · toca ➤ para enviar`
+    : recording
+      ? `${clock(elapsed)} · suelta para enviar · ↑ bloquear · ← cancelar`
+      : LABELS[phase]
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="relative flex w-full items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div className="relative flex items-center gap-[22px]">
         {/* Candado: aparece al grabar y sube con el dedo */}
-        {showGestureHints && (
+        {holding && (
           <div
-            className="pointer-events-none absolute -top-20 flex flex-col items-center text-slate-300 transition-opacity"
-            style={{ transform: `translateY(${-lockProgress * 16}px)`, opacity: 0.6 + lockProgress * 0.4 }}
-          >
-            <span
-              className={`flex h-12 w-10 flex-col items-center justify-center rounded-full ${
-                lockProgress > 0.6 ? 'bg-orange-500 text-white' : 'bg-slate-800'
-              }`}
-            >
-              <span className="text-lg leading-none">🔒</span>
-              <span className="text-[10px] leading-none">▲</span>
-            </span>
-          </div>
-        )}
-        {/* Cancelar: a la izquierda */}
-        {showGestureHints && (
-          <div
-            className="pointer-events-none absolute left-0 flex items-center gap-1 text-sm"
-            style={{ opacity: 0.5 + cancelProgress * 0.5, color: cancelProgress > 0.6 ? '#fca5a5' : '#94a3b8' }}
-          >
-            🗑 ‹ desliza para cancelar
-          </div>
-        )}
-        {/* Con bloqueo: botón para descartar */}
-        {locked && recording && (
-          <button
-            type="button"
-            onClick={() => {
-              setLocked(false)
-              onCancel()
+            className="pointer-events-none absolute -top-[74px] left-1/2 -ml-5 flex h-12 w-10 flex-col items-center justify-center rounded-full transition-colors"
+            style={{
+              transform: `translateY(${-lockProgress * 16}px)`,
+              background: lockProgress > 0.6 ? 'var(--acc)' : 'var(--g)',
+              color: lockProgress > 0.6 ? 'var(--ink)' : 'var(--tx)',
+              border: '1px solid var(--gb)',
             }}
-            className="absolute left-2 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-2xl active:bg-slate-700"
-            aria-label="Descartar grabación"
           >
-            🗑
-          </button>
+            <Icon name="lock" size={17} />
+            <span className="text-[9px] leading-none">▲</span>
+          </div>
         )}
+
+        <div className="flex w-[52px] justify-center">
+          {locked ? (
+            <button
+              type="button"
+              onClick={() => {
+                setLocked(false)
+                onCancel()
+              }}
+              className="glass grid h-[52px] w-[52px] place-items-center rounded-full"
+              aria-label="Descartar grabación"
+            >
+              <Icon name="trash" size={20} />
+            </button>
+          ) : holding && cancelProgress > 0.15 ? (
+            <span className="transition-colors" style={{ color: cancelProgress > 0.6 ? '#f87171' : 'var(--sub)' }}>
+              <Icon name="trash" size={22} />
+            </span>
+          ) : (
+            <Wave on={wavesOn} />
+          )}
+        </div>
 
         <button
           type="button"
@@ -152,28 +160,28 @@ export default function TalkButton({ phase, onPress, onRelease, onCancel }: Prop
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           onContextMenu={(e) => e.preventDefault()}
-          style={showGestureHints ? { transform: `translate(${-drag.x * 0.5}px, ${-drag.y * 0.5}px) scale(1.1)` } : undefined}
-          className={`no-select relative flex h-28 w-28 items-center justify-center rounded-full text-5xl shadow-xl transition-[background-color,box-shadow,opacity] duration-150 ${
-            locked
-              ? 'bg-emerald-500 shadow-emerald-500/40'
+          className="no-select grid h-[88px] w-[88px] place-items-center rounded-full disabled:opacity-60"
+          style={{
+            border: '1px solid rgba(255,255,255,.35)',
+            background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 45%), var(--acc)',
+            color: 'var(--ink)',
+            boxShadow: recording ? '0 0 0 14px var(--glow), 0 0 60px var(--glow)' : '0 0 0 6px var(--g), 0 14px 40px var(--glow)',
+            transform: holding
+              ? `translate(${-drag.x * 0.5}px, ${-drag.y * 0.5}px) scale(1.08)`
               : recording
-                ? 'bg-red-500 shadow-red-500/40'
-                : busy
-                  ? 'bg-slate-700 opacity-70'
-                  : 'bg-brand shadow-brand/30 active:scale-95'
-          }`}
+                ? 'scale(1.08)'
+                : 'scale(1)',
+            transition: holding ? 'box-shadow .25s ease' : 'all .25s ease',
+          }}
         >
-          {recording && !locked && <span className="absolute inset-0 animate-ping rounded-full bg-red-500/40" />}
-          <span className="relative">{busy ? '⏳' : locked ? '➤' : '🎙️'}</span>
+          {locked ? <Icon name="send" size={30} stroke={1.8} /> : <Icon name="mic" size={32} stroke={1.8} />}
         </button>
+
+        <div className="flex w-[52px] justify-center">
+          <Wave on={wavesOn} />
+        </div>
       </div>
-      <p className="h-5 text-center text-sm text-slate-300">
-        {locked && recording
-          ? '🔒 Bloqueado: habla tranquilo y toca ➤ para enviar'
-          : recording
-            ? 'Suelta para enviar · ↑ bloquear · ← cancelar'
-            : LABELS[phase]}
-      </p>
+      <div className="txt-sub h-5 text-center text-[13px] tabular-nums">{label}</div>
     </div>
   )
 }

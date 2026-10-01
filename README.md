@@ -51,28 +51,38 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ## 🗣️ Cómo usarla
 
+### Bienvenida, profe y apariencia
+- La primera vez verás una **bienvenida en 3 pasos**: el saludo, la elección de profe y tu nivel con la meta diaria. Puedes repetirla desde *Ajustes → Ver la bienvenida otra vez*.
+- **Profes:**
+  - **Emma**: acento americano; paciente, clara y muy positiva.
+  - **Leo**: acento británico; directo, curioso y con humor.
+  
+  Cada profe tiene su orbe de colores, que late cuando habla, y su propia voz.
+- **Temas visuales:** **Ember** (naranja y turquesa), **Lumi** (verde cristal) y **Aurora** (verde, naranja y ámbar), cada uno en modo **oscuro** o **claro**. Se cambian en *Ajustes → Apariencia*. El modo también se cambia con el icono de sol y luna del Inicio.
+
 ### Inicio
-- **🔥 Racha**: días seguidos practicando.
-- **Anillo de meta diaria**: minutos que has hablado hoy (tu voz, no la duración de la clase). La meta se cambia en Ajustes.
-- **📅 Tu tarea**: la tarea para mañana de tu última sesión.
-- **🎲 Sorpréndeme**: un tema al azar, distinto de los últimos que usaste.
-- **Elige un tema**: 12 categorías. Las que tienen un punto rojo (noticias, IA, tecnología, negocios y mercados, startups, ciencia, cine, deportes) **buscan en Google una noticia real y reciente**. El profe nunca repite un tema de tus últimas sesiones.
-- **Prácticas guiadas**: mis puntos débiles, entrevista técnica, explicar mi trabajo a un cliente, debate sobre un tema de actualidad y contar una historia.
+- **Racha** (icono de llama): días seguidos practicando.
+- **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember es un anillo; en Lumi, la tarjeta "Charla libre"; en Aurora, una barra junto al orbe.
+- **Sorpréndeme** (icono de destello): un tema al azar, distinto de los últimos que usaste.
+- **Tarea**: la tarea para mañana de tu última sesión. Tócala para leerla entera.
+- **Temas / Prácticas**: un selector para cambiar entre las 12 categorías de temas y las 5 prácticas guiadas.
+  - Los temas con punto de color (noticias, IA, tecnología, negocios y mercados, startups, ciencia, cine, deportes) **buscan en Google una noticia real y reciente**. El profe nunca repite un tema de tus últimas sesiones.
+  - Las prácticas son: mis puntos débiles, entrevista técnica, explicar mi trabajo a un cliente, debate sobre un tema de actualidad y contar una historia.
 
 ### En la clase
-1. Arriba ves la **tarjeta del tema**: tócala para leer el resumen. Toca las palabras de vocabulario para oírlas.
-2. El botón de hablar funciona como en WhatsApp. Mientras grabas verás la onda de tu voz y un cronómetro.
-   - **Mantener y soltar:** habla con el dedo en el botón naranja; al soltar se envía.
-   - **Deslizar ↑ hasta el 🔒:** la grabación queda bloqueada, así que puedes soltar el dedo y hablar tranquilo. Toca el botón verde **➤** para enviar, o **🗑** para descartar.
+1. Arriba ves la **tarjeta del tema**. Se pliega sola cuando respondes; tócala para volver a ver el resumen y el vocabulario. Toca las palabras para oírlas.
+2. El botón de hablar funciona como en WhatsApp. Mientras grabas, las ondas se mueven y ves un cronómetro.
+   - **Mantener y soltar:** habla con el dedo en el micrófono; al soltar se envía.
+   - **Deslizar ↑ hasta el candado:** la grabación queda bloqueada, así que puedes soltar el dedo y hablar tranquilo. Toca **➤** para enviar, o la papelera para descartar.
    - **Deslizar ←:** cancela la grabación sin enviarla.
-3. Debajo de tu frase aparecen tus métricas de ese turno: ⚡ palabras por minuto, 📝 palabras y ⏸ pausas de más de 1 s.
-4. Si cometiste un error verás **una sola corrección**: tu frase tachada en rojo y la correcta resaltada en verde, con una explicación corta.
+3. Debajo de tu frase aparecen tus métricas de ese turno: palabras por minuto, número de palabras y pausas de más de 1 s.
+4. Si cometiste un error, la siguiente burbuja del profe muestra **una sola corrección**: tu frase tachada → la correcta, con una explicación corta.
 5. El profe te responde por voz (1 a 3 frases) y siempre termina con una pregunta.
 
 Otros controles:
-- **💡 ¿Qué digo?**: 3 maneras de empezar tu respuesta, con traducción. Tócalas para oírlas.
-- **🌐 ES**: traducción al español de lo que dijo el profe.
-- **🐢 / 🐇**: velocidad de la voz del profe.
+- **¿Qué digo?**: 3 maneras de empezar tu respuesta, con traducción. Tócalas para oírlas.
+- **ES**: traducción al español de lo que dijo el profe.
+- **Barra de velocidad**: la velocidad de la voz del profe.
 - **👂 Modo oído**: el texto del profe queda oculto hasta que lo tocas, para entrenar la comprensión auditiva.
 - **🔊 Repetir**: vuelve a escuchar una frase del profe.
 - **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta.
@@ -83,8 +93,12 @@ Otros controles:
   - Tu nivel al hablar ese día.
   - Lo que hiciste bien y lo que debes mejorar.
   - La **tarea para mañana** y una **frase del día**.
-- **📈 Progreso**: total de sesiones, minutos y palabras; gráfica de tu nota; comparación "antes → ahora". Toca cualquier sesión para volver a ver su informe.
-- Si la voz suena rara, en *Ajustes → Voz* puedes elegir otra voz en inglés del teléfono. Si no hay ninguna, instala "Speech Services by Google" desde Play Store.
+- **Progreso**: tus minutos de hoy, las barras de la semana y tres pestañas:
+  - **Errores**: tus correcciones agrupadas, con cuántas veces repetiste cada error. Toca una para ver la explicación.
+  - **Palabras**: el vocabulario de tus temas y las frases del día. Toca una para oírla.
+  - **Sesiones**: la gráfica de tu nota y el informe de cada clase.
+- **Ajustes**: un panel con 6 secciones (Profe y voz, Apariencia, Meta diaria, Mi nivel, Gemini y Mis datos). Cada sección se abre en su propia pantalla, con botón atrás.
+- Si la voz suena rara, en *Ajustes → Profe y voz* puedes elegir otra voz en inglés del teléfono. Si no hay ninguna, instala "Speech Services by Google" desde Play Store.
 
 ## 💸 Coste aproximado
 
@@ -131,7 +145,9 @@ src/
     backup.ts      exportar / importar JSON
     settings.ts    clave, modelo y preferencias (@capacitor/preferences)
   screens/         Home, Conversation, ProgressScreen, SettingsScreen
-  components/      botón de hablar, onda en vivo, avatar, informe, gráfica, tarjeta del tema
+  components/      botón de hablar, informe, gráfica, corrección, anillo de nota
+  ui/              sistema visual del rediseño: temas (theme.ts), iconos, orbe, ondas, fondo, selector
+  screens/Onboarding.tsx  bienvenida en 3 pasos
 android/           proyecto nativo (Capacitor 8, Android 36)
 keystore/          firma del APK (fuera de git; haz copia)
 ```
@@ -141,6 +157,7 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **Fase 1:** ajustes, conversación por voz y exportar/importar
 - [x] **Migración a Gemini** con reintentos automáticos y modelo de respaldo
 - [x] **Fase 2:** métricas de fluidez, nota, informe y tarea para mañana; temas dinámicos con noticias reales; racha, meta diaria y pestaña Progreso
+- [x] **Rediseño** (Claude Design): temas Ember / Lumi / Aurora en claro y oscuro, profes Emma y Leo, bienvenida, pantallas sin scroll
 - [ ] **Fase 3:** cuaderno de errores con repetición espaciada (FSRS) y ejercicio oral de español a inglés
 - [ ] **Fase 4:** plan de 12 semanas y lección del día (la racha y la gráfica ya están hechas)
 - [ ] **Fase 5:** re-test cada 4 semanas (gramática, audición y habla) que actualiza tu nivel

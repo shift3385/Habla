@@ -1,13 +1,16 @@
 import type { Correction } from '../lib/db'
+import { Icon } from '../ui/icons'
 
-export default function CorrectionView({ c }: { c: Correction }) {
+/** Corrección como en el diseño: frase original tachada → frase correcta, con la explicación debajo. */
+export default function CorrectionView({ c, compact = false }: { c: Correction; compact?: boolean }) {
   return (
-    <div className="mt-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm">
-      <p className="text-red-300/90 line-through decoration-red-400 decoration-2">{c.original}</p>
-      <p className="mt-1">
-        <mark className="rounded bg-emerald-400/20 px-1 font-medium text-emerald-200">{c.corrected}</mark>
-      </p>
-      {c.explanationEs && <p className="mt-1 text-xs text-slate-300">💡 {c.explanationEs}</p>}
+    <div className="field rounded-[14px] px-3 py-2 text-[13px]" style={{ border: 0 }}>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="txt-sub line-through">{c.original}</span>
+        <Icon name="arrowR" size={14} stroke={2} color="var(--acc)" />
+        <b className="font-semibold">{c.corrected}</b>
+      </div>
+      {!compact && c.explanationEs && <div className="txt-sub mt-1 text-xs leading-snug">{c.explanationEs}</div>}
     </div>
   )
 }

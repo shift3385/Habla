@@ -6,14 +6,24 @@ export interface VoiceOption {
   lang: string
 }
 
-/** Voces en inglés disponibles en el dispositivo (índices según getSupportedVoices). */
+// Voz del profe activo: Emma (en-US) o Leo (en-GB). Lo fija App.tsx al cambiar de profe.
+let voiceLang = 'en-US'
+let voicePitch = 1
+
+export function setTeacherVoice(lang: string, pitch: number) {
+  voiceLang = lang
+  voicePitch = pitch
+}
+
+/** Voces en inglés del dispositivo (índices según getSupportedVoices); primero las del acento del profe. */
 export async function englishVoices(): Promise<VoiceOption[]> {
   try {
     const { voices } = await TextToSpeech.getSupportedVoices()
+    const norm = (l: string) => l.toLowerCase().replace('_', '-')
     return voices
       .map((v, index) => ({ index, name: v.name, lang: v.lang }))
-      .filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith('en'))
-      .sort((a, b) => Number(b.lang.includes('US')) - Number(a.lang.includes('US')))
+      .filter((v) => norm(v.lang).startsWith('en'))
+      .sort((a, b) => Number(norm(b.lang) === norm(voiceLang)) - Number(norm(a.lang) === norm(voiceLang)))
   } catch {
     return []
   }
@@ -23,9 +33,9 @@ export async function speak(text: string, rate: number, voiceIndex: number | nul
   await TextToSpeech.stop().catch(() => {})
   await TextToSpeech.speak({
     text,
-    lang: 'en-US',
+    lang: voiceLang,
     rate,
-    pitch: 1,
+    pitch: voicePitch,
     volume: 1,
     category: 'playback',
     ...(voiceIndex !== null ? { voice: voiceIndex } : {}),

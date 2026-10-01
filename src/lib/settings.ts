@@ -1,4 +1,5 @@
 import { Preferences } from '@capacitor/preferences'
+import type { Mode, TeacherKey, ThemeKey } from '../ui/theme'
 import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL } from './gemini'
 
 // La clave API vive solo en el almacenamiento local del teléfono (Preferences).
@@ -9,9 +10,13 @@ export interface Settings {
   geminiModel: string
   geminiFallbackModel: string // se usa si el principal está saturado (503)
   ttsRate: number // 0.5 – 1.5
-  voiceIndex: number | null // índice de getSupportedVoices(); null = voz por defecto en-US
+  voiceIndex: number | null // índice de getSupportedVoices(); null = voz por defecto del acento del profe
   earMode: boolean // texto del profe oculto hasta tocarlo
   dailyGoalMinutes: number // minutos hablando al día
+  theme: ThemeKey
+  mode: Mode
+  teacher: TeacherKey
+  onboarded: boolean // ya vio la bienvenida
 }
 
 const DEFAULTS: Settings = {
@@ -22,6 +27,10 @@ const DEFAULTS: Settings = {
   voiceIndex: null,
   earMode: false,
   dailyGoalMinutes: 5,
+  theme: 'aurora',
+  mode: 'dark',
+  teacher: 'emma',
+  onboarded: false,
 }
 
 const KEY = 'habla.settings'

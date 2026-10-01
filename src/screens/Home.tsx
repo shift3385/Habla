@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
-import ScoreRing from '../components/ScoreRing'
 import { SCENARIOS } from '../lib/scenarios'
+import type { Settings } from '../lib/settings'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { TOPIC_CATEGORIES } from '../lib/topics'
+import { Icon } from '../ui/icons'
+import Orb from '../ui/Orb'
+import Segmented from '../ui/Segmented'
+import { TEACHERS, type ThemeVars } from '../ui/theme'
 
 interface Props {
-  keysReady: boolean
-  dailyGoalMinutes: number
+  settings: Settings
+  t: ThemeVars
+  update: (patch: Partial<Settings>) => void
   onStart: (scenarioId: string, categoryId?: string) => void
   onGoSettings: () => void
 }
@@ -16,119 +21,218 @@ function greeting() {
   return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'
 }
 
-export default function Home({ keysReady, dailyGoalMinutes, onStart, onGoSettings }: Props) {
+const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
+
+export default function Home({ settings, t, update, onStart, onGoSettings }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
+  const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
+  const [hwOpen, setHwOpen] = useState(false)
+  const keysReady = settings.geminiKey.trim().length > 0
+  const teacher = TEACHERS[settings.teacher]
+  const orbColors = t[settings.teacher]
 
   useEffect(() => {
     loadDashboard().then(setDash)
   }, [])
 
-  const minutes = dash?.minutesToday ?? 0
-  const goalDone = minutes >= dailyGoalMinutes
-  const lastScore = dash?.history.at(-1)?.metrics?.score
+  const goal = settings.dailyGoalMinutes
+  const mins = dash?.minutesToday ?? 0
+  // Minutos enteros en la cabecera para que quepa en una línea, como en el diseño.
+  const minsLabel = String(Math.floor(mins))
+  const pct = Math.min(1, mins / goal)
+  const start = (scenarioId: string, categoryId?: string) => (keysReady ? onStart(scenarioId, categoryId) : onGoSettings())
+  const surprise = () => start('free')
 
   return (
-    <div className="h-full overflow-y-auto px-4 pt-5 pb-6">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Habla<span className="text-brand">.</span>
-          </h1>
-          <p className="text-sm text-slate-400">{greeting()} 👋 ¿De qué hablamos hoy?</p>
+    <div className="anim-up">
+      {/* Cabecera */}
+      <div className="flex h-[54px] items-center justify-between gap-2.5">
+        <div className="min-w-0">
+          <div className="text-[27px] leading-[1.1] font-semibold tracking-[-.7px]">
+            {greeting()}
+            <span className="txt-acc">.</span>
+          </div>
+          <div className="txt-sub mt-0.5 text-sm">¿De qué hablamos hoy?</div>
         </div>
-        <div
-          className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold ${
-            dash?.streak ? 'bg-orange-500/20 text-orange-200' : 'bg-white/5 text-slate-400'
-          }`}
-          title="Días seguidos practicando"
-        >
-          🔥 {dash?.streak ?? 0}
+        <div className="flex flex-none gap-2">
+          <button
+            onClick={() => update({ mode: settings.mode === 'dark' ? 'light' : 'dark' })}
+            className="glass grid h-[42px] w-[42px] place-items-center rounded-full"
+            aria-label="Cambiar modo claro u oscuro"
+          >
+            <Icon name={settings.mode === 'dark' ? 'sun' : 'moon'} size={18} />
+          </button>
+          <div className="glass flex h-[42px] items-center gap-1.5 rounded-[21px] px-3.5 font-semibold" title="Días seguidos">
+            <Icon name="flame" size={17} stroke={1.8} color="var(--acc)" />
+            {dash?.streak ?? 0}
+          </div>
         </div>
       </div>
 
       {!keysReady && (
-        <button
-          onClick={onGoSettings}
-          className="mb-4 w-full rounded-2xl bg-amber-500/15 p-4 text-left text-sm text-amber-100 ring-1 ring-amber-500/30"
-        >
-          🔑 Antes de empezar, pega tu clave de Gemini en <b>Ajustes</b>. Toca aquí.
+        <button onClick={onGoSettings} className="glass mt-4 flex w-full items-center gap-3 rounded-[22px] p-3.5 text-left text-sm">
+          <span className="field grid h-9 w-9 flex-none place-items-center rounded-full txt-acc2">
+            <Icon name="key" size={17} />
+          </span>
+          <span>
+            Antes de empezar, pega tu clave de Gemini en <b>Ajustes</b>.
+          </span>
         </button>
       )}
 
-      {/* Meta diaria + botón principal */}
-      <div className="mb-4 flex items-center gap-4 rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 p-4 ring-1 ring-white/5">
-        <ScoreRing
-          value={minutes}
-          max={dailyGoalMinutes}
-          size={92}
-          stroke={9}
-          label={goalDone ? '✓' : `${Math.round((minutes / dailyGoalMinutes) * 100)}%`}
-          sublabel="meta"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-sm text-slate-300">
-            {goalDone
-              ? '¡Meta de hoy cumplida! 🎉'
-              : `Hoy: ${minutes.toLocaleString('es')} de ${dailyGoalMinutes} min hablando`}
-          </p>
-          {lastScore !== undefined && (
-            <p className="text-xs text-slate-400">Última nota de fluidez: {lastScore}/100</p>
-          )}
-          <button
-            disabled={!keysReady}
-            onClick={() => onStart('free')}
-            className="mt-2 w-full rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-2.5 font-bold text-white shadow-lg shadow-orange-500/20 active:scale-[0.98] disabled:opacity-40"
-          >
-            🎲 Sorpréndeme
-          </button>
-        </div>
+      {/* Bloque principal: cambia según el tema, como en el diseño */}
+      <div className="mt-4">
+        {settings.theme === 'ember' && (
+          <div className="glass flex items-center gap-3.5 rounded-full py-3 pr-3 pl-3.5">
+            <SmallRing pct={pct} size={52} />
+            <div className="min-w-0 flex-1">
+              <div className="text-[15px] font-semibold">
+                Hoy: {minsLabel} de {goal} min
+              </div>
+              <div className="txt-sub text-[13px]">hablando con {teacher.name}</div>
+            </div>
+            <button onClick={surprise} className="btn-acc flex h-[46px] items-center gap-1.5 rounded-[23px] px-4 text-[15px]">
+              <Icon name="spark" size={16} stroke={1.8} />
+              Sorpréndeme
+            </button>
+          </div>
+        )}
+        {settings.theme === 'lumi' && (
+          <div className="grid gap-2.5" style={{ gridTemplateColumns: '1.45fr 1fr' }}>
+            <button
+              onClick={() => start('open')}
+              className="glass flex h-[86px] items-center gap-3 rounded-[26px] px-3.5 text-left"
+            >
+              <Orb size={52} colors={orbColors} />
+              <span className="min-w-0">
+                <span className="block text-base font-semibold">Charla libre</span>
+                <span className="txt-sub block text-[13px]">
+                  Hoy {minsLabel} de {goal} min
+                </span>
+              </span>
+            </button>
+            <button onClick={surprise} className="btn-acc flex h-[86px] flex-col items-center justify-center gap-1.5 rounded-[26px] text-[15px]">
+              <Icon name="spark" size={16} stroke={1.8} />
+              Sorpréndeme
+            </button>
+          </div>
+        )}
+        {settings.theme === 'aurora' && (
+          <div className="glass flex items-center gap-3.5 rounded-[30px] py-3 pr-3 pl-4">
+            <Orb size={62} colors={orbColors} />
+            <div className="min-w-0 flex-1">
+              <div className="text-base font-semibold">{teacher.name} te espera</div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-[3px]" style={{ background: 'var(--gb)' }}>
+                <div className="h-full rounded-[3px] transition-[width] duration-500" style={{ width: `${pct * 100}%`, background: 'var(--acc)' }} />
+              </div>
+              <div className="txt-sub mt-1.5 text-xs">
+                {minsLabel}/{goal} min hoy
+              </div>
+            </div>
+            <button onClick={surprise} className="btn-acc grid h-[54px] w-[54px] flex-none place-items-center rounded-full" title="Sorpréndeme" aria-label="Sorpréndeme">
+              <Icon name="spark" size={18} stroke={1.8} />
+            </button>
+          </div>
+        )}
       </div>
 
       {dash?.lastHomework && (
-        <div className="mb-5 rounded-2xl bg-indigo-500/10 p-4 ring-1 ring-indigo-400/20">
-          <p className="mb-1 text-xs font-semibold tracking-wide text-indigo-200 uppercase">📅 Tu tarea</p>
-          <p className="text-sm text-slate-200">{dash.lastHomework.text}</p>
-        </div>
+        <button onClick={() => setHwOpen((o) => !o)} className="glass mt-2.5 flex w-full items-start gap-2.5 rounded-[22px] px-3.5 py-2.5 text-left">
+          <span className="txt-acc2 mt-0.5 flex-none">
+            <Icon name="flag" size={16} />
+          </span>
+          <span className={`min-w-0 flex-1 text-[13.5px] leading-snug ${hwOpen ? '' : 'truncate'}`}>
+            <b className="font-semibold">Tarea: </b>
+            {dash.lastHomework.text}
+          </span>
+        </button>
       )}
 
-      <h2 className="mb-2 font-semibold text-slate-200">Elige un tema</h2>
-      <div className="mb-6 grid grid-cols-3 gap-2">
-        {TOPIC_CATEGORIES.map((c) => (
-          <button
-            key={c.id}
-            disabled={!keysReady}
-            onClick={() => onStart('free', c.id)}
-            className="relative flex flex-col items-center gap-1 rounded-2xl bg-slate-900 px-1 py-3 text-center ring-1 ring-white/5 active:bg-slate-800 disabled:opacity-40"
-          >
-            {c.live && (
-              <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-red-400" title="Noticias reales y recientes" />
-            )}
-            <span className="text-2xl">{c.emoji}</span>
-            <span className="text-[11px] leading-tight text-slate-300">{c.title}</span>
-          </button>
-        ))}
+      <div className="mt-[18px]">
+        <Segmented
+          value={seg}
+          onChange={setSeg}
+          options={[
+            { value: 'topics', label: 'Temas', count: TOPIC_CATEGORIES.length },
+            { value: 'practices', label: 'Prácticas', count: PRACTICES.length },
+          ]}
+        />
       </div>
-      <p className="-mt-4 mb-6 text-[11px] text-slate-500">
-        <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-red-400 align-middle" /> busca noticias reales
-        y recientes en Google
-      </p>
 
-      <h2 className="mb-2 font-semibold text-slate-200">Prácticas guiadas</h2>
-      <div className="grid gap-2">
-        {SCENARIOS.filter((s) => s.id !== 'free').map((s) => (
-          <button
-            key={s.id}
-            disabled={!keysReady}
-            onClick={() => onStart(s.id)}
-            className="flex items-center gap-4 rounded-2xl bg-slate-900 p-3.5 text-left ring-1 ring-white/5 active:bg-slate-800 disabled:opacity-40"
-          >
-            <span className="text-2xl">{s.emoji}</span>
-            <span className="min-w-0">
-              <span className="block font-semibold">{s.title}</span>
-              <span className="block text-sm text-slate-400">{s.subtitle}</span>
-            </span>
-          </button>
-        ))}
+      {seg === 'topics' ? (
+        <div key="topics" className="anim-up">
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {TOPIC_CATEGORIES.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => start('free', c.id)}
+                className="glass relative flex h-[78px] flex-col items-center justify-between rounded-[20px] px-1.5 pt-2.5 pb-2"
+              >
+                <span className="field txt-acc2 grid h-[34px] w-[34px] place-items-center rounded-full">
+                  <Icon name={c.icon} size={18} stroke={1.6} />
+                </span>
+                <span className="text-center text-[11.5px] leading-[1.15] text-balance">{c.title}</span>
+                {c.live && (
+                  <span
+                    className="absolute top-[9px] right-[9px] h-1.5 w-1.5 rounded-full"
+                    style={{ background: 'var(--dot)', boxShadow: '0 0 8px var(--dot)' }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+          <div className="txt-sub mt-2.5 flex items-center justify-center gap-1.5 text-xs">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--dot)' }} />
+            con noticias reales y recientes
+          </div>
+        </div>
+      ) : (
+        <div key="practices" className="anim-up mt-3 flex flex-col gap-2">
+          {PRACTICES.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => start(p.id)}
+              className="glass flex h-[62px] items-center gap-3 rounded-[31px] px-2.5 text-left"
+            >
+              <span className="field txt-acc2 grid h-[42px] w-[42px] flex-none place-items-center rounded-full">
+                <Icon name={p.icon} size={19} stroke={1.6} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold">{p.title}</span>
+                <span className="txt-sub block truncate text-[12.5px]">{p.subtitle}</span>
+              </span>
+              <span className="txt-sub grid w-[30px] flex-none place-items-center">
+                <Icon name="arrowUR" size={17} />
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function SmallRing({ pct, size, label }: { pct: number; size: number; label?: string }) {
+  const r = 22
+  const c = 2 * Math.PI * r
+  return (
+    <div className="relative flex-none" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox="0 0 52 52" style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx="26" cy="26" r={r} fill="none" stroke="var(--gb)" strokeWidth="5" />
+        <circle
+          cx="26"
+          cy="26"
+          r={r}
+          fill="none"
+          stroke="var(--acc)"
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeDasharray={`${Math.min(1, pct) * c} 999`}
+          style={{ transition: 'stroke-dasharray .6s ease' }}
+        />
+      </svg>
+      <div className="absolute inset-0 grid place-items-center font-semibold" style={{ fontSize: size * 0.25 }}>
+        {label ?? `${Math.round(Math.min(1, pct) * 100)}%`}
       </div>
     </div>
   )
