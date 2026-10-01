@@ -269,8 +269,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     starting.current = (async () => {
       await stopSpeaking()
       try {
-        if (!recorder.current.isOpen) await recorder.current.open()
-        recorder.current.start()
+        await recorder.current.begin()
         setRecordStart(performance.now())
         setElapsed(0)
         setPhase('recording')

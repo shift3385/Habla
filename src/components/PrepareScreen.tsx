@@ -38,12 +38,14 @@ interface Props {
   state: PrepareState
   colors: [string, string]
   teacherName: string
+  /** Título concreto de lo que se prepara (p. ej. "Preparando el test de gramática"). */
+  title?: string
   errorText?: string
   onRetry?: () => void
   onBack?: () => void
 }
 
-export default function PrepareScreen({ kind, state, colors, teacherName, errorText, onRetry, onBack }: Props) {
+export default function PrepareScreen({ kind, state, colors, teacherName, title, errorText, onRetry, onBack }: Props) {
   const [tick, setTick] = useState(0)
   const [msgI, setMsgI] = useState(0)
   const text = TEXT[kind]
@@ -121,7 +123,7 @@ export default function PrepareScreen({ kind, state, colors, teacherName, errorT
       <div className="mt-[34px] h-16 w-full text-center">
         {state === 'loading' && (
           <>
-            <div className="text-2xl font-semibold tracking-[-.4px]">{text.title}</div>
+            <div className="text-2xl font-semibold tracking-[-.4px]">{title ?? text.title}</div>
             <div className="txt-sub relative mt-2 h-[22px] text-[15px]">
               <div key={msgI} className="ld-msg absolute inset-0 flex items-center justify-center gap-0.5" style={{ animation: 'ld-msg 2.4s ease both' }}>
                 {text.msgs[msgI % text.msgs.length]}

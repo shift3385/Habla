@@ -19,7 +19,7 @@ import {
 import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
 import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
-import { levelIdx, rateForLevel, type Level } from '../lib/levels'
+import { levelAt, levelIdx, rateForLevel, type Level } from '../lib/levels'
 import { MicError, Recorder } from '../lib/recorder'
 import type { Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
@@ -31,18 +31,28 @@ import Wave from '../ui/Wave'
 
 type Step =
   | { k: 'intro' }
-  | { k: 'prep'; kind: PrepareKind; state: PrepareState; error?: string; retry?: () => void }
+  | { k: 'prep'; kind: PrepareKind; title: string; state: PrepareState; error?: string; retry?: () => void }
   | { k: 'mcq' }
-  | { k: 'section'; s: 'reading' | 'listening' | 'speaking' } // instrucciones antes de cada parte
+  | { k: 'section'; s: SectionKey } // instrucciones antes de cada parte
   | { k: 'reading'; i: number }
   | { k: 'listening'; i: number }
   | { k: 'speaking'; i: number }
   | { k: 'result'; r: CalibrationResult }
 
 const SECTIONS = ['Gramática', 'Lectura', 'Audición', 'Habla']
+type SectionKey = 'grammar' | 'reading' | 'listening' | 'speaking'
 
 /** Instrucciones breves antes de cada parte, para quien hace el test sin que nadie le explique. */
-const SECTION_INFO: Record<'reading' | 'listening' | 'speaking', { title: string; icon: IconName; points: string[]; tip?: string }> = {
+const SECTION_INFO: Record<SectionKey, { title: string; icon: IconName; points: string[]; tip?: string }> = {
+  grammar: {
+    title: 'Prueba de gramática y vocabulario',
+    icon: 'pencil',
+    points: [
+      'Vas a responder 15 preguntas cortas: completa la frase o elige la palabra correcta.',
+      'Las preguntas se adaptan a ti: si aciertas, la siguiente es más difícil; si fallas, más fácil. Es normal que algunas cuesten.',
+      'Si no sabes la respuesta, marca «No lo sé» en vez de adivinar.',
+    ],
+  },
   reading: {
     title: 'Prueba de lectura',
     icon: 'book',
@@ -146,7 +156,8 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
   const [plays, setPlays] = useState<Record<number, number>>({})
   const [playing, setPlaying] = useState(false)
   const [base, setBase] = useState<Level>('B1')
-  const [speech, setSpeech] = useState<(SpeakingAnswer | null)[]>([null, null, null])
+  const [speech, setSpeech] = useState<(SpeakingAnswer | null | 'skipped')[]>([null, null, null])
+  const [micFailures, setMicFailures] = useState(0)
   const [recState, setRecState] = useState<'idle' | 'recording' | 'processing'>('idle')
   const [elapsed, setElapsed] = useState(0)
   const recorder = useRef(new Recorder())
@@ -178,27 +189,29 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
 
   // ---- 1. Gramática y vocabulario
   /** Animación de preparación: carga → "¡Listo!" (1,3 s) → siguiente paso; o tarjeta de error con Reintentar. */
-  const prepare = async (kind: PrepareKind, work: () => Promise<Step>, retry: () => void) => {
-    setStep({ k: 'prep', kind, state: 'loading' })
+  // `title` dice qué parte se prepara, para no perderse si ya se hizo otra ("Preparando el test de gramática").
+  const prepare = async (kind: PrepareKind, title: string, work: () => Promise<Step>, retry: () => void) => {
+    setStep({ k: 'prep', kind, title, state: 'loading' })
     try {
       const next = await work()
-      setStep({ k: 'prep', kind, state: 'done' })
+      setStep({ k: 'prep', kind, title, state: 'done' })
       await new Promise((r) => setTimeout(r, 1300))
       setStep(next)
     } catch (e) {
-      setStep({ k: 'prep', kind, state: 'error', error: friendlyError(e), retry })
+      setStep({ k: 'prep', kind, title, state: 'error', error: friendlyError(e), retry })
     }
   }
 
   const startMcq = () =>
     prepare(
       'test',
+      'Preparando el test de gramática',
       async () => {
         const p = await generateMcqPool(settings.geminiKey, models(), onRetry)
         if (p.length < 18) throw new Error('No se pudieron generar suficientes preguntas.')
         setPool(p)
         setAnswers([])
-        return { k: 'mcq' }
+        return { k: 'section', s: 'grammar' }
       },
       startMcq,
     )
@@ -221,6 +234,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     setBase(lv)
     return prepare(
       'test',
+      'Preparando la lectura y la escucha',
       async () => {
         const c = await generateComprehension(settings.geminiKey, models(), lv, onRetry)
         if (!c.reading.length || !c.listening.length) throw new Error('No se pudieron generar los textos.')
@@ -264,39 +278,55 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     if (recState === 'idle') {
       await stopSpeaking()
       try {
-        if (!recorder.current.isOpen) await recorder.current.open()
-        recorder.current.start()
+        await recorder.current.begin() // reabre el micrófono si Android lo cortó
         recStart.current = performance.now()
         setElapsed(0)
+        setHint(null)
         setRecState('recording')
       } catch (e) {
         setHint(e instanceof MicError ? e.message : 'No se pudo grabar.')
+        setMicFailures((n) => n + 1)
       }
       return
     }
     setRecState('processing')
-    const { blob, seconds } = await recorder.current.stop()
-    const analysis = await analyzeSpeech(blob)
-    if (seconds < 5 || (analysis && !analysis.hasSpeech)) {
-      setHint('Necesito oírte un poco más. Inténtalo otra vez y habla al menos 20 segundos.')
+    try {
+      const { blob, seconds } = await recorder.current.stop()
+      const analysis = await analyzeSpeech(blob)
+      if (seconds < 5 || blob.size === 0 || (analysis && !analysis.hasSpeech)) {
+        setHint('Necesito oírte un poco más. Inténtalo otra vez y habla al menos 20 segundos.')
+        if (blob.size === 0) setMicFailures((n) => n + 1)
+        return
+      }
+      const answer: SpeakingAnswer = {
+        base64: await blobToBase64(blob),
+        mimeType: blob.type.split(';')[0] || 'audio/webm',
+        wpm: null,
+        pauses: analysis?.pauses.length ?? 0,
+        seconds: analysis?.speechSeconds ?? seconds,
+      }
+      setSpeech((s) => s.map((x, j) => (j === i ? answer : x)))
+      setHint(null)
+    } catch {
+      setHint('Algo falló al guardar la grabación. Vuelve a intentarlo.')
+      setMicFailures((n) => n + 1)
+      recorder.current.close() // la próxima vez se abre un micrófono nuevo
+    } finally {
+      // Pase lo que pase, el botón vuelve a estar disponible.
       setRecState('idle')
-      return
     }
-    const answer: SpeakingAnswer = {
-      base64: await blobToBase64(blob),
-      mimeType: blob.type.split(';')[0] || 'audio/webm',
-      wpm: null,
-      pauses: analysis?.pauses.length ?? 0,
-      seconds: analysis?.speechSeconds ?? seconds,
-    }
-    setSpeech((s) => s.map((x, j) => (j === i ? answer : x)))
+  }
+
+  /** Red de seguridad: si la grabación falla, se puede saltar la pregunta para no quedarse atascado. */
+  const skipTask = (i: number) => {
+    setSpeech((s) => s.map((x, j) => (j === i ? 'skipped' : x)))
     setHint(null)
-    setRecState('idle')
+    setMicFailures(0)
   }
 
   const finish = () => {
     recorder.current.close()
-    return prepare('eval', evaluate, finish)
+    return prepare('eval', 'Evaluando tu habla y tu nivel', evaluate, finish)
   }
 
   const evaluate = async (): Promise<Step> => {
@@ -311,7 +341,19 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
               unknown.push(`${kind === 'reading' ? 'reading' : 'listening'} comprehension at ${c.level}: "${q.q}"`)
           }),
         )
-      const ev = await evaluateSpeaking(settings.geminiKey, models(), tasks, speech as SpeakingAnswer[], failed, unknown, onRetry)
+      // Solo se evalúan las tareas grabadas (las saltadas por un fallo del micrófono se omiten).
+      const pairs = tasks.map((task, k) => ({ task, ans: speech[k] })).filter((p): p is { task: (typeof tasks)[number]; ans: SpeakingAnswer } => !!p.ans && p.ans !== 'skipped')
+      const ev = pairs.length
+        ? await evaluateSpeaking(settings.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry)
+        : {
+            // Sin ninguna grabación: el habla se estima un nivel por debajo de la gramática y se mide en el próximo test.
+            level: levelAt(levelIdx(estimateMcqLevel(answers)) - 1),
+            criteria: undefined as unknown as Record<'fluency' | 'grammar' | 'vocabulary' | 'pronunciation' | 'coherence', Level>,
+            strengthsEs: [],
+            weaknessesEs: ['No se pudo evaluar el habla en este test: se medirá con tus clases y en el próximo re-test.'],
+            weaknessesEn: [],
+            summaryEs: 'No pudimos grabar tu voz, así que tu nivel de habla es una estimación.',
+          }
       const levels = buildLevels(estimateMcqLevel(answers), scoreComp('reading'), scoreComp('listening'), ev.level)
       const r: CalibrationResult = { levels, speaking: ev, mcq: answers }
       await saveCalibration(r)
@@ -322,7 +364,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
 
   // ---- UI
   const section =
-    step.k === 'mcq'
+    step.k === 'mcq' || (step.k === 'section' && step.s === 'grammar')
       ? 0
       : step.k === 'reading' || (step.k === 'section' && step.s === 'reading')
         ? 1
@@ -371,7 +413,8 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
   if (step.k === 'section') {
     const info = SECTION_INFO[step.s]
     const start = () => {
-      if (step.s === 'speaking') {
+      if (step.s === 'grammar') setStep({ k: 'mcq' })
+      else if (step.s === 'speaking') {
         setStep({ k: 'speaking', i: 0 })
         setTimeout(() => sayTask(0), 400)
       } else setStep({ k: step.s, i: 0 })
@@ -420,6 +463,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
         state={step.state}
         colors={t[settings.teacher]}
         teacherName={teacher.name}
+        title={step.title}
         errorText={step.error}
         onRetry={step.retry}
       />
@@ -558,15 +602,27 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
                 ? `${Math.floor(elapsed)} s · toca para terminar`
                 : recState === 'processing'
                   ? 'Procesando…'
-                  : done
-                    ? 'Grabado ✓ · toca para repetir la grabación'
+                  : speech[i] === 'skipped'
+                    ? 'Pregunta saltada · puedes intentar grabarla otra vez'
+                    : done
+                      ? 'Grabado ✓ · toca para repetir la grabación'
                     : 'Toca para empezar a hablar'}
             </div>
             {hint && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+            {micFailures > 0 && !done && recState === 'idle' && (
+              <button
+                onClick={() => skipTask(i)}
+                className="txt-sub h-10 rounded-[20px] px-4 text-[13.5px]"
+                style={{ border: '1.5px dashed var(--sub)' }}
+              >
+                ¿Sigue sin funcionar? Saltar esta pregunta
+              </button>
+            )}
           </div>
           <button
             onClick={() => {
               if (i < tasks.length - 1) {
+                setMicFailures(0)
                 setStep({ k: 'speaking', i: i + 1 })
                 setTimeout(() => sayTask(i + 1), 400)
               } else finish()

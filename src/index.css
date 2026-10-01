@@ -178,6 +178,41 @@ select {
   }
 }
 
+/* Bienvenida (diseño "Bienvenida") */
+@keyframes bw-letter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.6);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.06);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bw-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes hb-fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Accesibilidad: sin desenfoques ni desplazamientos, solo fundidos. */
 @media (prefers-reduced-motion: reduce) {
   .ld-item {

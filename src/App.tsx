@@ -7,7 +7,12 @@ import Calibration from './screens/Calibration'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
+import { importBackup } from './lib/backup'
+import { db } from './lib/db'
+import { getScenario } from './lib/scenarios'
+import { loadDashboard } from './lib/stats'
 import ProfileSetup from './screens/ProfileSetup'
+import WelcomeScreen, { type ReturningInfo } from './screens/WelcomeScreen'
 import ProgressScreen from './screens/ProgressScreen'
 import ReviewScreen from './screens/ReviewScreen'
 import SettingsScreen from './screens/SettingsScreen'
@@ -43,14 +48,46 @@ export default function App() {
     tabRef.current = tab
   }, [tab])
 
-  useEffect(() => {
-    loadSettings().then(setSettings)
-    getProfile().then((p) => {
-      // también siembra el perfil inicial
-      setPersonalized(isPersonalized(p))
-      setCalibrated(!!p.calibratedAt)
-    })
+  // Bienvenida animada en cada arranque: "Welcome back" si ya hay perfil, o el alta si es nuevo.
+  const [splash, setSplash] = useState(true)
+  const [returning, setReturning] = useState<ReturningInfo | null>(null)
+
+  const refreshProfile = useCallback(async () => {
+    const p = await getProfile() // también siembra el perfil inicial
+    setPersonalized(isPersonalized(p))
+    setCalibrated(!!p.calibratedAt)
+    return p
   }, [])
+
+  useEffect(() => {
+    // Los setState ocurren tras cargar datos asíncronos (IndexedDB/Preferences), no de forma síncrona.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    Promise.all([loadSettings(), refreshProfile(), loadDashboard()]).then(async ([s, p, dash]) => {
+      if (s.onboarded && isPersonalized(p)) {
+        const last = (await db.sessions.orderBy('startedAt').reverse().limit(10).toArray()).find((x) => x.metrics?.turns)
+        setReturning({
+          name: p.name!,
+          streak: dash.streak,
+          level: p.levels.overall,
+          lastTopic: last ? (last.topic?.titleEs ?? last.topic?.title ?? getScenario(last.scenario).title) : null,
+        })
+      }
+      setSettings(s)
+    })
+  }, [refreshProfile])
+
+  const endSplash = useCallback(() => {
+    refreshProfile().then(() => setSplash(false))
+  }, [refreshProfile])
+
+  // "Ya tengo mi perfil": importar una copia de seguridad desde la bienvenida.
+  const importFromWelcome = useCallback(async (file: File) => {
+    await importBackup(file)
+    const p = await refreshProfile()
+    if (!isPersonalized(p)) throw new Error('La copia no tiene un perfil con nombre. Usa "Soy nuevo".')
+    setSettings((s) => (s ? { ...s, onboarded: true } : s))
+    return true
+  }, [refreshProfile])
 
   const update = useCallback((patch: Partial<Settings>) => {
     setSettings((s) => {
@@ -92,6 +129,14 @@ export default function App() {
   }, [])
 
   if (!settings || !t || calibrated === null) return null
+
+  if (splash) {
+    return (
+      <Shell t={t}>
+        <WelcomeScreen returning={returning} onImport={importFromWelcome} onDone={endSplash} />
+      </Shell>
+    )
+  }
 
   if (!settings.onboarded) {
     return (

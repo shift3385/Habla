@@ -114,8 +114,7 @@ export default function ReviewScreen({ settings, t, onExit, registerBack }: Prop
     if (step === 'ask') {
       await stopSpeaking()
       try {
-        if (!recorder.current.isOpen) await recorder.current.open()
-        recorder.current.start()
+        await recorder.current.begin()
         recStart.current = performance.now()
         setElapsed(0)
         setStep('recording')

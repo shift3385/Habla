@@ -17,6 +17,13 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.8',
+    date: '2026-10-01',
+    title: 'Bienvenida animada y test más claro',
+    added: ['Bienvenida con el muñequito de Habla: alta para usuarios nuevos y "Welcome back" para los que vuelven', 'Instrucciones antes de la parte de gramática', 'La animación de carga dice qué parte del test se prepara'],
+    fixed: ['El botón de grabar del test de habla podía quedarse bloqueado: ahora el micrófono se reabre solo y se puede saltar la pregunta si sigue fallando'],
+  },
+  {
     v: '4.7',
     date: '2026-10-01',
     title: 'Repaso de tus errores en voz alta',
