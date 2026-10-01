@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { APP_VERSION, RELEASES } from '../lib/changelog'
 import { SCENARIOS } from '../lib/scenarios'
 import type { Settings } from '../lib/settings'
 import { loadDashboard, type Dashboard } from '../lib/stats'
@@ -14,6 +15,7 @@ interface Props {
   update: (patch: Partial<Settings>) => void
   onStart: (scenarioId: string, categoryId?: string) => void
   onGoSettings: () => void
+  onOpenNews: () => void
 }
 
 function greeting() {
@@ -23,7 +25,7 @@ function greeting() {
 
 const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
 
-export default function Home({ settings, t, update, onStart, onGoSettings }: Props) {
+export default function Home({ settings, t, update, onStart, onGoSettings, onOpenNews }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
   const [hwOpen, setHwOpen] = useState(false)
@@ -135,6 +137,27 @@ export default function Home({ settings, t, update, onStart, onGoSettings }: Pro
           </div>
         )}
       </div>
+
+      {settings.lastSeenVersion !== APP_VERSION && (
+        <div className="anim-up mt-2.5 flex items-center gap-2">
+          <button onClick={onOpenNews} className="glass flex min-w-0 flex-1 items-center gap-2.5 rounded-[22px] px-3.5 py-2.5 text-left">
+            <span className="btn-acc grid h-7 w-7 flex-none place-items-center rounded-full">
+              <Icon name="spark" size={14} stroke={1.8} />
+            </span>
+            <span className="min-w-0 flex-1 truncate text-[13.5px]">
+              <b className="font-semibold">Novedades de la v{APP_VERSION}</b>
+              <span className="txt-sub"> · {RELEASES[0].title}</span>
+            </span>
+          </button>
+          <button
+            onClick={() => update({ lastSeenVersion: APP_VERSION })}
+            className="glass grid h-10 w-10 flex-none place-items-center rounded-full"
+            aria-label="Descartar novedades"
+          >
+            <Icon name="back" size={14} className="rotate-[-90deg]" />
+          </button>
+        </div>
+      )}
 
       {dash?.lastHomework && (
         <button onClick={() => setHwOpen((o) => !o)} className="glass mt-2.5 flex w-full items-start gap-2.5 rounded-[22px] px-3.5 py-2.5 text-left">

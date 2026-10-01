@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { APP_VERSION } from '../lib/changelog'
 import { listModels, pickDefaultModel, pickFallbackModel } from '../lib/gemini'
 import type { Settings } from '../lib/settings'
 import { speak } from '../lib/tts'
@@ -53,7 +54,8 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
   }
 
   const finish = () => {
-    update({ onboarded: true })
+    // Quien instala desde cero no necesita el aviso de novedades de esta versión.
+    update({ onboarded: true, lastSeenVersion: APP_VERSION })
     onDone()
   }
 

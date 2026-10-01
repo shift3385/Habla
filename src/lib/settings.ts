@@ -17,6 +17,7 @@ export interface Settings {
   mode: Mode
   teacher: TeacherKey
   onboarded: boolean // ya vio la bienvenida
+  lastSeenVersion: string // para avisar de novedades una vez por versión
 }
 
 const DEFAULTS: Settings = {
@@ -31,6 +32,7 @@ const DEFAULTS: Settings = {
   mode: 'dark',
   teacher: 'emma',
   onboarded: false,
+  lastSeenVersion: '',
 }
 
 const KEY = 'habla.settings'

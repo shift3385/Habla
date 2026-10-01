@@ -1,6 +1,8 @@
 import { App as CapApp } from '@capacitor/app'
 import { SystemBars, SystemBarsStyle } from '@capacitor/core'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { APP_VERSION } from './lib/changelog'
+import AboutScreen from './screens/AboutScreen'
 import Calibration from './screens/Calibration'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
@@ -32,6 +34,7 @@ export default function App() {
   const [calibrated, setCalibrated] = useState<boolean | null>(null)
   const [personalized, setPersonalized] = useState(false)
   const [retest, setRetest] = useState(false)
+  const [about, setAbout] = useState<'main' | 'news' | null>(null)
   const backHandler = useRef<(() => void) | null>(null)
   const tabRef = useRef(tab)
   useEffect(() => {
@@ -147,22 +150,54 @@ export default function App() {
 
   const start = (scenarioId: string, categoryId?: string) => setLesson({ key: Date.now(), scenarioId, categoryId })
 
+  // Acerca de: al abrirla se dan por vistas las novedades de esta versión.
+  const openAbout = (page: 'main' | 'news') => {
+    setAbout(page)
+    update({ lastSeenVersion: APP_VERSION })
+    backHandler.current = closeAbout
+  }
+  const closeAbout = () => {
+    setAbout(null)
+    backHandler.current = null
+  }
+
   return (
     <Shell t={t}>
       <div className="no-scrollbar relative z-[2] h-full overflow-y-auto px-5 pt-[calc(env(safe-area-inset-top)+10px)] pb-[calc(env(safe-area-inset-bottom)+112px)]">
-        {tab === 'home' && (
-          <Home settings={settings} t={t} update={update} onStart={start} onGoSettings={() => setTab('settings')} />
-        )}
-        {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
-        {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} />}
-        {tab === 'settings' && (
-          <SettingsScreen settings={settings} t={t} update={update} registerBack={registerBack} onRetest={() => setRetest(true)} />
+        {about ? (
+          <AboutScreen settings={settings} t={t} initialPage={about} onBack={closeAbout} />
+        ) : (
+          <>
+            {tab === 'home' && (
+              <Home
+                settings={settings}
+                t={t}
+                update={update}
+                onStart={start}
+                onGoSettings={() => setTab('settings')}
+                onOpenNews={() => openAbout('news')}
+              />
+            )}
+            {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
+            {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} />}
+            {tab === 'settings' && (
+              <SettingsScreen
+                settings={settings}
+                t={t}
+                update={update}
+                registerBack={registerBack}
+                onRetest={() => setRetest(true)}
+                onOpenAbout={() => openAbout('main')}
+              />
+            )}
+          </>
         )}
       </div>
       <TabBar
         tab={tab}
         onChange={(k) => {
           backHandler.current = null
+          setAbout(null)
           setTab(k)
         }}
       />

@@ -16,6 +16,8 @@ import {
   type McqItem,
   type SpeakingAnswer,
 } from '../lib/calibration'
+import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
+import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
 import { levelIdx, rateForLevel, type Level } from '../lib/levels'
 import { MicError, Recorder } from '../lib/recorder'
@@ -29,14 +31,13 @@ import Wave from '../ui/Wave'
 
 type Step =
   | { k: 'intro' }
-  | { k: 'loading'; text: string }
+  | { k: 'prep'; kind: PrepareKind; state: PrepareState; error?: string; retry?: () => void }
   | { k: 'mcq' }
   | { k: 'section'; s: 'reading' | 'listening' | 'speaking' } // instrucciones antes de cada parte
   | { k: 'reading'; i: number }
   | { k: 'listening'; i: number }
   | { k: 'speaking'; i: number }
   | { k: 'result'; r: CalibrationResult }
-  | { k: 'error'; text: string; retry: () => void }
 
 const SECTIONS = ['Gramática', 'Lectura', 'Audición', 'Habla']
 
@@ -152,7 +153,8 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
   const recStart = useRef(0)
 
   const models = (): Models => ({ primary: settings.geminiModel, fallback: settings.geminiFallbackModel })
-  const onRetry = ({ attempt, total }: RetryInfo) => setHint(`Gemini está saturado, reintentando (${attempt}/${total})…`)
+  // Los reintentos ocurren en segundo plano, sin mensajes (la animación de preparación cubre la espera).
+  const onRetry = undefined as ((i: RetryInfo) => void) | undefined
 
   // El test es obligatorio: el botón atrás de Android no lo cierra.
   useEffect(() => {
@@ -175,20 +177,31 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
   }, [recState])
 
   // ---- 1. Gramática y vocabulario
-  const startMcq = async () => {
-    setStep({ k: 'loading', text: `${teacher.name} está preparando tus preguntas…` })
+  /** Animación de preparación: carga → "¡Listo!" (1,3 s) → siguiente paso; o tarjeta de error con Reintentar. */
+  const prepare = async (kind: PrepareKind, work: () => Promise<Step>, retry: () => void) => {
+    setStep({ k: 'prep', kind, state: 'loading' })
     try {
-      const p = await generateMcqPool(settings.geminiKey, models(), onRetry)
-      if (p.length < 18) throw new Error('No se pudieron generar suficientes preguntas.')
-      setPool(p)
-      setAnswers([])
-      setHint(null)
-      setStep({ k: 'mcq' })
+      const next = await work()
+      setStep({ k: 'prep', kind, state: 'done' })
+      await new Promise((r) => setTimeout(r, 1300))
+      setStep(next)
     } catch (e) {
-      setHint(null)
-      setStep({ k: 'error', text: (e as Error).message, retry: startMcq })
+      setStep({ k: 'prep', kind, state: 'error', error: friendlyError(e), retry })
     }
   }
+
+  const startMcq = () =>
+    prepare(
+      'test',
+      async () => {
+        const p = await generateMcqPool(settings.geminiKey, models(), onRetry)
+        if (p.length < 18) throw new Error('No se pudieron generar suficientes preguntas.')
+        setPool(p)
+        setAnswers([])
+        return { k: 'mcq' }
+      },
+      startMcq,
+    )
 
   const current = step.k === 'mcq' ? nextMcq(pool, answers) : null
 
@@ -204,19 +217,18 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
   }
 
   // ---- 2 y 3. Lectura y audición
-  const startComprehension = async (lv: Level) => {
+  const startComprehension = (lv: Level) => {
     setBase(lv)
-    setStep({ k: 'loading', text: 'Preparando lectura y audición…' })
-    try {
-      const c = await generateComprehension(settings.geminiKey, models(), lv, onRetry)
-      if (!c.reading.length || !c.listening.length) throw new Error('No se pudieron generar los textos.')
-      setComp(c)
-      setHint(null)
-      setStep({ k: 'section', s: 'reading' })
-    } catch (e) {
-      setHint(null)
-      setStep({ k: 'error', text: (e as Error).message, retry: () => startComprehension(lv) })
-    }
+    return prepare(
+      'test',
+      async () => {
+        const c = await generateComprehension(settings.geminiKey, models(), lv, onRetry)
+        if (!c.reading.length || !c.listening.length) throw new Error('No se pudieron generar los textos.')
+        setComp(c)
+        return { k: 'section', s: 'reading' }
+      },
+      () => startComprehension(lv),
+    )
   }
 
   const compDone = (kind: 'reading' | 'listening', i: number) => {
@@ -282,10 +294,13 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     setRecState('idle')
   }
 
-  const finish = async () => {
-    setStep({ k: 'loading', text: `${teacher.name} está evaluando tu inglés…` })
+  const finish = () => {
     recorder.current.close()
-    try {
+    return prepare('eval', evaluate, finish)
+  }
+
+  const evaluate = async (): Promise<Step> => {
+    {
       const failed = answers.filter((a) => !a.correct && !a.unknown).map((a) => a.item.point)
       const unknown = answers.filter((a) => a.unknown).map((a) => a.item.point)
       // Las preguntas de lectura/audición marcadas como "No lo sé" también son lagunas reconocidas.
@@ -301,11 +316,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
       const r: CalibrationResult = { levels, speaking: ev, mcq: answers }
       await saveCalibration(r)
       update({ ttsRate: rateForLevel(levels.overall) })
-      setHint(null)
-      setStep({ k: 'result', r })
-    } catch (e) {
-      setHint(null)
-      setStep({ k: 'error', text: (e as Error).message, retry: finish })
+      return { k: 'result', r }
     }
   }
 
@@ -402,29 +413,16 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     )
   }
 
-  if (step.k === 'loading') {
+  if (step.k === 'prep') {
     return (
-      <div className={pad}>
-        <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
-          <Orb size={130} colors={t[settings.teacher]} active />
-          <p className="txt-sub animate-pulse">{step.text}</p>
-          {hint && <p className="txt-sub text-sm">{hint}</p>}
-        </div>
-      </div>
-    )
-  }
-
-  if (step.k === 'error') {
-    return (
-      <div className={pad}>
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-          <Orb size={100} colors={t[settings.teacher]} />
-          <p style={{ color: '#f87171' }}>{step.text}</p>
-          <button onClick={step.retry} className="btn-acc h-12 rounded-full px-8">
-            Reintentar
-          </button>
-        </div>
-      </div>
+      <PrepareScreen
+        kind={step.kind}
+        state={step.state}
+        colors={t[settings.teacher]}
+        teacherName={teacher.name}
+        errorText={step.error}
+        onRetry={step.retry}
+      />
     )
   }
 

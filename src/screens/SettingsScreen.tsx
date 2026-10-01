@@ -3,6 +3,7 @@ import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
 import { listModels, pickDefaultModel, pickFallbackModel, type ModelInfo } from '../lib/gemini'
 import ProfileForm from '../components/ProfileForm'
+import { APP_VERSION } from '../lib/changelog'
 import { levelIdx, nextRetestAt } from '../lib/levels'
 import { getProfile } from '../lib/profile'
 import type { Settings } from '../lib/settings'
@@ -32,9 +33,10 @@ interface Props {
   update: (patch: Partial<Settings>) => void
   registerBack: (h: (() => void) | null) => void
   onRetest: () => void
+  onOpenAbout: () => void
 }
 
-export default function SettingsScreen({ settings, t, update, registerBack, onRetest }: Props) {
+export default function SettingsScreen({ settings, t, update, registerBack, onRetest, onOpenAbout }: Props) {
   const [page, setPage] = useState<Page | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [models, setModels] = useState<ModelInfo[]>([])
@@ -129,6 +131,20 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
           </button>
         ))}
       </div>
+      <button onClick={onOpenAbout} className="glass flex h-[62px] items-center gap-3 rounded-[31px] px-2.5 text-left">
+        <span className="field txt-acc2 grid h-[42px] w-[42px] flex-none place-items-center rounded-full">
+          <Icon name="info" size={19} stroke={1.6} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-semibold">Acerca de Habla</span>
+          <span className="txt-sub block text-[12.5px]">
+            Versión {APP_VERSION} · novedades, privacidad y ayuda
+          </span>
+        </span>
+        <span className="txt-sub pr-2">
+          <Icon name="chevR" size={16} stroke={1.8} />
+        </span>
+      </button>
       <button
         onClick={() => update({ onboarded: false })}
         className="txt-sub h-10 text-sm underline underline-offset-[3px]"

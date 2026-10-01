@@ -149,7 +149,7 @@ npm run apk
 ```
 Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleDebug`. El APK se llama `Habla-v<versión>.apk` (la versión sale de `versionName`) y se copia a la carpeta `apk\` del proyecto, donde se van acumulando las versiones.
 
-Antes de cada actualización, sube `versionCode` y `versionName` en `android/app/build.gradle`.
+Antes de cada actualización, sube `version` y `build` en **`version.json`**, en la raíz. Es la única fuente de la versión: la usan el APK (`versionName`/`versionCode`) y la pantalla *Acerca de*. Añade también la entrada de la versión en `src/lib/changelog.ts`, que es lo que se ve en **Novedades**.
 
 ### Estructura
 

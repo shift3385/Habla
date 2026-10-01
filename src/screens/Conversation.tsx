@@ -3,13 +3,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
 import ReportView from '../components/ReportView'
 import LookupSheet from '../components/LookupSheet'
+import PrepareScreen, { type PrepareState } from '../components/PrepareScreen'
+import { friendlyError } from '../lib/errors'
 import TalkButton, { type Phase } from '../components/TalkButton'
 import TappableText from '../components/TappableText'
 import { sentenceAround } from '../lib/lookup'
 import { db, type LevelEvent, type Session, type Topic, type Turn } from '../lib/db'
 import { levelIdx, updateLevelsFromPractice } from '../lib/levels'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
-import type { ApiError, ChatMessage, Models, RetryInfo } from '../lib/gemini'
+import type { ApiError, ChatMessage, Models } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
@@ -91,12 +93,15 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     primary: settingsRef.current.geminiModel,
     fallback: settingsRef.current.geminiFallbackModel,
   })
-  const retryHint = ({ attempt, total, model, switchedModel }: RetryInfo) =>
-    setHint(
-      switchedModel
-        ? `Gemini sigue saturado: probando con ${model} (${attempt}/${total})…`
-        : `Gemini está saturado, reintentando (${attempt}/${total})…`,
-    )
+  // Los reintentos (y el cambio al modelo de respaldo) ocurren en segundo plano, sin mensajes.
+  // Pantalla de preparación (animación) hasta que llega el saludo del profe.
+  const [prep, setPrepState] = useState<PrepareState | null>('loading')
+  const [prepError, setPrepError] = useState('')
+  const prepRef = useRef<PrepareState | null>('loading')
+  const setPrep = (s: PrepareState | null) => {
+    prepRef.current = s
+    setPrepState(s)
+  }
 
   useEffect(() => {
     const el = listRef.current
@@ -136,7 +141,6 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
           system.current,
           history.current,
           answer && { base64: answer.base64, mimeType: answer.mimeType },
-          retryHint,
         )
         setHint(null)
         const sid = sessionId.current!
@@ -177,9 +181,21 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         }
         teacher.id = await db.turns.add(teacher)
         setTurns((ts) => [...ts, teacher])
+        if (prepRef.current === 'loading') {
+          // Primera intervención: animación de "¡Clase lista!" y después el chat.
+          setPrep('done')
+          await new Promise((r) => setTimeout(r, 1400))
+          setPrep(null)
+        }
         await say(res.reply)
       } catch (e) {
         setHint(null)
+        if (prepRef.current === 'loading') {
+          setPrepError(friendlyError(e))
+          setPrep('error')
+          setPhase('idle')
+          return
+        }
         const err = e as ApiError
         setError(
           err.transient
@@ -217,7 +233,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         const cat = categoryId ? getCategory(categoryId) : await randomCategory()
         setStatus(cat.live ? `Buscando algo reciente sobre ${cat.title.toLowerCase()}…` : 'Eligiendo un tema…')
         try {
-          tp = await generateTopic(settingsRef.current.geminiKey, models(), cat, retryHint)
+          tp = await generateTopic(settingsRef.current.geminiKey, models(), cat)
           setTopic(tp)
         } catch {
           // Sin tema: el profe elige uno él mismo.
@@ -394,6 +410,23 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         ? { icon: scenario.icon, label: scenario.title, title: status || 'Tema sorpresa', sub: '' }
         : { icon: scenario.icon, label: 'Práctica guiada', title: scenario.title, sub: scenario.subtitle }
 
+  if (view === 'chat' && prep) {
+    return (
+      <PrepareScreen
+        kind="clase"
+        state={prep}
+        colors={orbColors}
+        teacherName={teacherInfo.name}
+        errorText={prepError}
+        onRetry={() => {
+          setPrep('loading')
+          askTeacher()
+        }}
+        onBack={finish}
+      />
+    )
+  }
+
   if (view === 'report' && session?.metrics) {
     return (
       <div className="relative z-[2] flex h-full flex-col pt-[env(safe-area-inset-top)]">
@@ -532,12 +565,6 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
 
       {/* Mensajes */}
       <div ref={listRef} className="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-[18px] pt-1.5 pb-4">
-        {phase === 'starting' && status && (
-          <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-            <Orb size={120} colors={orbColors} active />
-            <p className="txt-sub animate-pulse text-sm">{status}</p>
-          </div>
-        )}
 
         {turns.map((m, i) => {
           if (m.role === 'user') {
