@@ -97,6 +97,7 @@ export interface TeacherInfo {
   role: string
   desc: string
   lang: string // voz TTS
+  gender: 'male' | 'female'
   persona: string // para el prompt
 }
 
@@ -107,6 +108,7 @@ export const TEACHERS: Record<TeacherKey, TeacherInfo> = {
     role: 'Profesora',
     desc: 'Acento americano. Paciente, clara y muy positiva.',
     lang: 'en-US',
+    gender: 'female',
     persona:
       'Your name is Emma. You speak American English. You are patient, clear and very positive, and you celebrate every effort.',
   },
@@ -116,6 +118,7 @@ export const TEACHERS: Record<TeacherKey, TeacherInfo> = {
     role: 'Profesor',
     desc: 'Acento británico. Directo, curioso y con humor.',
     lang: 'en-GB',
+    gender: 'male',
     persona:
       'Your name is Leo. You speak British English (British vocabulary and spelling, e.g. "flat", "holiday", "brilliant"). You are direct, curious and have a dry sense of humour.',
   },

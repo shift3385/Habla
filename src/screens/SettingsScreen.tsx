@@ -204,10 +204,10 @@ function VoicePage({ settings, t, update }: { settings: Settings; t: ThemeVars; 
             onChange={(e) => update({ voiceIndex: e.target.value === '' ? null : Number(e.target.value) })}
             className="input pr-10"
           >
-            <option value="">Por defecto ({teacher.lang})</option>
+            <option value="">Automática ({teacher.gender === 'male' ? 'masculina' : 'femenina'} · {teacher.lang})</option>
             {voices.map((v) => (
               <option key={v.index} value={v.index}>
-                {v.name} ({v.lang})
+                {v.name} ({v.lang}{v.gender ? (v.gender === 'male' ? ' · masculina' : ' · femenina') : ''})
               </option>
             ))}
           </select>

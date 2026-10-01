@@ -29,7 +29,7 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
   }, [])
 
   const pickTeacher = async (k: TeacherKey) => {
-    update({ teacher: k })
+    update({ teacher: k, voiceIndex: null })
     setSpeaking(true)
     // App.tsx ajusta la voz al cambiar de profe; esperamos un instante a que se aplique.
     setTimeout(async () => {

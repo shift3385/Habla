@@ -56,7 +56,7 @@ export default function App() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t.bg)
     SystemBars.setStyle({ style: settings.mode === 'dark' ? SystemBarsStyle.Dark : SystemBarsStyle.Light }).catch(() => {})
     const teacher = TEACHERS[settings.teacher]
-    setTeacherVoice(teacher.lang, settings.teacher === 'leo' ? 0.9 : 1.05)
+    setTeacherVoice(teacher.lang, teacher.gender)
   }, [settings, t])
 
   // Botón "atrás" de Android: primero la pantalla activa; si no, vuelve a Inicio; en Inicio sale.

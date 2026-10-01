@@ -69,7 +69,7 @@ Notas tras probar la v3.0, ya con más personas usando la app (por ejemplo, la m
 
 ### 4.3 Leo debe tener voz masculina 🐞
 **Problema:** Emma y Leo suenan igual, con la misma voz femenina. Bajar el tono no basta.
-- [ ] **Arreglo rápido:** en el TTS del teléfono, elegir automáticamente una voz masculina en-GB para Leo, si existe en el dispositivo (Google TTS tiene varias por idioma), y recordarla.
+- [x] **Arreglo rápido (v3.1):** en el TTS del teléfono, se elige automáticamente una voz masculina en-GB para Leo y una femenina en-US para Emma, según el código de la voz de Google (`gbb`, `gbd`, `rjs`… = masculinas). Si el teléfono no tiene voz masculina, se baja el tono.
 - [ ] **Arreglo definitivo:** con la voz en la nube (4.2), una voz fija para cada profe: femenina en-US para Emma y masculina en-GB para Leo.
 
 ### 4.4 Pensar en usuarios no técnicos
