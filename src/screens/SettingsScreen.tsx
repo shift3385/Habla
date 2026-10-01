@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
-import { db, type Profile } from '../lib/db'
+import type { Profile } from '../lib/db'
 import { listModels, pickDefaultModel, pickFallbackModel, type ModelInfo } from '../lib/gemini'
+import { levelIdx, nextRetestAt } from '../lib/levels'
 import { getProfile } from '../lib/profile'
 import type { Settings } from '../lib/settings'
 import { englishVoices, speak, type VoiceOption } from '../lib/tts'
@@ -21,8 +22,6 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   data: { title: 'Mis datos', icon: 'data' },
 }
 
-const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1']
-const LEVEL_PCT: Record<string, number> = { A1: 20, A2: 38, B1: 55, B2: 72, C1: 88, C2: 100 }
 
 type Status = { kind: 'ok' | 'error' | 'info'; text: string } | null
 
@@ -31,9 +30,10 @@ interface Props {
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
   registerBack: (h: (() => void) | null) => void
+  onRetest: () => void
 }
 
-export default function SettingsScreen({ settings, t, update, registerBack }: Props) {
+export default function SettingsScreen({ settings, t, update, registerBack, onRetest }: Props) {
   const [page, setPage] = useState<Page | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [models, setModels] = useState<ModelInfo[]>([])
@@ -69,7 +69,7 @@ export default function SettingsScreen({ settings, t, update, registerBack }: Pr
         {page === 'voice' && <VoicePage settings={settings} t={t} update={update} />}
         {page === 'look' && <LookPage settings={settings} update={update} />}
         {page === 'goal' && <GoalPage settings={settings} update={update} />}
-        {page === 'level' && profile && <LevelPage profile={profile} onChange={setProfile} />}
+        {page === 'level' && profile && <LevelPage profile={profile} onRetest={onRetest} />}
         {page === 'gemini' && <GeminiPage settings={settings} update={update} models={models} setModels={setModels} />}
         {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
       </div>
@@ -301,48 +301,71 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
   )
 }
 
-function LevelPage({ profile, onChange }: { profile: Profile; onChange: (p: Profile) => void }) {
-  const setLevel = async (l: string) => {
-    const p = { ...profile, levels: { ...profile.levels, overall: l } }
-    await db.profile.put(p)
-    onChange(p)
-  }
+const SKILL_ES: Record<string, string> = {
+  grammar: 'Gramática',
+  reading: 'Lectura',
+  listening: 'Audición',
+  speaking: 'Habla',
+  overall: 'General',
+}
+
+/** Solo lectura: el nivel lo fija el test y cambia con la práctica y los re-tests. */
+function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => void }) {
+  const [now] = useState(() => Date.now())
   const skills: [string, string][] = [
     ['Gramática', profile.levels.grammar],
     ['Lectura', profile.levels.reading],
     ['Audición', profile.levels.listening],
     ['Habla', profile.levels.speaking],
   ]
+  const retestAt = nextRetestAt(profile)
+  const canRetest = !retestAt || now >= retestAt
+  const fmt = (ts: number) => new Date(ts).toLocaleDateString('es', { day: 'numeric', month: 'long' })
+  const events = [...(profile.levelEvents ?? [])].reverse().slice(0, 6)
   return (
     <>
-      <Card>
+      <Card className="text-center">
         <div className="txt-sub text-sm">Nivel general</div>
-        <div className="mt-2.5 grid grid-cols-5 gap-1.5">
-          {LEVELS.map((l) => (
-            <button
-              key={l}
-              onClick={() => setLevel(l)}
-              className={`h-[46px] rounded-2xl text-[15px] ${profile.levels.overall === l ? 'btn-acc' : 'field'}`}
-            >
-              {l}
-            </button>
-          ))}
+        <div className="mt-1 text-[48px] leading-none font-semibold tracking-[-1.5px]" style={{ color: 'var(--acc)' }}>
+          {profile.levels.overall}
+        </div>
+        <div className="txt-sub mt-2 text-[13px] leading-snug">
+          {profile.calibratedAt ? `Medido en el test del ${fmt(profile.calibratedAt)}.` : 'Aún sin test.'} No se puede
+          cambiar a mano: sube con la práctica y con cada re-test.
         </div>
       </Card>
       <Card>
-        <div className="txt-sub text-sm">Por habilidad (lo calcula tu profe)</div>
+        <div className="txt-sub text-sm">Por habilidad</div>
         <div className="mt-2.5 flex flex-col gap-2">
           {skills.map(([n, l]) => (
             <div key={n} className="flex items-center gap-3">
               <span className="w-[84px] text-sm">{n}</span>
               <div className="h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
-                <div className="h-full rounded" style={{ width: `${LEVEL_PCT[l] ?? 50}%`, background: 'var(--acc)' }} />
+                <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />
               </div>
               <span className="txt-acc2 w-7 text-right font-semibold">{l}</span>
             </div>
           ))}
         </div>
       </Card>
+      {events.length > 0 && (
+        <Card>
+          <div className="txt-sub mb-2 text-sm">Cambios de nivel</div>
+          {events.map((e, i) => (
+            <div key={i} className="flex justify-between py-1 text-sm">
+              <span>
+                {SKILL_ES[e.skill]}: {e.from} → <b>{e.to}</b>
+              </span>
+              <span className="txt-sub">
+                {e.reason === 'test' ? 'test' : 'práctica'} · {fmt(e.date)}
+              </span>
+            </div>
+          ))}
+        </Card>
+      )}
+      <button onClick={onRetest} disabled={!canRetest} className="btn-acc h-[52px] rounded-full text-[15px]">
+        {canRetest ? 'Hacer el re-test de nivel' : `Re-test disponible el ${fmt(retestAt!)}`}
+      </button>
     </>
   )
 }

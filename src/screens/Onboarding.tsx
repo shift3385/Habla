@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react'
-import { db } from '../lib/db'
-import { getProfile } from '../lib/profile'
+import { useState } from 'react'
+import { listModels, pickDefaultModel, pickFallbackModel } from '../lib/gemini'
 import type { Settings } from '../lib/settings'
 import { speak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Orb from '../ui/Orb'
 import { TEACHERS, type TeacherKey, type ThemeVars } from '../ui/theme'
 
-const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1']
 const GOALS = [3, 5, 10, 15]
 
 interface Props {
@@ -17,16 +15,32 @@ interface Props {
   onDone: () => void
 }
 
-/** Bienvenida: 1) hola · 2) elige profe · 3) nivel y meta diaria. */
+/** Bienvenida: 1) hola · 2) elige profe · 3) meta diaria (+ clave de Gemini si falta). El nivel lo fija el test. */
 export default function Onboarding({ settings, t, update, onDone }: Props) {
   const [step, setStep] = useState(0)
-  const [level, setLevel] = useState('B1')
   const [speaking, setSpeaking] = useState(false)
+  const [needsKey] = useState(() => !settings.geminiKey.trim())
+  const [key, setKey] = useState(settings.geminiKey)
+  const [keyStatus, setKeyStatus] = useState<{ ok: boolean; text: string } | null>(null)
+  const [checking, setChecking] = useState(false)
   const teacher = TEACHERS[settings.teacher]
+  const keyOk = !needsKey || keyStatus?.ok
 
-  useEffect(() => {
-    getProfile().then((p) => setLevel(p.levels.overall))
-  }, [])
+  const checkKey = async () => {
+    const k = key.trim()
+    if (!k) return
+    setChecking(true)
+    try {
+      const list = await listModels(k)
+      const model = pickDefaultModel(list)
+      update({ geminiKey: k, geminiModel: model, geminiFallbackModel: pickFallbackModel(list, model) })
+      setKeyStatus({ ok: true, text: 'Clave válida ✓' })
+    } catch (e) {
+      setKeyStatus({ ok: false, text: (e as Error).message })
+    } finally {
+      setChecking(false)
+    }
+  }
 
   const pickTeacher = async (k: TeacherKey) => {
     update({ teacher: k, voiceIndex: null })
@@ -38,9 +52,7 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
     }, 50)
   }
 
-  const finish = async () => {
-    const p = await getProfile()
-    await db.profile.put({ ...p, levels: { ...p.levels, overall: level } })
+  const finish = () => {
     update({ onboarded: true })
     onDone()
   }
@@ -128,20 +140,7 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
 
       {step === 2 && (
         <div key="s2" className="anim-up flex flex-1 flex-col">
-          <h1 className="mt-6 text-[32px] font-semibold tracking-[-.8px]">¿Cuál es tu nivel?</h1>
-          <p className="txt-sub mt-2 text-[15px]">{teacher.name} adapta el vocabulario y la velocidad.</p>
-          <div className="mt-6 grid grid-cols-5 gap-2">
-            {LEVELS.map((l) => (
-              <button
-                key={l}
-                onClick={() => setLevel(l)}
-                className={`h-14 rounded-[18px] text-[17px] ${l === level ? 'btn-acc' : 'glass font-medium'}`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-          <div className="mt-8 text-xl font-semibold">Meta diaria</div>
+          <h1 className="mt-6 text-[32px] font-semibold tracking-[-.8px]">Tu meta diaria</h1>
           <p className="txt-sub mt-1.5 text-sm leading-snug">
             Minutos hablando tú. 5 minutos de voz equivalen a unos 15 de clase.
           </p>
@@ -156,9 +155,39 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
               </button>
             ))}
           </div>
+          {needsKey && (
+            <div className="glass mt-6 rounded-[24px] p-4">
+              <div className="font-semibold">Conecta Gemini</div>
+              <p className="txt-sub mt-1 text-[13px] leading-snug">
+                Es el cerebro de {teacher.name}. Crea una clave gratis en aistudio.google.com → "Get API key" y pégala aquí. Se guarda solo en este teléfono.
+              </p>
+              <input
+                type="password"
+                value={key}
+                onChange={(e) => {
+                  setKey(e.target.value)
+                  setKeyStatus(null)
+                }}
+                placeholder="AIza…"
+                autoComplete="off"
+                className="input mt-3"
+              />
+              <button onClick={checkKey} disabled={checking || !key.trim()} className="field mt-2 h-11 w-full rounded-[22px] font-medium disabled:opacity-50">
+                {checking ? 'Comprobando…' : 'Comprobar clave'}
+              </button>
+              {keyStatus && (
+                <p className="mt-2 text-sm" style={{ color: keyStatus.ok ? 'var(--acc2)' : '#f87171' }}>
+                  {keyStatus.text}
+                </p>
+              )}
+            </div>
+          )}
           <div className="flex-1" />
-          <button onClick={finish} className="btn-acc h-[58px] rounded-full text-[17px]">
-            Empezar a hablar
+          <p className="txt-sub mb-3 text-center text-[13px] leading-snug">
+            A continuación harás un test de nivel (12–15 min) para que {teacher.name} adapte las clases a ti.
+          </p>
+          <button onClick={finish} disabled={!keyOk} className="btn-acc h-[58px] rounded-full text-[17px]">
+            Continuar al test de nivel
           </button>
         </div>
       )}

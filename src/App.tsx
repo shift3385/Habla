@@ -1,6 +1,7 @@
 import { App as CapApp } from '@capacitor/app'
 import { SystemBars, SystemBarsStyle } from '@capacitor/core'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Calibration from './screens/Calibration'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
@@ -25,6 +26,9 @@ export default function App() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [tab, setTab] = useState<Tab>('home')
   const [lesson, setLesson] = useState<Lesson | null>(null)
+  // Test de calibración: obligatorio si el perfil no tiene nivel medido; también para el re-test.
+  const [calibrated, setCalibrated] = useState<boolean | null>(null)
+  const [retest, setRetest] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
   const tabRef = useRef(tab)
   useEffect(() => {
@@ -33,7 +37,7 @@ export default function App() {
 
   useEffect(() => {
     loadSettings().then(setSettings)
-    getProfile() // siembra el perfil inicial la primera vez
+    getProfile().then((p) => setCalibrated(!!p.calibratedAt)) // también siembra el perfil inicial
   }, [])
 
   const update = useCallback((patch: Partial<Settings>) => {
@@ -75,12 +79,31 @@ export default function App() {
     backHandler.current = h
   }, [])
 
-  if (!settings || !t) return null
+  if (!settings || !t || calibrated === null) return null
 
   if (!settings.onboarded) {
     return (
       <Shell t={t}>
         <Onboarding settings={settings} t={t} update={update} onDone={() => setTab('home')} />
+      </Shell>
+    )
+  }
+
+  if (!calibrated || retest) {
+    return (
+      <Shell t={t}>
+        <Calibration
+          settings={settings}
+          t={t}
+          update={update}
+          registerBack={registerBack}
+          onDone={() => {
+            backHandler.current = null
+            setCalibrated(true)
+            setRetest(false)
+            setTab('home')
+          }}
+        />
       </Shell>
     )
   }
@@ -116,7 +139,7 @@ export default function App() {
         )}
         {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} />}
         {tab === 'settings' && (
-          <SettingsScreen settings={settings} t={t} update={update} registerBack={registerBack} />
+          <SettingsScreen settings={settings} t={t} update={update} registerBack={registerBack} onRetest={() => setRetest(true)} />
         )}
       </div>
       <TabBar

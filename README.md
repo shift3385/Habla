@@ -60,6 +60,16 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
   Cada profe tiene su orbe de colores, que late cuando habla, y su propia voz.
 - **Temas visuales:** **Ember** (naranja y turquesa), **Lumi** (verde cristal) y **Aurora** (verde, naranja y ámbar), cada uno en modo **oscuro** o **claro**. Se cambian en *Ajustes → Apariencia*. El modo también se cambia con el icono de sol y luna del Inicio.
 
+### Test de nivel (obligatorio)
+- Antes de usar la app, cada perfil hace un **test de nivel** de unos 12–15 minutos. Tiene 4 partes:
+  - **Gramática y vocabulario:** 15 preguntas adaptativas, que suben o bajan de nivel según aciertas.
+  - **Lectura:** 2 textos cortos.
+  - **Audición:** 2 audios, cada uno se puede escuchar hasta 3 veces.
+  - **Habla:** 3 respuestas por voz, que el profe evalúa.
+- El resultado (un nivel por habilidad, el nivel global y tus puntos débiles) adapta al profe: su vocabulario, la velocidad de la voz y lo que te hace practicar.
+- **El nivel no se puede cambiar a mano.** El nivel de habla sube o baja con la práctica: como mucho un escalón por semana, según la nota media de tus últimas 5 sesiones. Cada 4 semanas se desbloquea un **re-test**, en *Ajustes → Mi nivel*.
+- Si no hay clave de Gemini, la bienvenida la pide antes del test.
+
 ### Inicio
 - **Racha** (icono de llama): días seguidos practicando.
 - **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember es un anillo; en Lumi, la tarjeta "Charla libre"; en Aurora, una barra junto al orbe.

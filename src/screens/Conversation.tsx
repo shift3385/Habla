@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
 import ReportView from '../components/ReportView'
 import TalkButton, { type Phase } from '../components/TalkButton'
-import { db, type Session, type Topic, type Turn } from '../lib/db'
+import { db, type LevelEvent, type Session, type Topic, type Turn } from '../lib/db'
+import { levelIdx, updateLevelsFromPractice } from '../lib/levels'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
 import type { ApiError, ChatMessage, Models, RetryInfo } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
@@ -67,6 +68,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   const [session, setSession] = useState<Session | null>(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState<string | null>(null)
+  const [levelChange, setLevelChange] = useState<LevelEvent | null>(null)
 
   const recorder = useRef(new Recorder())
   const sessionId = useRef<number | null>(null)
@@ -353,6 +355,10 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     setSession(s)
     setView('report')
     buildReport(s, allTurns)
+    // El nivel de habla evoluciona con la práctica (nunca a mano).
+    updateLevelsFromPractice()
+      .then(setLevelChange)
+      .catch(() => {})
   }, [onExit, buildReport])
 
   // Botón "atrás" de Android: en el chat termina la sesión (con informe); en el informe vuelve al inicio.
@@ -393,6 +399,18 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
           <Orb size={34} colors={orbColors} />
         </div>
         <div className="no-scrollbar flex-1 overflow-y-auto px-[18px] pb-[calc(env(safe-area-inset-bottom)+24px)]">
+          {levelChange && (
+            <div
+              className="anim-up mb-3 rounded-[24px] p-4 text-center"
+              style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 10px 30px var(--glow)' }}
+            >
+              <div className="text-sm">{levelIdx(levelChange.to) > levelIdx(levelChange.from) ? '¡Has subido de nivel al hablar!' : 'Ajuste de nivel al hablar'}</div>
+              <div className="text-3xl font-semibold tracking-[-1px]">
+                {levelChange.from} → {levelChange.to}
+              </div>
+              <div className="text-xs opacity-85">Según tus últimas 5 sesiones</div>
+            </div>
+          )}
           <ReportView
             metrics={session.metrics}
             report={session.report}

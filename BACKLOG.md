@@ -14,7 +14,10 @@ Ahora mismo la app está hecha a medida para un único usuario: el perfil semill
 - [ ] Hacer que los prompts del profe dependan siempre del perfil, sin datos personales en el código.
 - [ ] ⚠️ Decidir cómo accede cada persona a la IA (ver "Puntos a debatir").
 
-## 1. Test de calibración inicial 🟢 (idea del usuario)
+## 1. Test de calibración inicial ✅ hecho en v4.0 (idea del usuario)
+
+> **Implementado:** es obligatorio para todo perfil sin test (incluido el que ya existía) y el nivel no se puede editar a mano. Tiene gramática y vocabulario adaptativos (15 preguntas, banco A1–C2 generado por Gemini), 2 textos de lectura, 2 audios de audición (3 reproducciones como máximo) y 3 tareas de habla evaluadas con rúbrica. El nivel de habla evoluciona con la práctica (±1 escalón, como mucho uno por semana, según la nota media de 5 sesiones) y hay re-test cada 28 días. Código: `src/lib/calibration.ts`, `src/lib/levels.ts`, `src/screens/Calibration.tsx`.
+> **Pendiente:** adaptar al nivel también la cantidad de correcciones del profe, y avisar en el Inicio cuando el re-test esté disponible.
 
 Un test riguroso, como la evaluación inicial que hicimos, que asigne un nivel MCER a cada habilidad y adapte el profe a ese perfil.
 

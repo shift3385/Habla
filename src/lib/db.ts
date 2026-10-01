@@ -100,6 +100,31 @@ export interface Profile {
   weaknesses: string[]
   goal: string
   startedAt: number
+  /** Fecha del último test de calibración. Sin él, la app obliga a hacer el test. */
+  calibratedAt?: number
+  tests?: CalibrationRecord[]
+  /** Cambios de nivel por la práctica (no los puede editar el usuario). */
+  levelEvents?: LevelEvent[]
+}
+
+export type Skill = 'grammar' | 'reading' | 'listening' | 'speaking'
+
+export interface CalibrationRecord {
+  date: number
+  levels: Record<Skill | 'overall', string>
+  speakingCriteria?: Record<string, string>
+  strengthsEs: string[]
+  weaknessesEs: string[]
+  summaryEs: string
+  grammarAnswers: { level: string; correct: boolean }[]
+}
+
+export interface LevelEvent {
+  date: number
+  skill: Skill | 'overall'
+  from: string
+  to: string
+  reason: 'practice' | 'test'
 }
 
 export const db = new Dexie('habla') as Dexie & {
