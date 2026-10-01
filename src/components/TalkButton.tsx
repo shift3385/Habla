@@ -35,7 +35,11 @@ export default function TalkButton({ phase, onPress, onRelease }: Props) {
         disabled={busy}
         onPointerDown={(e) => {
           if (busy) return
-          e.currentTarget.setPointerCapture(e.pointerId)
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId)
+          } catch {
+            // Algunos WebView no lo permiten; soltar fuera del botón igual llega por pointercancel.
+          }
           pressed.current = true
           onPress()
         }}

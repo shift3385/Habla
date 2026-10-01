@@ -20,11 +20,51 @@ export interface Correction {
   spanish: string // la frase correcta traducida al español (para el ejercicio oral)
 }
 
+export interface VocabItem {
+  en: string
+  es: string
+}
+
+export interface Topic {
+  category: string // id de TOPIC_CATEGORIES
+  title: string // en inglés
+  titleEs: string
+  summary: string // 2–3 frases en inglés, lo que el profe "ha leído"
+  question: string // pregunta de arranque
+  vocab: VocabItem[]
+  sources?: { title: string; uri: string }[]
+}
+
+export interface SessionMetrics {
+  turns: number
+  words: number
+  speechSeconds: number
+  wpm: number
+  pauses: number
+  pausesPerMin: number
+  avgWords: number
+  longestWords: number
+  corrections: number
+  score: number // 0–100
+  level: string // A2, B1, B1+, B2, B2+
+}
+
+export interface SessionReport {
+  summaryEs: string
+  strengthsEs: string[]
+  improveEs: string[]
+  homeworkEs: string
+  phrase: VocabItem
+}
+
 export interface Session {
   id?: number
   scenario: string
   startedAt: number
   endedAt?: number
+  topic?: Topic
+  metrics?: SessionMetrics
+  report?: SessionReport
 }
 
 export interface Turn {
@@ -32,6 +72,7 @@ export interface Turn {
   sessionId: number
   role: 'user' | 'teacher'
   text: string
+  translation?: string // turnos del profe: traducción al español
   createdAt: number
   audioSeconds?: number // duración grabada
   speechSeconds?: number // de la primera a la última palabra (análisis local)

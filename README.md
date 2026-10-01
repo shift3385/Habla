@@ -51,16 +51,36 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ## 🗣️ Cómo usarla
 
-1. En **Hablar**, elige un escenario: charla libre, mis puntos débiles, entrevista técnica, explicar mi trabajo a un cliente, debate o contar una historia.
-2. El profe te saluda y te hace una pregunta.
-3. **Mantén presionado** el botón naranja mientras hablas y **suéltalo** al terminar.
-4. Verás lo que dijiste y, si hubo un error, **una sola corrección**: tu frase tachada en rojo y la correcta resaltada en verde, con una explicación corta.
+### Inicio
+- **🔥 Racha**: días seguidos practicando.
+- **Anillo de meta diaria**: minutos que has hablado hoy (tu voz, no la duración de la clase). La meta se cambia en Ajustes.
+- **📅 Tu tarea**: la tarea para mañana de tu última sesión.
+- **🎲 Sorpréndeme**: un tema al azar, distinto de los últimos que usaste.
+- **Elige un tema**: 12 categorías. Las que tienen un punto rojo (noticias, IA, tecnología, negocios y mercados, startups, ciencia, cine, deportes) **buscan en Google una noticia real y reciente**. El profe nunca repite un tema de tus últimas sesiones.
+- **Prácticas guiadas**: mis puntos débiles, entrevista técnica, explicar mi trabajo a un cliente, debate sobre un tema de actualidad y contar una historia.
+
+### En la clase
+1. Arriba ves la **tarjeta del tema**: tócala para leer el resumen. Toca las palabras de vocabulario para oírlas.
+2. **Mantén presionado** el botón naranja mientras hablas y **suéltalo** al terminar. Verás la onda de tu voz y un cronómetro.
+3. Debajo de tu frase aparecen tus métricas de ese turno: ⚡ palabras por minuto, 📝 palabras y ⏸ pausas de más de 1 s.
+4. Si cometiste un error verás **una sola corrección**: tu frase tachada en rojo y la correcta resaltada en verde, con una explicación corta.
 5. El profe te responde por voz (1 a 3 frases) y siempre termina con una pregunta.
 
 Otros controles:
+- **💡 ¿Qué digo?**: 3 maneras de empezar tu respuesta, con traducción. Tócalas para oírlas.
+- **🌐 ES**: traducción al español de lo que dijo el profe.
 - **🐢 / 🐇**: velocidad de la voz del profe.
 - **👂 Modo oído**: el texto del profe queda oculto hasta que lo tocas, para entrenar la comprensión auditiva.
 - **🔊 Repetir**: vuelve a escuchar una frase del profe.
+- **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta.
+
+### Informe y progreso
+- Al terminar, el informe muestra:
+  - Tu **nota de fluidez (0–100)**, que combina velocidad, largo de respuestas, pausas y precisión.
+  - Tu nivel al hablar ese día.
+  - Lo que hiciste bien y lo que debes mejorar.
+  - La **tarea para mañana** y una **frase del día**.
+- **📈 Progreso**: total de sesiones, minutos y palabras; gráfica de tu nota; comparación "antes → ahora". Toca cualquier sesión para volver a ver su informe.
 - Si la voz suena rara, en *Ajustes → Voz* puedes elegir otra voz en inglés del teléfono. Si no hay ninguna, instala "Speech Services by Google" desde Play Store.
 
 ## 💸 Coste aproximado
@@ -97,14 +117,18 @@ src/
   lib/
     gemini.ts      Gemini API (CapacitorHttp + JSON Schema) y lista de modelos
     speech.ts      análisis local del audio: si hubo voz, tiempo de habla, pausas ≥ 1 s
-    teacher.ts     prompt del profe, esquema de corrección
+    teacher.ts     prompt del profe, esquema de corrección, ideas "¿Qué digo?"
+    topics.ts      12 categorías de temas; noticias reales con Google Search
+    fluency.ts     métricas de fluidez, nota 0–100 e informe final
+    stats.ts       racha, minutos de hoy, tarea pendiente
     scenarios.ts   los 6 escenarios
     recorder.ts    MediaRecorder (webm/opus)
     tts.ts         voz nativa de Android
     db.ts          IndexedDB (Dexie): sesiones, turnos, errores, perfil
     backup.ts      exportar / importar JSON
     settings.ts    clave, modelo y preferencias (@capacitor/preferences)
-  screens/         Home, Conversation, SettingsScreen
+  screens/         Home, Conversation, ProgressScreen, SettingsScreen
+  components/      botón de hablar, onda en vivo, avatar, informe, gráfica, tarjeta del tema
 android/           proyecto nativo (Capacitor 8, Android 36)
 keystore/          firma del APK (fuera de git; haz copia)
 ```
@@ -112,7 +136,8 @@ keystore/          firma del APK (fuera de git; haz copia)
 ### Hoja de ruta
 
 - [x] **Fase 1:** ajustes, conversación por voz y exportar/importar
-- [ ] **Fase 2:** métricas de fluidez (palabras por minuto, pausas, largo de respuesta), nota y tarea para mañana
+- [x] **Migración a Gemini** con reintentos automáticos y modelo de respaldo
+- [x] **Fase 2:** métricas de fluidez, nota, informe y tarea para mañana; temas dinámicos con noticias reales; racha, meta diaria y pestaña Progreso
 - [ ] **Fase 3:** cuaderno de errores con repetición espaciada (FSRS) y ejercicio oral de español a inglés
-- [ ] **Fase 4:** plan de 12 semanas, lección del día, racha y gráfica de progreso
+- [ ] **Fase 4:** plan de 12 semanas y lección del día (la racha y la gráfica ya están hechas)
 - [ ] **Fase 5:** re-test cada 4 semanas (gramática, audición y habla) que actualiza tu nivel

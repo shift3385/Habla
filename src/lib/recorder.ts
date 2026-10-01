@@ -36,6 +36,11 @@ export class Recorder {
     return this.stream !== null
   }
 
+  /** Stream del micrófono abierto (para dibujar la onda en vivo). */
+  get mediaStream(): MediaStream | null {
+    return this.stream
+  }
+
   start(): void {
     if (!this.stream) throw new MicError('El micrófono no está abierto.')
     const mimeType = MIME_CANDIDATES.find((m) => MediaRecorder.isTypeSupported(m))

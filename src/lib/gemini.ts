@@ -39,27 +39,69 @@ export function toContents(history: ChatMessage[]): GeminiContent[] {
 interface AskOptions {
   system: string
   contents: GeminiContent[]
-  schema: JsonSchema
+  /** Salida JSON forzada por esquema. */
+  schema?: JsonSchema
+  /**
+   * Búsqueda en Google (grounding) para temas de actualidad. No se combina con `schema`:
+   * se pide el JSON en el texto y se extrae.
+   */
+  grounded?: boolean
   maxTokens?: number
+  temperature?: number
+}
+
+export interface Source {
+  title: string
+  uri: string
+}
+
+export interface GeminiResult<T> {
+  data: T
+  sources: Source[]
 }
 
 /**
- * generateContent con salida JSON estructurada. Usa CapacitorHttp: en Android la petición sale por
+ * generateContent con salida JSON. Usa CapacitorHttp: en Android la petición sale por
  * la capa nativa (sin CORS); en el navegador de desarrollo cae a fetch (la API de Gemini admite CORS).
  * La clave va en la cabecera x-goog-api-key, nunca en la URL.
  */
 export async function askGemini<T>(apiKey: string, model: string, opts: AskOptions): Promise<T> {
+  return (await askGeminiMeta<T>(apiKey, model, opts)).data
+}
+
+export async function askGeminiMeta<T>(apiKey: string, model: string, opts: AskOptions): Promise<GeminiResult<T>> {
   const base = {
     systemInstruction: { parts: [{ text: opts.system }] },
     contents: opts.contents,
   }
-  const config = { responseMimeType: 'application/json', maxOutputTokens: opts.maxTokens ?? 4096, temperature: 0.7 }
-  // 1º intento: JSON Schema + razonamiento bajo (modelos Gemini 3.x).
-  // 2º intento, si el modelo rechaza esos campos: esquema OpenAPI clásico y sin thinkingConfig.
-  const attempts = [
-    { ...base, generationConfig: { ...config, responseJsonSchema: opts.schema, thinkingConfig: { thinkingLevel: 'LOW' } } },
-    { ...base, generationConfig: { ...config, responseSchema: toOpenApiSchema(opts.schema) } },
-  ]
+  const config = { maxOutputTokens: opts.maxTokens ?? 4096, temperature: opts.temperature ?? 0.7 }
+  const thinking = { thinkingConfig: { thinkingLevel: 'LOW' } }
+  // 1º intento: con razonamiento bajo (modelos Gemini 3.x).
+  // 2º intento, si el modelo rechaza algún campo (400): formato clásico, sin thinkingConfig.
+  const attempts = opts.grounded
+    ? [
+        { ...base, tools: [{ googleSearch: {} }], generationConfig: { ...config, ...thinking } },
+        { ...base, tools: [{ googleSearch: {} }], generationConfig: config },
+      ]
+    : [
+        {
+          ...base,
+          generationConfig: {
+            ...config,
+            ...thinking,
+            responseMimeType: 'application/json',
+            ...(opts.schema ? { responseJsonSchema: opts.schema } : {}),
+          },
+        },
+        {
+          ...base,
+          generationConfig: {
+            ...config,
+            responseMimeType: 'application/json',
+            ...(opts.schema ? { responseSchema: toOpenApiSchema(opts.schema) } : {}),
+          },
+        },
+      ]
 
   let status = 0
   let data: GeminiResponse | null = null
@@ -78,12 +120,23 @@ export async function askGemini<T>(apiKey: string, model: string, opts: AskOptio
     .filter((p) => p.text && !p.thought)
     .map((p) => p.text)
     .join('')
-  const parsed = safeParse(text)
+  const parsed = safeParse(text) ?? extractJson(text)
   if (!parsed) {
     const why = cand?.finishReason === 'MAX_TOKENS' ? ' (respuesta cortada)' : ''
     throw new ApiError(`Respuesta de Gemini incompleta${why}. Inténtalo de nuevo.`, 200, true)
   }
-  return parsed as T
+  const sources = (cand?.groundingMetadata?.groundingChunks ?? [])
+    .map((c) => c.web)
+    .filter((w): w is Source => !!w?.uri)
+    .map((w) => ({ title: w.title ?? w.uri, uri: w.uri }))
+  return { data: parsed as T, sources }
+}
+
+/** Extrae el primer objeto JSON de un texto (p. ej. dentro de ```json … ```). */
+function extractJson(text: string) {
+  const start = text.indexOf('{')
+  const end = text.lastIndexOf('}')
+  return start >= 0 && end > start ? safeParse(text.slice(start, end + 1)) : null
 }
 
 export interface RetryInfo {
@@ -100,8 +153,22 @@ export interface RetryInfo {
  */
 export async function askGeminiWithRetry<T>(
   apiKey: string,
-  models: { primary: string; fallback?: string },
+  models: Models,
   opts: AskOptions,
+  onRetry?: (info: RetryInfo) => void,
+): Promise<T> {
+  return withRetry(models, (model) => askGemini<T>(apiKey, model, opts), onRetry)
+}
+
+export interface Models {
+  primary: string
+  fallback?: string
+}
+
+/** Reintentos genéricos para cualquier llamada que reciba el modelo a usar. */
+export async function withRetry<T>(
+  models: Models,
+  call: (model: string) => Promise<T>,
   onRetry?: (info: RetryInfo) => void,
 ): Promise<T> {
   const plan = [models.primary, models.primary, models.primary]
@@ -117,7 +184,7 @@ export async function askGeminiWithRetry<T>(
       delay = Math.min(delay * 2, 8000)
     }
     try {
-      return await askGemini<T>(apiKey, model, opts)
+      return await call(model)
     } catch (e) {
       if (!(e instanceof ApiError)) throw e
       lastError = e
@@ -185,7 +252,11 @@ interface RawModel {
 }
 
 interface GeminiResponse {
-  candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] }; finishReason?: string }[]
+  candidates?: {
+    content?: { parts?: { text?: string; thought?: boolean }[] }
+    finishReason?: string
+    groundingMetadata?: { groundingChunks?: { web?: { uri: string; title?: string } }[] }
+  }[]
   promptFeedback?: { blockReason?: string }
   error?: { message?: string; status?: string; details?: { reason?: string }[] }
 }

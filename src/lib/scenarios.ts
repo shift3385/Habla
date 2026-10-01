@@ -4,6 +4,7 @@ export interface Scenario {
   subtitle: string
   emoji: string
   brief: string // instrucciones para el profe (en inglés)
+  topic?: boolean // usa un tema dinámico (noticias, IA, viajes…)
 }
 
 export const SCENARIOS: Scenario[] = [
@@ -13,7 +14,8 @@ export const SCENARIOS: Scenario[] = [
     subtitle: 'Conversación relajada sobre lo que sea',
     emoji: '💬',
     brief:
-      'Free conversation. Talk about everyday topics: their day, plans, hobbies, news, food, travel. Follow their interests and keep it relaxed.',
+      'Relaxed, lively conversation about today\'s topic, like two friends chatting over coffee.',
+    topic: true,
   },
   {
     id: 'weak',
@@ -45,7 +47,8 @@ export const SCENARIOS: Scenario[] = [
     subtitle: 'Defiende una opinión y argumenta',
     emoji: '⚖️',
     brief:
-      'Friendly debate. Propose a controversial but safe topic (e.g. remote work vs office, AI replacing jobs, four-day work week, cities vs countryside), ask for the student\'s opinion and then politely take the opposite side so they have to argue, give reasons and examples.',
+      'Friendly debate about today\'s topic. Turn it into a clear debatable question, ask for the student\'s opinion and then politely take the opposite side so they have to argue, give reasons and examples. Use phrases like "I see your point, but…" and push them to defend their view.',
+    topic: true,
   },
   {
     id: 'story',

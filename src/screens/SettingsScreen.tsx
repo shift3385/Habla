@@ -207,6 +207,25 @@ export default function SettingsScreen({ settings, onSettingsChange }: Props) {
         </button>
       </Section>
 
+      <Section title="🎯 Meta diaria">
+        <p className="mb-3 text-xs text-slate-400">
+          Minutos hablando tú (no de sesión). 5 minutos de voz equivalen a unos 15 de clase.
+        </p>
+        <div className="grid grid-cols-4 gap-2">
+          {[3, 5, 10, 15].map((m) => (
+            <button
+              key={m}
+              onClick={() => update({ dailyGoalMinutes: m })}
+              className={`rounded-xl py-2.5 font-semibold ${
+                settings.dailyGoalMinutes === m ? 'bg-brand text-white' : 'bg-white/10 text-slate-200'
+              }`}
+            >
+              {m} min
+            </button>
+          ))}
+        </div>
+      </Section>
+
       <Section title="💾 Mis datos">
         <p className="mb-3 text-xs text-slate-400">
           Exporta tu progreso a un archivo JSON antes de reinstalar o cambiar de teléfono, e impórtalo después.

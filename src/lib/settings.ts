@@ -11,6 +11,7 @@ export interface Settings {
   ttsRate: number // 0.5 – 1.5
   voiceIndex: number | null // índice de getSupportedVoices(); null = voz por defecto en-US
   earMode: boolean // texto del profe oculto hasta tocarlo
+  dailyGoalMinutes: number // minutos hablando al día
 }
 
 const DEFAULTS: Settings = {
@@ -20,6 +21,7 @@ const DEFAULTS: Settings = {
   ttsRate: 0.9,
   voiceIndex: null,
   earMode: false,
+  dailyGoalMinutes: 5,
 }
 
 const KEY = 'habla.settings'
