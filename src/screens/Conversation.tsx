@@ -285,6 +285,13 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
     }
   }
 
+  const onCancel = async () => {
+    await starting.current
+    await recorder.current.stop() // se descarta el audio
+    setPhase('idle')
+    setHint('🗑 Grabación descartada')
+  }
+
   const retry = () => {
     setError(null)
     askTeacher(pending.current ?? undefined)
@@ -534,7 +541,7 @@ export default function Conversation({ scenarioId, categoryId, settings, onSetti
             )
           )}
         </div>
-        <TalkButton phase={phase} onPress={onPress} onRelease={onRelease} />
+        <TalkButton phase={phase} onPress={onPress} onRelease={onRelease} onCancel={onCancel} />
       </footer>
     </div>
   )

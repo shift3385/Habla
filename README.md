@@ -61,7 +61,10 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ### En la clase
 1. Arriba ves la **tarjeta del tema**: tócala para leer el resumen. Toca las palabras de vocabulario para oírlas.
-2. **Mantén presionado** el botón naranja mientras hablas y **suéltalo** al terminar. Verás la onda de tu voz y un cronómetro.
+2. El botón de hablar funciona como en WhatsApp. Mientras grabas verás la onda de tu voz y un cronómetro.
+   - **Mantener y soltar:** habla con el dedo en el botón naranja; al soltar se envía.
+   - **Deslizar ↑ hasta el 🔒:** la grabación queda bloqueada, así que puedes soltar el dedo y hablar tranquilo. Toca el botón verde **➤** para enviar, o **🗑** para descartar.
+   - **Deslizar ←:** cancela la grabación sin enviarla.
 3. Debajo de tu frase aparecen tus métricas de ese turno: ⚡ palabras por minuto, 📝 palabras y ⏸ pausas de más de 1 s.
 4. Si cometiste un error verás **una sola corrección**: tu frase tachada en rojo y la correcta resaltada en verde, con una explicación corta.
 5. El profe te responde por voz (1 a 3 frases) y siempre termina con una pregunta.
