@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
 import { listModels, pickDefaultModel, pickFallbackModel, type ModelInfo } from '../lib/gemini'
+import ProfileForm from '../components/ProfileForm'
 import { levelIdx, nextRetestAt } from '../lib/levels'
 import { getProfile } from '../lib/profile'
 import type { Settings } from '../lib/settings'
@@ -17,7 +18,7 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   voice: { title: 'Profe y voz', icon: 'mic' },
   look: { title: 'Apariencia', icon: 'palette' },
   goal: { title: 'Meta diaria', icon: 'target' },
-  level: { title: 'Mi nivel', icon: 'bars' },
+  level: { title: 'Mi perfil', icon: 'bars' },
   gemini: { title: 'Gemini', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
 }
@@ -69,7 +70,15 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
         {page === 'voice' && <VoicePage settings={settings} t={t} update={update} />}
         {page === 'look' && <LookPage settings={settings} update={update} />}
         {page === 'goal' && <GoalPage settings={settings} update={update} />}
-        {page === 'level' && profile && <LevelPage profile={profile} onRetest={onRetest} />}
+        {page === 'level' && profile && (
+          <>
+            <Card>
+              <ProfileForm submitLabel="Guardar mi perfil" onSaved={(p) => setProfile(p)} />
+            </Card>
+            <div className="txt-sub mt-1 px-1 text-sm">Mi nivel</div>
+            <LevelPage profile={profile} onRetest={onRetest} />
+          </>
+        )}
         {page === 'gemini' && <GeminiPage settings={settings} update={update} models={models} setModels={setModels} />}
         {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
       </div>
@@ -80,7 +89,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
     { page: 'voice', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×` },
     { page: 'look', value: `${THEME_INFO[settings.theme].name} · ${settings.mode === 'dark' ? 'Oscuro' : 'Claro'}` },
     { page: 'goal', value: `${settings.dailyGoalMinutes} min al día` },
-    { page: 'level', value: `General ${profile?.levels.overall ?? '—'}` },
+    { page: 'level', value: `${profile?.name ?? ''} · nivel ${profile?.levels.overall ?? '—'}` },
     { page: 'gemini', value: settings.geminiKey ? settings.geminiModel : 'Falta la clave' },
     { page: 'data', value: 'Exportar o importar' },
   ]

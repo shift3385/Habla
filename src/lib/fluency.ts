@@ -1,5 +1,6 @@
 import type { SessionMetrics, SessionReport, Topic, Turn } from './db'
 import { askGemini, withRetry, type JsonSchema, type Models, type RetryInfo } from './gemini'
+import { getProfile } from './profile'
 
 const FILLERS = new Set(['uh', 'um', 'umm', 'uhm', 'er', 'erm', 'eh', 'ah', 'hmm', 'mm'])
 
@@ -112,7 +113,8 @@ export async function generateReport(
     })
     .join('\n')
 
-  const task = `Write a short end-of-session report for a Spanish-speaking English learner (B1, speaking A2, goal: speak fluently).
+  const lv = (await getProfile()).levels
+  const task = `Write a short end-of-session report for a Spanish-speaking English learner (${lv.overall}, speaking ${lv.speaking}, goal: speak fluently).
 ${topic ? `Topic: ${topic.title}\n` : ''}Metrics: ${metrics.turns} answers, ${metrics.words} words, ${metrics.wpm} words/min, ${metrics.pauses} pauses over 1 s, average ${metrics.avgWords} words per answer, longest ${metrics.longestWords} words, ${metrics.corrections} corrections. Fluency score ${metrics.score}/100.
 
 Conversation:

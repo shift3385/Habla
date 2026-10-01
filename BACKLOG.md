@@ -9,9 +9,10 @@ Estado de cada idea: 🟢 aprobada · 🟡 a debatir · 🔴 descartada
 
 Ahora mismo la app está hecha a medida para un único usuario: el perfil semilla es fijo (`src/lib/profile.ts`) y hay escenarios personales (gestorías, entrevista de ingeniero de IA). Para que la pueda usar otra persona:
 
-- [ ] Quitar el perfil fijo. El perfil (nombre, idioma nativo, profesión, intereses, objetivos y niveles) se crea en la bienvenida a partir del test de calibración.
-- [ ] Generar los escenarios de trabajo según la profesión e intereses del usuario, en lugar de tenerlos fijos.
-- [ ] Hacer que los prompts del profe dependan siempre del perfil, sin datos personales en el código.
+- [x] (v4.5) Quitar el perfil fijo: el perfil inicial es neutro. Paso obligatorio **"Tu perfil"** (nombre, a qué se dedica, para qué quiere el inglés, temas favoritos) antes del test, editable en *Ajustes → Mi perfil*.
+- [x] (v4.5) Prácticas generales según el perfil: **Entrevista de trabajo** (según su profesión) y **Explicar a qué me dedico** (o su día a día, si no trabaja).
+- [x] (v4.5) Prompts sin datos ni niveles escritos a mano: el profe recibe nombre, ocupación, motivos, intereses, niveles reales y debilidades del test (que antes no llegaban al prompt). "Sorpréndeme" prioriza los temas favoritos.
+- [ ] Idioma nativo distinto del español (por ahora la app asume hispanohablantes).
 - [ ] ⚠️ Decidir cómo accede cada persona a la IA (ver "Puntos a debatir").
 
 ## 1. Test de calibración inicial ✅ hecho en v4.0 (idea del usuario)

@@ -1,23 +1,19 @@
 import { db, type Profile } from './db'
 
+// Perfil neutro: los datos personales los rellena cada persona en la bienvenida ("Tu perfil")
+// y los niveles y debilidades salen del test de calibración.
 export const SEED_PROFILE: Profile = {
   id: 'me',
   levels: {
     overall: 'B1',
     grammar: 'B1',
-    reading: 'B2',
+    reading: 'B1',
     listening: 'B1',
-    speaking: 'A2',
+    speaking: 'B1',
   },
-  about:
-    'Native Spanish speaker. Software engineer who builds AI agents and advises "gestorías" (Spanish administrative agencies) on legal paperwork and procedures.',
-  weaknesses: [
-    'Avoids speaking and gives very short answers.',
-    'Articles and uncountable nouns (software, advice, paperwork, information, feedback).',
-    'Drops auxiliary verbs: "I attending" → "I\'m attending"; "are write" → "are written" (passive).',
-    'False friends: "actually" (= en realidad) vs "currently" (= actualmente); "assesory" → "advise"/"advisory".',
-  ],
-  goal: 'Reach B2 in 12 weeks and, above all, speak fluently.',
+  about: '',
+  weaknesses: [],
+  goal: '',
   startedAt: Date.now(),
 }
 
@@ -27,4 +23,33 @@ export async function getProfile(): Promise<Profile> {
   const seed = { ...SEED_PROFILE, startedAt: Date.now() }
   await db.profile.put(seed)
   return seed
+}
+
+/** Motivos para aprender inglés (chips de la bienvenida). */
+export const PURPOSES: { id: string; label: string; en: string }[] = [
+  { id: 'work', label: 'Trabajo', en: 'work and career' },
+  { id: 'travel', label: 'Viajar', en: 'travelling' },
+  { id: 'study', label: 'Estudios', en: 'studies and exams' },
+  { id: 'social', label: 'Conversar con gente', en: 'talking with people from other countries' },
+  { id: 'media', label: 'Series, música y libros', en: 'understanding series, music and books' },
+  { id: 'move', label: 'Vivir en otro país', en: 'moving to another country' },
+  { id: 'family', label: 'Familia o amigos', en: 'family or friends who speak English' },
+  { id: 'self', label: 'Crecimiento personal', en: 'personal growth and keeping the mind active' },
+]
+
+export function isPersonalized(p: Profile): boolean {
+  return !!p.name?.trim()
+}
+
+/** Datos personales que el profe usa (en inglés para el prompt). */
+export function describeStudent(p: Profile): string {
+  const lines = [
+    p.name ? `Name: ${p.name} (address the student by this name now and then).` : '',
+    p.about ? `What they do: ${p.about}` : 'What they do: unknown (ask naturally if relevant).',
+    p.purposes?.length
+      ? `Why they are learning English: ${p.purposes.map((id) => PURPOSES.find((x) => x.id === id)?.en ?? id).join(', ')}.`
+      : '',
+    p.interests?.length ? `Interests: ${p.interests.join(', ')}.` : '',
+  ]
+  return lines.filter(Boolean).join('\n- ')
 }

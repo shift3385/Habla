@@ -96,10 +96,13 @@ export interface Profile {
     listening: string
     speaking: string
   }
-  about: string
+  about: string // a qué se dedica (texto libre del usuario)
   weaknesses: string[]
   goal: string
   startedAt: number
+  name?: string
+  purposes?: string[] // ids de PURPOSES
+  interests?: string[] // títulos de las categorías de temas que le interesan
   /** Fecha del último test de calibración. Sin él, la app obliga a hacer el test. */
   calibratedAt?: number
   tests?: CalibrationRecord[]

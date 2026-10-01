@@ -32,11 +32,15 @@ export function getCategory(id: string): TopicCategory {
 }
 
 /** Categoría al azar, evitando las usadas en las últimas sesiones. */
+/** Categoría al azar sin repetir las recientes; el 70 % de las veces, de los intereses del usuario. */
 export async function randomCategory(): Promise<TopicCategory> {
   const recent = (await recentTopics(4)).map((t) => t.category)
+  const interests = (await db.profile.get('me'))?.interests ?? []
   const pool = TOPIC_CATEGORIES.filter((c) => !recent.includes(c.id))
   const list = pool.length ? pool : TOPIC_CATEGORIES
-  return list[Math.floor(Math.random() * list.length)]
+  const favs = list.filter((c) => interests.includes(c.id))
+  const from = favs.length && Math.random() < 0.7 ? favs : list
+  return from[Math.floor(Math.random() * from.length)]
 }
 
 async function recentTopics(n: number): Promise<Topic[]> {
@@ -89,7 +93,8 @@ export async function generateTopic(
   const today = new Date().toISOString().slice(0, 10)
   const angle = ANGLES[Math.floor(Math.random() * ANGLES.length)]
 
-  const system = `You pick conversation topics for an English speaking class. The student is a Spanish speaker at B1 level (speaking A2) who wants varied, modern, engaging conversations.`
+  const lv = (await db.profile.get('me'))?.levels ?? { overall: 'B1', speaking: 'B1' }
+  const system = `You pick conversation topics for an English speaking class. The student is a Spanish speaker at ${lv.overall} level (speaking ${lv.speaking}) who wants varied, modern, engaging conversations.`
   const task = `Today is ${today}. Find ${category.brief}. Prefer something ${angle}.
 Do NOT pick anything similar to these recent topics:
 ${avoid}
@@ -97,7 +102,7 @@ ${avoid}
 Return ONLY a JSON object with:
 - "title": short catchy title in English (max 8 words)
 - "title_es": the same title in Spanish
-- "summary": 2-3 simple sentences in English (B1 level) explaining it, as if you read it today${category.live ? ', with concrete facts (who, what, where, when)' : ''}
+- "summary": 2-3 simple sentences in English (${lv.overall} level) explaining it, as if you read it today${category.live ? ', with concrete facts (who, what, where, when)' : ''}
 - "question": one open, personal question to start the conversation about it
 - "vocab": exactly 3 useful English words or short phrases from this topic with their Spanish translation, as [{"en": "...", "es": "..."}]`
 

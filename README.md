@@ -60,6 +60,11 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
   Cada profe tiene su orbe de colores, que late cuando habla, y su propia voz.
 - **Temas visuales:** **Ember** (naranja y turquesa), **Lumi** (verde cristal) y **Aurora** (verde, naranja y ámbar), cada uno en modo **oscuro** o **claro**. Se cambian en *Ajustes → Apariencia*. El modo también se cambia con el icono de sol y luna del Inicio.
 
+### Tu perfil (obligatorio)
+- Antes del test, cada persona rellena **"Tu perfil"**: nombre, a qué se dedica (opcional), para qué quiere el inglés y qué temas le gustan.
+- El profe te llama por tu nombre, adapta la **Entrevista de trabajo** y **Explicar a qué me dedico** a tu caso (si no trabajas, te pregunta por tu día a día), y "Sorpréndeme" elige más a menudo tus temas favoritos.
+- Se puede cambiar en *Ajustes → Mi perfil*. El nivel no se puede cambiar ahí: solo se muestra.
+
 ### Test de nivel (obligatorio)
 - Antes de usar la app, cada perfil hace un **test de nivel** de unos 12–15 minutos. Tiene 4 partes:
   - **Gramática y vocabulario:** 15 preguntas adaptativas, que suben o bajan de nivel según aciertas.

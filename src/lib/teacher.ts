@@ -9,6 +9,7 @@ import {
   type Models,
   type RetryInfo,
 } from './gemini'
+import { describeStudent, getProfile } from './profile'
 import type { Scenario } from './scenarios'
 
 const CATEGORIES: MistakeCategory[] = [
@@ -122,9 +123,10 @@ Keep the conversation on this topic and related angles: opinions, personal exper
 
 # The student
 - Native language: Spanish. Levels: overall ${profile.levels.overall}; grammar ${profile.levels.grammar}; reading ${profile.levels.reading}; listening ${profile.levels.listening}; speaking ${profile.levels.speaking}.
-- Goal: ${profile.goal}
-- Background (use ONLY if the session is about work, or if the student brings it up first): ${profile.about}
-- Do NOT steer the conversation towards the student's job, their projects or their apps. Do NOT mention previous lessons. Each lesson is a fresh conversation about today's topic.
+- ${describeStudent(profile)}
+- Use what they do ONLY if the session is about work, or if the student brings it up first. Do NOT steer the conversation towards their job. Do NOT mention previous lessons. Each lesson is a fresh conversation about today's topic.
+- Weaknesses found in their placement test (work on them naturally, give them priority when correcting):
+${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n') : '  - (none recorded yet)'}
 
 # Transcribing the audio
 - "transcript": write EXACTLY what the student said, verbatim. Do NOT fix grammar, word choice or word order: the mistakes are what we need to see. Keep hesitations like "uh" or "um" only when clearly audible. If they switch to Spanish, write those words in Spanish.
@@ -233,10 +235,11 @@ export interface Idea {
 }
 
 export async function answerIdeas(apiKey: string, models: Models, question: string, topic?: Topic): Promise<Idea[]> {
-  const task = `A Spanish-speaking English learner (B1, speaking A2) must answer this question out loud:
+  const lv = (await getProfile()).levels
+  const task = `A Spanish-speaking English learner (${lv.overall}, speaking ${lv.speaking}) must answer this question out loud:
 "${question}"
 ${topic ? `Topic: ${topic.title}.` : ''}
-Give 3 different ways to START the answer (sentence starters of 6-12 words that they can continue with their own ideas), each taking a different position or angle, in natural spoken English at B1 level, with a Spanish translation. Return {"ideas":[{"en":"...","es":"..."}]}`
+Give 3 different ways to START the answer (sentence starters of 6-12 words that they can continue with their own ideas), each taking a different position or angle, in natural spoken English at ${lv.speaking} level, with a Spanish translation. Return {"ideas":[{"en":"...","es":"..."}]}`
   const raw = await withRetry(models, (model) =>
     askGemini<{ ideas: Idea[] }>(apiKey, model, {
       system: 'You help English learners get started when speaking.',

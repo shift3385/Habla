@@ -5,10 +5,11 @@ import Calibration from './screens/Calibration'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
+import ProfileSetup from './screens/ProfileSetup'
 import ProgressScreen from './screens/ProgressScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import WordsScreen from './screens/WordsScreen'
-import { getProfile } from './lib/profile'
+import { getProfile, isPersonalized } from './lib/profile'
 import { loadSettings, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
 import Background from './ui/Background'
@@ -29,6 +30,7 @@ export default function App() {
   const [lesson, setLesson] = useState<Lesson | null>(null)
   // Test de calibración: obligatorio si el perfil no tiene nivel medido; también para el re-test.
   const [calibrated, setCalibrated] = useState<boolean | null>(null)
+  const [personalized, setPersonalized] = useState(false)
   const [retest, setRetest] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
   const tabRef = useRef(tab)
@@ -38,7 +40,11 @@ export default function App() {
 
   useEffect(() => {
     loadSettings().then(setSettings)
-    getProfile().then((p) => setCalibrated(!!p.calibratedAt)) // también siembra el perfil inicial
+    getProfile().then((p) => {
+      // también siembra el perfil inicial
+      setPersonalized(isPersonalized(p))
+      setCalibrated(!!p.calibratedAt)
+    })
   }, [])
 
   const update = useCallback((patch: Partial<Settings>) => {
@@ -86,6 +92,15 @@ export default function App() {
     return (
       <Shell t={t}>
         <Onboarding settings={settings} t={t} update={update} onDone={() => setTab('home')} />
+      </Shell>
+    )
+  }
+
+  // Orden obligatorio para cada perfil: bienvenida → tu perfil → test de nivel.
+  if (!personalized) {
+    return (
+      <Shell t={t}>
+        <ProfileSetup onDone={() => setPersonalized(true)} />
       </Shell>
     )
   }

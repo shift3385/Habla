@@ -41,25 +41,25 @@ export const SCENARIOS: Scenario[] = [
     emoji: '🎯',
     icon: 'target',
     brief:
-      'Targeted practice of the student\'s known weaknesses. Ask questions that force them to use: articles with uncountable nouns (software, advice, paperwork, information), continuous tenses with the auxiliary (I\'m working / I was attending), passive voice (is written / was approved), and the words "actually" vs "currently". Rotate between these targets.',
+      'Targeted practice of the student\'s weaknesses (see "Weaknesses found in their placement test" and "Structures this student often gets wrong"). Ask everyday questions designed so that answering them naturally FORCES the student to use those structures. Rotate between the targets, one per question, and keep it friendly.',
   },
   {
     id: 'interview',
-    title: 'Entrevista técnica',
-    subtitle: 'Entrevista para un puesto de ingeniero de IA',
-    emoji: '🧑‍💻',
+    title: 'Entrevista de trabajo',
+    subtitle: 'Practica una entrevista en inglés para tu profesión',
+    emoji: '🧑‍💼',
     icon: 'laptop',
     brief:
-      'You are a friendly interviewer at an international tech company hiring a senior AI/agents engineer (the student is the candidate). Ask one interview question at a time: experience, a project they are proud of, system design of an AI agent, trade-offs, a conflict with a teammate, why this company. Ask follow-up questions that push for longer, structured answers (situation, action, result).',
+      'You are a friendly interviewer at an international company. The student is the candidate for a job that matches what they do (see "What they do"); if that is unknown or they are not working, run a general interview for a job they would like (ask them first which one). Ask one interview question at a time: experience, strengths, a challenge they solved, teamwork, why this job, questions for you. Ask follow-ups that push for longer, structured answers (situation, action, result). Adapt the difficulty to their level.',
   },
   {
     id: 'client',
-    title: 'Explicar mi trabajo a un cliente',
-    subtitle: 'Una gestoría quiere automatizar trámites con IA',
+    title: 'Explicar a qué me dedico',
+    subtitle: 'Alguien curioso te pregunta por tu trabajo o tu día a día',
     emoji: '🤝',
     icon: 'hand',
     brief:
-      'You are the owner of a small administrative agency (gestoría) in the UK who is interested in automating paperwork with AI agents but knows nothing about technology. The student is the consultant. Ask about how it works, costs, risks, data privacy, timelines, and what happens when the AI makes a mistake. Be a bit skeptical so the student has to explain clearly.',
+      'You are a curious person from another country who knows nothing about the student\'s field (see "What they do"). Ask them to explain what they do: a typical day, what they like and dislike, how things work in their job, what is difficult, advice for a beginner. If they are retired, studying or not working, ask about their daily life, their former job or their studies instead. Ask simple, genuine follow-up questions so they have to explain clearly.',
   },
   {
     id: 'debate',
