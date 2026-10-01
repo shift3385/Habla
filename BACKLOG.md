@@ -44,6 +44,39 @@ No es un traductor literal: explica qué significa una palabra **en la frase con
 - [ ] Botón **"Guardar"**, que añade la palabra al vocabulario y al repaso espaciado (fase 3).
 - [ ] Historial de consultas.
 
+## 4. Observaciones de uso real (2026-10-01) 🟢
+
+Notas tras probar la v3.0, ya con más personas usando la app (por ejemplo, la madre del usuario).
+
+### 4.1 Corrección de pronunciación real (Azure Speech)
+**Problema:** Gemini entiende lo que quisiste decir aunque lo pronuncies mal, y casi nunca corrige la pronunciación. Por ejemplo, no avisa si "world" sale mal.
+
+**Propuesta:** integrar **Azure AI Speech, Pronunciation Assessment**. Puntúa precisión, fluidez y completitud por palabra **y por fonema**, a partir del audio y del texto de referencia.
+- [ ] Texto de referencia: la transcripción de Gemini en el turno libre, o la frase exacta en ejercicios de repetición (encaja con la propuesta B, shadowing).
+- [ ] Ojo con el formato: Azure no acepta webm. Hay que convertir en el teléfono a WAV PCM 16 kHz mono (decodificar con AudioContext, como ya hace `speech.ts`) o usar OGG/Opus.
+- [ ] Ajustes: clave y región de Azure, guardadas solo en el teléfono, igual que la de Gemini. Tiene capa gratuita mensual.
+- [ ] UI: palabras mal pronunciadas subrayadas en tu burbuja; al tocarlas, el sonido correcto (TTS) y el fonema que falló.
+
+### 4.2 Voz del profe más humana (suspiros, risas, pausas, respiración)
+**Problema:** la voz suena a lectura plana. Una risa se lee como "jajaja" y no hay pausas, respiraciones ni emoción.
+
+**Propuesta:** pasar de la voz del teléfono (TTS nativo) a una voz expresiva con **etiquetas de emoción**:
+- **ElevenLabs v3** (idea del usuario): etiquetas entre corchetes como `[sighs]`, `[laughs]`, `[whispers]`, `[short pause]`. Calidad muy alta, pero es otro proveedor con coste por carácter.
+- **Alternativa a valorar:** **TTS de Gemini** (`gemini-3.8-flash-tts`). Usa la misma clave que ya tenemos, controla estilo y emoción con instrucciones en lenguaje natural y tiene voces masculinas y femeninas.
+- [ ] El prompt del profe genera el texto con las etiquetas, con moderación y solo cuando encajen (no en cada frase).
+- [ ] El texto que se ve en pantalla va limpio, sin las etiquetas.
+- [ ] Caché de audio y modo sin conexión: si falla la voz en la nube, se usa la del teléfono.
+
+### 4.3 Leo debe tener voz masculina 🐞
+**Problema:** Emma y Leo suenan igual, con la misma voz femenina. Bajar el tono no basta.
+- [ ] **Arreglo rápido:** en el TTS del teléfono, elegir automáticamente una voz masculina en-GB para Leo, si existe en el dispositivo (Google TTS tiene varias por idioma), y recordarla.
+- [ ] **Arreglo definitivo:** con la voz en la nube (4.2), una voz fija para cada profe: femenina en-US para Emma y masculina en-GB para Leo.
+
+### 4.4 Pensar en usuarios no técnicos
+La app ya la usan otras personas.
+- [ ] Revisar textos y botones para quien no conoce la app: ayuda en la primera clase y mensajes de error más claros.
+- [ ] Cada persona necesita su propio perfil y nivel, lo que refuerza la prioridad del test de calibración (punto 1).
+
 ## 3. Propuestas para debatir 🟡
 
 | # | Propuesta | Por qué | Esfuerzo |
