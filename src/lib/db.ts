@@ -116,7 +116,7 @@ export interface CalibrationRecord {
   strengthsEs: string[]
   weaknessesEs: string[]
   summaryEs: string
-  grammarAnswers: { level: string; correct: boolean }[]
+  grammarAnswers: { level: string; correct: boolean; unknown?: boolean; point?: string }[]
 }
 
 export interface LevelEvent {

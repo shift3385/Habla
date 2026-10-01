@@ -66,6 +66,31 @@ function Option({ text, sel, onClick }: { text: string; sel: boolean; onClick: (
   )
 }
 
+/** Quinta opción honesta: distinta a propósito (borde discontinuo, color apagado) para no confundirla con una respuesta. */
+function UnknownOption({ sel, onClick }: { sel: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="mt-1 flex min-h-[48px] w-full items-center gap-2.5 rounded-[18px] px-4 py-2 text-left text-[14.5px] transition-colors"
+      style={{
+        border: `1.5px dashed ${sel ? 'var(--acc2)' : 'var(--sub)'}`,
+        background: sel ? 'var(--field)' : 'transparent',
+        color: sel ? 'var(--acc2)' : 'var(--sub)',
+      }}
+    >
+      <span
+        className="grid h-6 w-6 flex-none place-items-center rounded-full text-[13px] font-semibold"
+        style={{ border: '1.5px solid currentColor' }}
+      >
+        ?
+      </span>
+      <span>
+        No lo sé <span className="text-[12px] opacity-80">· mejor ser sincero que adivinar</span>
+      </span>
+    </button>
+  )
+}
+
 interface Props {
   settings: Settings
   t: ThemeVars
@@ -137,7 +162,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     if (!current || picked !== null) return
     setPicked(i)
     setTimeout(() => {
-      const next = [...answers, { item: current, chosen: i, correct: i === current.answer }]
+      const next = [...answers, { item: current, chosen: i, correct: i === current.answer, unknown: i === -1 }]
       setAnswers(next)
       setPicked(null)
       if (next.length >= MCQ_COUNT || !nextMcq(pool, next)) startComprehension(estimateMcqLevel(next))
@@ -227,8 +252,17 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     setStep({ k: 'loading', text: `${teacher.name} está evaluando tu inglés…` })
     recorder.current.close()
     try {
-      const failed = answers.filter((a) => !a.correct).map((a) => a.item.point)
-      const ev = await evaluateSpeaking(settings.geminiKey, models(), tasks, speech as SpeakingAnswer[], failed, onRetry)
+      const failed = answers.filter((a) => !a.correct && !a.unknown).map((a) => a.item.point)
+      const unknown = answers.filter((a) => a.unknown).map((a) => a.item.point)
+      // Las preguntas de lectura/audición marcadas como "No lo sé" también son lagunas reconocidas.
+      for (const kind of ['reading', 'listening'] as const)
+        comp?.[kind].forEach((c, i) =>
+          c.questions.forEach((q, qi) => {
+            if (compAnswers[`${kind}-${i}-${qi}`] === -1)
+              unknown.push(`${kind === 'reading' ? 'reading' : 'listening'} comprehension at ${c.level}: "${q.q}"`)
+          }),
+        )
+      const ev = await evaluateSpeaking(settings.geminiKey, models(), tasks, speech as SpeakingAnswer[], failed, unknown, onRetry)
       const levels = buildLevels(estimateMcqLevel(answers), scoreComp('reading'), scoreComp('listening'), ev.level)
       const r: CalibrationResult = { levels, speaking: ev, mcq: answers }
       await saveCalibration(r)
@@ -271,7 +305,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
             ))}
           </div>
           <p className="txt-sub mt-3 text-[13px] leading-snug">
-            Responde sin ayuda: si no sabes algo, elige lo que creas. Tu nivel no se puede cambiar a mano; irá subiendo con la práctica y con un nuevo test cada 4 semanas.
+            Responde sin ayuda. Si no sabes una respuesta, marca <b>«No lo sé»</b> en vez de adivinar: así {teacher.name} sabrá exactamente qué enseñarte. Tu nivel no se puede cambiar a mano; irá subiendo con la práctica y con un nuevo test cada 4 semanas.
           </p>
           <button onClick={startMcq} className="btn-acc mt-5 h-[58px] rounded-full text-[17px]">
             Empezar el test
@@ -320,6 +354,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
             {current.options.map((o, i) => (
               <Option key={i} text={o} sel={picked === i} onClick={() => answerMcq(i)} />
             ))}
+            <UnknownOption sel={picked === -1} onClick={() => answerMcq(-1)} />
           </div>
         </div>
       </div>
@@ -378,6 +413,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
                   {q.options.map((o, oi) => (
                     <Option key={oi} text={o} sel={compAnswers[key] === oi} onClick={() => setCompAnswers((a) => ({ ...a, [key]: oi }))} />
                   ))}
+                  <UnknownOption sel={compAnswers[key] === -1} onClick={() => setCompAnswers((a) => ({ ...a, [key]: -1 }))} />
                 </div>
               </div>
             )

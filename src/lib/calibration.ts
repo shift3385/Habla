@@ -83,7 +83,8 @@ export const MCQ_COUNT = 15
 
 export interface McqAnswer {
   item: McqItem
-  chosen: number
+  chosen: number // -1 = "No lo sé"
+  unknown: boolean // marcó honestamente que no lo sabe (cuenta como no acertada)
   correct: boolean
 }
 
@@ -292,6 +293,7 @@ export async function evaluateSpeaking(
   tasks: SpeakingTask[],
   answers: SpeakingAnswer[],
   failedPoints: string[],
+  unknownPoints: string[],
   onRetry?: (i: RetryInfo) => void,
 ): Promise<SpeakingEval> {
   const parts: GeminiPart[] = []
@@ -310,7 +312,8 @@ export async function evaluateSpeaking(
 - "weaknesses_es": 3-4 concrete, recurring weaknesses in Spanish, quoting examples from the answers.
 - "weaknesses_en": the same weaknesses as short English notes for the teacher (e.g. "Drops the auxiliary in continuous tenses: 'I working' → 'I'm working'").
 - "summary_es": 2 sentences in Spanish summarising the level, encouraging but honest.
-Grammar/vocabulary points the candidate FAILED in the written part (consider them for weaknesses): ${failedPoints.join('; ') || 'none'}.`,
+Grammar/vocabulary points the candidate FAILED in the written part (consider them for weaknesses): ${failedPoints.join('; ') || 'none'}.
+Points the candidate HONESTLY marked as "I don't know" (known gaps: give them priority among the weaknesses, the teacher will build the course on them): ${unknownPoints.join('; ') || 'none'}.`,
   })
 
   const raw = await withRetry(
@@ -355,7 +358,7 @@ export async function saveCalibration(r: CalibrationResult): Promise<Profile> {
     strengthsEs: r.speaking.strengthsEs,
     weaknessesEs: r.speaking.weaknessesEs,
     summaryEs: r.speaking.summaryEs,
-    grammarAnswers: r.mcq.map((a) => ({ level: a.item.level, correct: a.correct })),
+    grammarAnswers: r.mcq.map((a) => ({ level: a.item.level, correct: a.correct, unknown: a.unknown, point: a.item.point })),
   }
   const events = (['grammar', 'reading', 'listening', 'speaking', 'overall'] as const)
     .filter((k) => p.levels[k] !== r.levels[k])
