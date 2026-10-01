@@ -43,6 +43,23 @@ android {
     }
 }
 
+// Nombre del APK: Habla-v<versión>.apk, y una copia en <proyecto>/apk/ para encontrarlo fácil.
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "Habla-v${variant.versionName}.apk"
+    }
+    if (variant.buildType.name == 'debug') {
+        variant.assembleProvider.configure { assembleTask ->
+            assembleTask.doLast {
+                copy {
+                    from variant.outputs.first().outputFile
+                    into rootProject.file('../apk')
+                }
+            }
+        }
+    }
+}
+
 repositories {
     flatDir{
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'

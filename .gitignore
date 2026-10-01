@@ -32,3 +32,6 @@ keystore/
 
 # Log de compilación local
 android/build-log.txt
+
+# APKs generados (copia cómoda para pasar al teléfono)
+apk/

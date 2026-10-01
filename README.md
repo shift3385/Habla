@@ -14,15 +14,15 @@ Tu profesor de inglés por voz con IA. App Android personal (no se publica en ni
 Después de compilar, el archivo está aquí:
 
 ```
-D:\My Apps\HABLA\android\app\build\outputs\apk\debug\app-debug.apk
+D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 ```
 
 ## 📲 Instalar en el teléfono (primera vez)
 
 1. **Copia el APK al teléfono**. Elige cualquiera de estas opciones:
-   - **Por cable USB:** conecta el teléfono y elige "Transferencia de archivos" en la notificación. En el Explorador de Windows, copia `app-debug.apk` a la carpeta `Download` del teléfono.
+   - **Por cable USB:** conecta el teléfono y elige "Transferencia de archivos" en la notificación. En el Explorador de Windows, copia `Habla-v<versión>.apk` (por ejemplo `Habla-v3.0.apk`) a la carpeta `Download` del teléfono.
    - **Por Google Drive:** sube el APK a Drive desde el PC y descárgalo desde la app de Drive en el teléfono.
-2. En el teléfono, abre **Archivos** (o "Mis archivos") → **Descargas** y toca `app-debug.apk`.
+2. En el teléfono, abre **Archivos** (o "Mis archivos") → **Descargas** y toca el APK con la versión más alta (por ejemplo `Habla-v3.0.apk`).
 3. Android dirá que no permite instalar apps de esta fuente. Toca **Ajustes** y activa **"Permitir de esta fuente"** para Archivos (o Drive). Vuelve atrás.
 4. Toca **Instalar**. Si aparece Google Play Protect diciendo que la app es desconocida, toca **"Más detalles" → "Instalar de todos modos"**. Es normal: la app no viene de Play Store.
 5. Abre **Habla**. Irás directo a **Ajustes**:
@@ -123,7 +123,7 @@ Abre la versión web en http://localhost:5173 para probar la interfaz. El micró
 ```bash
 npm run apk
 ```
-Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleDebug`. El resultado sale en `android\app\build\outputs\apk\debug\app-debug.apk`.
+Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleDebug`. El APK se llama `Habla-v<versión>.apk` (la versión sale de `versionName`) y se copia a la carpeta `apk\` del proyecto, donde se van acumulando las versiones.
 
 Antes de cada actualización, sube `versionCode` y `versionName` en `android/app/build.gradle`.
 
