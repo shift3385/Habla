@@ -97,23 +97,51 @@ async function autoVoice(): Promise<VoiceOption | null> {
   )
 }
 
+// En Android, si una frase se interrumpe (stop o nueva frase), el plugin nunca resuelve su promesa.
+// Guardamos cómo terminar la frase en curso para resolverla nosotros al interrumpirla.
+let finishCurrent: (() => void) | null = null
+
+function interruptCurrent() {
+  finishCurrent?.()
+  finishCurrent = null
+}
+
 export async function speak(text: string, rate: number, voiceIndex: number | null): Promise<void> {
+  interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
   const auto = voiceIndex === null ? await autoVoice() : null
   const index = voiceIndex ?? auto?.index ?? null
   // Si el teléfono no tiene ninguna voz masculina, al menos bajamos el tono para Leo.
   const pitch = voiceIndex === null && !auto && voiceGender === 'male' ? 0.8 : 1
-  await TextToSpeech.speak({
-    text,
-    lang: auto ? auto.lang : voiceLang,
-    rate,
-    pitch,
-    volume: 1,
-    category: 'playback',
-    ...(index !== null ? { voice: index } : {}),
+  return new Promise<void>((resolve, reject) => {
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      if (finishCurrent === finish) finishCurrent = null
+      resolve()
+    }
+    finishCurrent = finish
+    TextToSpeech.speak({
+      text,
+      lang: auto ? auto.lang : voiceLang,
+      rate,
+      pitch,
+      volume: 1,
+      category: 'playback',
+      ...(index !== null ? { voice: index } : {}),
+    })
+      .then(finish)
+      .catch((e) => {
+        if (done) return
+        done = true
+        if (finishCurrent === finish) finishCurrent = null
+        reject(e)
+      })
   })
 }
 
 export async function stopSpeaking(): Promise<void> {
+  interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
 }

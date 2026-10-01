@@ -333,6 +333,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
     const isLast = i === comp[kind].length - 1
     const next = () => {
       stopSpeaking()
+      setPlaying(false)
       if (!isLast) setStep({ k: kind, i: i + 1 })
       else if (kind === 'reading') setStep({ k: 'listening', i: 0 })
       else {
