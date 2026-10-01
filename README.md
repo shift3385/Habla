@@ -66,6 +66,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
   - **Lectura:** 2 textos cortos.
   - **Audición:** 2 audios, cada uno se puede escuchar hasta 3 veces.
   - **Habla:** 3 respuestas por voz, que el profe evalúa.
+- Antes de la lectura, la escucha y el habla aparece una **pantalla de instrucciones** con lo que hay que hacer. Recomienda **auriculares** para la escucha y **auriculares con micrófono** para el habla, porque mejoran mucho el reconocimiento de voz.
 - Todas las preguntas tienen una opción **«No lo sé»**, con otro estilo: es mejor ser sincero que adivinar. Cuenta como no acertada, pero el profe recibe esos puntos como lagunas reconocidas y les da prioridad en el curso.
 - El resultado (un nivel por habilidad, el nivel global y tus puntos débiles) adapta al profe: su vocabulario, la velocidad de la voz y lo que te hace practicar.
 - **El nivel no se puede cambiar a mano.** El nivel de habla sube o baja con la práctica: como mucho un escalón por semana, según la nota media de tus últimas 5 sesiones. Cada 4 semanas se desbloquea un **re-test**, en *Ajustes → Mi nivel*.

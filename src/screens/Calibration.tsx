@@ -22,7 +22,7 @@ import { MicError, Recorder } from '../lib/recorder'
 import type { Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import { speak, stopSpeaking } from '../lib/tts'
-import { Icon } from '../ui/icons'
+import { Icon, type IconName } from '../ui/icons'
 import Orb from '../ui/Orb'
 import { TEACHERS, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
@@ -31,6 +31,7 @@ type Step =
   | { k: 'intro' }
   | { k: 'loading'; text: string }
   | { k: 'mcq' }
+  | { k: 'section'; s: 'reading' | 'listening' | 'speaking' } // instrucciones antes de cada parte
   | { k: 'reading'; i: number }
   | { k: 'listening'; i: number }
   | { k: 'speaking'; i: number }
@@ -38,6 +39,39 @@ type Step =
   | { k: 'error'; text: string; retry: () => void }
 
 const SECTIONS = ['Gramática', 'Lectura', 'Audición', 'Habla']
+
+/** Instrucciones breves antes de cada parte, para quien hace el test sin que nadie le explique. */
+const SECTION_INFO: Record<'reading' | 'listening' | 'speaking', { title: string; icon: IconName; points: string[]; tip?: string }> = {
+  reading: {
+    title: 'Prueba de lectura',
+    icon: 'book',
+    points: [
+      'Vas a leer 2 textos cortos en inglés.',
+      'Después de cada texto hay 2 preguntas. La respuesta está en el texto: puedes releerlo las veces que quieras.',
+      'Si no encuentras la respuesta, marca «No lo sé».',
+    ],
+  },
+  listening: {
+    title: 'Prueba de escucha',
+    icon: 'headphones',
+    points: [
+      'Vas a escuchar 2 audios cortos en inglés. No hay texto: solo audio.',
+      'Toca el botón de reproducir. Cada audio se puede escuchar hasta 3 veces.',
+      'Las respuestas a las 2 preguntas salen de lo que escuchas. Si no lo entendiste, marca «No lo sé».',
+    ],
+    tip: 'Recomendado: usa auriculares, sube el volumen y busca un lugar tranquilo.',
+  },
+  speaking: {
+    title: 'Prueba de habla',
+    icon: 'mic',
+    points: [
+      'El profe te hará 3 preguntas en voz alta (puedes volver a escucharlas).',
+      'Toca el micrófono para empezar a hablar y tócalo otra vez para terminar.',
+      'Habla al menos 20–30 segundos en cada una. No pasa nada si dudas: lo importante es que hables.',
+    ],
+    tip: 'Si tienes auriculares con micrófono, úsalos: el reconocimiento de tu voz será mucho mejor que con el micrófono del teléfono. Busca un lugar sin ruido.',
+  },
+}
 
 function Header({ section }: { section: number }) {
   return (
@@ -178,7 +212,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
       if (!c.reading.length || !c.listening.length) throw new Error('No se pudieron generar los textos.')
       setComp(c)
       setHint(null)
-      setStep({ k: 'reading', i: 0 })
+      setStep({ k: 'section', s: 'reading' })
     } catch (e) {
       setHint(null)
       setStep({ k: 'error', text: (e as Error).message, retry: () => startComprehension(lv) })
@@ -277,7 +311,15 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
 
   // ---- UI
   const section =
-    step.k === 'mcq' ? 0 : step.k === 'reading' ? 1 : step.k === 'listening' ? 2 : step.k === 'speaking' ? 3 : -1
+    step.k === 'mcq'
+      ? 0
+      : step.k === 'reading' || (step.k === 'section' && step.s === 'reading')
+        ? 1
+        : step.k === 'listening' || (step.k === 'section' && step.s === 'listening')
+          ? 2
+          : step.k === 'speaking' || (step.k === 'section' && step.s === 'speaking')
+            ? 3
+            : -1
   const pad = 'relative z-[2] flex h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
 
   if (step.k === 'intro') {
@@ -309,6 +351,51 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
           </p>
           <button onClick={startMcq} className="btn-acc mt-5 h-[58px] rounded-full text-[17px]">
             Empezar el test
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (step.k === 'section') {
+    const info = SECTION_INFO[step.s]
+    const start = () => {
+      if (step.s === 'speaking') {
+        setStep({ k: 'speaking', i: 0 })
+        setTimeout(() => sayTask(0), 400)
+      } else setStep({ k: step.s, i: 0 })
+    }
+    return (
+      <div className={pad}>
+        <Header section={section} />
+        <div key={step.s} className="anim-in flex flex-1 flex-col">
+          <div className="grid flex-1 place-items-center">
+            <div className="btn-acc grid h-28 w-28 place-items-center rounded-full" style={{ boxShadow: '0 0 0 10px var(--g), 0 14px 40px var(--glow)' }}>
+              <Icon name={info.icon} size={48} stroke={1.5} />
+            </div>
+          </div>
+          <div className="txt-acc2 text-xs tracking-[1.2px] uppercase">Parte {section + 1} de 4</div>
+          <h1 className="mt-1 text-[30px] leading-tight font-semibold tracking-[-.6px]">{info.title}</h1>
+          <ul className="mt-4 flex flex-col gap-2.5">
+            {info.points.map((p) => (
+              <li key={p} className="flex gap-2.5 text-[15px] leading-snug">
+                <span className="txt-acc mt-0.5 flex-none">
+                  <Icon name="check" size={17} stroke={2.2} />
+                </span>
+                {p}
+              </li>
+            ))}
+          </ul>
+          {info.tip && (
+            <div className="glass mt-4 flex items-start gap-3 rounded-[20px] px-4 py-3">
+              <span className="txt-acc2 mt-0.5 flex-none">
+                <Icon name="headphones" size={20} />
+              </span>
+              <span className="text-[14px] leading-snug">{info.tip}</span>
+            </div>
+          )}
+          <button onClick={start} className="btn-acc mt-6 h-[58px] rounded-full text-[17px]">
+            Entendido, empezar
           </button>
         </div>
       </div>
@@ -370,11 +457,8 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
       stopSpeaking()
       setPlaying(false)
       if (!isLast) setStep({ k: kind, i: i + 1 })
-      else if (kind === 'reading') setStep({ k: 'listening', i: 0 })
-      else {
-        setStep({ k: 'speaking', i: 0 })
-        setTimeout(() => sayTask(0), 400)
-      }
+      else if (kind === 'reading') setStep({ k: 'section', s: 'listening' })
+      else setStep({ k: 'section', s: 'speaking' })
     }
     const used = plays[i] ?? 0
     return (
