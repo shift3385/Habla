@@ -69,7 +69,11 @@ Notas tras probar la v3.0, ya con más personas usando la app (por ejemplo, la m
 
 ### 4.3 Leo debe tener voz masculina 🐞
 **Problema:** Emma y Leo suenan igual, con la misma voz femenina. Bajar el tono no basta.
-- [x] **Arreglo rápido (v3.1):** en el TTS del teléfono, se elige automáticamente una voz masculina en-GB para Leo y una femenina en-US para Emma, según el código de la voz de Google (`gbb`, `gbd`, `rjs`… = masculinas). Si el teléfono no tiene voz masculina, se baja el tono.
+- [~] **Arreglo rápido (v3.1), insuficiente:** la app ya elige automáticamente una voz masculina en-GB para Leo y una femenina en-US para Emma, según el código de la voz de Google (`gbb`, `gbd`, `rjs`… = masculinas), y si no la encuentra baja el tono.
+  - **Resultado en el teléfono del usuario (POCO 23122PCD1G, HyperOS):** Leo sigue sonando femenino. El único motor es "Speech Recognition & Synthesis" de Google, y el usuario no encontró cómo descargar una voz masculina. Probablemente el teléfono no tiene voces masculinas descargadas o no las expone.
+  - [ ] Botón **"Instalar voces"** en *Profe y voz*: `TextToSpeech.openInstall()` del plugin abre la pantalla de datos de voz de Android.
+  - [ ] Mostrar en *Profe y voz* qué voces detecta la app y su género, para diagnosticar sin capturas.
+  - **Conclusión:** depender de las voces del teléfono no es fiable. La solución real es la voz en la nube (4.2).
 - [ ] **Arreglo definitivo:** con la voz en la nube (4.2), una voz fija para cada profe: femenina en-US para Emma y masculina en-GB para Leo.
 
 ### 4.4 Pensar en usuarios no técnicos
