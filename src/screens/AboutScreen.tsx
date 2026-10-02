@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { APP_BUILD, APP_DATE, APP_VERSION, formatDate, RELEASES } from '../lib/changelog'
 import type { Settings } from '../lib/settings'
 import { Icon, type IconName } from '../ui/icons'
-import Orb from '../ui/Orb'
-import type { ThemeVars } from '../ui/theme'
+import Mascot from '../ui/Mascot'
+import { THEME_INFO, type ThemeVars } from '../ui/theme'
 
 type Page = 'main' | 'news' | 'credits' | 'privacy' | 'help' | 'licenses'
 
@@ -35,7 +35,6 @@ function Rows({ items }: { items: [string, string][] }) {
 /** Acerca de (diseño "AcercaDe"): versión, novedades, créditos, privacidad y ayuda. */
 export default function AboutScreen({
   settings,
-  t,
   initialPage = 'main',
   onBack,
 }: {
@@ -72,7 +71,7 @@ export default function AboutScreen({
           <div className="glass flex flex-col items-center rounded-[30px] px-[18px] pt-[22px] pb-[18px] text-center">
             <button onClick={() => setTaps((x) => x + 1)} aria-label="Logo">
               <div style={egg ? { animation: 'hb-spin 1s linear infinite' } : undefined}>
-                <Orb size={84} colors={t[settings.teacher]} active={egg} />
+                <Mascot element={THEME_INFO[settings.theme].mascot} size={96} mood={egg ? 'happy' : 'idle'} interactive={false} />
               </div>
             </button>
             <div className="mt-3.5 text-[30px] font-bold tracking-[-.8px]">

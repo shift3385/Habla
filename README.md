@@ -60,8 +60,14 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
   - **Emma**: acento americano; paciente, clara y muy positiva.
   - **Leo**: acento británico; directo, curioso y con humor.
   
-  Cada profe tiene su orbe de colores, que late cuando habla, y su propia voz.
-- **Temas visuales:** **Ember** (naranja y turquesa), **Lumi** (verde cristal) y **Aurora** (verde, naranja y ámbar), cada uno en modo **oscuro** o **claro**. Se cambian en *Ajustes → Apariencia*. El modo también se cambia con el icono de sol y luna del Inicio.
+  Cada profe tiene su propia voz. Te acompaña la **mascota** de tu tema (ver abajo).
+- **Tema y mascota (tu compañero):** cada tema trae su mascota animada, que sustituye a la antigua burbuja. Se elige en la bienvenida, justo después del nombre, y se cambia en *Ajustes → Tema y mascota*:
+  - **Chispa** · tema **Ember** (fuego, naranja y turquesa)
+  - **Musgo** · tema **Lumi** (tierra, verde)
+  - **Gota** · tema **Marea** (agua, cielo y mar; claro por defecto)
+  - **Brisa** · tema **Nimbo** (aire, violeta)
+
+  La mascota escucha mientras grabas, piensa mientras el profe responde y habla con su voz. Tócala, estírala como un *slime* o (Brisa) agítala en círculos: cada una reacciona a su manera. **Cinco toques seguidos** desvelan su secreto. Cada tema tiene modo oscuro y claro; el modo también se cambia con el icono de sol y luna del Inicio.
 
 ### Tu perfil (obligatorio)
 - Antes del test, cada persona rellena **"Tu perfil"**: nombre, a qué se dedica (opcional), para qué quiere el inglés y qué temas le gustan.
@@ -82,7 +88,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ### Inicio
 - **Racha** (icono de llama): días seguidos practicando.
-- **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember es un anillo; en Lumi, la tarjeta "Charla libre"; en Aurora, una barra junto al orbe.
+- **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember, junto a la mascota; en Lumi, la tarjeta "Charla libre"; en Marea y Nimbo, una barra junto a la mascota.
 - **Sorpréndeme** (icono de destello): un tema al azar, distinto de los últimos que usaste.
 - **Tarea**: la tarea para mañana de tu última sesión. Tócala para leerla entera.
 - **Temas / Prácticas**: un selector para cambiar entre las 12 categorías de temas y las 5 prácticas guiadas.
@@ -201,7 +207,7 @@ src/
     settings.ts    clave, modelo y preferencias (@capacitor/preferences)
   screens/         Home, Conversation, ProgressScreen, SettingsScreen
   components/      botón de hablar, informe, gráfica, corrección, anillo de nota
-  ui/              sistema visual del rediseño: temas (theme.ts), iconos, orbe, ondas, fondo, selector
+  ui/              sistema visual: temas (theme.ts), mascotas (Mascot.tsx), iconos, ondas, fondo, selector
   screens/Onboarding.tsx  bienvenida en 3 pasos
 android/           proyecto nativo (Capacitor 8, Android 36)
 keystore/          firma del APK (fuera de git; haz copia)
@@ -213,6 +219,7 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **Migración a Gemini** con reintentos automáticos y modelo de respaldo
 - [x] **Fase 2:** métricas de fluidez, nota, informe y tarea para mañana; temas dinámicos con noticias reales; racha, meta diaria y pestaña Progreso
 - [x] **Rediseño** (Claude Design): temas Ember / Lumi / Aurora en claro y oscuro, profes Emma y Leo, bienvenida, pantallas sin scroll
+- [x] **Rediseño V4:** cuatro temas con mascota (Chispa, Musgo, Gota y Brisa) y paso "Elige a tu compañero" (v5.1)
 - [x] **Fase 3:** cuaderno de errores con repetición espaciada (FSRS) y ejercicio oral de español a inglés (v4.7)
 - [x] **Fase 4:** plan de 12 semanas, lección del día y recordatorio diario (v5.0)
 - [x] **Fase 5:** re-test cada 4 semanas con comparación antes → después y plan que se adapta (v5.0)

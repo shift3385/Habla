@@ -18,8 +18,8 @@ import {
 } from '../lib/srs'
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
-import Orb from '../ui/Orb'
-import { TEACHERS, type ThemeVars } from '../ui/theme'
+import Mascot from '../ui/Mascot'
+import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
 
 type Step = 'ask' | 'recording' | 'checking' | 'result'
@@ -39,7 +39,7 @@ const VERDICT = {
 }
 
 /** Repaso espaciado: frase en español → la dices en inglés → Gemini la evalúa → nota FSRS. */
-export default function ReviewScreen({ settings, t, onExit, registerBack }: Props) {
+export default function ReviewScreen({ settings, onExit, registerBack }: Props) {
   const teacher = TEACHERS[settings.teacher]
   const [queue, setQueue] = useState<SrsCard[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -79,7 +79,7 @@ export default function ReviewScreen({ settings, t, onExit, registerBack }: Prop
   const pad = 'relative z-[2] flex h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
 
   if (loadError) {
-    return <PrepareScreen kind="clase" state="error" colors={t[settings.teacher]} teacherName={teacher.name} errorText={loadError} onBack={onExit} />
+    return <PrepareScreen kind="clase" state="error" mascot={THEME_INFO[settings.theme].mascot} teacherName={teacher.name} errorText={loadError} onBack={onExit} />
   }
   if (!queue) return null
 
@@ -91,7 +91,7 @@ export default function ReviewScreen({ settings, t, onExit, registerBack }: Prop
     return (
       <div className={pad}>
         <div className="anim-up flex flex-1 flex-col items-center justify-center gap-4 text-center">
-          <Orb size={130} colors={t[settings.teacher]} active={!empty} />
+          <Mascot element={THEME_INFO[settings.theme].mascot} size={170} mood={empty ? 'happy' : 'idle'} />
           <h1 className="text-[28px] font-semibold tracking-[-.6px]">{empty ? '¡Todo repasado!' : '¡Repaso terminado!'}</h1>
           <p className="txt-sub max-w-[300px] text-[15px] leading-snug">
             {empty
@@ -182,7 +182,7 @@ export default function ReviewScreen({ settings, t, onExit, registerBack }: Prop
             {Math.min(i + 1, queue.length)} de {queue.length} · {card.source === 'mistake' ? 'tu corrección' : 'palabra guardada'}
           </div>
         </div>
-        <Orb size={34} colors={t[settings.teacher]} active={step === 'checking'} />
+        <Mascot element={THEME_INFO[settings.theme].mascot} size={52} mood={step === 'checking' ? 'thinking' : 'idle'} />
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--gb)' }}>
         <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${(i / queue.length) * 100}%`, background: 'var(--acc)' }} />

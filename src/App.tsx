@@ -15,7 +15,7 @@ import ProfileSetup from './screens/ProfileSetup'
 import WelcomeScreen, { type ReturningInfo } from './screens/WelcomeScreen'
 import ProgressScreen from './screens/ProgressScreen'
 import ReviewScreen from './screens/ReviewScreen'
-import SettingsScreen from './screens/SettingsScreen'
+import SettingsScreen, { type SettingsPage } from './screens/SettingsScreen'
 import WordsScreen from './screens/WordsScreen'
 import { getProfile, isPersonalized } from './lib/profile'
 import { nextRetestAt } from './lib/levels'
@@ -50,6 +50,8 @@ export default function App() {
   // Plan de 12 semanas (fase 4) y fecha del próximo re-test (fase 5).
   const [plan, setPlan] = useState<StudyPlan | null>(null)
   const [planOpen, setPlanOpen] = useState(false)
+  // Ajustes abiertos directamente en una sección (p. ej. Tema y mascota desde el Inicio).
+  const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(null)
   const [retestAt, setRetestAt] = useState<number | null>(null)
   const [retestReady, setRetestReady] = useState(false)
   const [level, setLevel] = useState('B1')
@@ -168,7 +170,14 @@ export default function App() {
   if (splash) {
     return (
       <Shell t={t}>
-        <WelcomeScreen returning={returning} onImport={importFromWelcome} onDone={endSplash} />
+        <WelcomeScreen
+          returning={returning}
+          onImport={importFromWelcome}
+          onDone={endSplash}
+          theme={settings.theme}
+          mode={settings.mode}
+          onTheme={(theme, mode) => update({ theme, mode })}
+        />
       </Shell>
     )
   }
@@ -315,6 +324,10 @@ export default function App() {
                 onOpenPlan={openPlan}
                 retestReady={retestReady}
                 onRetest={() => setRetest(true)}
+                onOpenThemes={() => {
+                  setSettingsPage('look')
+                  setTab('settings')
+                }}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
@@ -327,6 +340,7 @@ export default function App() {
                 registerBack={registerBack}
                 onRetest={() => setRetest(true)}
                 onOpenAbout={() => openAbout('main')}
+                initialPage={settingsPage}
               />
             )}
           </>
@@ -338,6 +352,7 @@ export default function App() {
           backHandler.current = null
           setAbout(null)
           setPlanOpen(false)
+          setSettingsPage(null)
           setTab(k)
         }}
       />

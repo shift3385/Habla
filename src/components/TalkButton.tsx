@@ -1,5 +1,5 @@
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { Icon } from '../ui/icons'
 import Wave from '../ui/Wave'
 
@@ -25,6 +25,7 @@ interface Props {
   onRelease: () => void // envía
   onCancel: () => void // descarta la grabación
   onKeyboard?: () => void // cambia a escribir la respuesta
+  companion?: ReactNode // mascota del tema, a la izquierda del micrófono (diseño V4)
 }
 
 function haptic() {
@@ -42,7 +43,7 @@ function clock(s: number) {
  * - mantener y deslizar ↑ → bloquea: puedes soltar y seguir hablando; tocar ➤ envía
  * - mantener y deslizar ← → cancela
  */
-export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel, onKeyboard }: Props) {
+export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel, onKeyboard, companion }: Props) {
   const busy = phase === 'starting' || phase === 'transcribing' || phase === 'thinking'
   const recording = phase === 'recording'
   const [lockedRaw, setLocked] = useState(false)
@@ -130,7 +131,7 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
           </div>
         )}
 
-        <div className="flex w-[52px] justify-center">
+        <div className={`flex justify-center ${companion ? 'w-[84px]' : 'w-[52px]'}`}>
           {locked ? (
             <button
               type="button"
@@ -148,7 +149,7 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
               <Icon name="trash" size={22} />
             </span>
           ) : (
-            <Wave on={wavesOn} />
+            (companion ?? <Wave on={wavesOn} />)
           )}
         </div>
 

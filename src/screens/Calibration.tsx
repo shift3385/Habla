@@ -28,8 +28,8 @@ import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
-import Orb from '../ui/Orb'
-import { TEACHERS, type ThemeVars } from '../ui/theme'
+import Mascot from '../ui/Mascot'
+import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
 
 type Step =
@@ -147,7 +147,7 @@ interface Props {
   registerBack: (h: (() => void) | null) => void
 }
 
-export default function Calibration({ settings, t, update, onDone, registerBack }: Props) {
+export default function Calibration({ settings, update, onDone, registerBack }: Props) {
   const teacher = TEACHERS[settings.teacher]
   const [step, setStep] = useState<Step>({ k: 'intro' })
   const [hint, setHint] = useState<string | null>(null)
@@ -394,7 +394,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
       <div className={pad}>
         <div className="anim-up flex flex-1 flex-col">
           <div className="grid flex-1 place-items-center">
-            <Orb size={150} colors={t[settings.teacher]} />
+            <Mascot element={THEME_INFO[settings.theme].mascot} size={190} />
           </div>
           <h1 className="text-[32px] leading-[1.1] font-semibold tracking-[-.8px]">Test de nivel</h1>
           <p className="txt-sub mt-2 text-[15px] leading-snug">
@@ -475,7 +475,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
       <PrepareScreen
         kind={step.kind}
         state={step.state}
-        colors={t[settings.teacher]}
+        mascot={THEME_INFO[settings.theme].mascot}
         teacherName={teacher.name}
         title={step.title}
         errorText={step.error}
@@ -584,7 +584,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
           </div>
           <div className="glass mt-3 rounded-[24px] p-5">
             <div className="flex items-start gap-3">
-              <Orb size={40} colors={t[settings.teacher]} />
+              <Mascot element={THEME_INFO[settings.theme].mascot} size={56} mood={recState === 'recording' ? 'listening' : recState === 'processing' ? 'thinking' : 'idle'} />
               <div className="flex-1 text-[17px] leading-snug">{task.prompt}</div>
             </div>
             <button onClick={() => sayTask(i)} className="txt-sub mt-3 flex items-center gap-1.5 text-[13px]">

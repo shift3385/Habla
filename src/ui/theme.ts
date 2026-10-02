@@ -1,7 +1,10 @@
-// Temas del rediseño (Claude Design · HablaApp2): Ember, Lumi y Aurora, cada uno en oscuro y claro.
-// Los valores son los del diseño original; se aplican como variables CSS en la raíz de la app.
+// Temas del rediseño V4 (Claude Design · HablaApp3 + Temas): Ember, Lumi, Marea y Nimbo, cada uno en oscuro y
+// claro y con su mascota (el "compañero" que reemplaza a la burbuja). Los valores son los del diseño original y
+// se aplican como variables CSS en la raíz de la app.
 
-export type ThemeKey = 'ember' | 'lumi' | 'aurora'
+import type { MascotElement } from './Mascot'
+
+export type ThemeKey = 'ember' | 'lumi' | 'marea' | 'nimbo'
 export type Mode = 'dark' | 'light'
 export type TeacherKey = 'emma' | 'leo'
 
@@ -56,20 +59,36 @@ export const THEMES: Record<ThemeKey, Record<Mode, ThemeVars>> = {
     dark: { ...D, bg: '#020c07', b1: '#0f6b45', b2: '#05301e', b3: '#1c8f5f', acc: '#1f9d66', acc2: '#7fe0b0', ink: '#fff', dot: '#5fe3a1', tab: 'rgba(4,20,12,.6)', glow: 'rgba(31,157,102,.4)', emma: ['#3fe0a0', '#0f6b45'], leo: ['#b6f5d8', '#1c8f5f'] } as ThemeVars,
     light: { ...L, bg: '#eef6f1', b1: '#9fe0c0', b2: '#d6f1e3', b3: '#6fcf9f', tx: '#0d1f16', sub: 'rgba(13,31,22,.62)', acc: '#147f4f', acc2: '#0f6b45', ink: '#fff', dot: '#147f4f', tab: 'rgba(255,255,255,.65)', glow: 'rgba(20,127,79,.28)', emma: ['#3fe0a0', '#0f6b45'], leo: ['#8be8c0', '#1c8f5f'] },
   },
-  aurora: {
-    dark: { ...D, bg: '#04090c', b1: '#0f7a66', b2: '#ff5a1f', b3: '#123a52', acc: '#ffb14a', acc2: '#6fe0cb', ink: '#1a0f04', dot: '#ffb14a', tab: 'rgba(6,14,18,.6)', glow: 'rgba(255,177,74,.35)', emma: ['#ffb14a', '#2fd0b0'], leo: ['#2fd0b0', '#ff6a2b'] } as ThemeVars,
-    light: { ...L, bg: '#f2f4ef', b1: '#a8e6d8', b2: '#ffc9a3', b3: '#c4dcef', tx: '#10181b', sub: 'rgba(16,24,27,.62)', acc: '#b8560a', acc2: '#0b7565', ink: '#fff', dot: '#b8560a', tab: 'rgba(255,255,255,.65)', glow: 'rgba(184,86,10,.28)', emma: ['#ffb14a', '#2fd0b0'], leo: ['#2fd0b0', '#ff6a2b'] },
+  marea: {
+    dark: { ...D, bg: '#061420', b1: '#1f6fb8', b2: '#14a39a', b3: '#123a5a', acc: '#7fd0ff', acc2: '#7fe8dc', ink: '#04202a', dot: '#7fd0ff', tab: 'rgba(6,20,32,.6)', glow: 'rgba(127,208,255,.35)', emma: ['#7fd0ff', '#14a39a'], leo: ['#7fe8dc', '#1f6fb8'] } as ThemeVars,
+    light: { ...L, bg: '#eef7fb', b1: '#a8d4ff', b2: '#a6f0e2', b3: '#cfe6ff', tx: '#0d2530', sub: 'rgba(13,37,48,.64)', acc: '#1a7fc0', acc2: '#0d7f7a', ink: '#fff', dot: '#1a7fc0', tab: 'rgba(255,255,255,.7)', glow: 'rgba(26,127,192,.28)', emma: ['#7fd0ff', '#14a39a'], leo: ['#7fe8dc', '#1f6fb8'] },
+  },
+  nimbo: {
+    dark: { ...D, bg: '#0b0a1f', b1: '#5a4be0', b2: '#a89cff', b3: '#241d5c', acc: '#b7a8ff', acc2: '#d8d0ff', ink: '#140f3a', dot: '#b7a8ff', tab: 'rgba(12,10,32,.6)', glow: 'rgba(183,168,255,.38)', emma: ['#b7a8ff', '#5a4be0'], leo: ['#d8d0ff', '#7c6cff'] } as ThemeVars,
+    light: { ...L, bg: '#f4f2fb', b1: '#d9d2ff', b2: '#eae6ff', b3: '#cfc6ff', tx: '#1a1838', sub: 'rgba(26,24,56,.62)', acc: '#6a5ad6', acc2: '#5a4be0', ink: '#fff', dot: '#6a5ad6', tab: 'rgba(255,255,255,.7)', glow: 'rgba(106,90,214,.28)', emma: ['#b7a8ff', '#5a4be0'], leo: ['#d8d0ff', '#7c6cff'] },
   },
 }
 
-export const THEME_INFO: Record<ThemeKey, { name: string; desc: string }> = {
-  ember: { name: 'Ember', desc: 'Naranja y turquesa' },
-  lumi: { name: 'Lumi', desc: 'Verde cristal' },
-  aurora: { name: 'Aurora', desc: 'Verde, naranja y ámbar' },
+export const THEME_KEYS: ThemeKey[] = ['ember', 'lumi', 'marea', 'nimbo']
+
+/** Cada tema trae su compañero (mascota) y un modo por defecto. */
+export const THEME_INFO: Record<
+  ThemeKey,
+  { name: string; mascot: MascotElement; mascotName: string; kind: string; personality: string; secret: string; defaultMode: Mode }
+> = {
+  ember: { name: 'Ember', mascot: 'flame', mascotName: 'Chispa', kind: 'fuego', personality: 'Enérgica y valiente. Le encanta un buen reto.', secret: 'fuego azul', defaultMode: 'dark' },
+  lumi: { name: 'Lumi', mascot: 'terra', mascotName: 'Musgo', kind: 'tierra', personality: 'Tranquilo y paciente. Nunca tiene prisa.', secret: 'florece', defaultMode: 'dark' },
+  marea: { name: 'Marea', mascot: 'aqua', mascotName: 'Gota', kind: 'agua', personality: 'Curiosa y juguetona. Fluye con cualquier tema.', secret: 'arcoíris', defaultMode: 'light' },
+  nimbo: { name: 'Nimbo', mascot: 'aero', mascotName: 'Brisa', kind: 'aire', personality: 'Ligera y soñadora. Siempre con la cabeza en las nubes.', secret: 'voltereta', defaultMode: 'dark' },
+}
+
+/** Temas que ya no existen (Aurora, de la v3) pasan a Marea. */
+export function normalizeTheme(k: string): ThemeKey {
+  return (THEME_KEYS as string[]).includes(k) ? (k as ThemeKey) : 'marea'
 }
 
 export function themeVars(theme: ThemeKey, mode: Mode): ThemeVars {
-  return (THEMES[theme] ?? THEMES.ember)[mode] ?? THEMES.ember.dark
+  return THEMES[normalizeTheme(theme)][mode] ?? THEMES.marea.light
 }
 
 /** Variables CSS para el contenedor raíz. */

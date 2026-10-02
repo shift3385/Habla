@@ -23,8 +23,8 @@ import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea }
 import { generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
-import Orb from '../ui/Orb'
-import { TEACHERS, type ThemeVars } from '../ui/theme'
+import Mascot, { type MascotMood } from '../ui/Mascot'
+import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
 
 interface SpokenAnswer {
@@ -54,7 +54,7 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, planLesson, settings, t, update, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, planLesson, settings, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
   const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -447,7 +447,10 @@ export default function Conversation({ scenarioId, categoryId, planLesson, setti
   }, [view, finish, onExit, registerBack, lookupReq])
 
   const userTurns = turns.filter((x) => x.role === 'user')
-  const orbColors = t[settings.teacher]
+  const mascotEl = THEME_INFO[settings.theme].mascot
+  // La mascota escucha mientras grabas, piensa mientras el profe responde y habla con su voz.
+  const mood: MascotMood =
+    phase === 'recording' ? 'listening' : phase === 'thinking' || phase === 'transcribing' ? 'thinking' : phase === 'speaking' ? 'speaking' : 'idle'
   const chatStatus =
     phase === 'recording'
       ? 'Te escucha…'
@@ -482,7 +485,7 @@ export default function Conversation({ scenarioId, categoryId, planLesson, setti
       <PrepareScreen
         kind="clase"
         state={prep}
-        colors={orbColors}
+        mascot={mascotEl}
         teacherName={teacherInfo.name}
         errorText={prepError}
         onRetry={() => {
@@ -502,7 +505,7 @@ export default function Conversation({ scenarioId, categoryId, planLesson, setti
             <Icon name="back" size={20} stroke={1.8} />
           </button>
           <div className="flex-1 text-xl font-semibold tracking-[-.4px]">Tu informe</div>
-          <Orb size={34} colors={orbColors} />
+          <Mascot element={mascotEl} mood="happy" size={52} />
         </div>
         <div className="no-scrollbar flex-1 overflow-y-auto px-[18px] pb-[calc(env(safe-area-inset-bottom)+24px)]">
           {planInfo && (
@@ -569,7 +572,7 @@ export default function Conversation({ scenarioId, categoryId, planLesson, setti
           <Icon name="back" size={20} stroke={1.8} />
         </button>
         <div className="flex flex-1 items-center justify-center gap-2.5">
-          <Orb size={34} colors={orbColors} active={phase === 'speaking' || phase === 'thinking'} />
+          <Mascot element={mascotEl} mood={mood} size={52} />
           <div>
             <div className="text-base font-semibold">{teacherInfo.name}</div>
             <div className="txt-sub text-xs">{chatStatus}</div>
@@ -775,7 +778,9 @@ export default function Conversation({ scenarioId, categoryId, planLesson, setti
           </button>
         )}
         {inputMode === 'voice' ? (
-          <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')} />
+          <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')}
+            companion={<Mascot element={mascotEl} mood={mood} size={84} />}
+          />
         ) : (
           <div className="anim-up flex w-full items-end gap-2">
             <button

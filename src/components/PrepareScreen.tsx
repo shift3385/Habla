@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Icon, type IconName } from '../ui/icons'
-import Orb from '../ui/Orb'
+import Mascot, { type MascotElement } from '../ui/Mascot'
 
 // Pantalla de preparación (diseño "Cargando"): el orbe del profe respira mientras aparecen iconos de
 // clase a su alrededor. Éxito: los iconos viajan al orbe, pop + onda. Error: todo se apaga y sube una tarjeta.
@@ -36,7 +36,7 @@ const TEXT: Record<PrepareKind, { title: string; done: string; msgs: string[]; e
 interface Props {
   kind: PrepareKind
   state: PrepareState
-  colors: [string, string]
+  mascot: MascotElement
   teacherName: string
   /** Título concreto de lo que se prepara (p. ej. "Preparando el test de gramática"). */
   title?: string
@@ -45,7 +45,7 @@ interface Props {
   onBack?: () => void
 }
 
-export default function PrepareScreen({ kind, state, colors, teacherName, title, errorText, onRetry, onBack }: Props) {
+export default function PrepareScreen({ kind, state, mascot, teacherName, title, errorText, onRetry, onBack }: Props) {
   const [tick, setTick] = useState(0)
   const [msgI, setMsgI] = useState(0)
   const text = TEXT[kind]
@@ -116,7 +116,7 @@ export default function PrepareScreen({ kind, state, colors, teacherName, title,
             transition: 'filter .8s',
           }}
         >
-          <Orb size={120} colors={colors} active={!error} />
+          <Mascot element={mascot} size={170} mood={done ? 'happy' : error ? 'idle' : 'thinking'} />
         </div>
       </div>
 

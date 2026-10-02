@@ -1,5 +1,5 @@
 import { Preferences } from '@capacitor/preferences'
-import type { Mode, TeacherKey, ThemeKey } from '../ui/theme'
+import { normalizeTheme, type Mode, type TeacherKey, type ThemeKey } from '../ui/theme'
 import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL, type Models } from './gemini'
 
 // La clave API vive solo en el almacenamiento local del teléfono (Preferences).
@@ -19,6 +19,8 @@ export interface Settings {
   teacher: TeacherKey
   onboarded: boolean // ya vio la bienvenida
   lastSeenVersion: string // para avisar de novedades una vez por versión
+  mascotTapped: boolean // ya tocó a su mascota (oculta el globo "¡Tócame!")
+  mascotNudgeSeen: boolean // ya vio la tarjeta "…quieren conocerte" (racha de 3 días)
   modelList: string[] // última lista de modelos que devolvió Google (por si luego no responde)
   reminderOn: boolean // aviso diario de la lección
   reminderTime: string // HH:MM
@@ -33,11 +35,13 @@ const DEFAULTS: Settings = {
   voiceIndex: null,
   earMode: false,
   dailyGoalMinutes: 5,
-  theme: 'aurora',
-  mode: 'dark',
+  theme: 'marea', // Marea + Gota, claro por defecto (diseño V4)
+  mode: 'light',
   teacher: 'emma',
   onboarded: false,
   lastSeenVersion: '',
+  mascotTapped: false,
+  mascotNudgeSeen: false,
   modelList: [],
   reminderOn: false,
   reminderTime: '19:00',
@@ -54,6 +58,7 @@ export async function loadSettings(): Promise<Settings> {
     for (const k of Object.keys(DEFAULTS) as (keyof Settings)[]) {
       if (stored[k] !== undefined) (s as Record<string, unknown>)[k] = stored[k]
     }
+    s.theme = normalizeTheme(s.theme) // Aurora (v3) ya no existe: pasa a Marea
     return s
   } catch {
     return { ...DEFAULTS }

@@ -4,8 +4,8 @@ import { clearExhausted, listModels, pickDefaultModel, pickFallbackModel } from 
 import type { Settings } from '../lib/settings'
 import { speak } from '../lib/tts'
 import { Icon } from '../ui/icons'
-import Orb from '../ui/Orb'
-import { TEACHERS, type TeacherKey, type ThemeVars } from '../ui/theme'
+import Mascot from '../ui/Mascot'
+import { TEACHERS, THEME_INFO, type TeacherKey, type ThemeVars } from '../ui/theme'
 
 const GOALS = [3, 5, 10, 15]
 
@@ -17,7 +17,7 @@ interface Props {
 }
 
 /** Bienvenida: 1) hola · 2) elige profe · 3) meta diaria (+ clave de Gemini si falta). El nivel lo fija el test. */
-export default function Onboarding({ settings, t, update, onDone }: Props) {
+export default function Onboarding({ settings, update, onDone }: Props) {
   const [step, setStep] = useState(0)
   const [speaking, setSpeaking] = useState(false)
   const [needsKey] = useState(() => !settings.geminiKey.trim())
@@ -90,7 +90,7 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
       {step === 0 && (
         <div key="s0" className="anim-up flex flex-1 flex-col">
           <div className="grid flex-1 place-items-center">
-            <Orb size={190} colors={t[settings.teacher]} active={speaking} />
+            <Mascot element={THEME_INFO[settings.theme].mascot} size={220} mood={speaking ? 'speaking' : 'idle'} />
           </div>
           <h1 className="text-[38px] leading-[1.05] font-semibold tracking-[-1px] text-pretty">Hola, soy tu profe de inglés</h1>
           <p className="txt-sub mt-3 text-base leading-snug">
@@ -116,7 +116,7 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
                   onClick={() => pickTeacher(k)}
                   className="glass relative flex items-center gap-[18px] rounded-[28px] p-5 text-left"
                 >
-                  <Orb size={64} colors={t[k]} active={sel && speaking} />
+                  <Mascot element={THEME_INFO[settings.theme].mascot} size={76} mood={sel ? (speaking ? 'speaking' : 'happy') : 'idle'} interactive={false} />
                   <div className="min-w-0 flex-1">
                     <div className="txt-sub text-xs tracking-[1.2px] uppercase">{info.role}</div>
                     <div className="mt-0.5 text-[22px] font-semibold">{info.name}</div>

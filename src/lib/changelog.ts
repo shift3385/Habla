@@ -17,6 +17,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.1',
+    date: '2026-10-02',
+    title: 'Elige a tu compañero',
+    added: [
+      'Cuatro mascotas, una por tema: Chispa (Ember), Musgo (Lumi), Gota (Marea) y Brisa (Nimbo)',
+      'Tu mascota escucha mientras grabas, piensa mientras el profe responde y habla con su voz',
+      'Tócala, estírala o agítala: cada una reacciona a su manera y guarda un secreto (5 toques seguidos)',
+      'Nuevos temas Marea (cielo y agua, claro) y Nimbo (violeta); en la bienvenida eliges tu compañero',
+      'Ajustes → Tema y mascota',
+    ],
+    improved: ['El tema Aurora pasa a Marea'],
+  },
+  {
     v: '5.0',
     date: '2026-10-02',
     title: 'Tu plan de 12 semanas',

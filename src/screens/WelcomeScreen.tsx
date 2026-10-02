@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { db, type Profile } from '../lib/db'
 import { getProfile } from '../lib/profile'
+import Mascot from '../ui/Mascot'
+import { THEME_INFO, THEME_KEYS, type Mode, type ThemeKey } from '../ui/theme'
 
 // Bienvenida animada (diseño "Bienvenida"): un muñequito de gelatina con cara cae, rebota y te sigue con
 // los ojos. Usuario nuevo: tres pasos (nombre, a qué se dedica, qué le gusta). Usuario que vuelve:
 // "Welcome back" con su racha, nivel y último tema. Al entrar, el muñequito crece hasta llenar la pantalla.
+// V4: justo después del nombre se elige el compañero (tema + mascota); toda la pantalla cambia al tocar cada uno.
 
 type Phase = 'intro' | 'welcome' | 'loading' | 'setup' | 'back' | 'enter'
 
@@ -71,9 +74,15 @@ interface Props {
   returning: ReturningInfo | null
   onImport: (file: File) => Promise<boolean>
   onDone: () => void
+  theme: ThemeKey
+  mode: Mode
+  onTheme: (theme: ThemeKey, mode: Mode) => void
 }
 
-export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
+// Pasos del alta: nombre → compañero → a qué se dedica → qué le gusta.
+const STEPS = 4
+
+export default function WelcomeScreen({ returning, onImport, onDone, theme, mode, onTheme }: Props) {
   const [phase, setPhase] = useState<Phase>('intro')
   const [step, setStep] = useState(0)
   const [name, setName] = useState('')
@@ -83,6 +92,12 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
   const [msgI, setMsgI] = useState(0)
   const [pokes, setPokes] = useState(0)
   const [importError, setImportError] = useState<string | null>(null)
+  const [cheer, setCheer] = useState(0) // la mascota salta contenta al elegirla
+  useEffect(() => {
+    if (!cheer) return
+    const id = setTimeout(() => setCheer(0), 1600)
+    return () => clearTimeout(id)
+  }, [cheer])
 
   const box = useRef<HTMLDivElement>(null)
   const goo = useRef<SVGGElement>(null)
@@ -291,7 +306,7 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
     return () => clearTimeout(id)
   }, [phase, onDone])
 
-  const canNext = step === 0 ? name.trim().length > 0 : step === 2 ? likes.length > 0 : true
+  const canNext = step === 0 ? name.trim().length > 0 : step === STEPS - 1 ? likes.length > 0 : true
 
   const next = async () => {
     if (!canNext) {
@@ -300,7 +315,7 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
     }
     squish(0.25)
     splash(3, 5)
-    if (step < 2) {
+    if (step < STEPS - 1) {
       setStep(step + 1)
       return
     }
@@ -350,7 +365,14 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
       className="relative z-[2] h-full w-full overflow-hidden select-none"
       style={{ touchAction: phase === 'setup' ? 'auto' : 'none' }}
     >
-      <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 z-[1] overflow-visible" aria-hidden>
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${W} ${H}`}
+        className="absolute inset-0 z-[1] overflow-visible transition-opacity duration-500"
+        style={{ opacity: phase === 'setup' && step === 1 ? 0 : 1 }}
+        aria-hidden
+      >
         <defs>
           <filter id="bw-goo" filterUnits="userSpaceOnUse" x="-600" y="-600" width="3000" height="4000">
             <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="b" />
@@ -490,9 +512,13 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
         )}
 
         {phase === 'setup' && (
-          <div className="anim-up pointer-events-auto absolute right-[18px] left-[18px] flex flex-col" style={{ top: '27.6%', bottom: 'calc(env(safe-area-inset-bottom) + 34px)' }}>
+          <div
+            className="anim-up pointer-events-auto absolute right-[18px] left-[18px] flex flex-col transition-[top] duration-500"
+            // En el paso del compañero el muñequito se oculta y el panel usa toda la pantalla.
+            style={{ top: step === 1 ? 'calc(env(safe-area-inset-top) + 28px)' : '27.6%', bottom: 'calc(env(safe-area-inset-bottom) + 34px)' }}
+          >
             <div className="flex justify-center gap-1.5">
-              {[0, 1, 2].map((i) => (
+              {Array.from({ length: STEPS }, (_, i) => (
                 <span
                   key={i}
                   className="h-[7px] rounded transition-all duration-300"
@@ -501,10 +527,17 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
               ))}
             </div>
             <div className="mt-[18px] text-center text-[28px] font-semibold tracking-[-.6px]">
-              {['¿Cómo te llamas?', name ? `¿A qué te dedicas, ${name.split(' ')[0]}?` : '¿A qué te dedicas?', '¿Qué te gusta?'][step]}
+              {['¿Cómo te llamas?', 'Elige a tu compañero', name ? `¿A qué te dedicas, ${name.split(' ')[0]}?` : '¿A qué te dedicas?', '¿Qué te gusta?'][step]}
             </div>
             <div className="txt-sub mt-1.5 text-center text-[15px]">
-              {['Así te saludará tu profe', 'Para practicar situaciones de tu día a día', 'Elige al menos uno. Los temas saldrán de aquí'][step]}
+              {
+                [
+                  'Así te saludará tu profe',
+                  'Te acompañará en cada clase. Puedes cambiarlo cuando quieras.',
+                  'Para practicar situaciones de tu día a día',
+                  'Elige al menos uno. Los temas saldrán de aquí',
+                ][step]
+              }
             </div>
             <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
               {step === 0 && (
@@ -523,6 +556,53 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
                 </div>
               )}
               {step === 1 && (
+                <div key="sc" className="anim-up flex h-full min-h-[480px] flex-col">
+                  <div className="relative grid flex-1 place-items-center">
+                    <Mascot key={theme} element={THEME_INFO[theme].mascot} mood={cheer ? 'happy' : 'idle'} size={210} />
+                    <div className="txt-sub anim-bob absolute right-0 bottom-0 left-0 text-center text-[13px]">Tócalo o estíralo para conocerlo</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-[26px] font-bold tracking-[-.5px]">{THEME_INFO[theme].mascotName}</div>
+                    <div className="txt-sub mt-0.5 text-sm">{THEME_INFO[theme].personality}</div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-4 gap-[7px]">
+                    {THEME_KEYS.map((k) => {
+                      const sel = theme === k
+                      return (
+                        <button
+                          key={k}
+                          onClick={() => {
+                            bump()
+                            setCheer(Date.now())
+                            onTheme(k, THEME_INFO[k].defaultMode)
+                          }}
+                          className="flex h-[104px] flex-col items-center justify-center rounded-[22px]"
+                          style={{
+                            background: sel ? 'var(--field)' : 'var(--g)',
+                            border: sel ? '2px solid var(--acc)' : '1px solid var(--gb)',
+                            boxShadow: 'var(--sh)',
+                          }}
+                        >
+                          <Mascot element={THEME_INFO[k].mascot} size={58} interactive={false} />
+                          <span className="text-[13px] font-semibold">{THEME_INFO[k].name}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                  <div className="glass mt-2.5 grid grid-cols-2 gap-1 rounded-[22px] p-1">
+                    {(['dark', 'light'] as Mode[]).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => onTheme(theme, m)}
+                        className={`h-10 rounded-[20px] text-sm ${mode === m ? 'btn-acc font-semibold' : 'txt-sub font-medium'}`}
+                      >
+                        {m === 'dark' ? 'Oscuro' : 'Claro'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {step === 2 && (
                 <div key="s1" className="anim-up mt-[22px] flex flex-col gap-3">
                   <input
                     value={work}
@@ -550,7 +630,7 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
                   </div>
                 </div>
               )}
-              {step === 2 && (
+              {step === 3 && (
                 <div key="s2" className="anim-up mt-[22px] flex flex-wrap justify-center gap-2">
                   {LIKES.map(([label, id]) => (
                     <button
@@ -576,7 +656,7 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
                 </button>
               )}
               <button onClick={next} className="btn-acc h-[58px] flex-1 rounded-full text-[17px] transition-opacity" style={{ opacity: canNext ? 1 : 0.45 }}>
-                {step < 2 ? 'Siguiente' : 'Crear mi espacio'}
+                {step === 1 ? `Elegir a ${THEME_INFO[theme].mascotName}` : step < STEPS - 1 ? 'Siguiente' : 'Crear mi espacio'}
               </button>
             </div>
           </div>

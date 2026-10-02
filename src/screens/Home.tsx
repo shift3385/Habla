@@ -8,9 +8,9 @@ import type { Settings } from '../lib/settings'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { TOPIC_CATEGORIES } from '../lib/topics'
 import { Icon } from '../ui/icons'
-import Orb from '../ui/Orb'
+import Mascot from '../ui/Mascot'
 import Segmented from '../ui/Segmented'
-import { TEACHERS, type ThemeVars } from '../ui/theme'
+import { TEACHERS, THEME_INFO, THEME_KEYS, type ThemeVars } from '../ui/theme'
 
 interface Props {
   settings: Settings
@@ -27,6 +27,7 @@ interface Props {
   onOpenPlan: () => void
   retestReady: boolean
   onRetest: () => void
+  onOpenThemes: () => void // Ajustes → Tema y mascota
 }
 
 function greeting() {
@@ -38,7 +39,6 @@ const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
 
 export default function Home({
   settings,
-  t,
   update,
   onStart,
   onGoSettings,
@@ -51,13 +51,28 @@ export default function Home({
   onOpenPlan,
   retestReady,
   onRetest,
+  onOpenThemes,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
   const [hwOpen, setHwOpen] = useState(false)
   const keysReady = settings.geminiKey.trim().length > 0
   const teacher = TEACHERS[settings.teacher]
-  const orbColors = t[settings.teacher]
+  const info = THEME_INFO[settings.theme]
+  // Toca a tu mascota: la primera vez desaparece el globo "¡Tócame!".
+  const mascot = (size: number) => (
+    <span className="relative flex-none">
+      <Mascot element={info.mascot} size={size} onTap={() => !settings.mascotTapped && update({ mascotTapped: true })} />
+      {!settings.mascotTapped && (
+        <span
+          className="anim-bob pointer-events-none absolute -top-3 left-[60%] rounded-[14px_14px_14px_4px] px-2.5 py-1.5 text-[12px] font-semibold whitespace-nowrap"
+          style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 6px 18px var(--glow)' }}
+        >
+          ¡Tócame!
+        </span>
+      )}
+    </span>
+  )
 
   const [due, setDue] = useState<DueSummary | null>(null)
 
@@ -117,15 +132,15 @@ export default function Home({
       {/* Bloque principal: cambia según el tema, como en el diseño */}
       <div className="mt-4">
         {settings.theme === 'ember' && (
-          <div className="glass flex items-center gap-3.5 rounded-full py-3 pr-3 pl-3.5">
-            <SmallRing pct={pct} size={52} />
+          <div className="glass flex items-center gap-1.5 rounded-full py-1 pr-2 pl-0.5">
+            {mascot(64)}
             <div className="min-w-0 flex-1">
-              <div className="text-[15px] font-semibold">
-                Hoy: {minsLabel} de {goal} min
+              <div className="truncate text-[15px] font-semibold">
+                Hoy {minsLabel}/{goal} min
               </div>
-              <div className="txt-sub text-[13px]">hablando con {teacher.name}</div>
+              <div className="txt-sub truncate text-[13px]">con {teacher.name}</div>
             </div>
-            <button onClick={surprise} className="btn-acc flex h-[46px] items-center gap-1.5 rounded-[23px] px-4 text-[15px]">
+            <button onClick={surprise} className="btn-acc flex h-[46px] flex-none items-center gap-1.5 rounded-[23px] px-3.5 text-[14px]">
               <Icon name="spark" size={16} stroke={1.8} />
               Sorpréndeme
             </button>
@@ -135,9 +150,9 @@ export default function Home({
           <div className="grid gap-2.5" style={{ gridTemplateColumns: '1.45fr 1fr' }}>
             <button
               onClick={() => start('open')}
-              className="glass flex h-[86px] items-center gap-3 rounded-[26px] px-3.5 text-left"
+              className="glass flex h-[86px] items-center gap-1.5 rounded-[26px] pr-3.5 pl-1 text-left"
             >
-              <Orb size={52} colors={orbColors} />
+              {mascot(70)}
               <span className="min-w-0">
                 <span className="block text-base font-semibold">Charla libre</span>
                 <span className="txt-sub block text-[13px]">
@@ -151,9 +166,9 @@ export default function Home({
             </button>
           </div>
         )}
-        {settings.theme === 'aurora' && (
-          <div className="glass flex items-center gap-3.5 rounded-[30px] py-3 pr-3 pl-4">
-            <Orb size={62} colors={orbColors} />
+        {(settings.theme === 'marea' || settings.theme === 'nimbo') && (
+          <div className="glass flex items-center gap-2.5 rounded-[30px] py-1.5 pr-3 pl-1.5">
+            {mascot(80)}
             <div className="min-w-0 flex-1">
               <div className="text-base font-semibold">{teacher.name} te espera</div>
               <div className="mt-2 h-1.5 overflow-hidden rounded-[3px]" style={{ background: 'var(--gb)' }}>
@@ -169,6 +184,41 @@ export default function Home({
           </div>
         )}
       </div>
+
+      {(dash?.streak ?? 0) >= 3 && !settings.mascotNudgeSeen && (
+        <div className="glass anim-up mt-2.5 rounded-[28px] p-4">
+          <div className="flex items-center gap-1">
+            {THEME_KEYS.filter((k) => k !== settings.theme)
+              .slice(0, 2)
+              .map((k) => (
+                <Mascot key={k} element={THEME_INFO[k].mascot} mood="happy" size={54} interactive={false} />
+              ))}
+            <div className="min-w-0 flex-1 pl-1">
+              <div className="text-base leading-tight font-semibold">
+                {(() => {
+                  const n = THEME_KEYS.filter((k) => k !== settings.theme).map((k) => THEME_INFO[k].mascotName)
+                  return `${n.slice(0, -1).join(', ')} y ${n[n.length - 1]} quieren conocerte`
+                })()}
+              </div>
+              <div className="txt-sub mt-1 text-[13px]">¡{dash!.streak} días seguidos! Ya puedes probar otro compañero.</div>
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button onClick={() => update({ mascotNudgeSeen: true })} className="field h-11 rounded-[22px] text-sm">
+              Ahora no
+            </button>
+            <button
+              onClick={() => {
+                update({ mascotNudgeSeen: true })
+                onOpenThemes()
+              }}
+              className="btn-acc h-11 rounded-[22px] text-sm"
+            >
+              Conocerlos
+            </button>
+          </div>
+        </div>
+      )}
 
       {settings.lastSeenVersion !== APP_VERSION && (
         <div className="anim-up mt-2.5 flex items-center gap-2">

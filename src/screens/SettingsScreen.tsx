@@ -11,15 +11,16 @@ import { getProfile } from '../lib/profile'
 import type { Settings } from '../lib/settings'
 import { englishVoices, speak, type VoiceOption } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
-import Orb from '../ui/Orb'
 import Switch from '../ui/Switch'
-import { TEACHERS, THEME_INFO, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars } from '../ui/theme'
+import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars } from '../ui/theme'
+import Mascot from '../ui/Mascot'
 
-type Page = 'voice' | 'look' | 'goal' | 'level' | 'gemini' | 'data' | 'diag'
+export type SettingsPage = 'voice' | 'look' | 'goal' | 'level' | 'gemini' | 'data' | 'diag'
+type Page = SettingsPage
 
 const PAGES: Record<Page, { title: string; icon: IconName }> = {
   voice: { title: 'Profe y voz', icon: 'mic' },
-  look: { title: 'Apariencia', icon: 'palette' },
+  look: { title: 'Tema y mascota', icon: 'palette' },
   goal: { title: 'Meta diaria', icon: 'target' },
   level: { title: 'Mi perfil', icon: 'bars' },
   gemini: { title: 'Gemini', icon: 'key' },
@@ -37,10 +38,11 @@ interface Props {
   registerBack: (h: (() => void) | null) => void
   onRetest: () => void
   onOpenAbout: () => void
+  initialPage?: SettingsPage | null // p. ej. 'look' desde la tarjeta "…quieren conocerte"
 }
 
-export default function SettingsScreen({ settings, t, update, registerBack, onRetest, onOpenAbout }: Props) {
-  const [page, setPage] = useState<Page | null>(null)
+export default function SettingsScreen({ settings, update, registerBack, onRetest, onOpenAbout, initialPage }: Props) {
+  const [page, setPage] = useState<Page | null>(initialPage ?? null)
   const [profile, setProfile] = useState<Profile | null>(null)
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
           </button>
           <div className="text-2xl font-semibold tracking-[-.4px]">{PAGES[page].title}</div>
         </div>
-        {page === 'voice' && <VoicePage settings={settings} t={t} update={update} />}
+        {page === 'voice' && <VoicePage settings={settings} update={update} />}
         {page === 'look' && <LookPage settings={settings} update={update} />}
         {page === 'goal' && <GoalPage settings={settings} update={update} />}
         {page === 'level' && profile && (
@@ -85,7 +87,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
 
   const tiles: { page: Page; value: string }[] = [
     { page: 'voice', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×` },
-    { page: 'look', value: `${THEME_INFO[settings.theme].name} · ${settings.mode === 'dark' ? 'Oscuro' : 'Claro'}` },
+    { page: 'look', value: `${THEME_INFO[settings.theme].mascotName} · ${THEME_INFO[settings.theme].name}` },
     { page: 'goal', value: `${settings.dailyGoalMinutes} min al día` },
     { page: 'level', value: `${profile?.name ?? ''} · nivel ${profile?.levels.overall ?? '—'}` },
     { page: 'gemini', value: settings.geminiKey ? settings.geminiModel : 'Falta la clave' },
@@ -95,8 +97,8 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
   return (
     <div className="anim-up flex flex-col gap-3">
       <div className="flex h-[54px] items-center text-[28px] font-semibold tracking-[-.6px]">Ajustes</div>
-      <button onClick={() => setPage('voice')} className="glass flex items-center gap-3.5 rounded-[28px] px-4 py-3.5 text-left">
-        <Orb size={52} colors={t[settings.teacher]} />
+      <button onClick={() => setPage('voice')} className="glass flex items-center gap-1.5 rounded-[28px] py-1.5 pr-4 pl-1 text-left">
+        <Mascot element={THEME_INFO[settings.theme].mascot} size={70} />
         <span className="min-w-0 flex-1">
           <span className="block text-lg font-semibold">{teacher.name}</span>
           <span className="txt-sub block text-[13px]">
@@ -183,7 +185,7 @@ function Selected() {
   return <span className="pointer-events-none absolute -inset-px rounded-[26px] border-2" style={{ borderColor: 'var(--acc)' }} />
 }
 
-function VoicePage({ settings, t, update }: { settings: Settings; t: ThemeVars; update: (p: Partial<Settings>) => void }) {
+function VoicePage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   const [voices, setVoices] = useState<VoiceOption[]>([])
   const [testing, setTesting] = useState(false)
   const teacher = TEACHERS[settings.teacher]
@@ -209,7 +211,12 @@ function VoicePage({ settings, t, update }: { settings: Settings; t: ThemeVars; 
             onClick={() => update({ teacher: k, voiceIndex: null })}
             className="glass relative flex flex-col items-center gap-2.5 rounded-[26px] px-3 pt-[18px] pb-3.5"
           >
-            <Orb size={64} colors={t[k]} active={settings.teacher === k && testing} />
+            <Mascot
+              element={THEME_INFO[settings.theme].mascot}
+              mood={settings.teacher === k ? (testing ? 'speaking' : 'happy') : 'idle'}
+              size={76}
+              interactive={false}
+            />
             <span className="text-lg font-semibold">{TEACHERS[k].name}</span>
             <span className="txt-sub -mt-2 text-center text-xs">{TEACHERS[k].desc.split('.')[0]}</span>
             {settings.teacher === k && <Selected />}
@@ -270,41 +277,60 @@ function VoicePage({ settings, t, update }: { settings: Settings; t: ThemeVars; 
 function swatch(theme: ThemeKey, mode: Mode): React.CSSProperties {
   const x = THEMES[theme][mode]
   return {
-    height: 92,
-    borderRadius: 18,
-    background: `radial-gradient(circle at 20% 15%, ${x.b1}, transparent 60%), radial-gradient(circle at 85% 80%, ${x.b2}, transparent 60%), ${x.bg}`,
-    border: '1px solid var(--gb)',
-    position: 'relative',
+    background: `radial-gradient(circle at 15% 10%, ${x.b1}, transparent 65%), radial-gradient(circle at 90% 90%, ${x.b2}, transparent 65%), ${x.bg}`,
   }
 }
 
+/** Tema y mascota (diseño V4): se eligen juntos, como "compañero". Cada tema trae su modo por defecto. */
 function LookPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   return (
     <>
-      <div className="txt-sub px-1 text-sm">Tema</div>
-      <div className="grid grid-cols-3 gap-2.5">
-        {(Object.keys(THEME_INFO) as ThemeKey[]).map((k) => (
-          <button key={k} onClick={() => update({ theme: k })} className="glass relative flex flex-col gap-2 rounded-[26px] p-2 pb-3">
-            <div style={swatch(k, settings.mode)}>
-              <span className="absolute right-2 bottom-2 h-5 w-5 rounded-full" style={{ background: THEMES[k][settings.mode].acc }} />
-            </div>
-            <span className="text-[15px] font-semibold">{THEME_INFO[k].name}</span>
-            <span className="txt-sub -mt-2 text-[11px] leading-tight">{THEME_INFO[k].desc}</span>
-            {settings.theme === k && <Selected />}
+      {THEME_KEYS.map((k) => {
+        const info = THEME_INFO[k]
+        const sel = settings.theme === k
+        return (
+          <button
+            key={k}
+            onClick={() => update({ theme: k, mode: info.defaultMode })}
+            className="glass flex items-center gap-3.5 rounded-[28px] p-2 pr-4 text-left"
+            style={sel ? { border: '2px solid var(--acc)' } : undefined}
+          >
+            <span className="grid h-[84px] w-[92px] flex-none place-items-center overflow-hidden rounded-[22px]" style={swatch(k, info.defaultMode)}>
+              <Mascot element={info.mascot} mood={sel ? 'happy' : 'idle'} size={84} interactive={false} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-lg font-semibold">{info.mascotName}</span>
+              <span className="txt-sub block text-[13px]">
+                Tema {info.name} · {info.kind}
+              </span>
+            </span>
+            {sel ? (
+              <span className="btn-acc grid h-[30px] w-[30px] flex-none place-items-center rounded-full">
+                <Icon name="check" size={16} stroke={2.4} />
+              </span>
+            ) : (
+              <span className="h-[30px] w-[30px] flex-none rounded-full" style={{ border: '1.5px solid var(--gb)' }} />
+            )}
           </button>
-        ))}
+        )
+      })}
+      <Card>
+        <div className="txt-sub text-sm">Modo</div>
+        <div className="field mt-2 grid grid-cols-2 gap-1 rounded-[22px] p-1">
+          {(['dark', 'light'] as Mode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => update({ mode: m })}
+              className={`h-10 rounded-[20px] text-sm ${settings.mode === m ? 'btn-acc font-semibold' : 'txt-sub font-medium'}`}
+            >
+              {m === 'dark' ? 'Oscuro' : 'Claro'}
+            </button>
+          ))}
+        </div>
+      </Card>
+      <div className="txt-sub px-2.5 text-center text-[13px] leading-snug">
+        Tu progreso, tu racha y la voz de tu profe no cambian. Tócala 5 veces seguidas: cada mascota guarda un secreto.
       </div>
-      <div className="txt-sub mt-1 px-1 text-sm">Modo</div>
-      <div className="grid grid-cols-2 gap-2.5">
-        {(['dark', 'light'] as Mode[]).map((m) => (
-          <button key={m} onClick={() => update({ mode: m })} className="glass relative flex flex-col gap-3 rounded-[26px] p-2.5 pb-3.5">
-            <div style={swatch(settings.theme, m)} />
-            <span className="text-base font-semibold">{m === 'dark' ? 'Oscuro' : 'Claro'}</span>
-            {settings.mode === m && <Selected />}
-          </button>
-        ))}
-      </div>
-      <div className="txt-sub text-center text-[13px]">También puedes cambiar el modo desde el icono de sol y luna en Inicio.</div>
     </>
   )
 }
