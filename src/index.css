@@ -204,6 +204,24 @@ select {
     transform: none;
   }
 }
+/* Bienvenida: la mascota cae desde arriba y rebota. */
+@keyframes bw-drop {
+  from {
+    transform: translateY(-70vh);
+  }
+  to {
+    transform: none;
+  }
+}
+/* Entrada: círculo del color del tema que llena la pantalla. */
+@keyframes bw-reveal {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(70);
+  }
+}
 @keyframes bw-bob {
   0%,
   100% {

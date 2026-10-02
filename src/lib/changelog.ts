@@ -17,6 +17,12 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.2',
+    date: '2026-10-02',
+    title: 'Tu compañero te da la bienvenida',
+    improved: ['La pantalla de inicio la protagoniza tu mascota (Chispa, Musgo, Gota o Brisa) en lugar del muñequito anterior'],
+  },
+  {
     v: '5.1',
     date: '2026-10-02',
     title: 'Elige a tu compañero',
