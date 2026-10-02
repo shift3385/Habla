@@ -18,6 +18,7 @@ export interface Settings {
   teacher: TeacherKey
   onboarded: boolean // ya vio la bienvenida
   lastSeenVersion: string // para avisar de novedades una vez por versión
+  modelList: string[] // última lista de modelos que devolvió Google (por si luego no responde)
 }
 
 const DEFAULTS: Settings = {
@@ -33,6 +34,7 @@ const DEFAULTS: Settings = {
   teacher: 'emma',
   onboarded: false,
   lastSeenVersion: '',
+  modelList: [],
 }
 
 const KEY = 'habla.settings'

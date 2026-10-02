@@ -163,6 +163,24 @@ export async function askGeminiWithRetry<T>(
 export interface Models {
   primary: string
   fallback?: string
+  /** Al abortarse (p. ej. al salir de la clase) no se reintenta ni se entrega la respuesta. */
+  signal?: AbortSignal
+}
+
+/** La petición se canceló porque el usuario salió de la pantalla: no es un error que mostrar. */
+export class AbortedError extends Error {
+  constructor() {
+    super('Cancelado')
+    this.name = 'AbortedError'
+  }
+}
+
+export function isAborted(e: unknown): boolean {
+  return e instanceof AbortedError
+}
+
+function checkAborted(signal?: AbortSignal) {
+  if (signal?.aborted) throw new AbortedError()
 }
 
 /** Reintentos genéricos para cualquier llamada que reciba el modelo a usar. */
@@ -176,16 +194,23 @@ export async function withRetry<T>(
 
   let delay = 1500
   let lastError: ApiError | null = null
+  const { signal } = models
   for (let i = 0; i < plan.length; i++) {
     const model = plan[i]
+    checkAborted(signal)
     if (i > 0) {
       onRetry?.({ attempt: i + 1, total: plan.length, model, switchedModel: model !== models.primary })
-      await sleep(delay)
+      await sleep(delay, signal)
       delay = Math.min(delay * 2, 8000)
+      checkAborted(signal)
     }
     try {
-      return await call(model)
+      const result = await call(model)
+      // Una petición ya enviada no se puede recuperar, pero su respuesta se descarta.
+      checkAborted(signal)
+      return result
     } catch (e) {
+      checkAborted(signal)
       if (!(e instanceof ApiError)) throw e
       lastError = e
       // Si el modelo de respaldo no existe para esta clave, no insistimos con él.
@@ -196,8 +221,14 @@ export async function withRetry<T>(
   throw lastError ?? new ApiError('Gemini no respondió.', 0)
 }
 
-function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms))
+function sleep(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((r) => {
+    const id = setTimeout(r, ms)
+    signal?.addEventListener('abort', () => {
+      clearTimeout(id)
+      r()
+    }, { once: true })
+  })
 }
 
 export interface ModelInfo {
@@ -223,6 +254,23 @@ export async function listModels(apiKey: string): Promise<ModelInfo[]> {
     .map((m) => ({ id: m.name.replace(/^models\//, ''), displayName: m.displayName ?? m.name }))
     .filter((m) => m.id.startsWith('gemini') && !/tts|image|embed|live|audio|native|robotics|computer/.test(m.id))
     .sort((a, b) => b.id.localeCompare(a.id, undefined, { numeric: true }))
+}
+
+/** Modelos conocidos: siempre se ofrecen, aunque Google no responda al pedir la lista. */
+export const KNOWN_MODELS = [
+  'gemini-3.8-flash',
+  'gemini-3.7-flash',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-3-flash-preview',
+  'gemini-3.1-pro-preview',
+]
+
+/** Une la lista de Google (o la guardada) con los modelos conocidos, sin repetir, más nuevos primero. */
+export function mergeModels(fetched: string[]): string[] {
+  return [...new Set([...fetched, ...KNOWN_MODELS])].sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
 }
 
 /** Modelo de respaldo: preferiblemente un Flash-Lite (otra capacidad, rápido); si no, otro Flash distinto. */

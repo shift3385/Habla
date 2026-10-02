@@ -24,6 +24,7 @@ interface Props {
   onPress: () => void // empieza a grabar
   onRelease: () => void // envía
   onCancel: () => void // descarta la grabación
+  onKeyboard?: () => void // cambia a escribir la respuesta
 }
 
 function haptic() {
@@ -41,7 +42,7 @@ function clock(s: number) {
  * - mantener y deslizar ↑ → bloquea: puedes soltar y seguir hablando; tocar ➤ envía
  * - mantener y deslizar ← → cancela
  */
-export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel }: Props) {
+export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel, onKeyboard }: Props) {
   const busy = phase === 'starting' || phase === 'transcribing' || phase === 'thinking'
   const recording = phase === 'recording'
   const [lockedRaw, setLocked] = useState(false)
@@ -178,7 +179,18 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
         </button>
 
         <div className="flex w-[52px] justify-center">
-          <Wave on={wavesOn} />
+          {onKeyboard && !recording ? (
+            <button
+              type="button"
+              onClick={onKeyboard}
+              className="glass grid h-[52px] w-[52px] place-items-center rounded-full"
+              aria-label="Escribir la respuesta"
+            >
+              <Icon name="keyboard" size={22} />
+            </button>
+          ) : (
+            <Wave on={wavesOn} />
+          )}
         </div>
       </div>
       <div className="txt-sub h-5 text-center text-[13px] tabular-nums">{label}</div>

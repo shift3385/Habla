@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
-import { listModels, pickDefaultModel, pickFallbackModel, type ModelInfo } from '../lib/gemini'
+import { KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel } from '../lib/gemini'
 import ProfileForm from '../components/ProfileForm'
 import { APP_VERSION } from '../lib/changelog'
 import { levelIdx, nextRetestAt } from '../lib/levels'
@@ -39,17 +39,9 @@ interface Props {
 export default function SettingsScreen({ settings, t, update, registerBack, onRetest, onOpenAbout }: Props) {
   const [page, setPage] = useState<Page | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [models, setModels] = useState<ModelInfo[]>([])
 
   useEffect(() => {
     getProfile().then(setProfile)
-    if (settings.geminiKey) {
-      listModels(settings.geminiKey)
-        .then(setModels)
-        .catch(() => {})
-    }
-    // Solo al abrir la pantalla.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Atrás (Android) desde una sección vuelve al panel.
@@ -81,7 +73,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
             <LevelPage profile={profile} onRetest={onRetest} />
           </>
         )}
-        {page === 'gemini' && <GeminiPage settings={settings} update={update} models={models} setModels={setModels} />}
+        {page === 'gemini' && <GeminiPage settings={settings} update={update} />}
         {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
       </div>
     )
@@ -395,21 +387,56 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
   )
 }
 
-function GeminiPage({
-  settings,
-  update,
-  models,
-  setModels,
-}: {
-  settings: Settings
-  update: (p: Partial<Settings>) => void
-  models: ModelInfo[]
-  setModels: (m: ModelInfo[]) => void
-}) {
+const KNOWN_IDS = new Set(KNOWN_MODELS)
+
+function GeminiPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   const [key, setKey] = useState(settings.geminiKey)
   const [show, setShow] = useState(false)
   const [status, setStatus] = useState<Status>(null)
   const [checking, setChecking] = useState(false)
+  const [listStatus, setListStatus] = useState<Status>(null)
+  const [refreshing, setRefreshing] = useState(false)
+  const [custom, setCustom] = useState('')
+
+  // Siempre hay opciones: la última lista de Google + los modelos conocidos (+ los añadidos a mano).
+  const models = mergeModels(settings.modelList)
+
+  const refresh = async (silent = false) => {
+    if (!settings.geminiKey) {
+      if (!silent) setListStatus({ kind: 'error', text: 'Primero guarda tu clave de Gemini.' })
+      return
+    }
+    setRefreshing(true)
+    if (!silent) setListStatus({ kind: 'info', text: 'Pidiendo la lista a Google…' })
+    try {
+      const list = await listModels(settings.geminiKey)
+      const ids = list.map((m) => m.id)
+      // Conservo los que añadiste a mano aunque Google no los liste.
+      update({ modelList: [...new Set([...ids, ...settings.modelList.filter((m) => !KNOWN_IDS.has(m) && !ids.includes(m))])] })
+      if (!silent) setListStatus({ kind: 'ok', text: `Lista actualizada · ${ids.length} modelos disponibles` })
+    } catch (e) {
+      if (!silent) setListStatus({ kind: 'error', text: `${(e as Error).message} Puedes elegir igualmente de la lista conocida.` })
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
+  // Al entrar, actualizo la lista en segundo plano (sin mensajes si falla).
+  useEffect(() => {
+    refresh(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const addCustom = () => {
+    const id = custom.trim().replace(/^models\//, '')
+    if (!/^[a-z0-9][a-z0-9.-]*$/i.test(id)) {
+      setListStatus({ kind: 'error', text: 'Escribe el nombre exacto, por ejemplo gemini-3.5-flash-lite.' })
+      return
+    }
+    update({ modelList: [...new Set([...settings.modelList, id])], geminiModel: id })
+    setCustom('')
+    setListStatus({ kind: 'ok', text: `Añadido y elegido como principal: ${id}` })
+  }
 
   const save = async () => {
     const k = key.trim()
@@ -418,14 +445,13 @@ function GeminiPage({
     setStatus({ kind: 'info', text: 'Guardada. Comprobando…' })
     try {
       const list = await listModels(k)
-      setModels(list)
       // Si el modelo elegido no existe para esta clave, elijo uno bueno automáticamente.
       const model = list.some((m) => m.id === settings.geminiModel) ? settings.geminiModel : pickDefaultModel(list)
       const fallback =
         list.some((m) => m.id === settings.geminiFallbackModel) && settings.geminiFallbackModel !== model
           ? settings.geminiFallbackModel
           : pickFallbackModel(list, model)
-      update({ geminiKey: k, geminiModel: model, geminiFallbackModel: fallback })
+      update({ geminiKey: k, geminiModel: model, geminiFallbackModel: fallback, modelList: list.map((m) => m.id) })
       setStatus({ kind: 'ok', text: `Clave válida ✓ · modelo ${model}` })
     } catch (e) {
       setStatus({ kind: 'error', text: (e as Error).message })
@@ -436,12 +462,12 @@ function GeminiPage({
 
   const modelOptions = (current: string, exclude?: string) => (
     <>
-      {current && !models.some((m) => m.id === current) && <option value={current}>{current}</option>}
+      {current && !models.includes(current) && <option value={current}>{current}</option>}
       {models
-        .filter((m) => m.id !== exclude)
+        .filter((m) => m !== exclude)
         .map((m) => (
-          <option key={m.id} value={m.id}>
-            {m.id}
+          <option key={m} value={m}>
+            {m}
           </option>
         ))}
     </>
@@ -493,6 +519,24 @@ function GeminiPage({
           </span>
         </div>
         <div className="txt-sub mt-2 text-xs leading-snug">La app reintenta sola 3 veces y después prueba este modelo.</div>
+        <button onClick={() => refresh()} disabled={refreshing} className="glass mt-3 h-[44px] w-full rounded-[22px] text-sm font-medium">
+          {refreshing ? 'Actualizando…' : 'Actualizar lista de modelos'}
+        </button>
+        <div className="txt-sub mt-3 text-sm">Otro modelo</div>
+        <div className="mt-2 flex gap-2">
+          <input
+            value={custom}
+            onChange={(e) => setCustom(e.target.value)}
+            placeholder="gemini-…"
+            autoComplete="off"
+            autoCapitalize="none"
+            className="input min-w-0 flex-1"
+          />
+          <button onClick={addCustom} disabled={!custom.trim()} className="btn-acc h-[50px] flex-none rounded-[25px] px-5 text-sm">
+            Usar
+          </button>
+        </div>
+        <StatusLine s={listStatus} />
       </Card>
     </>
   )

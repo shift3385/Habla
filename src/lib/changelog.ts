@@ -17,6 +17,16 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.9',
+    date: '2026-10-01',
+    title: 'Escribe tus respuestas y elige cualquier modelo',
+    added: [
+      'Botón de teclado en la clase: alterna entre hablar y escribir tu respuesta',
+      'Puedes elegir cualquier modelo de Gemini (también los Flash-Lite), actualizar la lista o escribir otro a mano',
+    ],
+    fixed: ['Al salir de una clase se cancela lo que el profe estaba preparando: ya no habla ni gasta reintentos cuando estás en otra pantalla'],
+  },
+  {
     v: '4.8',
     date: '2026-10-01',
     title: 'Bienvenida animada y test más claro',

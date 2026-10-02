@@ -11,7 +11,7 @@ import { sentenceAround } from '../lib/lookup'
 import { db, type LevelEvent, type Session, type Topic, type Turn } from '../lib/db'
 import { levelIdx, updateLevelsFromPractice } from '../lib/levels'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
-import type { ApiError, ChatMessage, Models } from '../lib/gemini'
+import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
@@ -26,12 +26,15 @@ import Orb from '../ui/Orb'
 import { TEACHERS, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
 
-interface PendingAnswer {
+interface SpokenAnswer {
   base64: string
   mimeType: string
   seconds: number
   analysis: SpeechAnalysis | null
 }
+
+/** Tu respuesta: grabada (audio) o escrita con el teclado. */
+type PendingAnswer = SpokenAnswer | { text: string }
 
 interface Props {
   scenarioId: string
@@ -69,6 +72,9 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   const [ideasLoading, setIdeasLoading] = useState(false)
   const [recordStart, setRecordStart] = useState(0)
   const [elapsed, setElapsed] = useState(0)
+  // Responder hablando (micrófono) o escribiendo (teclado).
+  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice')
+  const [draft, setDraft] = useState('')
 
   // Informe final
   const [view, setView] = useState<'chat' | 'report'>('chat')
@@ -89,9 +95,18 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   const listRef = useRef<HTMLDivElement>(null)
   const started = useRef(false)
 
+  // Al salir de la clase se cancela todo lo pendiente: sin reintentos, sin respuesta del profe y sin voz.
+  const abort = useRef(new AbortController())
+  useEffect(() => {
+    abort.current = new AbortController()
+    return () => abort.current.abort()
+  }, [])
+  const gone = () => abort.current.signal.aborted
+
   const models = (): Models => ({
     primary: settingsRef.current.geminiModel,
     fallback: settingsRef.current.geminiFallbackModel,
+    signal: abort.current.signal,
   })
   // Los reintentos (y el cambio al modelo de respaldo) ocurren en segundo plano, sin mensajes.
   // Pantalla de preparación (animación) hasta que llega el saludo del profe.
@@ -116,6 +131,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   }, [phase, recordStart])
 
   const say = useCallback(async (text: string) => {
+    if (abort.current.signal.aborted) return
     setPhase('speaking')
     try {
       await speak(text, settingsRef.current.ttsRate, settingsRef.current.voiceIndex)
@@ -134,31 +150,37 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
       setPhase('thinking')
       setCanRetry(false)
       setIdeas(null)
+      const spoken = answer && 'base64' in answer ? answer : null
+      const typed = answer && 'text' in answer ? answer.text : null
       try {
         const res = await teacherTurn(
           settingsRef.current.geminiKey,
           models(),
           system.current,
           history.current,
-          answer && { base64: answer.base64, mimeType: answer.mimeType },
+          spoken ? { base64: spoken.base64, mimeType: spoken.mimeType } : typed ? { text: typed } : undefined,
         )
+        if (gone()) return
         setHint(null)
         const sid = sessionId.current!
         pending.current = null
 
         if (answer) {
-          if (!res.heardSpeech || !res.transcript) {
+          // Escrita: tu texto tal cual es la "transcripción".
+          const said = typed ?? res.transcript
+          if (spoken && (!res.heardSpeech || !said)) {
             setHint('No te he entendido. Prueba otra vez, un poco más cerca del micrófono.')
             setPhase('idle')
             return
           }
+          if (typed) setDraft('')
           const turn: Turn = {
             sessionId: sid,
             role: 'user',
-            text: res.transcript,
-            audioSeconds: answer.seconds,
-            speechSeconds: answer.analysis?.speechSeconds,
-            pauses: answer.analysis?.pauses,
+            text: said,
+            ...(spoken
+              ? { audioSeconds: spoken.seconds, speechSeconds: spoken.analysis?.speechSeconds, pauses: spoken.analysis?.pauses }
+              : { typed: true }),
             createdAt: Date.now(),
             ...(res.correction ? { correction: res.correction } : {}),
           }
@@ -168,7 +190,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
           }
           setTurns((ts) => [...ts, turn])
           setCardOpen(false) // la tarjeta del tema se pliega sola al responder
-          history.current.push({ role: 'user', content: res.transcript })
+          history.current.push({ role: 'user', content: said })
         }
 
         history.current.push({ role: 'assistant', content: res.reply })
@@ -185,10 +207,12 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
           // Primera intervención: animación de "¡Clase lista!" y después el chat.
           setPrep('done')
           await new Promise((r) => setTimeout(r, 1400))
+          if (gone()) return
           setPrep(null)
         }
         await say(res.reply)
       } catch (e) {
+        if (isAborted(e) || gone()) return
         setHint(null)
         if (prepRef.current === 'loading') {
           setPrepError(friendlyError(e))
@@ -200,11 +224,11 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         setError(
           err.transient
             ? `Gemini sigue sin responder tras varios intentos (${err.status || 'sin conexión'}). ` +
-                (answer ? 'Tu audio está guardado: no hace falta repetirlo.' : '')
+                (spoken ? 'Tu audio está guardado: no hace falta repetirlo.' : typed ? 'Tu texto sigue escrito: puedes reenviarlo.' : '')
             : err.message,
         )
         setCanRetry(true)
-        setRetryHasAudio(!!answer)
+        setRetryHasAudio(!!spoken)
         setPhase('idle')
       }
     },
@@ -222,6 +246,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
       } catch (e) {
         setError(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
       }
+      if (gone()) return rec.close() // saliste mientras se abría el micrófono
       const [profile, recent] = await Promise.all([
         getProfile(),
         db.mistakes.orderBy('createdAt').reverse().limit(12).toArray(),
@@ -240,6 +265,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         }
         setHint(null)
       }
+      if (gone()) return
       setStatus('')
 
       system.current = buildSystemPrompt(profile, scenario, recent, tp, TEACHERS[settingsRef.current.teacher].persona)
@@ -298,7 +324,8 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         setPhase('idle')
         return
       }
-      const answer: PendingAnswer = {
+      if (gone()) return
+      const answer: SpokenAnswer = {
         base64: await blobToBase64(blob),
         mimeType: blob.type.split(';')[0] || 'audio/webm',
         seconds,
@@ -319,6 +346,20 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     setHint('Grabación descartada')
   }
 
+  const busy = phase === 'thinking' || phase === 'transcribing' || phase === 'starting'
+
+  const sendText = () => {
+    const text = draft.trim()
+    if (!text || busy) return
+    setError(null)
+    setHint(null)
+    setIdeas(null)
+    stopSpeaking()
+    const answer = { text }
+    pending.current = answer
+    askTeacher(answer)
+  }
+
   const retry = () => {
     setError(null)
     askTeacher(pending.current ?? undefined)
@@ -334,9 +375,10 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     }
     setIdeasLoading(true)
     try {
-      setIdeas(await answerIdeas(settingsRef.current.geminiKey, models(), lastTeacher.text, topic))
+      const list = await answerIdeas(settingsRef.current.geminiKey, models(), lastTeacher.text, topic)
+      if (!gone()) setIdeas(list)
     } catch (e) {
-      setHint((e as Error).message)
+      if (!isAborted(e)) setHint((e as Error).message)
     } finally {
       setIdeasLoading(false)
     }
@@ -351,7 +393,8 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     setReportLoading(true)
     setReportError(null)
     try {
-      const report = await generateReport(settingsRef.current.geminiKey, models(), allTurns, s.metrics!, s.topic)
+      // El informe no se cancela: la clase ya terminó y se está mostrando.
+      const report = await generateReport(settingsRef.current.geminiKey, { ...models(), signal: undefined }, allTurns, s.metrics!, s.topic)
       await db.sessions.update(s.id!, { report })
       setSession({ ...s, report })
     } catch (e) {
@@ -363,6 +406,8 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   }, [])
 
   const finish = useCallback(async () => {
+    // Lo que el profe estuviera preparando ya no hace falta.
+    abort.current.abort()
     recorder.current.close()
     await stopSpeaking()
     const sid = sessionId.current
@@ -579,9 +624,15 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
                 <div className="txt-sub mt-1 mr-1 flex gap-2.5 text-[11px] tabular-nums">
                   {tm.wpm !== null && <span>{tm.wpm} ppm</span>}
                   <span>{tm.words} palabras</span>
-                  <span>
-                    {tm.pauses} {tm.pauses === 1 ? 'pausa' : 'pausas'}
-                  </span>
+                  {m.typed ? (
+                    <span className="flex items-center gap-1">
+                      <Icon name="keyboard" size={12} /> escrita
+                    </span>
+                  ) : (
+                    <span>
+                      {tm.pauses} {tm.pauses === 1 ? 'pausa' : 'pausas'}
+                    </span>
+                  )}
                 </div>
               </div>
             )
@@ -681,7 +732,37 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
             {ideasLoading ? 'Pensando…' : ideas ? 'Ocultar ideas' : '¿Qué digo?'}
           </button>
         )}
-        <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} />
+        {inputMode === 'voice' ? (
+          <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')} />
+        ) : (
+          <div className="anim-up flex w-full items-end gap-2">
+            <button
+              type="button"
+              onClick={() => setInputMode('voice')}
+              className="glass grid h-[52px] w-[52px] flex-none place-items-center rounded-full"
+              aria-label="Responder hablando"
+            >
+              <Icon name="mic" size={22} />
+            </button>
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              rows={2}
+              autoFocus
+              placeholder="Write your answer in English…"
+              className="input max-h-[120px] min-h-[52px] flex-1 resize-none py-3 leading-snug"
+            />
+            <button
+              type="button"
+              onClick={sendText}
+              disabled={!draft.trim() || busy}
+              className="btn-acc grid h-[52px] w-[52px] flex-none place-items-center rounded-full disabled:opacity-50"
+              aria-label="Enviar"
+            >
+              <Icon name="send" size={22} stroke={1.8} />
+            </button>
+          </div>
+        )}
       </div>
 
       {lookupReq && (

@@ -20,7 +20,7 @@ export interface TurnMetrics {
 
 export function turnMetrics(t: Turn): TurnMetrics {
   const words = countWords(t.text)
-  const secs = t.speechSeconds ?? t.audioSeconds ?? 0
+  const secs = t.typed ? 0 : (t.speechSeconds ?? t.audioSeconds ?? 0)
   return {
     words,
     wpm: secs >= 1.5 && words >= 3 ? Math.round(words / (secs / 60)) : null,
@@ -35,14 +35,17 @@ const WPM_TARGET = 125
 export function sessionMetrics(turns: Turn[]): SessionMetrics | null {
   const user = turns.filter((t) => t.role === 'user')
   if (user.length === 0) return null
+  // Velocidad y pausas solo salen de lo hablado; longitud y precisión, de todas las respuestas.
+  const spoken = user.filter((t) => !t.typed)
   const counts = user.map((t) => countWords(t.text))
   const words = counts.reduce((a, b) => a + b, 0)
-  const speechSeconds = user.reduce((a, t) => a + (t.speechSeconds ?? t.audioSeconds ?? 0), 0)
-  const pauses = user.reduce((a, t) => a + (t.pauses?.length ?? 0), 0)
+  const spokenWords = spoken.reduce((a, t) => a + countWords(t.text), 0)
+  const speechSeconds = spoken.reduce((a, t) => a + (t.speechSeconds ?? t.audioSeconds ?? 0), 0)
+  const pauses = spoken.reduce((a, t) => a + (t.pauses?.length ?? 0), 0)
   const corrections = user.filter((t) => t.correction).length
   const minutes = Math.max(speechSeconds / 60, 0.05)
-  const wpm = Math.round(words / minutes)
-  const pausesPerMin = Math.round((pauses / minutes) * 10) / 10
+  const wpm = spoken.length ? Math.round(spokenWords / minutes) : 0
+  const pausesPerMin = spoken.length ? Math.round((pauses / minutes) * 10) / 10 : 0
   const avgWords = Math.round(words / user.length)
 
   const clamp = (x: number) => Math.max(0, Math.min(1, x))
@@ -50,10 +53,13 @@ export function sessionMetrics(turns: Turn[]): SessionMetrics | null {
   const length = clamp((avgWords - 5) / (40 - 5))
   const smooth = clamp(1 - pausesPerMin / 6)
   const accuracy = clamp(1 - (corrections / user.length) * 0.8)
-  const score = Math.round((speed * 0.3 + length * 0.3 + smooth * 0.2 + accuracy * 0.2) * 100)
+  const score = spoken.length
+    ? Math.round((speed * 0.3 + length * 0.3 + smooth * 0.2 + accuracy * 0.2) * 100)
+    : Math.round(((length * 0.3 + accuracy * 0.2) / 0.5) * 100)
 
   return {
     turns: user.length,
+    spokenTurns: spoken.length,
     words,
     speechSeconds: Math.round(speechSeconds),
     wpm,
@@ -108,14 +114,14 @@ export async function generateReport(
 ): Promise<SessionReport> {
   const transcript = turns
     .map((t) => {
-      const line = `${t.role === 'user' ? 'STUDENT' : 'COACH'}: ${t.text}`
+      const line = `${t.role === 'user' ? (t.typed ? 'STUDENT (typed)' : 'STUDENT') : 'COACH'}: ${t.text}`
       return t.correction ? `${line}\n  [corrected: "${t.correction.original}" → "${t.correction.corrected}"]` : line
     })
     .join('\n')
 
   const lv = (await getProfile()).levels
   const task = `Write a short end-of-session report for a Spanish-speaking English learner (${lv.overall}, speaking ${lv.speaking}, goal: speak fluently).
-${topic ? `Topic: ${topic.title}\n` : ''}Metrics: ${metrics.turns} answers, ${metrics.words} words, ${metrics.wpm} words/min, ${metrics.pauses} pauses over 1 s, average ${metrics.avgWords} words per answer, longest ${metrics.longestWords} words, ${metrics.corrections} corrections. Fluency score ${metrics.score}/100.
+${topic ? `Topic: ${topic.title}\n` : ''}Metrics: ${metrics.turns} answers (${metrics.spokenTurns ?? metrics.turns} spoken, the rest typed), ${metrics.words} words, ${metrics.wpm} words/min when speaking, ${metrics.pauses} pauses over 1 s, average ${metrics.avgWords} words per answer, longest ${metrics.longestWords} words, ${metrics.corrections} corrections. Fluency score ${metrics.score}/100.
 
 Conversation:
 ${transcript}

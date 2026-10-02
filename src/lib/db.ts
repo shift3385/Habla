@@ -37,6 +37,7 @@ export interface Topic {
 
 export interface SessionMetrics {
   turns: number
+  spokenTurns?: number // respuestas habladas (las escritas no cuentan para velocidad ni pausas)
   words: number
   speechSeconds: number
   wpm: number
@@ -77,6 +78,7 @@ export interface Turn {
   audioSeconds?: number // duración grabada
   speechSeconds?: number // de la primera a la última palabra (análisis local)
   pauses?: number[] // silencios ≥ 1 s dentro del habla, en segundos
+  typed?: boolean // respuesta escrita con el teclado
   correction?: Correction
 }
 

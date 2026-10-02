@@ -28,6 +28,7 @@ D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 5. Abre **Habla**. Irás directo a **Ajustes**:
    - Pega tu `GEMINI_API_KEY` (empieza por `AIza`). Se crea en https://aistudio.google.com → *Get API key*.
    - Toca **Guardar y comprobar**. Debe salir ✅ junto con el modelo elegido.
+   - Puedes elegir **cualquier modelo** como principal y como respaldo. La lista mezcla lo que devuelve Google con los modelos conocidos (por si Google no responde); **Actualizar lista de modelos** la vuelve a pedir y **Otro modelo** permite escribir el nombre exacto de uno nuevo.
 6. La primera vez que pulses el botón de hablar, Android te pedirá permiso para el **micrófono**. Toca **"Mientras se usa la app"**.
 
 ## 🔄 Actualizar a una versión nueva (sin perder tus datos)
@@ -92,6 +93,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
    - **Mantener y soltar:** habla con el dedo en el micrófono; al soltar se envía.
    - **Deslizar ↑ hasta el candado:** la grabación queda bloqueada, así que puedes soltar el dedo y hablar tranquilo. Toca **➤** para enviar, o la papelera para descartar.
    - **Deslizar ←:** cancela la grabación sin enviarla.
+   - **⌨️ Teclado** (a la derecha del micrófono): cambia a escribir tu respuesta. El icono del micrófono te devuelve a hablar. Las respuestas escritas también se corrigen, pero no cuentan para la velocidad ni las pausas, ni para tu nivel al hablar.
 3. Debajo de tu frase aparecen tus métricas de ese turno: palabras por minuto, número de palabras y pausas de más de 1 s.
 4. Si cometiste un error, la siguiente burbuja del profe muestra **una sola corrección**: tu frase tachada → la correcta, con una explicación corta.
 5. El profe te responde por voz (1 a 3 frases) y siempre termina con una pregunta.
@@ -102,7 +104,7 @@ Otros controles:
 - **Barra de velocidad**: la velocidad de la voz del profe.
 - **👂 Modo oído**: el texto del profe queda oculto hasta que lo tocas, para entrenar la comprensión auditiva.
 - **🔊 Repetir**: vuelve a escuchar una frase del profe.
-- **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta.
+- **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta. Al salir se cancela lo que el profe estuviera preparando: no hay más reintentos ni respuesta ni voz (una petición que ya salió hacia Google puede contarse igualmente, pero no se reintenta).
 
 ### Palabras (consultas en contexto)
 - En la pestaña **Palabras**, escribe una palabra o expresión y, si puedes, **la frase donde la viste**. No es un traductor literal: te explica qué significa **en esa frase** y por qué.

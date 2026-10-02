@@ -131,7 +131,7 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 # Transcribing the audio
 - "transcript": write EXACTLY what the student said, verbatim. Do NOT fix grammar, word choice or word order: the mistakes are what we need to see. Keep hesitations like "uh" or "um" only when clearly audible. If they switch to Spanish, write those words in Spanish.
 - If the audio has no intelligible speech (silence, noise, a cough), set heard_speech to false, leave transcript empty, set has_error to false, and put in "reply" a short friendly request to repeat.
-- For text messages (not audio), set heard_speech to true and leave transcript empty.
+- For text messages (not audio), set heard_speech to true and leave transcript empty. The student typed them: correct grammar and wrong words, but ignore capital letters, punctuation and small typos.
 
 # How you speak
 - Keep every reply SHORT: 1 to 3 short sentences. The student must talk much more than you.
@@ -164,6 +164,11 @@ export interface AudioInput {
   mimeType: string
 }
 
+/** Respuesta escrita con el teclado en lugar de hablada. */
+export interface TextInput {
+  text: string
+}
+
 /**
  * Un turno del profe. Con `audio`, Gemini transcribe la respuesta del alumno, la corrige y contesta
  * en una sola llamada. El historial previo va como texto (transcripciones) para ahorrar tokens.
@@ -173,15 +178,17 @@ export async function teacherTurn(
   models: Models,
   system: string,
   history: ChatMessage[],
-  audio?: AudioInput,
+  answer?: AudioInput | TextInput,
   onRetry?: (info: RetryInfo) => void,
 ): Promise<TeacherResponse> {
   const contents: GeminiContent[] = toContents(history)
-  if (audio) {
+  if (answer && 'base64' in answer) {
     contents.push({
       role: 'user',
-      parts: [{ inlineData: { mimeType: audio.mimeType, data: audio.base64 } }, { text: AUDIO_INSTRUCTION }],
+      parts: [{ inlineData: { mimeType: answer.mimeType, data: answer.base64 } }, { text: AUDIO_INSTRUCTION }],
     })
+  } else if (answer) {
+    contents.push({ role: 'user', parts: [{ text: answer.text }] })
   }
 
   const raw = await withRetry(

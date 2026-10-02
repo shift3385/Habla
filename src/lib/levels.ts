@@ -41,7 +41,7 @@ export async function updateLevelsFromPractice(): Promise<LevelEvent | null> {
   const p = await db.profile.get('me')
   if (!p?.calibratedAt) return null
   const recent = (await db.sessions.where('startedAt').above(p.calibratedAt).toArray())
-    .filter((s: Session) => s.metrics && s.metrics.turns >= 3)
+    .filter((s: Session) => s.metrics && (s.metrics.spokenTurns ?? s.metrics.turns) >= 3) // el nivel de habla sale de lo hablado
     .slice(-5)
   if (recent.length < 5) return null
 

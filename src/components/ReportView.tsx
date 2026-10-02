@@ -32,7 +32,7 @@ export default function ReportView(p: Props) {
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-center">
-        <Stat value={m.wpm} label="palabras/min" hint="meta B2: 110+" />
+        <Stat value={m.spokenTurns === 0 ? '—' : m.wpm} label="palabras/min" hint="meta B2: 110+" />
         <Stat value={m.avgWords} label="palabras/resp." hint="meta: 30+" />
         <Stat value={m.pauses} label="pausas > 1 s" hint={`${m.pausesPerMin.toLocaleString('es')}/min`} />
         <Stat value={m.words} label="palabras" />
