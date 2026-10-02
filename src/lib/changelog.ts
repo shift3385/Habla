@@ -17,6 +17,23 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.10',
+    date: '2026-10-01',
+    title: 'Respuestas mucho más rápidas',
+    improved: [
+      'Si un modelo se queda sin cuota, la app pasa al de respaldo al instante y lo recuerda (antes perdía 15–20 s en cada respuesta)',
+      'Modelo rápido para ideas, tema del día, informe y palabras: responden en 1–2 s',
+      'Tu voz se envía 5 veces más ligera: menos espera con datos móviles',
+      'En el test de habla cada respuesta se evalúa mientras grabas la siguiente: el resultado final sale en segundos',
+      'Tiempo máximo de espera con mensaje claro, en vez de quedarse pensando sin fin',
+    ],
+    added: ['Ajustes → Diagnóstico: velocidad de Gemini, errores recientes y modelos sin cuota, para compartir'],
+    fixed: [
+      'El nivel global del test podía salir C1 aunque al hablar fueras B1: ahora el habla cuenta doble',
+      'El profe ya no "corrige" frases que estaban bien (por ejemplo "actually")',
+    ],
+  },
+  {
     v: '4.9',
     date: '2026-10-01',
     title: 'Escribe tus respuestas y elige cualquier modelo',

@@ -1,6 +1,6 @@
 import { Preferences } from '@capacitor/preferences'
 import type { Mode, TeacherKey, ThemeKey } from '../ui/theme'
-import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL } from './gemini'
+import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL, type Models } from './gemini'
 
 // La clave API vive solo en el almacenamiento local del teléfono (Preferences).
 // Nunca se escribe en el código, en IndexedDB ni en las copias de seguridad.
@@ -8,7 +8,8 @@ import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL } from './gemini'
 export interface Settings {
   geminiKey: string
   geminiModel: string
-  geminiFallbackModel: string // se usa si el principal está saturado (503)
+  geminiFallbackModel: string // se usa si el principal está saturado (503) o sin cuota (429)
+  geminiFastModel: string // tareas ligeras: ideas, tema del día, informe, consultas de palabras
   ttsRate: number // 0.5 – 1.5
   voiceIndex: number | null // índice de getSupportedVoices(); null = voz por defecto del acento del profe
   earMode: boolean // texto del profe oculto hasta tocarlo
@@ -25,6 +26,7 @@ const DEFAULTS: Settings = {
   geminiKey: '',
   geminiModel: DEFAULT_MODEL,
   geminiFallbackModel: DEFAULT_FALLBACK_MODEL,
+  geminiFastModel: DEFAULT_FALLBACK_MODEL,
   ttsRate: 0.9,
   voiceIndex: null,
   earMode: false,
@@ -56,6 +58,16 @@ export async function loadSettings(): Promise<Settings> {
 
 export async function saveSettings(s: Settings): Promise<void> {
   await Preferences.set({ key: KEY, value: JSON.stringify(s) })
+}
+
+/** Modelos para conversar, corregir y evaluar. */
+export function mainModels(s: Settings, signal?: AbortSignal): Models {
+  return { primary: s.geminiModel, fallback: s.geminiFallbackModel, signal }
+}
+
+/** Modelos para tareas ligeras (respuesta en 1–2 s): el rápido y, si falla, el principal. */
+export function fastModels(s: Settings, signal?: AbortSignal): Models {
+  return { primary: s.geminiFastModel || s.geminiFallbackModel, fallback: s.geminiModel, signal }
 }
 
 export function hasKeys(s: Settings): boolean {

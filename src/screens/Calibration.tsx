@@ -3,6 +3,7 @@ import {
   buildLevels,
   comprehensionLevel,
   estimateMcqLevel,
+  assessSpeakingTask,
   evaluateSpeaking,
   generateComprehension,
   generateMcqPool,
@@ -15,13 +16,14 @@ import {
   type McqAnswer,
   type McqItem,
   type SpeakingAnswer,
+  type TaskAssessment,
 } from '../lib/calibration'
 import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
 import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
 import { levelAt, levelIdx, rateForLevel, type Level } from '../lib/levels'
 import { MicError, Recorder } from '../lib/recorder'
-import type { Settings } from '../lib/settings'
+import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
@@ -163,7 +165,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
   const recorder = useRef(new Recorder())
   const recStart = useRef(0)
 
-  const models = (): Models => ({ primary: settings.geminiModel, fallback: settings.geminiFallbackModel })
+  const models = (): Models => mainModels(settings)
   // Los reintentos ocurren en segundo plano, sin mensajes (la animación de preparación cubre la espera).
   const onRetry = undefined as ((i: RetryInfo) => void) | undefined
 
@@ -273,6 +275,9 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
 
   const sayTask = (i: number) => speak(tasks[i].prompt, rateForLevel(base), settings.voiceIndex).catch(() => {})
 
+  // Evaluación de cada respuesta en segundo plano, lanzada al terminar de grabarla.
+  const preEval = useRef<Promise<TaskAssessment | null>[]>([])
+
   const toggleRecord = async (i: number) => {
     if (recState === 'processing') return
     if (recState === 'idle') {
@@ -307,6 +312,7 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
       }
       setSpeech((s) => s.map((x, j) => (j === i ? answer : x)))
       setHint(null)
+      preEval.current[i] = assessSpeakingTask(settings.geminiKey, models(), tasks[i], answer).catch(() => null)
     } catch {
       setHint('Algo falló al guardar la grabación. Vuelve a intentarlo.')
       setMicFailures((n) => n + 1)
@@ -342,9 +348,13 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
           }),
         )
       // Solo se evalúan las tareas grabadas (las saltadas por un fallo del micrófono se omiten).
-      const pairs = tasks.map((task, k) => ({ task, ans: speech[k] })).filter((p): p is { task: (typeof tasks)[number]; ans: SpeakingAnswer } => !!p.ans && p.ans !== 'skipped')
+      const pairs = tasks
+        .map((task, k) => ({ task, ans: speech[k], k }))
+        .filter((p): p is { task: (typeof tasks)[number]; ans: SpeakingAnswer; k: number } => !!p.ans && p.ans !== 'skipped')
+      // Normalmente ya están listas: se evaluaron mientras grababas las siguientes.
+      const pre = await Promise.all(pairs.map((p) => preEval.current[p.k] ?? Promise.resolve(null)))
       const ev = pairs.length
-        ? await evaluateSpeaking(settings.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry)
+        ? await evaluateSpeaking(settings.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry, pre)
         : {
             // Sin ninguna grabación: el habla se estima un nivel por debajo de la gramática y se mide en el próximo test.
             level: levelAt(levelIdx(estimateMcqLevel(answers)) - 1),
@@ -653,7 +663,12 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
             <div className="text-[56px] leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
               {r.levels.overall}
             </div>
-            <p className="txt-sub text-sm leading-snug">{r.speaking.summaryEs}</p>
+            <p className="txt-sub text-sm leading-snug">
+              <b className="font-semibold" style={{ color: 'var(--tx)' }}>
+                Al hablar ({r.levels.speaking}):
+              </b>{' '}
+              {r.speaking.summaryEs}
+            </p>
           </div>
           <div className="glass rounded-[28px] p-4">
             {rows.map(([n, l]) => (

@@ -17,10 +17,13 @@ export function levelAt(i: number): Level {
   return LEVELS[Math.max(0, Math.min(LEVELS.length - 1, Math.round(i)))]
 }
 
-/** Nivel global: media de las cuatro habilidades, redondeada. */
+/** Nivel global: media ponderada de las cuatro habilidades (habla cuenta doble). */
 export function overallFrom(levels: Record<Skill, string>): Level {
-  const s: Skill[] = ['grammar', 'reading', 'listening', 'speaking']
-  return levelAt(s.reduce((a, k) => a + levelIdx(levels[k]), 0) / s.length)
+  // Habla es el objetivo de la app: cuenta doble y el nivel global nunca supera al de habla en más de un nivel
+  // (antes, leer y escuchar muy bien daban un C1 global a alguien que habla en B1).
+  const speaking = levelIdx(levels.speaking)
+  const avg = (levelIdx(levels.grammar) + levelIdx(levels.reading) + levelIdx(levels.listening) + 2 * speaking) / 5
+  return levelAt(Math.min(avg, speaking + 1))
 }
 
 /** Velocidad de voz del profe recomendada para un nivel. */

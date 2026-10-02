@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
-import { KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel } from '../lib/gemini'
+import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel, type NetLog } from '../lib/gemini'
+import { Share } from '@capacitor/share'
 import ProfileForm from '../components/ProfileForm'
 import { APP_VERSION } from '../lib/changelog'
 import { levelIdx, nextRetestAt } from '../lib/levels'
@@ -13,7 +14,7 @@ import Orb from '../ui/Orb'
 import Switch from '../ui/Switch'
 import { TEACHERS, THEME_INFO, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars } from '../ui/theme'
 
-type Page = 'voice' | 'look' | 'goal' | 'level' | 'gemini' | 'data'
+type Page = 'voice' | 'look' | 'goal' | 'level' | 'gemini' | 'data' | 'diag'
 
 const PAGES: Record<Page, { title: string; icon: IconName }> = {
   voice: { title: 'Profe y voz', icon: 'mic' },
@@ -22,6 +23,7 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   level: { title: 'Mi perfil', icon: 'bars' },
   gemini: { title: 'Gemini', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
+  diag: { title: 'Diagnóstico', icon: 'chart' },
 }
 
 
@@ -74,6 +76,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
           </>
         )}
         {page === 'gemini' && <GeminiPage settings={settings} update={update} />}
+        {page === 'diag' && <DiagPage />}
         {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
       </div>
     )
@@ -132,6 +135,18 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
           <span className="txt-sub block text-[12.5px]">
             Versión {APP_VERSION} · novedades, privacidad y ayuda
           </span>
+        </span>
+        <span className="txt-sub pr-2">
+          <Icon name="chevR" size={16} stroke={1.8} />
+        </span>
+      </button>
+      <button onClick={() => setPage('diag')} className="glass flex h-[62px] items-center gap-3 rounded-[31px] px-2.5 text-left">
+        <span className="field txt-acc2 grid h-[42px] w-[42px] flex-none place-items-center rounded-full">
+          <Icon name="chart" size={19} stroke={1.6} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-semibold">Diagnóstico</span>
+          <span className="txt-sub block text-[12.5px]">Velocidad de Gemini y errores recientes</span>
         </span>
         <span className="txt-sub pr-2">
           <Icon name="chevR" size={16} stroke={1.8} />
@@ -440,6 +455,7 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
 
   const save = async () => {
     const k = key.trim()
+    if (k !== settings.geminiKey) clearExhausted() // clave nueva: otras cuotas
     update({ geminiKey: k })
     setChecking(true)
     setStatus({ kind: 'info', text: 'Guardada. Comprobando…' })
@@ -518,7 +534,19 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
             <Icon name="chevD" size={16} stroke={1.8} />
           </span>
         </div>
-        <div className="txt-sub mt-2 text-xs leading-snug">La app reintenta sola 3 veces y después prueba este modelo.</div>
+        <div className="txt-sub mt-2 text-xs leading-snug">
+          Si el principal está saturado, la app reintenta y después prueba este. Si se queda sin cuota, pasa a este al momento.
+        </div>
+        <div className="txt-sub mt-3 text-sm">Modelo rápido (ideas, tema, informe, palabras)</div>
+        <div className="relative mt-2">
+          <select value={settings.geminiFastModel} onChange={(e) => update({ geminiFastModel: e.target.value })} className="input pr-10">
+            {modelOptions(settings.geminiFastModel)}
+          </select>
+          <span className="pointer-events-none absolute top-[17px] right-4">
+            <Icon name="chevD" size={16} stroke={1.8} />
+          </span>
+        </div>
+        <div className="txt-sub mt-2 text-xs leading-snug">Un Flash-Lite responde en 1–2 s. Si falla, se usa el principal.</div>
         <button onClick={() => refresh()} disabled={refreshing} className="glass mt-3 h-[44px] w-full rounded-[22px] text-sm font-medium">
           {refreshing ? 'Actualizando…' : 'Actualizar lista de modelos'}
         </button>
@@ -588,5 +616,124 @@ function DataPage({ onImported }: { onImported: () => void }) {
       <input ref={fileInput} type="file" accept="application/json,.json" className="hidden" onChange={(e) => doImport(e.target.files?.[0])} />
       <StatusLine s={status} />
     </Card>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Diagnóstico: últimas llamadas a Gemini (tiempos y errores) y modelos sin cuota.
+
+const TASKS: [string, string][] = [
+  ['Your name is', 'Clase'],
+  ['You help English learners', '¿Qué digo?'],
+  ['You pick conversation topics', 'Tema'],
+  ['You are an expert, encouraging', 'Informe'],
+  ['You are an expert CEFR examiner', 'Test'],
+  ['You are an expert bilingual', 'Palabra'],
+  ['You are a precise, encouraging', 'Repaso'],
+]
+
+function taskLabel(what: string) {
+  return TASKS.find(([p]) => what.startsWith(p))?.[1] ?? what.slice(0, 18)
+}
+
+function statusLabel(e: NetLog) {
+  if (e.status === 200) return 'OK'
+  if (e.status === 429) return 'Sin cuota'
+  if (e.status === 503) return 'Saturado'
+  if (e.status === 0) return 'Sin conexión'
+  return `Error ${e.status}`
+}
+
+function DiagPage() {
+  const [log, setLog] = useState<NetLog[]>(() => getNetLog().reverse())
+  const [quota, setQuota] = useState(() => exhaustedList())
+  const ok = log.filter((e) => e.status === 200)
+  const avg = ok.length ? Math.round(ok.reduce((a, e) => a + e.ms, 0) / ok.length / 100) / 10 : null
+  const fails = log.length - ok.length
+  const time = (ms: number) => new Date(ms).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
+
+  const share = () => {
+    const lines = [...log]
+      .reverse()
+      .map(
+        (e) =>
+          `${new Date(e.at).toLocaleString('es')} · ${taskLabel(e.what)} · ${e.model} · ${statusLabel(e)} · ${(e.ms / 1000).toFixed(1)} s · ${e.kb} KB${e.error ? ` · ${e.error}` : ''}`,
+      )
+    Share.share({ title: 'Diagnóstico de Habla', text: `Habla ${APP_VERSION} · diagnóstico\n${lines.join('\n')}` }).catch(() => {})
+  }
+
+  return (
+    <>
+      <Card>
+        <div className="grid grid-cols-3 gap-2 text-center">
+          <div>
+            <div className="text-2xl font-semibold">{avg ?? '—'}</div>
+            <div className="txt-sub text-xs">s por respuesta</div>
+          </div>
+          <div>
+            <div className="text-2xl font-semibold">{ok.length}</div>
+            <div className="txt-sub text-xs">correctas</div>
+          </div>
+          <div>
+            <div className="text-2xl font-semibold" style={{ color: fails ? '#f87171' : undefined }}>
+              {fails}
+            </div>
+            <div className="txt-sub text-xs">fallidas</div>
+          </div>
+        </div>
+        {quota.length > 0 && (
+          <div className="mt-3 text-sm">
+            <div className="txt-sub">Sin cuota ahora mismo (la app los salta):</div>
+            {quota.map((q) => (
+              <div key={q.key} className="mt-1">
+                {q.key === 'search' ? 'Búsqueda de noticias' : q.key} · hasta las {time(q.until)}
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                clearExhausted()
+                setQuota([])
+              }}
+              className="glass mt-2 h-10 w-full rounded-[20px] text-sm"
+            >
+              Volver a probarlos ya
+            </button>
+          </div>
+        )}
+      </Card>
+      <Card>
+        <div className="txt-sub mb-2 text-sm">Últimas llamadas a Gemini</div>
+        {log.length === 0 && <div className="txt-sub text-sm">Aún no hay llamadas registradas.</div>}
+        {log.slice(0, 40).map((e, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-2 border-b py-1.5 text-[12.5px] tabular-nums last:border-b-0"
+            style={{ borderColor: 'var(--gb)' }}
+          >
+            <span className="txt-sub w-10 flex-none">{time(e.at)}</span>
+            <span className="w-[72px] flex-none truncate">{taskLabel(e.what)}</span>
+            <span className="txt-sub min-w-0 flex-1 truncate">{e.model.replace('gemini-', '')}</span>
+            <span className="w-[68px] flex-none text-right" style={{ color: e.status === 200 ? 'var(--acc2)' : '#f87171' }}>
+              {statusLabel(e)}
+            </span>
+            <span className="w-11 flex-none text-right">{(e.ms / 1000).toFixed(1)} s</span>
+          </div>
+        ))}
+      </Card>
+      <div className="grid grid-cols-2 gap-2.5">
+        <button onClick={share} disabled={!log.length} className="btn-acc h-[50px] rounded-[25px] text-sm">
+          Compartir
+        </button>
+        <button
+          onClick={() => {
+            clearNetLog()
+            setLog([])
+          }}
+          className="glass h-[50px] rounded-[25px] text-sm"
+        >
+          Borrar registro
+        </button>
+      </div>
+    </>
   )
 }

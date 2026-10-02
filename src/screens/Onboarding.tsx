@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { APP_VERSION } from '../lib/changelog'
-import { listModels, pickDefaultModel, pickFallbackModel } from '../lib/gemini'
+import { clearExhausted, listModels, pickDefaultModel, pickFallbackModel } from '../lib/gemini'
 import type { Settings } from '../lib/settings'
 import { speak } from '../lib/tts'
 import { Icon } from '../ui/icons'
@@ -34,7 +34,8 @@ export default function Onboarding({ settings, t, update, onDone }: Props) {
     try {
       const list = await listModels(k)
       const model = pickDefaultModel(list)
-      update({ geminiKey: k, geminiModel: model, geminiFallbackModel: pickFallbackModel(list, model) })
+      clearExhausted()
+      update({ geminiKey: k, geminiModel: model, geminiFallbackModel: pickFallbackModel(list, model), modelList: list.map((m) => m.id) })
       setKeyStatus({ ok: true, text: 'Clave válida ✓' })
     } catch (e) {
       setKeyStatus({ ok: false, text: (e as Error).message })

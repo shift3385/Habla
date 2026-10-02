@@ -4,7 +4,7 @@ import PrepareScreen from '../components/PrepareScreen'
 import type { SrsCard } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import { MicError, Recorder } from '../lib/recorder'
-import type { Settings } from '../lib/settings'
+import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import {
   evaluateDrill,
@@ -135,7 +135,7 @@ export default function ReviewScreen({ settings, t, onExit, registerBack }: Prop
     try {
       const r = await evaluateDrill(
         settings.geminiKey,
-        { primary: settings.geminiModel, fallback: settings.geminiFallbackModel },
+        mainModels(settings),
         card,
         { base64: await blobToBase64(blob), mimeType: blob.type.split(';')[0] || 'audio/webm' },
       )

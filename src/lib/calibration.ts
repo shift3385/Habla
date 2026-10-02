@@ -287,6 +287,52 @@ const SPEAK_SCHEMA: JsonSchema = {
   },
 }
 
+// Cada respuesta se evalúa sola en cuanto se graba (mientras haces la siguiente tarea).
+// Al final solo se envían esas notas en texto: la evaluación final ya no sube audio y tarda segundos.
+
+export interface TaskAssessment {
+  transcript: string
+  level: Level
+  notes: string // observaciones del examinador en inglés (errores citados, pronunciación, fluidez)
+}
+
+const TASK_SCHEMA: JsonSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['transcript', 'level', 'notes'],
+  properties: {
+    transcript: { type: 'string' },
+    level: { type: 'string', enum: [...LEVELS] },
+    notes: { type: 'string' },
+  },
+}
+
+export async function assessSpeakingTask(apiKey: string, models: Models, task: SpeakingTask, a: SpeakingAnswer): Promise<TaskAssessment> {
+  const raw = await withRetry({ ...models, timeoutMs: 90_000 }, (model) =>
+    askGemini<{ transcript: string; level: Level; notes: string }>(apiKey, model, {
+      system: SYSTEM,
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { text: `Speaking task: "${task.prompt}" — recorded ${Math.round(a.seconds)} s, ${a.pauses} pauses over 1 s.` },
+            { inlineData: { mimeType: a.mimeType, data: a.base64 } },
+            {
+              text: `This is one answer of a Spanish speaker in a CEFR placement test.
+- "transcript": verbatim transcription (keep every mistake and hesitation).
+- "level": CEFR level shown in THIS answer. Be rigorous: very short or hesitant answers cannot be above A2.
+- "notes": 3-5 short examiner notes in English about fluency, grammar, vocabulary, pronunciation and coherence, quoting the real mistakes (e.g. "'the people was' → 'the people were'").`,
+            },
+          ],
+        },
+      ],
+      schema: TASK_SCHEMA,
+      temperature: 0.2,
+    }),
+  )
+  return { transcript: (raw.transcript ?? '').trim(), level: LEVELS.includes(raw.level) ? raw.level : 'A2', notes: (raw.notes ?? '').trim() }
+}
+
 export async function evaluateSpeaking(
   apiKey: string,
   models: Models,
@@ -295,13 +341,19 @@ export async function evaluateSpeaking(
   failedPoints: string[],
   unknownPoints: string[],
   onRetry?: (i: RetryInfo) => void,
+  pre: (TaskAssessment | null)[] = [],
 ): Promise<SpeakingEval> {
   const parts: GeminiPart[] = []
   answers.forEach((a, i) => {
     parts.push({
       text: `Task ${i + 1}: "${tasks[i].prompt}" — recorded ${Math.round(a.seconds)} s, measured speech rate ${a.wpm ?? 'n/a'} words/min, ${a.pauses} pauses over 1 s.`,
     })
-    parts.push({ inlineData: { mimeType: a.mimeType, data: a.base64 } })
+    const p = pre[i]
+    // Ya evaluada por separado: solo el texto. Si aquella evaluación falló, se manda el audio.
+    if (p) parts.push({ text: `Transcript (verbatim): "${p.transcript}"
+Examiner notes from listening to the audio: ${p.notes}
+Level shown in this answer: ${p.level}` })
+    else parts.push({ inlineData: { mimeType: a.mimeType, data: a.base64 } })
   })
   parts.push({
     text: `Evaluate this Spanish-speaking candidate's SPEAKING with the CEFR descriptors. Be rigorous and realistic: do not inflate levels; very short or hesitant answers cannot be above A2.
@@ -311,13 +363,13 @@ export async function evaluateSpeaking(
 - "strengths_es": 2-3 concrete strengths, in Spanish.
 - "weaknesses_es": 3-4 concrete, recurring weaknesses in Spanish, quoting examples from the answers.
 - "weaknesses_en": the same weaknesses as short English notes for the teacher (e.g. "Drops the auxiliary in continuous tenses: 'I working' → 'I'm working'").
-- "summary_es": 2 sentences in Spanish summarising the level, encouraging but honest.
+- "summary_es": 2 sentences in Spanish about how the candidate SPEAKS (this is the speaking result, not the overall level), encouraging but honest.
 Grammar/vocabulary points the candidate FAILED in the written part (consider them for weaknesses): ${failedPoints.join('; ') || 'none'}.
 Points the candidate HONESTLY marked as "I don't know" (known gaps: give them priority among the weaknesses, the teacher will build the course on them): ${unknownPoints.join('; ') || 'none'}.`,
   })
 
   const raw = await withRetry(
-    models,
+    { ...models, timeoutMs: pre.every(Boolean) ? 60_000 : 150_000 },
     (model) =>
       askGemini<{
         transcripts: string[]

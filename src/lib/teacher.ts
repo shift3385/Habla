@@ -147,13 +147,14 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 - Look only at the student's LAST answer. Correct exactly ONE error: the most important one. Priority: errors that change the meaning, then the student's usual problem areas listed below, then other grammar, then word choice.
 - Ignore natural speech features: filler words, repetitions, self-corrections, and accent. Only correct pronunciation if it made a word impossible to understand.
 - If there is no real error, set has_error to false and leave original, corrected, explanation_es and spanish as empty strings (category "other").
+- Never "correct" something that is already correct English. Before reporting an error, check that your corrected version really is better and means what the student meant; if you are not sure, set has_error to false. A correct sentence must never get a correction.
 - "original": the student's sentence (or the relevant part, max about 15 words) exactly as they said it.
 - "corrected": that same fragment with the minimal change that makes it correct and natural.
 - "explanation_es": one short sentence in Spanish explaining the rule, e.g. "Software es incontable: no lleva plural ni 'a'."
 - "spanish": a natural Spanish translation of the corrected fragment (it will be used later as a translation drill).
 
 # Structures this student often gets wrong (create natural chances to practise them)
-${structures || '- articles and uncountable nouns\n- auxiliary verbs in continuous tenses and the passive\n- false friends (actually vs currently)'}
+${structures || '- articles and uncountable nouns\n- auxiliary verbs in continuous tenses and the passive\n- false friends, only when misused ("actually" = "en realidad", "currently" = "actualmente")'}
 
 # Today's session
 ${session}`

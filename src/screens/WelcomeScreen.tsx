@@ -154,8 +154,8 @@ export default function WelcomeScreen({ returning, onImport, onDone }: Props) {
         const ch = g.children
         ch[0].setAttribute('cx', String(p.x))
         ch[0].setAttribute('cy', String(p.y))
-        ch[0].setAttribute('rx', String(r * sxd))
-        ch[0].setAttribute('ry', String(r * syd))
+        ch[0].setAttribute('rx', String(Math.max(0, r * sxd)))
+        ch[0].setAttribute('ry', String(Math.max(0, r * syd)))
         for (let i = 0; i < 5; i++) {
           const ang = p.t * 0.013 * (i % 2 ? 1 : -1) + i * 1.2566
           const d = T.orbit ? r * (T.orbit + 0.25 * Math.sin(p.t * 0.04 + i)) : r * (0.5 + 0.18 * Math.sin(p.t * 0.03 + i * 2))

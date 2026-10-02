@@ -10,6 +10,9 @@ const MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;code
 
 export class MicError extends Error {}
 
+/** Calidad de grabación (bits/s). */
+const AUDIO_BPS = 24_000
+
 export class Recorder {
   private stream: MediaStream | null = null
   private recorder: MediaRecorder | null = null
@@ -51,7 +54,8 @@ export class Recorder {
     if (!this.isOpen) throw new MicError('El micrófono no está abierto.')
     const mimeType = MIME_CANDIDATES.find((m) => MediaRecorder.isTypeSupported(m))
     this.chunks = []
-    this.recorder = new MediaRecorder(this.stream!, mimeType ? { mimeType } : undefined)
+    // 24 kbps en Opus basta para la voz y sube ~5 veces menos datos que los 128 kbps por defecto de Android.
+    this.recorder = new MediaRecorder(this.stream!, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: AUDIO_BPS })
     this.recorder.ondataavailable = (e) => {
       if (e.data.size > 0) this.chunks.push(e.data)
     }

@@ -120,8 +120,9 @@ Return ONLY a JSON object with:
 
   if (category.live) {
     try {
+      // La búsqueda en Google tiene su propia cuota: si se agota, se recuerda y el tema se genera sin ella.
       const res = await withRetry(
-        models,
+        { ...models, quotaScope: 'search', timeoutMs: 25_000 },
         (model) => askGeminiMeta<RawTopic>(apiKey, model, { system, contents, grounded: true, temperature: 1 }),
         onRetry,
       )

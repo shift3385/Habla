@@ -28,6 +28,8 @@ D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 5. Abre **Habla**. Irás directo a **Ajustes**:
    - Pega tu `GEMINI_API_KEY` (empieza por `AIza`). Se crea en https://aistudio.google.com → *Get API key*.
    - Toca **Guardar y comprobar**. Debe salir ✅ junto con el modelo elegido.
+   - **Modelo rápido**: el que se usa para «¿Qué digo?», el tema del día, el informe y las consultas de palabras (por defecto un Flash-Lite, que responde en 1–2 s).
+   - Si un modelo se queda **sin cuota** (error 429), la app pasa al de respaldo al instante y no vuelve a probarlo hasta que Google renueva la cuota. Lo ves en **Ajustes → Diagnóstico**.
    - Puedes elegir **cualquier modelo** como principal y como respaldo. La lista mezcla lo que devuelve Google con los modelos conocidos (por si Google no responde); **Actualizar lista de modelos** la vuelve a pedir y **Otro modelo** permite escribir el nombre exacto de uno nuevo.
 6. La primera vez que pulses el botón de hablar, Android te pedirá permiso para el **micrófono**. Toca **"Mientras se usa la app"**.
 
@@ -134,6 +136,10 @@ Otros controles:
   - **Sesiones**: la gráfica de tu nota y el informe de cada clase.
 - **Ajustes**: un panel con 6 secciones (Profe y voz, Apariencia, Meta diaria, Mi nivel, Gemini y Mis datos). Cada sección se abre en su propia pantalla, con botón atrás.
 - Si la voz suena rara, en *Ajustes → Profe y voz* puedes elegir otra voz en inglés del teléfono. Si no hay ninguna, instala "Speech Services by Google" desde Play Store.
+
+## 🩺 Diagnóstico
+
+**Ajustes → Diagnóstico** muestra las últimas llamadas a Gemini: qué se pidió, con qué modelo, si salió bien (o *Sin cuota* / *Saturado*) y cuánto tardó. También los modelos sin cuota en este momento, con un botón para volver a probarlos. **Compartir** envía la lista por WhatsApp o correo para revisar el teléfono de otra persona sin conectarlo al PC.
 
 ## 💸 Coste aproximado
 

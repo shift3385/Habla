@@ -23,10 +23,25 @@ export class ApiError extends Error {
   status: number
   /** Errores pasajeros (saturación, cortes de red, respuesta cortada): vale la pena reintentar. */
   transient: boolean
+  /** En un 429: si la cuota agotada es por minuto o por día, y cuánto pide Google esperar. */
+  quota?: 'minute' | 'day'
+  retryAfterMs?: number
   constructor(message: string, status: number, transient = TRANSIENT_STATUS.has(status)) {
     super(message)
     this.status = status
     this.transient = transient
+  }
+}
+
+/** Lee del error 429 de Google si la cuota es diaria y el tiempo de espera que sugiere (RetryInfo). */
+function quotaInfo(data: GeminiResponse | null): Pick<ApiError, 'quota' | 'retryAfterMs'> {
+  const details = data?.error?.details ?? []
+  const text = JSON.stringify(details) + (data?.error?.message ?? '')
+  const delay = details.find((d) => d.retryDelay)?.retryDelay
+  const secs = delay ? parseFloat(delay) : NaN
+  return {
+    quota: /PerDay|per day|daily/i.test(text) ? 'day' : 'minute',
+    retryAfterMs: Number.isFinite(secs) ? Math.max(10, secs) * 1000 : undefined,
   }
 }
 
@@ -111,7 +126,11 @@ export async function askGeminiMeta<T>(apiKey: string, model: string, opts: AskO
     if (!retryable) break
   }
 
-  if (status !== 200) throw new ApiError(describeError(status, data, model), status)
+  if (status !== 200) {
+    const err = new ApiError(describeError(status, data, model), status)
+    if (status === 429) Object.assign(err, quotaInfo(data))
+    throw err
+  }
   if (data?.promptFeedback?.blockReason) {
     throw new ApiError('Gemini bloqueó este mensaje. Prueba a decirlo de otra forma.', 200)
   }
@@ -147,9 +166,9 @@ export interface RetryInfo {
 }
 
 /**
- * askGemini con reintentos automáticos ante errores pasajeros (503 saturado, 429, 5xx, red):
+ * askGemini con reintentos automáticos ante errores pasajeros (503 saturado, 5xx, red):
  * 3 intentos con el modelo principal y 2 con el de respaldo, con esperas crecientes.
- * Los errores definitivos (clave inválida, contenido bloqueado…) se lanzan al momento.
+ * Sin cuota (429) se pasa al momento al otro modelo. Los errores definitivos se lanzan al momento.
  */
 export async function askGeminiWithRetry<T>(
   apiKey: string,
@@ -165,6 +184,13 @@ export interface Models {
   fallback?: string
   /** Al abortarse (p. ej. al salir de la clase) no se reintenta ni se entrega la respuesta. */
   signal?: AbortSignal
+  /** Tiempo máximo total, contando reintentos (por defecto 60 s). */
+  timeoutMs?: number
+  /**
+   * Cuota propia de la llamada (p. ej. 'search' para la búsqueda en Google): un 429 agota esa cuota,
+   * no el modelo, y no se reintenta con otro modelo.
+   */
+  quotaScope?: string
 }
 
 /** La petición se canceló porque el usuario salió de la pantalla: no es un error que mostrar. */
@@ -183,29 +209,93 @@ function checkAborted(signal?: AbortSignal) {
   if (signal?.aborted) throw new AbortedError()
 }
 
+// ---------------------------------------------------------------------------
+// Cuotas agotadas (429): se recuerda qué modelo (o cuota) no tiene saldo y hasta cuándo,
+// para no gastar tiempo pidiéndoselo otra vez. Se guarda en el teléfono (sobrevive al reinicio).
+
+const QUOTA_KEY = 'habla.quota'
+
+function readQuota(): Record<string, number> {
+  try {
+    const q = JSON.parse(localStorage.getItem(QUOTA_KEY) ?? '{}') as Record<string, number>
+    const now = Date.now()
+    return Object.fromEntries(Object.entries(q).filter(([, until]) => until > now))
+  } catch {
+    return {}
+  }
+}
+
+export function isExhausted(key: string): boolean {
+  return (readQuota()[key] ?? 0) > Date.now()
+}
+
+/** Modelos o cuotas sin saldo ahora mismo, con la hora a la que vuelven a probarse. */
+export function exhaustedList(): { key: string; until: number }[] {
+  return Object.entries(readQuota()).map(([key, until]) => ({ key, until }))
+}
+
+export function markExhausted(key: string, e: ApiError) {
+  // Cuota diaria: hasta que Google la renueva (medianoche del Pacífico, ~8:00 UTC). Por minuto: lo que diga Google.
+  let until = Date.now() + (e.retryAfterMs ?? 60_000)
+  if (e.quota === 'day') {
+    const d = new Date()
+    d.setUTCHours(8, 0, 0, 0)
+    if (d.getTime() <= Date.now()) d.setUTCDate(d.getUTCDate() + 1)
+    until = d.getTime()
+  }
+  try {
+    localStorage.setItem(QUOTA_KEY, JSON.stringify({ ...readQuota(), [key]: until }))
+  } catch {
+    // Sin almacenamiento: solo se pierde el recuerdo.
+  }
+  console.info(`[HABLA-NET] sin cuota: ${key} hasta ${new Date(until).toLocaleTimeString()}`)
+}
+
+export function clearExhausted() {
+  try {
+    localStorage.removeItem(QUOTA_KEY)
+  } catch {
+    // nada
+  }
+}
+
 /** Reintentos genéricos para cualquier llamada que reciba el modelo a usar. */
 export async function withRetry<T>(
   models: Models,
   call: (model: string) => Promise<T>,
   onRetry?: (info: RetryInfo) => void,
 ): Promise<T> {
-  const plan = [models.primary, models.primary, models.primary]
-  if (models.fallback && models.fallback !== models.primary) plan.push(models.fallback, models.fallback)
+  const { signal, quotaScope } = models
+  if (quotaScope && isExhausted(quotaScope)) throw new ApiError(describeError(429, null), 429)
 
+  const candidates = [models.primary, ...(models.fallback && models.fallback !== models.primary ? [models.fallback] : [])]
+  // Los modelos sin cuota se saltan; si todos están agotados, se prueba igualmente el último (la estimación puede fallar).
+  const usable = candidates.filter((m) => !isExhausted(m))
+  const plan = (usable.length ? usable : candidates.slice(-1)).flatMap((m, i) => (i === 0 && m === models.primary ? [m, m, m] : [m, m]))
+
+  const deadline = Date.now() + (models.timeoutMs ?? 60_000)
   let delay = 1500
   let lastError: ApiError | null = null
-  const { signal } = models
   for (let i = 0; i < plan.length; i++) {
     const model = plan[i]
     checkAborted(signal)
+    if (lastError && isExhausted(model)) continue // se quedó sin cuota en este mismo bucle
     if (i > 0) {
+      const sameModel = plan[i - 1] === model
+      console.info(`[HABLA-NET] reintento ${i + 1}/${plan.length} con ${model} tras ${lastError?.status}${sameModel ? ` (espera ${delay} ms)` : ''}`)
       onRetry?.({ attempt: i + 1, total: plan.length, model, switchedModel: model !== models.primary })
-      await sleep(delay, signal)
-      delay = Math.min(delay * 2, 8000)
+      // Solo se espera al reintentar el mismo modelo; al cambiar de modelo se prueba al instante.
+      if (sameModel) {
+        if (Date.now() + delay > deadline) break
+        await sleep(delay, signal)
+        delay = Math.min(delay * 2, 8000)
+      }
       checkAborted(signal)
     }
+    const left = deadline - Date.now()
+    if (left < 2000) break
     try {
-      const result = await call(model)
+      const result = await withTimeout(call(model), left)
       // Una petición ya enviada no se puede recuperar, pero su respuesta se descarta.
       checkAborted(signal)
       return result
@@ -213,12 +303,39 @@ export async function withRetry<T>(
       checkAborted(signal)
       if (!(e instanceof ApiError)) throw e
       lastError = e
+      if (e.status === 429) {
+        // Sin cuota: no tiene sentido repetir. Se recuerda y se pasa al siguiente modelo.
+        markExhausted(quotaScope ?? model, e)
+        if (quotaScope) throw e
+        continue
+      }
       // Si el modelo de respaldo no existe para esta clave, no insistimos con él.
       if (e.status === 404 && model !== models.primary) break
       if (!e.transient) throw e
     }
   }
+  if (lastError?.status === 429) throw new ApiError(describeError(429, null), 429)
+  if (Date.now() >= deadline - 2000) {
+    throw new ApiError('Gemini está tardando demasiado (Google saturado o internet lento). Inténtalo de nuevo.', 0, true)
+  }
   throw lastError ?? new ApiError('Gemini no respondió.', 0)
+}
+
+/** Corta la espera de una petición (la respuesta tardía se ignora). */
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const id = setTimeout(() => reject(new ApiError('Gemini está tardando demasiado.', 0, true)), ms)
+    p.then(
+      (v) => {
+        clearTimeout(id)
+        resolve(v)
+      },
+      (e) => {
+        clearTimeout(id)
+        reject(e)
+      },
+    )
+  })
 }
 
 function sleep(ms: number, signal?: AbortSignal) {
@@ -306,10 +423,71 @@ interface GeminiResponse {
     groundingMetadata?: { groundingChunks?: { web?: { uri: string; title?: string } }[] }
   }[]
   promptFeedback?: { blockReason?: string }
-  error?: { message?: string; status?: string; details?: { reason?: string }[] }
+  usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number; totalTokenCount?: number }
+  error?: { message?: string; status?: string; details?: { reason?: string; retryDelay?: string }[] }
+}
+
+// ---------------------------------------------------------------------------
+// Diagnóstico: cada llamada a Gemini queda anotada (tiempo, tamaño, tokens) para encontrar lentitudes.
+// Sale por consola (logcat: "Capacitor/Console") y se guarda en memoria para verla en Ajustes.
+
+export interface NetLog {
+  at: number
+  what: string // primeras palabras de la instrucción de sistema
+  model: string
+  thinking: boolean
+  kb: number // tamaño enviado
+  status: number
+  ms: number
+  tokens?: { prompt?: number; out?: number; thoughts?: number }
+  error?: string
+}
+
+// Las últimas llamadas se guardan en el teléfono para poder revisarlas en Ajustes → Diagnóstico.
+const NETLOG_KEY = 'habla.netlog'
+const netLog: NetLog[] = (() => {
+  try {
+    return JSON.parse(localStorage.getItem(NETLOG_KEY) ?? '[]') as NetLog[]
+  } catch {
+    return []
+  }
+})()
+
+export function getNetLog(): NetLog[] {
+  return [...netLog]
+}
+
+export function clearNetLog() {
+  netLog.length = 0
+  try {
+    localStorage.removeItem(NETLOG_KEY)
+  } catch {
+    // nada
+  }
+}
+
+function record(e: NetLog) {
+  netLog.push(e)
+  while (netLog.length > 120) netLog.shift()
+  try {
+    localStorage.setItem(NETLOG_KEY, JSON.stringify(netLog))
+  } catch {
+    // Sin almacenamiento: queda solo en memoria.
+  }
+  console.info('[HABLA-NET] ' + JSON.stringify(e))
 }
 
 async function post(apiKey: string, url: string, body: unknown) {
+  const b = body as { systemInstruction?: { parts?: { text?: string }[] }; generationConfig?: { thinkingConfig?: unknown } }
+  const json = JSON.stringify(body)
+  const entry = {
+    at: Date.now(),
+    what: (b.systemInstruction?.parts?.[0]?.text ?? '').replace(/\s+/g, ' ').slice(0, 50),
+    model: url.match(/models\/([^:]+)/)?.[1] ?? '?',
+    thinking: !!b.generationConfig?.thinkingConfig,
+    kb: Math.round(json.length / 1024),
+  }
+  const t0 = performance.now()
   try {
     const res = await CapacitorHttp.post({
       url,
@@ -318,8 +496,18 @@ async function post(apiKey: string, url: string, body: unknown) {
       connectTimeout: 15000,
       readTimeout: 90000,
     })
-    return { status: res.status, data: parseData(res.data) as GeminiResponse | null }
-  } catch {
+    const data = parseData(res.data) as GeminiResponse | null
+    const u = data?.usageMetadata
+    record({
+      ...entry,
+      status: res.status,
+      ms: Math.round(performance.now() - t0),
+      tokens: u ? { prompt: u.promptTokenCount, out: u.candidatesTokenCount, thoughts: u.thoughtsTokenCount } : undefined,
+      error: res.status !== 200 ? (data?.error?.message ?? '').slice(0, 120) : undefined,
+    })
+    return { status: res.status, data }
+  } catch (e) {
+    record({ ...entry, status: 0, ms: Math.round(performance.now() - t0), error: String((e as Error)?.message ?? e).slice(0, 120) })
     throw new ApiError('Sin conexión con Gemini. Revisa tu internet.', 0)
   }
 }
@@ -352,7 +540,7 @@ export function describeError(status: number, data: unknown, model?: string): st
     )
   }
   if (status === 404) return `El modelo "${model ?? ''}" no está disponible. Elige otro en Ajustes.`
-  if (status === 429) return 'Gemini: límite de uso alcanzado. Espera un minuto o revisa tu cuota en Google AI Studio.'
+  if (status === 429) return 'Tu clave de Gemini se quedó sin cuota en los modelos elegidos. Prueba otro modelo en Ajustes → Gemini o revisa tu plan en Google AI Studio.'
   if (status === 400 && /location|region|country/i.test(msg ?? '')) {
     return 'Gemini no está disponible desde tu país con esta clave. Detalle de Google: ' + msg
   }

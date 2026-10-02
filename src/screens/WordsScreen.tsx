@@ -3,7 +3,7 @@ import LookupCard from '../components/LookupCard'
 import { db, type Lookup } from '../lib/db'
 import { lookupWord } from '../lib/lookup'
 import { getProfile } from '../lib/profile'
-import type { Settings } from '../lib/settings'
+import { fastModels, type Settings } from '../lib/settings'
 import { Icon } from '../ui/icons'
 import Segmented from '../ui/Segmented'
 
@@ -50,7 +50,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
     try {
       const l = await lookupWord(
         settings.geminiKey,
-        { primary: settings.geminiModel, fallback: settings.geminiFallbackModel },
+        fastModels(settings),
         query,
         context,
         level,

@@ -15,7 +15,7 @@ import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
-import type { Settings } from '../lib/settings'
+import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
@@ -103,11 +103,9 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   }, [])
   const gone = () => abort.current.signal.aborted
 
-  const models = (): Models => ({
-    primary: settingsRef.current.geminiModel,
-    fallback: settingsRef.current.geminiFallbackModel,
-    signal: abort.current.signal,
-  })
+  const models = (): Models => mainModels(settingsRef.current, abort.current.signal)
+  // Ideas, tema, informe y consultas: modelo rápido.
+  const quick = (): Models => fastModels(settingsRef.current, abort.current.signal)
   // Los reintentos (y el cambio al modelo de respaldo) ocurren en segundo plano, sin mensajes.
   // Pantalla de preparación (animación) hasta que llega el saludo del profe.
   const [prep, setPrepState] = useState<PrepareState | null>('loading')
@@ -258,7 +256,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
         const cat = categoryId ? getCategory(categoryId) : await randomCategory()
         setStatus(cat.live ? `Buscando algo reciente sobre ${cat.title.toLowerCase()}…` : 'Eligiendo un tema…')
         try {
-          tp = await generateTopic(settingsRef.current.geminiKey, models(), cat)
+          tp = await generateTopic(settingsRef.current.geminiKey, quick(), cat)
           setTopic(tp)
         } catch {
           // Sin tema: el profe elige uno él mismo.
@@ -375,7 +373,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     }
     setIdeasLoading(true)
     try {
-      const list = await answerIdeas(settingsRef.current.geminiKey, models(), lastTeacher.text, topic)
+      const list = await answerIdeas(settingsRef.current.geminiKey, quick(), lastTeacher.text, topic)
       if (!gone()) setIdeas(list)
     } catch (e) {
       if (!isAborted(e)) setHint((e as Error).message)
@@ -394,7 +392,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     setReportError(null)
     try {
       // El informe no se cancela: la clase ya terminó y se está mostrando.
-      const report = await generateReport(settingsRef.current.geminiKey, { ...models(), signal: undefined }, allTurns, s.metrics!, s.topic)
+      const report = await generateReport(settingsRef.current.geminiKey, { ...quick(), signal: undefined }, allTurns, s.metrics!, s.topic)
       await db.sessions.update(s.id!, { report })
       setSession({ ...s, report })
     } catch (e) {
@@ -770,7 +768,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
           query={lookupReq.query}
           context={lookupReq.context}
           apiKey={settings.geminiKey}
-          models={models()}
+          models={quick()}
           level={level}
           ttsRate={settings.ttsRate}
           voiceIndex={settings.voiceIndex}
