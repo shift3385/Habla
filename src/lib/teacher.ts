@@ -26,11 +26,11 @@ const CATEGORIES: MistakeCategory[] = [
 ]
 
 /** Cómo describir al profe cada tipo de error, sin arrastrar frases (ni temas) de sesiones anteriores. */
-const STRUCTURE_HINTS: Record<MistakeCategory, string> = {
+export const STRUCTURE_HINTS: Record<MistakeCategory, string> = {
   article: 'articles (a / an / the / no article)',
   uncountable: 'uncountable nouns (advice, information, software, feedback — no plural, no "a")',
   auxiliary: 'auxiliary verbs in continuous tenses and the passive ("I\'m working", "it was written")',
-  false_friend: 'false friends (actually vs currently, assist vs attend, advise)',
+  false_friend: 'false friends, only when misused (actually = en realidad, assist vs attend, advise)',
   tense: 'verb tenses (past simple, present perfect, future)',
   preposition: 'prepositions (in / on / at, depend on, interested in)',
   word_order: 'word order in questions and sentences',

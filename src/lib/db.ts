@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
+import type { StudyPlan } from './plan'
 
 export type MistakeCategory =
   | 'article'
@@ -66,6 +67,7 @@ export interface Session {
   topic?: Topic
   metrics?: SessionMetrics
   report?: SessionReport
+  planLesson?: string // id de la lección del plan (w3l2), si la clase era una lección del plan
 }
 
 export interface Turn {
@@ -110,6 +112,8 @@ export interface Profile {
   tests?: CalibrationRecord[]
   /** Cambios de nivel por la práctica (no los puede editar el usuario). */
   levelEvents?: LevelEvent[]
+  /** Plan de 12 semanas (fase 4). */
+  plan?: StudyPlan
 }
 
 export type Skill = 'grammar' | 'reading' | 'listening' | 'speaking'

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { APP_VERSION, RELEASES } from '../lib/changelog'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
+import PlanCard from '../components/PlanCard'
+import type { StudyPlan } from '../lib/plan'
 import type { Settings } from '../lib/settings'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { TOPIC_CATEGORIES } from '../lib/topics'
@@ -18,6 +20,13 @@ interface Props {
   onGoSettings: () => void
   onOpenNews: () => void
   onReview: () => void
+  plan: StudyPlan | null
+  calibrated: boolean
+  onPlanChange: (p: StudyPlan) => void
+  onStartLesson: (id: string) => void
+  onOpenPlan: () => void
+  retestReady: boolean
+  onRetest: () => void
 }
 
 function greeting() {
@@ -27,7 +36,22 @@ function greeting() {
 
 const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
 
-export default function Home({ settings, t, update, onStart, onGoSettings, onOpenNews, onReview }: Props) {
+export default function Home({
+  settings,
+  t,
+  update,
+  onStart,
+  onGoSettings,
+  onOpenNews,
+  onReview,
+  plan,
+  calibrated,
+  onPlanChange,
+  onStartLesson,
+  onOpenPlan,
+  retestReady,
+  onRetest,
+}: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
   const [hwOpen, setHwOpen] = useState(false)
@@ -166,6 +190,28 @@ export default function Home({ settings, t, update, onStart, onGoSettings, onOpe
           </button>
         </div>
       )}
+
+      {retestReady && keysReady && (
+        <button onClick={onRetest} className="anim-up mt-2.5 flex w-full items-center gap-3 rounded-[22px] py-2.5 pr-2.5 pl-3.5 text-left btn-acc">
+          <span className="grid h-9 w-9 flex-none place-items-center rounded-full" style={{ background: 'rgba(255,255,255,.25)' }}>
+            <Icon name="target" size={17} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14.5px] font-semibold">Re-test disponible</span>
+            <span className="block text-[12.5px] opacity-85">Mide lo que has avanzado en estas 4 semanas · 12 min</span>
+          </span>
+          <Icon name="chevR" size={16} stroke={2} />
+        </button>
+      )}
+
+      <PlanCard
+        settings={settings}
+        plan={plan}
+        calibrated={calibrated}
+        onPlanChange={onPlanChange}
+        onStartLesson={(id) => (keysReady ? onStartLesson(id) : onGoSettings())}
+        onOpenPlan={onOpenPlan}
+      />
 
       {due && due.total > 0 && (
         <button onClick={onReview} className="glass mt-2.5 flex w-full items-center gap-3 rounded-[22px] py-2.5 pr-2.5 pl-3.5 text-left">

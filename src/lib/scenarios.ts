@@ -14,6 +14,16 @@ export interface Scenario {
 
 export const SCENARIOS: Scenario[] = [
   {
+    id: 'plan',
+    title: 'Lección del plan',
+    subtitle: 'Tu plan de 12 semanas',
+    emoji: '🗓️',
+    icon: 'flag',
+    hidden: true,
+    // Se sustituye por las instrucciones de la lección concreta (lessonBrief); esto es solo el respaldo.
+    brief: 'Guided lesson of the student\'s 12-week plan: a relaxed conversation that makes them practise their weak structures.',
+  },
+  {
     id: 'free',
     title: 'Charla libre',
     subtitle: 'Conversación relajada sobre lo que sea',
@@ -83,5 +93,5 @@ export const SCENARIOS: Scenario[] = [
 ]
 
 export function getScenario(id: string): Scenario {
-  return SCENARIOS.find((s) => s.id === id) ?? SCENARIOS[0]
+  return SCENARIOS.find((s) => s.id === id) ?? SCENARIOS.find((s) => s.id === 'free')!
 }

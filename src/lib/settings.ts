@@ -20,6 +20,8 @@ export interface Settings {
   onboarded: boolean // ya vio la bienvenida
   lastSeenVersion: string // para avisar de novedades una vez por versión
   modelList: string[] // última lista de modelos que devolvió Google (por si luego no responde)
+  reminderOn: boolean // aviso diario de la lección
+  reminderTime: string // HH:MM
 }
 
 const DEFAULTS: Settings = {
@@ -37,6 +39,8 @@ const DEFAULTS: Settings = {
   onboarded: false,
   lastSeenVersion: '',
   modelList: [],
+  reminderOn: false,
+  reminderTime: '19:00',
 }
 
 const KEY = 'habla.settings'

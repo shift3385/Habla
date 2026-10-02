@@ -124,6 +124,20 @@ Otros controles:
   3. Oyes la respuesta correcta y eliges cuándo volver a verla: **Otra vez / Difícil / Bien / Fácil**. La nota sugerida viene marcada y cada botón muestra el intervalo.
 - El algoritmo **FSRS** programa cada frase justo antes de que la olvides. Como máximo hay 10 frases nuevas por sesión; las de **Otra vez** vuelven al final de la misma sesión.
 
+### Tu plan de 12 semanas
+Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu nivel, tus puntos débiles, para qué quieres el inglés y tus temas favoritos):
+- Cada semana tiene **un objetivo** (una estructura o una habilidad, por ejemplo contar experiencias con el *present perfect*) y un tema de la vida real. Al abrirla ves qué podrás hacer al terminarla.
+- Cada semana tiene **5 lecciones** que suben de dificultad: descubrir, practicar en situaciones, *role-play* y un reto libre. Cada lección trae una situación, 3 frases útiles (tócalas para oírlas) y una **misión** concreta.
+- Las lecciones de cada semana se preparan cuando esa semana empieza, así se adaptan a cómo vas.
+- **Lección de hoy** en el Inicio: la siguiente sin hacer. Cuenta como hecha cuando respondes al menos 3 veces. Puedes adelantar la semana siguiente o repetir cualquier lección desde **Mi plan**.
+- **Recordatorio diario** (Ajustes → Meta diaria): un aviso a la hora que elijas con la lección que toca; si ya la hiciste ese día, no avisa.
+
+### Re-test cada 4 semanas
+- Las semanas 4, 8 y 12 son de **repaso** y terminan con el **re-test** de nivel.
+- Cuando toca, aparece un aviso en el Inicio (y una notificación si activaste el recordatorio).
+- El resultado compara **antes → después** en cada habilidad, y tu plan se **adapta**: las semanas que faltan se rehacen con tu nuevo nivel y tus nuevos puntos débiles.
+- El historial de tus tests está en *Ajustes → Mi perfil*.
+
 ### Informe y progreso
 - Al terminar, el informe muestra:
   - Tu **nota de fluidez (0–100)**, que combina velocidad, largo de respuestas, pausas y precisión.
@@ -200,5 +214,5 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **Fase 2:** métricas de fluidez, nota, informe y tarea para mañana; temas dinámicos con noticias reales; racha, meta diaria y pestaña Progreso
 - [x] **Rediseño** (Claude Design): temas Ember / Lumi / Aurora en claro y oscuro, profes Emma y Leo, bienvenida, pantallas sin scroll
 - [x] **Fase 3:** cuaderno de errores con repetición espaciada (FSRS) y ejercicio oral de español a inglés (v4.7)
-- [ ] **Fase 4:** plan de 12 semanas y lección del día (la racha y la gráfica ya están hechas)
-- [ ] **Fase 5:** re-test cada 4 semanas (gramática, audición y habla) que actualiza tu nivel
+- [x] **Fase 4:** plan de 12 semanas, lección del día y recordatorio diario (v5.0)
+- [x] **Fase 5:** re-test cada 4 semanas con comparación antes → después y plan que se adapta (v5.0)

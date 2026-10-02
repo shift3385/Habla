@@ -17,6 +17,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.0',
+    date: '2026-10-02',
+    title: 'Tu plan de 12 semanas',
+    added: [
+      'Plan personalizado de 12 semanas según tu test: un objetivo por semana y 5 lecciones con situación, frases y misión',
+      '"Lección de hoy" en el Inicio y pantalla Mi plan con tu progreso',
+      'Recordatorio diario con la lección que toca (Ajustes → Meta diaria)',
+      'Re-test cada 4 semanas: aviso en el Inicio, notificación y comparación antes → después',
+      'Tras cada re-test, el plan se adapta a tu nuevo nivel',
+      'Historial de tus tests en Ajustes → Mi perfil',
+    ],
+  },
+  {
     v: '4.10',
     date: '2026-10-01',
     title: 'Respuestas mucho más rápidas',

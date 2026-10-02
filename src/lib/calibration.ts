@@ -398,6 +398,8 @@ export interface CalibrationResult {
   levels: Record<Skill | 'overall', Level>
   speaking: SpeakingEval
   mcq: McqAnswer[]
+  /** Re-test (fase 5): niveles del test anterior, para mostrar el antes → después. */
+  prev?: Record<Skill | 'overall', Level>
 }
 
 /** Guarda el resultado en el perfil: niveles, debilidades (para el profe) y el registro del test. */

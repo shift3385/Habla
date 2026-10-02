@@ -3,6 +3,7 @@ import { exportBackup, importBackup } from '../lib/backup'
 import type { Profile } from '../lib/db'
 import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel, type NetLog } from '../lib/gemini'
 import { Share } from '@capacitor/share'
+import { askNotificationPermission } from '../lib/reminders'
 import ProfileForm from '../components/ProfileForm'
 import { APP_VERSION } from '../lib/changelog'
 import { levelIdx, nextRetestAt } from '../lib/levels'
@@ -309,6 +310,13 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
 }
 
 function GoalPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
+  const [denied, setDenied] = useState(false)
+  const toggleReminder = async () => {
+    if (settings.reminderOn) return update({ reminderOn: false })
+    const ok = await askNotificationPermission()
+    setDenied(!ok)
+    if (ok) update({ reminderOn: true })
+  }
   return (
     <>
       <div className="grid grid-cols-2 gap-2.5">
@@ -329,6 +337,31 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
       <div className="txt-sub px-2.5 text-center text-[13px] leading-snug">
         Minutos hablando tú (no de sesión). 5 minutos de voz equivalen a unos 15 de clase.
       </div>
+      <Card>
+        <button onClick={toggleReminder} className="flex w-full items-center justify-between text-left text-[15px]">
+          <span>
+            Recordatorio diario
+            <span className="txt-sub block text-xs">Un aviso con la lección del día, si aún no la hiciste</span>
+          </span>
+          <Switch on={settings.reminderOn} />
+        </button>
+        {settings.reminderOn && (
+          <label className="mt-3.5 flex items-center justify-between text-[15px]">
+            <span>Hora del aviso</span>
+            <input
+              type="time"
+              value={settings.reminderTime}
+              onChange={(e) => e.target.value && update({ reminderTime: e.target.value })}
+              className="input w-[120px] text-center"
+            />
+          </label>
+        )}
+        {denied && (
+          <p className="mt-3 text-sm" style={{ color: '#f87171' }}>
+            Android no dio permiso para notificaciones. Actívalo en Ajustes del teléfono → Apps → Habla → Notificaciones.
+          </p>
+        )}
+      </Card>
     </>
   )
 }
@@ -391,6 +424,20 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
               <span className="txt-sub">
                 {e.reason === 'test' ? 'test' : 'práctica'} · {fmt(e.date)}
               </span>
+            </div>
+          ))}
+        </Card>
+      )}
+      {(profile.tests?.length ?? 0) > 0 && (
+        <Card>
+          <div className="txt-sub mb-2 text-sm">Tus tests de nivel</div>
+          {[...profile.tests!].reverse().map((tst, i) => (
+            <div key={i} className="flex items-center justify-between py-1 text-sm tabular-nums">
+              <span>{fmt(tst.date)}</span>
+              <span className="txt-sub">
+                Gram. {tst.levels.grammar} · Lect. {tst.levels.reading} · Aud. {tst.levels.listening} · Habla {tst.levels.speaking}
+              </span>
+              <b className="txt-acc2">{tst.levels.overall}</b>
             </div>
           ))}
         </Card>

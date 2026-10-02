@@ -15,6 +15,7 @@ import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/
 import { getProfile } from '../lib/profile'
 import { MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
+import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
 import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
@@ -39,6 +40,7 @@ type PendingAnswer = SpokenAnswer | { text: string }
 interface Props {
   scenarioId: string
   categoryId?: string // para escenarios con tema; sin él, categoría al azar
+  planLesson?: string // id de la lección del plan de 12 semanas
   settings: Settings
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
@@ -52,7 +54,7 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, settings, t, update, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, planLesson, settings, t, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
   const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -82,6 +84,9 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState<string | null>(null)
   const [levelChange, setLevelChange] = useState<LevelEvent | null>(null)
+  // Lección del plan de 12 semanas (si la clase es una de ellas) y si ya cuenta como hecha.
+  const [planInfo, setPlanInfo] = useState<{ week: PlanWeek; lesson: PlanLesson } | null>(null)
+  const [lessonDone, setLessonDone] = useState(false)
 
   const recorder = useRef(new Recorder())
   const sessionId = useRef<number | null>(null)
@@ -266,8 +271,13 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
       if (gone()) return
       setStatus('')
 
-      system.current = buildSystemPrompt(profile, scenario, recent, tp, TEACHERS[settingsRef.current.teacher].persona)
-      sessionId.current = (await db.sessions.add({ scenario: scenario.id, startedAt: Date.now(), topic: tp })) ?? null
+      // Lección del plan: el profe recibe la situación, el objetivo y las frases de esa lección.
+      const found = planLesson && profile.plan ? findLesson(profile.plan, planLesson) : null
+      if (found) setPlanInfo(found)
+      const brief = found ? { ...scenario, brief: lessonBrief(found.week, found.lesson) } : scenario
+      system.current = buildSystemPrompt(profile, brief, recent, tp, TEACHERS[settingsRef.current.teacher].persona)
+      sessionId.current =
+        (await db.sessions.add({ scenario: scenario.id, startedAt: Date.now(), topic: tp, ...(found ? { planLesson } : {}) })) ?? null
       history.current = [{ role: 'user', content: START_MESSAGE }]
       await askTeacher()
     })()
@@ -416,6 +426,11 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     const metrics = sessionMetrics(allTurns)!
     await db.sessions.update(sid, { endedAt: Date.now(), metrics })
     const s = (await db.sessions.get(sid))!
+    // Con al menos 3 respuestas, la lección del plan cuenta como hecha.
+    if (planLesson && metrics.turns >= LESSON_MIN_TURNS) {
+      await markLessonDone(planLesson, sid)
+      setLessonDone(true)
+    }
     setSession(s)
     setView('report')
     buildReport(s, allTurns)
@@ -423,7 +438,7 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
     updateLevelsFromPractice()
       .then(setLevelChange)
       .catch(() => {})
-  }, [onExit, buildReport])
+  }, [onExit, buildReport, planLesson])
 
   // Botón "atrás" de Android: en el chat termina la sesión (con informe); en el informe vuelve al inicio.
   useEffect(() => {
@@ -444,13 +459,23 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
 
   // Tarjeta del tema / práctica
   const cat = topic ? getCategory(topic.category) : null
-  const card: { icon: IconName; label: string; title: string; sub: string } = topic
+  const card: { icon: IconName; label: string; title: string; sub: string } = planInfo
+    ? {
+        icon: 'flag',
+        label: `Semana ${planInfo.week.n} · Lección ${planInfo.lesson.n}`,
+        title: planInfo.lesson.titleEs,
+        sub: `Misión: ${planInfo.lesson.missionEs}`,
+      }
+    : topic
     ? { icon: cat!.icon, label: cat!.title, title: topic.title, sub: topic.summary }
     : scenario.id === 'open'
       ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherInfo.name} sigue tu conversación` }
       : scenario.topic
         ? { icon: scenario.icon, label: scenario.title, title: status || 'Tema sorpresa', sub: '' }
         : { icon: scenario.icon, label: 'Práctica guiada', title: scenario.title, sub: scenario.subtitle }
+
+  // Vocabulario del tema o frases de la lección del plan (tócalas para oírlas).
+  const chips = topic?.vocab ?? planInfo?.lesson.phrases ?? []
 
   if (view === 'chat' && prep) {
     return (
@@ -480,6 +505,25 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
           <Orb size={34} colors={orbColors} />
         </div>
         <div className="no-scrollbar flex-1 overflow-y-auto px-[18px] pb-[calc(env(safe-area-inset-bottom)+24px)]">
+          {planInfo && (
+            <div className="glass anim-up mb-3 flex items-center gap-3 rounded-[24px] p-3.5">
+              <span
+                className={`grid h-10 w-10 flex-none place-items-center rounded-full ${lessonDone ? 'btn-acc' : 'field txt-sub'}`}
+              >
+                <Icon name={lessonDone ? 'check' : 'flag'} size={18} stroke={2} />
+              </span>
+              <span className="min-w-0 flex-1 text-sm leading-snug">
+                <b className="block font-semibold">
+                  {lessonDone ? '¡Lección completada!' : 'Lección sin completar'} · Semana {planInfo.week.n}
+                </b>
+                <span className="txt-sub">
+                  {lessonDone
+                    ? `${planInfo.lesson.titleEs}. Mañana, la siguiente.`
+                    : `Para que cuente, responde al menos ${LESSON_MIN_TURNS} veces. Puedes repetirla desde Mi plan.`}
+                </span>
+              </span>
+            </div>
+          )}
           {levelChange && (
             <div
               className="anim-up mb-3 rounded-[24px] p-4 text-center"
@@ -578,13 +622,13 @@ export default function Conversation({ scenarioId, categoryId, settings, t, upda
               <Icon name="chevD" size={15} stroke={2} />
             </span>
           </button>
-          {cardOpen && (card.sub || topic?.vocab.length) ? (
+          {cardOpen && (card.sub || chips.length) ? (
             <div className="anim-up pl-12">
               {topic?.titleEs && <div className="txt-sub mt-1 text-[13px]">{topic.titleEs}</div>}
               {card.sub && <div className="mt-1 text-[13px] leading-snug">{card.sub}</div>}
-              {topic && topic.vocab.length > 0 && (
+              {chips.length > 0 && (
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {topic.vocab.map((v) => (
+                  {chips.map((v) => (
                     <button
                       key={v.en}
                       onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}

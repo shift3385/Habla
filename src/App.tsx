@@ -18,7 +18,11 @@ import ReviewScreen from './screens/ReviewScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import WordsScreen from './screens/WordsScreen'
 import { getProfile, isPersonalized } from './lib/profile'
-import { loadSettings, saveSettings, type Settings } from './lib/settings'
+import { nextRetestAt } from './lib/levels'
+import { adaptPlanAfterTest, doneToday, findLesson, todayLesson, type StudyPlan } from './lib/plan'
+import { syncReminders } from './lib/reminders'
+import PlanScreen from './screens/PlanScreen'
+import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
 import Background from './ui/Background'
 import { Icon, type IconName } from './ui/icons'
@@ -30,6 +34,7 @@ interface Lesson {
   key: number // cada clase monta un componente nuevo: nunca arrastra la anterior
   scenarioId: string
   categoryId?: string
+  planLesson?: string // lección del plan de 12 semanas
 }
 
 export default function App() {
@@ -42,6 +47,12 @@ export default function App() {
   const [retest, setRetest] = useState(false)
   const [about, setAbout] = useState<'main' | 'news' | null>(null)
   const [review, setReview] = useState(false)
+  // Plan de 12 semanas (fase 4) y fecha del próximo re-test (fase 5).
+  const [plan, setPlan] = useState<StudyPlan | null>(null)
+  const [planOpen, setPlanOpen] = useState(false)
+  const [retestAt, setRetestAt] = useState<number | null>(null)
+  const [retestReady, setRetestReady] = useState(false)
+  const [level, setLevel] = useState('B1')
   const backHandler = useRef<(() => void) | null>(null)
   const tabRef = useRef(tab)
   useEffect(() => {
@@ -56,6 +67,11 @@ export default function App() {
     const p = await getProfile() // también siembra el perfil inicial
     setPersonalized(isPersonalized(p))
     setCalibrated(!!p.calibratedAt)
+    setPlan(p.plan ?? null)
+    const at = nextRetestAt(p)
+    setRetestAt(at)
+    setRetestReady(!!at && Date.now() >= at)
+    setLevel(p.levels.overall)
     return p
   }, [])
 
@@ -69,7 +85,12 @@ export default function App() {
           name: p.name!,
           streak: dash.streak,
           level: p.levels.overall,
-          lastTopic: last ? (last.topic?.titleEs ?? last.topic?.title ?? getScenario(last.scenario).title) : null,
+          lastTopic: last
+            ? (last.topic?.titleEs ??
+              last.topic?.title ??
+              (last.planLesson && p.plan ? findLesson(p.plan, last.planLesson)?.lesson.titleEs : undefined) ??
+              getScenario(last.scenario).title)
+            : null,
         })
       }
       setSettings(s)
@@ -128,6 +149,20 @@ export default function App() {
     backHandler.current = h
   }, [])
 
+  // Avisos: recordatorio diario con la lección que toca y aviso del re-test. Se reprograman al cambiar algo.
+  const reminderOn = settings?.reminderOn ?? false
+  const reminderTime = settings?.reminderTime ?? '19:00'
+  useEffect(() => {
+    const today = plan ? todayLesson(plan) : null
+    syncReminders({
+      enabled: reminderOn,
+      time: reminderTime,
+      lessonTitle: today?.lesson?.titleEs,
+      doneToday: plan ? doneToday(plan) : false,
+      retestAt,
+    })
+  }, [reminderOn, reminderTime, plan, retestAt])
+
   if (!settings || !t || calibrated === null) return null
 
   if (splash) {
@@ -165,9 +200,18 @@ export default function App() {
           registerBack={registerBack}
           onDone={() => {
             backHandler.current = null
+            const wasRetest = retest
             setCalibrated(true)
             setRetest(false)
             setTab('home')
+            refreshProfile().then((p) => {
+              // Tras un re-test, las semanas del plan que aún no empezaste se rehacen con tu nuevo nivel.
+              if (wasRetest && p.plan && settings.geminiKey) {
+                adaptPlanAfterTest(settings.geminiKey, mainModels(settings))
+                  .then(setPlan)
+                  .catch(() => {})
+              }
+            })
           }}
         />
       </Shell>
@@ -197,6 +241,7 @@ export default function App() {
           key={lesson.key}
           scenarioId={lesson.scenarioId}
           categoryId={lesson.categoryId}
+          planLesson={lesson.planLesson}
           settings={settings}
           t={t}
           update={update}
@@ -204,6 +249,7 @@ export default function App() {
             backHandler.current = null
             setLesson(null)
             setTab('home')
+            refreshProfile() // lección del plan hecha, nivel por la práctica…
           }}
           registerBack={registerBack}
         />
@@ -212,6 +258,19 @@ export default function App() {
   }
 
   const start = (scenarioId: string, categoryId?: string) => setLesson({ key: Date.now(), scenarioId, categoryId })
+  const startPlanLesson = (id: string) => {
+    backHandler.current = null
+    setPlanOpen(false)
+    setLesson({ key: Date.now(), scenarioId: 'plan', planLesson: id })
+  }
+  const openPlan = () => {
+    setPlanOpen(true)
+    backHandler.current = closePlan
+  }
+  const closePlan = () => {
+    setPlanOpen(false)
+    backHandler.current = null
+  }
 
   // Acerca de: al abrirla se dan por vistas las novedades de esta versión.
   const openAbout = (page: 'main' | 'news') => {
@@ -229,6 +288,15 @@ export default function App() {
       <div className="no-scrollbar relative z-[2] h-full overflow-y-auto px-5 pt-[calc(env(safe-area-inset-top)+10px)] pb-[calc(env(safe-area-inset-bottom)+112px)]">
         {about ? (
           <AboutScreen settings={settings} t={t} initialPage={about} onBack={closeAbout} />
+        ) : planOpen ? (
+          <PlanScreen
+            settings={settings}
+            plan={plan}
+            level={level}
+            onPlanChange={setPlan}
+            onStartLesson={startPlanLesson}
+            onBack={closePlan}
+          />
         ) : (
           <>
             {tab === 'home' && (
@@ -240,6 +308,13 @@ export default function App() {
                 onGoSettings={() => setTab('settings')}
                 onOpenNews={() => openAbout('news')}
                 onReview={() => setReview(true)}
+                plan={plan}
+                calibrated={!!calibrated}
+                onPlanChange={setPlan}
+                onStartLesson={startPlanLesson}
+                onOpenPlan={openPlan}
+                retestReady={retestReady}
+                onRetest={() => setRetest(true)}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
@@ -262,6 +337,7 @@ export default function App() {
         onChange={(k) => {
           backHandler.current = null
           setAbout(null)
+          setPlanOpen(false)
           setTab(k)
         }}
       />

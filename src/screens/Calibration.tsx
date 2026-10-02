@@ -23,6 +23,7 @@ import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
 import { levelAt, levelIdx, rateForLevel, type Level } from '../lib/levels'
 import { MicError, Recorder } from '../lib/recorder'
+import { getProfile } from '../lib/profile'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import { speak, stopSpeaking } from '../lib/tts'
@@ -365,7 +366,10 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
             summaryEs: 'No pudimos grabar tu voz, así que tu nivel de habla es una estimación.',
           }
       const levels = buildLevels(estimateMcqLevel(answers), scoreComp('reading'), scoreComp('listening'), ev.level)
-      const r: CalibrationResult = { levels, speaking: ev, mcq: answers }
+      // En un re-test se guardan los niveles del test anterior para enseñar el progreso.
+      const before = await getProfile()
+      const prev = before.tests?.length ? (before.tests.at(-1)!.levels as CalibrationResult['prev']) : undefined
+      const r: CalibrationResult = { levels, speaking: ev, mcq: answers, prev }
       await saveCalibration(r)
       update({ ttsRate: rateForLevel(levels.overall) })
       return { k: 'result', r }
@@ -649,20 +653,30 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
 
   if (step.k === 'result') {
     const { r } = step
-    const rows: [string, Level][] = [
-      ['Gramática', r.levels.grammar],
-      ['Lectura', r.levels.reading],
-      ['Audición', r.levels.listening],
-      ['Habla', r.levels.speaking],
+    const rows: [string, Level, Level | undefined][] = [
+      ['Gramática', r.levels.grammar, r.prev?.grammar],
+      ['Lectura', r.levels.reading, r.prev?.reading],
+      ['Audición', r.levels.listening, r.prev?.listening],
+      ['Habla', r.levels.speaking, r.prev?.speaking],
     ]
+    const delta = (from: Level | undefined, to: Level) => (from ? levelIdx(to) - levelIdx(from) : 0)
     return (
       <div className={pad}>
         <div className="anim-up no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto">
           <div className="glass flex flex-col items-center gap-2 rounded-[28px] p-5 text-center">
-            <div className="txt-sub text-sm">Tu nivel de inglés</div>
+            <div className="txt-sub text-sm">{r.prev ? 'Tu nivel tras el re-test' : 'Tu nivel de inglés'}</div>
             <div className="text-[56px] leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
               {r.levels.overall}
             </div>
+            {r.prev && (
+              <div className="text-sm font-semibold">
+                {delta(r.prev.overall, r.levels.overall) > 0
+                  ? `¡Has subido desde ${r.prev.overall}!`
+                  : delta(r.prev.overall, r.levels.overall) < 0
+                    ? `Antes: ${r.prev.overall}. Tu plan se adapta para recuperarlo.`
+                    : `Mantienes tu ${r.prev.overall}. Sigue así: el próximo salto está cerca.`}
+              </div>
+            )}
             <p className="txt-sub text-sm leading-snug">
               <b className="font-semibold" style={{ color: 'var(--tx)' }}>
                 Al hablar ({r.levels.speaking}):
@@ -671,12 +685,17 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
             </p>
           </div>
           <div className="glass rounded-[28px] p-4">
-            {rows.map(([n, l]) => (
+            {rows.map(([n, l, before]) => (
               <div key={n} className="flex items-center gap-3 py-1.5">
                 <span className="w-[84px] text-sm">{n}</span>
-                <div className="h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
+                <div className="relative h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
                   <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />
                 </div>
+                {before && before !== l && (
+                  <span className="txt-sub text-xs">
+                    {before} {delta(before, l) > 0 ? '↗' : '↘'}
+                  </span>
+                )}
                 <span className="txt-acc2 w-7 text-right font-semibold">{l}</span>
               </div>
             ))}
@@ -697,6 +716,11 @@ export default function Calibration({ settings, t, update, onDone, registerBack 
               ))}
             </ul>
           </div>
+          {r.prev && (
+            <div className="txt-sub px-2 text-center text-[13px] leading-snug">
+              Tu plan de 12 semanas se adapta ahora a este resultado: las semanas que faltan trabajarán tus nuevos puntos débiles.
+            </div>
+          )}
           <button onClick={onDone} className="btn-acc mt-1 h-[58px] flex-none rounded-full text-[17px]">
             Empezar a hablar
           </button>
