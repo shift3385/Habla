@@ -10,6 +10,8 @@ export interface TopicCategory {
   /** true = noticia real y reciente buscada con Google Search */
   live: boolean
   brief: string // qué tipo de tema buscar (en inglés, para el modelo)
+  /** Tema libre: lo que escribió el alumno, tal cual. */
+  custom?: string
 }
 
 export const TOPIC_CATEGORIES: TopicCategory[] = [
@@ -55,7 +57,8 @@ const CUSTOM_BASE: TopicCategory = {
 export function customCategory(text: string): TopicCategory {
   return {
     ...CUSTOM_BASE,
-    brief: `exactly this topic, chosen by the student (do not change it, just make it engaging and clear): "${text.trim()}"`,
+    brief: `exactly this topic, chosen by the student: "${text.trim()}"`,
+    custom: text.trim(),
   }
 }
 
@@ -130,15 +133,24 @@ export async function generateTopic(
 
   const lv = (await db.profile.get('me'))?.levels ?? { overall: 'B1', speaking: 'B1' }
   const system = `You pick conversation topics for an English speaking class. The student is a Spanish speaker at ${lv.overall} level (speaking ${lv.speaking}) who wants varied, modern, engaging conversations.`
-  const task = `Today is ${today}. Find ${category.brief}. Prefer something ${angle}.
+  // Tema libre: se respeta EXACTAMENTE lo que pidió el alumno (sin "ángulo" al azar ni noticia inventada).
+  const task = category.custom
+    ? `The student chose the topic of today's conversation: "${category.custom}".
+Keep EXACTLY their topic: the same place, people, things and idea. Do not add a twist, do not make it futuristic, do not invent news or facts that the student did not mention. If it is personal (their trip, their job, their plans), keep it personal.
+`
+    : `Today is ${today}. Find ${category.brief}. Prefer something ${angle}.
 Do NOT pick anything similar to these recent topics:
 ${avoid}
 
 Return ONLY a JSON object with:
 - "title": short catchy title in English (max 8 words)
 - "title_es": the same title in Spanish
-- "summary": 2-3 simple sentences in English (${lv.overall} level) explaining it, as if you read it today${category.live ? ', with concrete facts (who, what, where, when)' : ''}
-- "question": one open, personal question to start the conversation about it
+- "summary": ${
+    category.custom
+      ? `2-3 simple sentences in English (${lv.overall} level) introducing the student's topic with real, general facts that help them talk about it`
+      : `2-3 simple sentences in English (${lv.overall} level) explaining it, as if you read it today${category.live ? ', with concrete facts (who, what, where, when)' : ''}`
+  }
+- "question": one open, personal question to start the conversation about it${category.custom ? " (about the student's own experience, plans or opinion on this exact topic)" : ''}
 - "vocab": exactly 3 useful English words or short phrases from this topic with their Spanish translation, as [{"en": "...", "es": "..."}]`
 
   const contents = [{ role: 'user' as const, parts: [{ text: task }] }]

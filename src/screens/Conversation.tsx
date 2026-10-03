@@ -20,7 +20,7 @@ import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
-import { customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
+import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotMood } from '../ui/Mascot'
@@ -471,7 +471,13 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         sub: `Misión: ${planInfo.lesson.missionEs}`,
       }
     : topic
-    ? { icon: cat!.icon, label: cat!.title, title: topic.title, sub: topic.summary }
+    ? {
+        icon: scenario.id === 'debate' ? 'scale' : cat!.icon,
+        // En un debate se ve que es un debate (con tu tema o con el de la categoría que eligió el profe).
+        label: scenario.id === 'debate' ? (topic.category === CUSTOM_ID ? 'Debate · tu tema' : `Debate · ${cat!.title}`) : cat!.title,
+        title: topic.title,
+        sub: topic.summary,
+      }
     : scenario.id === 'open'
       ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherInfo.name} sigue tu conversación` }
       : scenario.topic

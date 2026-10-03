@@ -17,6 +17,20 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.5',
+    date: '2026-10-03',
+    title: 'Tu mascota te cuenta las novedades',
+    added: [
+      'Antes del Inicio, tu mascota te cuenta las novedades, tu tarea de hoy, el re-test y otros avisos, de uno en uno',
+      'Tema libre y Debate con la mascota: te pregunta de qué quieres hablar o qué quieres debatir',
+    ],
+    improved: [
+      'El Inicio ya no tiene avisos: todo cabe sin scroll',
+      'Tema libre respeta exactamente tu tema y el profe sabe que lo elegiste tú',
+      'En un debate la tarjeta muestra que es un debate',
+    ],
+  },
+  {
     v: '5.4',
     date: '2026-10-03',
     title: 'Tus 3 temas y un Inicio sin scroll',

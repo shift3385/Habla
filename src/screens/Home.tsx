@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { APP_VERSION, RELEASES } from '../lib/changelog'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
@@ -9,11 +8,11 @@ import { loadDashboard, type Dashboard } from '../lib/stats'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
 import AllTopicsView from '../components/AllTopicsView'
-import TopicAskSheet, { type AskKind } from '../components/TopicAskSheet'
+import TopicAskPage, { type AskKind } from '../components/TopicAskPage'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import Segmented from '../ui/Segmented'
-import { TEACHERS, THEME_INFO, THEME_KEYS, type ThemeVars } from '../ui/theme'
+import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
 
 interface Props {
   settings: Settings
@@ -21,16 +20,12 @@ interface Props {
   update: (patch: Partial<Settings>) => void
   onStart: (scenarioId: string, categoryId?: string, customTopic?: string) => void
   onGoSettings: () => void
-  onOpenNews: () => void
   onReview: () => void
   plan: StudyPlan | null
   calibrated: boolean
   onPlanChange: (p: StudyPlan) => void
   onStartLesson: (id: string) => void
   onOpenPlan: () => void
-  retestReady: boolean
-  onRetest: () => void
-  onOpenThemes: () => void // Ajustes → Tema y mascota
   registerBack: (h: (() => void) | null) => void
 }
 
@@ -43,24 +38,20 @@ const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
 
 export default function Home({
   settings,
+  t,
   update,
   onStart,
   onGoSettings,
-  onOpenNews,
   onReview,
   plan,
   calibrated,
   onPlanChange,
   onStartLesson,
   onOpenPlan,
-  retestReady,
-  onRetest,
-  onOpenThemes,
   registerBack,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
-  const [hwOpen, setHwOpen] = useState(false)
   // Tus 3 temas (5.4): el Inicio solo muestra esos; el resto está en "Más temas".
   const [favs, setFavs] = useState<string[]>([])
   const [allOpen, setAllOpen] = useState(false)
@@ -113,8 +104,10 @@ export default function Home({
   const surprise = () => start('free')
 
   const askSheet = ask && (
-    <TopicAskSheet
+    <TopicAskPage
       kind={ask}
+      element={THEME_INFO[settings.theme].mascot}
+      t={t}
       onClose={() => setAsk(null)}
       onStart={(text) => {
         setAsk(null)
@@ -234,75 +227,6 @@ export default function Home({
         )}
       </div>
 
-      {(dash?.streak ?? 0) >= 3 && !settings.mascotNudgeSeen && (
-        <div className="glass anim-up mt-2.5 rounded-[28px] p-4">
-          <div className="flex items-center gap-1">
-            {THEME_KEYS.filter((k) => k !== settings.theme)
-              .slice(0, 2)
-              .map((k) => (
-                <Mascot key={k} element={THEME_INFO[k].mascot} mood="happy" size={54} interactive={false} />
-              ))}
-            <div className="min-w-0 flex-1 pl-1">
-              <div className="text-base leading-tight font-semibold">
-                {(() => {
-                  const n = THEME_KEYS.filter((k) => k !== settings.theme).map((k) => THEME_INFO[k].mascotName)
-                  return `${n.slice(0, -1).join(', ')} y ${n[n.length - 1]} quieren conocerte`
-                })()}
-              </div>
-              <div className="txt-sub mt-1 text-[13px]">¡{dash!.streak} días seguidos! Ya puedes probar otro compañero.</div>
-            </div>
-          </div>
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <button onClick={() => update({ mascotNudgeSeen: true })} className="field h-11 rounded-[22px] text-sm">
-              Ahora no
-            </button>
-            <button
-              onClick={() => {
-                update({ mascotNudgeSeen: true })
-                onOpenThemes()
-              }}
-              className="btn-acc h-11 rounded-[22px] text-sm"
-            >
-              Conocerlos
-            </button>
-          </div>
-        </div>
-      )}
-
-      {settings.lastSeenVersion !== APP_VERSION && (
-        <div className="anim-up mt-2.5 flex items-center gap-2">
-          <button onClick={onOpenNews} className="glass flex min-w-0 flex-1 items-center gap-2.5 rounded-[22px] px-3.5 py-2.5 text-left">
-            <span className="btn-acc grid h-7 w-7 flex-none place-items-center rounded-full">
-              <Icon name="spark" size={14} stroke={1.8} />
-            </span>
-            <span className="min-w-0 flex-1 truncate text-[13.5px]">
-              <b className="font-semibold">Novedades de la v{APP_VERSION}</b>
-              <span className="txt-sub"> · {RELEASES[0].title}</span>
-            </span>
-          </button>
-          <button
-            onClick={() => update({ lastSeenVersion: APP_VERSION })}
-            className="glass grid h-10 w-10 flex-none place-items-center rounded-full"
-            aria-label="Descartar novedades"
-          >
-            <Icon name="back" size={14} className="rotate-[-90deg]" />
-          </button>
-        </div>
-      )}
-
-      {retestReady && keysReady && (
-        <button onClick={onRetest} className="anim-up mt-2.5 flex w-full items-center gap-3 rounded-[22px] py-2.5 pr-2.5 pl-3.5 text-left btn-acc">
-          <span className="grid h-9 w-9 flex-none place-items-center rounded-full" style={{ background: 'rgba(255,255,255,.25)' }}>
-            <Icon name="target" size={17} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[14.5px] font-semibold">Re-test disponible</span>
-            <span className="block text-[12.5px] opacity-85">Mide lo que has avanzado en estas 4 semanas · 12 min</span>
-          </span>
-          <Icon name="chevR" size={16} stroke={2} />
-        </button>
-      )}
-
       <PlanCard
         settings={settings}
         plan={plan}
@@ -313,33 +237,19 @@ export default function Home({
       />
 
       {due && due.total > 0 && (
-        <button onClick={onReview} className="glass mt-2.5 flex w-full items-center gap-3 rounded-[22px] py-2.5 pr-2.5 pl-3.5 text-left">
-          <span className="field txt-acc2 grid h-9 w-9 flex-none place-items-center rounded-full">
-            <Icon name="cards" size={17} />
+        <button onClick={onReview} className="glass mt-2 flex h-[48px] w-full items-center gap-2.5 rounded-[24px] pr-1.5 pl-2 text-left">
+          <span className="field txt-acc2 grid h-8 w-8 flex-none place-items-center rounded-full">
+            <Icon name="cards" size={15} />
           </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[14.5px] font-semibold">Repaso de hoy</span>
-            <span className="txt-sub block text-[12.5px]">
-              {due.total} {due.total === 1 ? 'frase' : 'frases'} para decir en inglés · 2–5 min
-            </span>
+          <span className="min-w-0 flex-1 truncate text-[14px]">
+            <b className="font-semibold">Repaso de hoy</b>
+            <span className="txt-sub"> · {due.total} {due.total === 1 ? 'frase' : 'frases'}</span>
           </span>
           <span className="btn-acc flex h-9 items-center rounded-[18px] px-3.5 text-[13px]">Repasar</span>
         </button>
       )}
 
-      {dash?.lastHomework && (
-        <button onClick={() => setHwOpen((o) => !o)} className="glass mt-2.5 flex w-full items-start gap-2.5 rounded-[22px] px-3.5 py-2.5 text-left">
-          <span className="txt-acc2 mt-0.5 flex-none">
-            <Icon name="flag" size={16} />
-          </span>
-          <span className={`min-w-0 flex-1 text-[13.5px] leading-snug ${hwOpen ? '' : 'truncate'}`}>
-            <b className="font-semibold">Tarea: </b>
-            {dash.lastHomework.text}
-          </span>
-        </button>
-      )}
-
-      <div className="mt-[18px]">
+      <div className="mt-3.5">
         <Segmented
           value={seg}
           onChange={setSeg}

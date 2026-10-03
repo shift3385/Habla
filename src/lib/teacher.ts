@@ -115,7 +115,11 @@ export function buildSystemPrompt(
 Topic: "${topic.title}"
 What you read about it: ${topic.summary}
 Useful vocabulary to use naturally (and to encourage the student to use): ${topic.vocab.map((v) => v.en).join(', ')}
-Start by sharing this topic in 1-2 short sentences, as something you just read or heard about, then ask: "${topic.question}" (or a close variation).
+${
+        topic.category === 'custom'
+          ? `The STUDENT chose this topic. Start by saying you love their choice in 1 short sentence (do not say you read about it), then ask: "${topic.question}" (or a close variation). Stay on exactly this topic.`
+          : `Start by sharing this topic in 1-2 short sentences, as something you just read or heard about, then ask: "${topic.question}" (or a close variation).`
+      }
 Keep the conversation on this topic and related angles: opinions, personal experience, comparisons with the student's country, predictions. Every few exchanges, open a NEW angle so it never feels repetitive.`
     : scenario.brief
 

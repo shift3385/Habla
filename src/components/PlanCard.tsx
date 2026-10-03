@@ -72,7 +72,7 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
   if (!calibrated || !keyReady) return null
 
   const shell = (children: React.ReactNode) => (
-    <div className="glass anim-up mt-2.5 rounded-[26px] p-3.5">{children}</div>
+    <div className="glass anim-up mt-2 rounded-[24px] px-3.5 py-3">{children}</div>
   )
 
   if (busy) {
@@ -139,12 +139,12 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
       </button>
       {lesson && (
         <>
-          <div className="mt-1.5 text-[17px] leading-tight font-semibold">{lesson.titleEs}</div>
-          <div className="txt-sub mt-1 text-[13px] leading-snug">
+          <div className="mt-1 truncate text-[16px] leading-tight font-semibold">{lesson.titleEs}</div>
+          <div className="txt-sub mt-0.5 truncate text-[12.5px]">
             {ahead ? 'Adelantas la semana siguiente · ' : ''}
             {lesson.missionEs}
           </div>
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-2 flex items-center gap-3">
             <div className="flex flex-1 gap-1">
               {Array.from({ length: LESSONS_PER_WEEK }, (_, i) => (
                 <span
@@ -156,7 +156,7 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
             </div>
             <button
               onClick={() => onStartLesson(lesson.id)}
-              className={`flex h-10 flex-none items-center gap-1.5 rounded-[20px] px-4 text-sm ${finishedToday ? 'glass' : 'btn-acc'}`}
+              className={`flex h-9 flex-none items-center gap-1.5 rounded-[18px] px-4 text-sm ${finishedToday ? 'glass' : 'btn-acc'}`}
             >
               <Icon name="mic" size={15} stroke={1.8} />
               {finishedToday ? 'Otra más' : 'Empezar'}

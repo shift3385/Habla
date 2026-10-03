@@ -23,6 +23,8 @@ import { adaptPlanAfterTest, doneToday, findLesson, todayLesson, type StudyPlan 
 import { syncReminders } from './lib/reminders'
 import PlanScreen from './screens/PlanScreen'
 import FavoritesSetup from './screens/FavoritesSetup'
+import NoticeGate from './screens/NoticeGate'
+import { pendingNotices, type Notice } from './lib/notices'
 import { hasValidFavorites } from './lib/topics'
 import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
@@ -69,6 +71,12 @@ export default function App() {
 
   // Bienvenida animada en cada arranque: "Welcome back" si ya hay perfil, o el alta si es nuevo.
   const [splash, setSplash] = useState(true)
+  // Avisos antes del Inicio (novedades, re-test, compañeros): se calculan una vez al terminar la bienvenida.
+  const [gate, setGate] = useState<Notice[]>([])
+  const [streak, setStreak] = useState(0)
+  const [homework, setHomework] = useState<{ text: string; date: number } | null>(null)
+  const settingsRef = useRef<Settings | null>(null)
+  const retestReadyRef = useRef(false)
   const [returning, setReturning] = useState<ReturningInfo | null>(null)
 
   const refreshProfile = useCallback(async () => {
@@ -102,13 +110,27 @@ export default function App() {
             : null,
         })
       }
+      setStreak(dash.streak)
+      setHomework(dash.lastHomework)
       setSettings(s)
     })
   }, [refreshProfile])
 
+  useEffect(() => {
+    settingsRef.current = settings
+    retestReadyRef.current = retestReady
+  }, [settings, retestReady])
+
   const endSplash = useCallback(() => {
-    refreshProfile().then(() => setSplash(false))
-  }, [refreshProfile])
+    refreshProfile().then((p) => {
+      const s = settingsRef.current
+      // Solo para quien ya usaba la app: a un usuario nuevo no se le enseñan novedades ni avisos.
+      if (s?.onboarded && isPersonalized(p) && p.calibratedAt) {
+        setGate(pendingNotices(s, { retestReady: retestReadyRef.current, streak, homeworkDate: homework?.date }))
+      }
+      setSplash(false)
+    })
+  }, [refreshProfile, streak, homework])
 
   // "Ya tengo mi perfil": importar una copia de seguridad desde la bienvenida.
   const importFromWelcome = useCallback(async (file: File) => {
@@ -231,6 +253,9 @@ export default function App() {
             setCalibrated(true)
             setRetest(false)
             setTab('home')
+            // Tras el primer test no se enseñan las novedades de una versión que ya estrena.
+            if (!wasRetest) update({ lastSeenVersion: APP_VERSION })
+            setGate([])
             refreshProfile().then((p) => {
               // Tras un re-test, las semanas del plan que aún no empezaste se rehacen con tu nuevo nivel.
               if (wasRetest && p.plan && settings.geminiKey) {
@@ -239,6 +264,29 @@ export default function App() {
                   .catch(() => {})
               }
             })
+          }}
+        />
+      </Shell>
+    )
+  }
+
+  if (gate.length) {
+    return (
+      <Shell t={t} overlay={picker}>
+        <NoticeGate
+          settings={settings}
+          notices={gate}
+          homework={homework}
+          update={update}
+          onDone={() => setGate([])}
+          onRetest={() => {
+            setGate([])
+            setRetest(true)
+          }}
+          onOpenThemes={() => {
+            setGate([])
+            setSettingsPage('look')
+            setTab('settings')
           }}
         />
       </Shell>
@@ -335,20 +383,13 @@ export default function App() {
                 update={update}
                 onStart={start}
                 onGoSettings={() => setTab('settings')}
-                onOpenNews={() => openAbout('news')}
                 onReview={() => setReview(true)}
                 plan={plan}
                 calibrated={!!calibrated}
                 onPlanChange={setPlan}
                 onStartLesson={startPlanLesson}
                 onOpenPlan={openPlan}
-                retestReady={retestReady}
-                onRetest={() => setRetest(true)}
                 registerBack={registerBack}
-                onOpenThemes={() => {
-                  setSettingsPage('look')
-                  setTab('settings')
-                }}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}

@@ -25,6 +25,8 @@ export interface Settings {
   reminderOn: boolean // aviso diario de la lección
   reminderTime: string // HH:MM
   audioPrefs: Record<string, 'headset' | 'split' | 'phone'> // por auriculares: por dónde escuchar y hablar
+  retestSnoozed: string // día (AAAA-MM-DD) en que dijo "Más tarde" al re-test
+  homeworkSeen: number // fecha de la última tarea ya enseñada antes del Inicio
 }
 
 const DEFAULTS: Settings = {
@@ -47,6 +49,8 @@ const DEFAULTS: Settings = {
   reminderOn: false,
   reminderTime: '19:00',
   audioPrefs: {},
+  retestSnoozed: '',
+  homeworkSeen: 0,
 }
 
 const KEY = 'habla.settings'
