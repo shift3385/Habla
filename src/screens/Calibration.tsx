@@ -1,95 +1,130 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { BANK_VERSION, type BankItem, type BankQuestion, type BankUsage, type GrammarItem, type ListeningItem, type Speaker } from '../lib/bank'
 import {
-  buildLevels,
-  comprehensionLevel,
-  estimateMcqLevel,
   assessSpeakingTask,
+  buildLevels,
   evaluateSpeaking,
-  generateComprehension,
-  generateMcqPool,
-  MCQ_COUNT,
-  nextMcq,
+  finalLevels,
   saveCalibration,
-  speakingTasks,
+  taskFromItem,
   type CalibrationResult,
-  type Comprehension,
-  type McqAnswer,
-  type McqItem,
   type SpeakingAnswer,
+  type SpeakingEval,
+  type SpeakingTask,
   type TaskAssessment,
 } from '../lib/calibration'
+import MascotPage from '../components/MascotPage'
 import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
+import type { Profile, Skill } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
-import { levelAt, levelIdx, rateForLevel, type Level } from '../lib/levels'
-import { MicError, Recorder } from '../lib/recorder'
+import { levelAt, levelIdx, overallBreakdown, rateForLevel, TEST_WEIGHT, trajectoryOf, weightedLevel, type Level } from '../lib/levels'
+import {
+  blockScore,
+  blocksLevel,
+  buildGrammar,
+  checkGrammar,
+  checkQuestion,
+  grammarLevel,
+  grammarShouldStop,
+  GRAMMAR_COUNT,
+  listeningConfidence,
+  listeningStart,
+  nextBlockLevel,
+  pickBlock,
+  pickSpeaking,
+  readingStart,
+  SPEAK_CRITERIA,
+  simpleTask3,
+  type BlockItem,
+  type BlockResult,
+  type Confidence,
+  type GrammarAnswer,
+  type SpeakCriterion,
+} from '../lib/placement'
 import { getProfile } from '../lib/profile'
+import { MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
-import { speak, stopSpeaking } from '../lib/tts'
+import { englishVoices, speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
-import Mascot from '../ui/Mascot'
+import Mascot, { type MascotElement } from '../ui/Mascot'
 import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
 
+type Kind = 'reading' | 'listening'
+type Value = number | string | null // índice de opción, texto escrito, -1 = "No sé", null = sin responder
+
 type Step =
-  | { k: 'intro' }
-  | { k: 'prep'; kind: PrepareKind; title: string; state: PrepareState; error?: string; retry?: () => void }
-  | { k: 'mcq' }
-  | { k: 'section'; s: SectionKey } // instrucciones antes de cada parte
-  | { k: 'reading'; i: number }
-  | { k: 'listening'; i: number }
+  | { k: 'loading' }
+  | { k: 'explain'; i: number }
+  | { k: 'section'; s: Skill }
+  | { k: 'grammar' }
+  | { k: 'block'; kind: Kind; n: number }
+  | { k: 'review'; n: number }
   | { k: 'speaking'; i: number }
+  | { k: 'deciding' }
+  | { k: 'prep'; kind: PrepareKind; title: string; state: PrepareState; error?: string; retry?: () => void }
   | { k: 'result'; r: CalibrationResult }
 
 const SECTIONS = ['Gramática', 'Lectura', 'Audición', 'Habla']
-type SectionKey = 'grammar' | 'reading' | 'listening' | 'speaking'
+const SKILL_ES: Record<Skill, string> = { grammar: 'Gramática', reading: 'Lectura', listening: 'Audición', speaking: 'Habla' }
+const SECTION_IDX: Record<Skill, number> = { grammar: 0, reading: 1, listening: 2, speaking: 3 }
+const CRITERION_ES: Record<SpeakCriterion, string> = {
+  fluency: 'Fluidez y coherencia',
+  vocabulary: 'Vocabulario',
+  grammar: 'Precisión gramatical',
+  pronunciation: 'Pronunciación',
+}
+const CONF_ES: Record<Confidence, string> = { high: 'Alta', medium: 'Media', low: 'Baja' }
+const PREVIEW_SECONDS = 35
 
-/** Instrucciones breves antes de cada parte, para quien hace el test sin que nadie le explique. */
-const SECTION_INFO: Record<SectionKey, { title: string; icon: IconName; points: string[]; tip?: string }> = {
+/** Instrucciones antes de cada parte: las cuenta la mascota. */
+const SECTION_INFO: Record<Skill, { title: string; icon: IconName; points: string[]; tip?: string }> = {
   grammar: {
-    title: 'Prueba de gramática y vocabulario',
+    title: 'Gramática y vocabulario',
     icon: 'pencil',
     points: [
-      'Vas a responder 15 preguntas cortas: completa la frase o elige la palabra correcta.',
-      'Las preguntas se adaptan a ti: si aciertas, la siguiente es más difícil; si fallas, más fácil. Es normal que algunas cuesten.',
-      'Si no sabes la respuesta, marca «No lo sé» en vez de adivinar.',
+      `Son ${GRAMMAR_COUNT} preguntas que van de A1 a C2: empiezan fáciles y se ponen difíciles. Es normal que las últimas cuesten.`,
+      'En la mayoría eliges una opción. En 5 escribes tú la palabra que falta, con una pista entre paréntesis.',
+      'Si fallas todas las de dos niveles seguidos, la parte termina antes: no te haré perder el tiempo.',
+      'Si no sabes, marca «No lo sé» en vez de adivinar.',
     ],
   },
   reading: {
-    title: 'Prueba de lectura',
+    title: 'Lectura',
     icon: 'book',
     points: [
-      'Vas a leer 2 textos cortos en inglés.',
-      'Después de cada texto hay 2 preguntas. La respuesta está en el texto: puedes releerlo las veces que quieras.',
-      'Si no encuentras la respuesta, marca «No lo sé».',
+      'Vas a leer 2 textos, cada uno con 6 preguntas. Puedes releer el texto las veces que quieras.',
+      'Algunas preguntas son de elegir y otras de escribir de 1 a 3 palabras sacadas del texto.',
+      'El segundo texto depende del primero: si aciertas mucho, sube de nivel; si no, baja.',
     ],
   },
   listening: {
-    title: 'Prueba de escucha',
+    title: 'Audición',
     icon: 'headphones',
     points: [
-      'Vas a escuchar 2 audios cortos en inglés. No hay texto: solo audio.',
-      'Toca el botón de reproducir. Cada audio se puede escuchar hasta 3 veces.',
-      'Las respuestas a las 2 preguntas salen de lo que escuchas. Si no lo entendiste, marca «No lo sé».',
+      'Son 2 audios con 6 preguntas cada uno. Antes de escuchar verás las preguntas unos segundos.',
+      'Puedes escuchar cada audio hasta 3 veces. Al terminar la 3.ª, la nota se cierra: lo que no hayas respondido contará como «No sé».',
+      'Después puedes seguir escuchando para practicar, pero ya no puntúa. Al final verás las respuestas correctas.',
     ],
-    tip: 'Recomendado: usa auriculares, sube el volumen y busca un lugar tranquilo.',
+    tip: 'Usa auriculares, sube el volumen y busca un lugar tranquilo.',
   },
   speaking: {
-    title: 'Prueba de habla',
+    title: 'Habla',
     icon: 'mic',
     points: [
-      'El profe te hará 3 preguntas en voz alta (puedes volver a escucharlas).',
-      'Toca el micrófono para empezar a hablar y tócalo otra vez para terminar.',
-      'Habla al menos 20–30 segundos en cada una. No pasa nada si dudas: lo importante es que hables.',
+      '3 tareas: unas preguntas sobre ti, describir o contar algo con una tarjeta, y dar tu opinión.',
+      'Toca el micrófono para hablar y otra vez para terminar. Puedes volver a oír la pregunta.',
+      'Gemini escucha tus respuestas y las puntúa con 4 criterios: fluidez, vocabulario, gramática y pronunciación.',
     ],
-    tip: 'Si tienes auriculares con micrófono, úsalos: el reconocimiento de tu voz será mucho mejor que con el micrófono del teléfono. Busca un lugar sin ruido.',
+    tip: 'Si tienes auriculares con micrófono, úsalos. Busca un lugar sin ruido.',
   },
 }
 
 function Header({ section }: { section: number }) {
   return (
-    <div className="mb-4">
+    <div className="mb-4 flex-none">
       <div className="flex items-center justify-between">
         <div className="text-lg font-semibold">Test de nivel</div>
         <div className="txt-sub text-sm">{section >= 0 ? `${section + 1}/4 · ${SECTIONS[section]}` : ''}</div>
@@ -103,40 +138,98 @@ function Header({ section }: { section: number }) {
   )
 }
 
-function Option({ text, sel, onClick }: { text: string; sel: boolean; onClick: () => void }) {
+function Option({ text, sel, onClick, disabled }: { text: string; sel: boolean; onClick: () => void; disabled?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className={`flex min-h-[52px] w-full items-center rounded-[18px] px-4 py-2.5 text-left text-[15px] ${sel ? 'btn-acc' : 'glass'}`}
+      disabled={disabled}
+      className={`flex min-h-[48px] w-full items-center rounded-[18px] px-4 py-2.5 text-left text-[15px] ${sel ? 'btn-acc' : 'glass'}`}
     >
       {text}
     </button>
   )
 }
 
-/** Quinta opción honesta: distinta a propósito (borde discontinuo, color apagado) para no confundirla con una respuesta. */
-function UnknownOption({ sel, onClick }: { sel: boolean; onClick: () => void }) {
+/** Opción honesta: distinta a propósito (borde discontinuo, color apagado) para no confundirla con una respuesta. */
+function UnknownOption({ sel, onClick, short }: { sel: boolean; onClick: () => void; short?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className="mt-1 flex min-h-[48px] w-full items-center gap-2.5 rounded-[18px] px-4 py-2 text-left text-[14.5px] transition-colors"
+      className="flex min-h-[44px] w-full items-center gap-2.5 rounded-[18px] px-4 py-2 text-left text-[14.5px] transition-colors"
       style={{
         border: `1.5px dashed ${sel ? 'var(--acc2)' : 'var(--sub)'}`,
         background: sel ? 'var(--field)' : 'transparent',
         color: sel ? 'var(--acc2)' : 'var(--sub)',
       }}
     >
-      <span
-        className="grid h-6 w-6 flex-none place-items-center rounded-full text-[13px] font-semibold"
-        style={{ border: '1.5px solid currentColor' }}
-      >
+      <span className="grid h-6 w-6 flex-none place-items-center rounded-full text-[13px] font-semibold" style={{ border: '1.5px solid currentColor' }}>
         ?
       </span>
       <span>
-        No lo sé <span className="text-[12px] opacity-80">· mejor ser sincero que adivinar</span>
+        No lo sé {!short && <span className="text-[12px] opacity-80">· mejor ser sincero que adivinar</span>}
       </span>
     </button>
   )
+}
+
+/** Respuesta escrita corta (1–3 palabras) con su "No lo sé". */
+function ShortAnswer({ value, onChange, placeholder }: { value: Value; onChange: (v: Value) => void; placeholder?: string }) {
+  const text = typeof value === 'string' ? value : ''
+  return (
+    <div className="flex flex-col gap-2">
+      <input
+        value={text}
+        onChange={(e) => onChange(e.target.value.trim() ? e.target.value : null)}
+        placeholder={placeholder ?? 'Escribe tu respuesta'}
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
+        className="glass h-[50px] w-full rounded-[18px] px-4 text-[16px] outline-none"
+        style={{ color: 'var(--tx)' }}
+      />
+      <UnknownOption short sel={value === -1} onClick={() => onChange(value === -1 ? null : -1)} />
+    </div>
+  )
+}
+
+/** Una pregunta de lectura o audición. */
+function Question({ q, n, value, onChange }: { q: BankQuestion; n: number; value: Value; onChange: (v: Value) => void }) {
+  return (
+    <div className="mt-4">
+      <div className="mb-2 font-medium">
+        <span className="txt-acc2 mr-1.5">{n}.</span>
+        {q.prompt}
+      </div>
+      {q.format === 'mc' ? (
+        <div className="flex flex-col gap-2">
+          {q.options.map((o, oi) => (
+            <Option key={oi} text={o} sel={value === oi} onClick={() => onChange(oi)} />
+          ))}
+          <UnknownOption short sel={value === -1} onClick={() => onChange(-1)} />
+        </div>
+      ) : (
+        <ShortAnswer value={value} onChange={onChange} placeholder="De 1 a 3 palabras" />
+      )}
+    </div>
+  )
+}
+
+const answered = (v: Value) => v !== null
+
+const correctText = (q: BankQuestion) => (q.format === 'mc' ? q.options[q.key] : q.accepted[0])
+const givenText = (q: BankQuestion, v: Value) => (v === null || v === -1 ? 'No sé' : typeof v === 'number' && q.format === 'mc' ? q.options[v] : String(v))
+
+/** Una voz del teléfono por hablante (por género, distintas entre sí si hay varias). */
+async function voiceMap(speakers: Speaker[]): Promise<Record<string, number | null>> {
+  const list = await englishVoices().catch(() => [])
+  const used = new Set<number>()
+  const out: Record<string, number | null> = {}
+  for (const s of speakers) {
+    const v = list.find((x) => x.gender === s.gender && !used.has(x.index)) ?? list.find((x) => x.gender === s.gender)
+    if (v) used.add(v.index)
+    out[s.id] = v ? v.index : null
+  }
+  return out
 }
 
 interface Props {
@@ -149,26 +242,49 @@ interface Props {
 
 export default function Calibration({ settings, update, onDone, registerBack }: Props) {
   const teacher = TEACHERS[settings.teacher]
-  const [step, setStep] = useState<Step>({ k: 'intro' })
+  const mascot = THEME_INFO[settings.theme].mascot
+  const mascotName = THEME_INFO[settings.theme].mascotName
+  const [step, setStep] = useState<Step>({ k: 'loading' })
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const usage = useRef<BankUsage>({ seen: [], uses: {} })
+  const used = useRef<BankItem[]>([])
   const [hint, setHint] = useState<string | null>(null)
-  const [pool, setPool] = useState<McqItem[]>([])
-  const [answers, setAnswers] = useState<McqAnswer[]>([])
-  const [picked, setPicked] = useState<number | null>(null)
-  const [comp, setComp] = useState<{ reading: Comprehension[]; listening: Comprehension[] } | null>(null)
-  const [compAnswers, setCompAnswers] = useState<Record<string, number>>({})
-  const [plays, setPlays] = useState<Record<number, number>>({})
+
+  // Gramática
+  const [gItems, setGItems] = useState<GrammarItem[]>([])
+  const [gAnswers, setGAnswers] = useState<GrammarAnswer[]>([])
+  const [gValue, setGValue] = useState<Value>(null)
+  const [gLevel, setGLevel] = useState<Level>('B1')
+
+  // Lectura y audición
+  const [blocks, setBlocks] = useState<Record<Kind, BlockResult[]>>({ reading: [], listening: [] })
+  const [item, setItem] = useState<BlockItem | null>(null)
+  const [itemLevel, setItemLevel] = useState<Level>('B1')
+  const [cur, setCur] = useState<Value[]>([])
+  const curRef = useRef<Value[]>([])
+  // Audición
+  const [phase, setPhase] = useState<'preview' | 'listen'>('preview')
+  const [countdown, setCountdown] = useState(PREVIEW_SECONDS)
+  const [plays, setPlays] = useState(0) // reproducciones que puntúan (máx. 3)
+  const [locked, setLocked] = useState<Value[] | null>(null) // respuestas al cerrar la nota
+  const [confirm3, setConfirm3] = useState(false)
   const [playing, setPlaying] = useState(false)
-  const [base, setBase] = useState<Level>('B1')
+  const playToken = useRef(0)
+
+  // Habla
+  const [tasks, setTasks] = useState<SpeakingTask[]>([])
   const [speech, setSpeech] = useState<(SpeakingAnswer | null | 'skipped')[]>([null, null, null])
   const [micFailures, setMicFailures] = useState(0)
   const [recState, setRecState] = useState<'idle' | 'recording' | 'processing'>('idle')
   const [elapsed, setElapsed] = useState(0)
   const recorder = useRef(new Recorder())
   const recStart = useRef(0)
+  const preEval = useRef<Promise<TaskAssessment | null>[]>([])
+  const preDone = useRef<(TaskAssessment | null | undefined)[]>([])
 
   const models = (): Models => mainModels(settings)
-  // Los reintentos ocurren en segundo plano, sin mensajes (la animación de preparación cubre la espera).
   const onRetry = undefined as ((i: RetryInfo) => void) | undefined
+  const retest = !!profile?.calibratedAt
 
   // El test es obligatorio: el botón atrás de Android no lo cierra.
   useEffect(() => {
@@ -177,9 +293,15 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   }, [registerBack])
 
   useEffect(() => {
+    getProfile().then((p) => {
+      setProfile(p)
+      usage.current = p.bankUsage ?? { seen: [], uses: {} }
+      setStep({ k: 'explain', i: 0 })
+    })
     const rec = recorder.current
     return () => {
       rec.close()
+      playToken.current++
       stopSpeaking()
     }
   }, [])
@@ -190,101 +312,176 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     return () => clearInterval(id)
   }, [recState])
 
-  // ---- 1. Gramática y vocabulario
-  /** Animación de preparación: carga → "¡Listo!" (1,3 s) → siguiente paso; o tarjeta de error con Reintentar. */
-  // `title` dice qué parte se prepara, para no perderse si ya se hizo otra ("Preparando el test de gramática").
-  const prepare = async (kind: PrepareKind, title: string, work: () => Promise<Step>, retry: () => void) => {
-    setStep({ k: 'prep', kind, title, state: 'loading' })
-    try {
-      const next = await work()
-      setStep({ k: 'prep', kind, title, state: 'done' })
-      await new Promise((r) => setTimeout(r, 1300))
-      setStep(next)
-    } catch (e) {
-      setStep({ k: 'prep', kind, title, state: 'error', error: friendlyError(e), retry })
+  // Vista previa de las preguntas antes de escuchar (30–40 s, como en IELTS).
+  // Al llegar a 0 la vista previa termina sola (se deriva, sin efecto).
+  const inPreview = step.k === 'block' && step.kind === 'listening' && phase === 'preview' && countdown > 0
+  useEffect(() => {
+    if (!inPreview) return
+    const id = setInterval(() => setCountdown((c) => Math.max(0, c - 1)), 1000)
+    return () => clearInterval(id)
+  }, [inPreview])
+
+  const setAnswer = (qi: number, v: Value) => {
+    const next = curRef.current.map((x, j) => (j === qi ? v : x))
+    curRef.current = next
+    setCur(next)
+  }
+
+  const exclude = () => new Set(used.current.map((i) => i.id))
+
+  // ---- 1. Gramática
+  const startGrammar = () => {
+    const items = buildGrammar(usage.current)
+    used.current.push(...items)
+    setGItems(items)
+    setGAnswers([])
+    setGValue(null)
+    setStep({ k: 'section', s: 'grammar' })
+  }
+
+  const gCurrent = step.k === 'grammar' ? gItems[gAnswers.length] : undefined
+
+  const answerGrammar = (value: number | string) => {
+    if (!gCurrent) return
+    const unknown = value === -1 || value === ''
+    const next = [...gAnswers, { item: gCurrent, value, unknown, correct: !unknown && checkGrammar(gCurrent, value) }]
+    setGAnswers(next)
+    setGValue(null)
+    if (grammarShouldStop(gItems, next)) {
+      // Las preguntas que no llegaron a salir no cuentan como vistas.
+      const asked = new Set(next.map((a) => a.item.id))
+      used.current = used.current.filter((i) => i.skill !== 'grammar' || asked.has(i.id))
+      const g = grammarLevel(next)
+      setGLevel(g)
+      startBlock('reading', 0, readingStart(g), [])
     }
   }
 
-  const startMcq = () =>
-    prepare(
-      'test',
-      'Preparando el test de gramática',
-      async () => {
-        const p = await generateMcqPool(settings.geminiKey, models(), onRetry)
-        if (p.length < 18) throw new Error('No se pudieron generar suficientes preguntas.')
-        setPool(p)
-        setAnswers([])
-        return { k: 'section', s: 'grammar' }
-      },
-      startMcq,
-    )
-
-  const current = step.k === 'mcq' ? nextMcq(pool, answers) : null
-
-  const answerMcq = (i: number) => {
-    if (!current || picked !== null) return
-    setPicked(i)
-    setTimeout(() => {
-      const next = [...answers, { item: current, chosen: i, correct: i === current.answer, unknown: i === -1 }]
-      setAnswers(next)
-      setPicked(null)
-      if (next.length >= MCQ_COUNT || !nextMcq(pool, next)) startComprehension(estimateMcqLevel(next))
-    }, 350)
+  // ---- 2 y 3. Lectura y audición, por bloques
+  const startBlock = (kind: Kind, n: number, level: Level, avoid: string[]) => {
+    const it = pickBlock(kind, level, usage.current, exclude(), avoid)
+    if (!it) {
+      setStep({ k: 'prep', kind: 'test', title: 'Preparando el test', state: 'error', error: 'Falta contenido en el banco del test para este nivel.' })
+      return
+    }
+    used.current.push(it)
+    setItem(it)
+    setItemLevel(level)
+    const empty = it.questions.map(() => null)
+    curRef.current = empty
+    setCur(empty)
+    setPhase('preview')
+    setCountdown(PREVIEW_SECONDS)
+    setPlays(0)
+    setLocked(null)
+    setConfirm3(false)
+    setStep(n === 0 ? { k: 'section', s: kind } : { k: 'block', kind, n })
   }
 
-  // ---- 2 y 3. Lectura y audición
-  const startComprehension = (lv: Level) => {
-    setBase(lv)
-    return prepare(
-      'test',
-      'Preparando la lectura y la escucha',
-      async () => {
-        const c = await generateComprehension(settings.geminiKey, models(), lv, onRetry)
-        if (!c.reading.length || !c.listening.length) throw new Error('No se pudieron generar los textos.')
-        setComp(c)
-        return { k: 'section', s: 'reading' }
-      },
-      () => startComprehension(lv),
-    )
+  const finishReadingBlock = (n: number) => {
+    if (!item) return
+    const correct = item.questions.map((q, qi) => checkQuestion(q, cur[qi], false))
+    const res: BlockResult = { item, level: itemLevel, answers: [...cur], correct }
+    const list = [...blocks.reading, res]
+    setBlocks((b) => ({ ...b, reading: list }))
+    if (n === 0) startBlock('reading', 1, nextBlockLevel(itemLevel, blockScore(res)), [item.topic])
+    else {
+      const r = blocksLevel(list).level
+      startBlock('listening', 0, listeningStart(gLevel, r), [])
+    }
   }
 
-  const compDone = (kind: 'reading' | 'listening', i: number) => {
-    const c = comp![kind][i]
-    return c.questions.every((_, qi) => compAnswers[`${kind}-${i}-${qi}`] !== undefined)
+  const playScript = async (it: ListeningItem) => {
+    const token = ++playToken.current
+    const voices = await voiceMap(it.speakers)
+    for (const line of it.script) {
+      if (playToken.current !== token) return false
+      await speak(line.t, rateForLevel(it.level), voices[line.s] ?? settings.voiceIndex).catch(() => {})
+    }
+    return playToken.current === token
   }
 
-  const scoreComp = (kind: 'reading' | 'listening'): Level =>
-    comprehensionLevel(
-      base,
-      comp![kind].map((c, i) => ({
-        level: c.level,
-        total: c.questions.length,
-        correct: c.questions.filter((q, qi) => compAnswers[`${kind}-${i}-${qi}`] === q.answer).length,
-      })),
-    )
-
-  const play = async (i: number) => {
-    if (playing || (plays[i] ?? 0) >= 3) return
-    setPlaying(true)
-    setPlays((p) => ({ ...p, [i]: (p[i] ?? 0) + 1 }))
-    await speak(comp!.listening[i].text, rateForLevel(comp!.listening[i].level), settings.voiceIndex).catch(() => {})
+  const stopPlay = () => {
+    playToken.current++
     setPlaying(false)
+    stopSpeaking()
+  }
+
+  const play = async () => {
+    if (!item || item.skill !== 'listening' || playing) return
+    const scored = !locked && plays < 3
+    // Aviso antes de la 3.ª escucha: al terminar, la nota se cierra.
+    if (scored && plays === 2 && !confirm3) {
+      setConfirm3(true)
+      return
+    }
+    setConfirm3(false)
+    setPhase('listen')
+    setPlaying(true)
+    const n = plays + (scored ? 1 : 0)
+    if (scored) setPlays(n)
+    const ok = await playScript(item)
+    setPlaying(false)
+    if (scored && n === 3 && ok) setLocked([...curRef.current])
+  }
+
+  const finishListeningBlock = (n: number) => {
+    if (!item) return
+    stopPlay()
+    const snap = locked ?? [...curRef.current]
+    const correct = item.questions.map((q, qi) => checkQuestion(q, snap[qi], true))
+    const late = item.questions.map((_, qi) => snap[qi] === null && curRef.current[qi] !== null)
+    const res: BlockResult = { item, level: itemLevel, answers: snap, correct, plays: Math.max(1, plays), late }
+    setBlocks((b) => ({ ...b, listening: [...b.listening, res] }))
+    setStep({ k: 'review', n })
+  }
+
+  const afterReview = (n: number) => {
+    const list = blocks.listening
+    if (n === 0) {
+      const res = list[0]
+      startBlock('listening', 1, nextBlockLevel(res.level, blockScore(res)), [res.item.topic])
+    } else startSpeaking()
   }
 
   // ---- 4. Habla
-  const tasks = speakingTasks(base)
+  const sayTask = (task: SpeakingTask | undefined) => {
+    if (task) speak(task.prompt, rateForLevel(gLevel), settings.voiceIndex).catch(() => {})
+  }
 
-  const sayTask = (i: number) => speak(tasks[i].prompt, rateForLevel(base), settings.voiceIndex).catch(() => {})
+  const startSpeaking = () => {
+    const t1 = pickSpeaking(1, usage.current)
+    const t2 = pickSpeaking(2, usage.current)
+    const list = [t1, t2].filter((x) => !!x).map((x) => taskFromItem(x!))
+    used.current.push(...list.map((x) => x.item))
+    setTasks(list)
+    setSpeech([null, null, null])
+    setStep({ k: 'section', s: 'speaking' })
+  }
 
-  // Evaluación de cada respuesta en segundo plano, lanzada al terminar de grabarla.
-  const preEval = useRef<Promise<TaskAssessment | null>[]>([])
+  /** Tras la tarea 2: si las dos primeras quedaron en A2 o menos, la 3.ª es una opinión sencilla. */
+  const decideTask3 = async () => {
+    setStep({ k: 'deciding' })
+    const wait = (p: Promise<TaskAssessment | null> | undefined) =>
+      Promise.race([p ?? Promise.resolve(null), new Promise<null>((r) => setTimeout(() => r(null), 25_000))])
+    const [a1, a2] = await Promise.all([wait(preEval.current[0]), wait(preEval.current[1])])
+    const simple = simpleTask3(a1?.level ?? null, a2?.level ?? null, gLevel)
+    const it = pickSpeaking(3, usage.current, simple)
+    if (it) {
+      used.current.push(it)
+      const t3 = taskFromItem(it)
+      setTasks((ts) => [...ts.slice(0, 2), t3])
+      setStep({ k: 'speaking', i: 2 })
+      setTimeout(() => sayTask(t3), 400)
+    } else finish()
+  }
 
   const toggleRecord = async (i: number) => {
     if (recState === 'processing') return
     if (recState === 'idle') {
       await stopSpeaking()
       try {
-        await recorder.current.begin() // reabre el micrófono si Android lo cortó
+        await recorder.current.begin()
         recStart.current = performance.now()
         setElapsed(0)
         setHint(null)
@@ -313,18 +510,19 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
       }
       setSpeech((s) => s.map((x, j) => (j === i ? answer : x)))
       setHint(null)
-      preEval.current[i] = assessSpeakingTask(settings.geminiKey, models(), tasks[i], answer).catch(() => null)
+      preDone.current[i] = undefined
+      preEval.current[i] = assessSpeakingTask(settings.geminiKey, models(), tasks[i], answer)
+        .catch(() => null)
+        .then((r) => (preDone.current[i] = r))
     } catch {
       setHint('Algo falló al guardar la grabación. Vuelve a intentarlo.')
       setMicFailures((n) => n + 1)
-      recorder.current.close() // la próxima vez se abre un micrófono nuevo
+      recorder.current.close()
     } finally {
-      // Pase lo que pase, el botón vuelve a estar disponible.
       setRecState('idle')
     }
   }
 
-  /** Red de seguridad: si la grabación falla, se puede saltar la pregunta para no quedarse atascado. */
   const skipTask = (i: number) => {
     setSpeech((s) => s.map((x, j) => (j === i ? 'skipped' : x)))
     setHint(null)
@@ -336,234 +534,323 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     return prepare('eval', 'Evaluando tu habla y tu nivel', evaluate, finish)
   }
 
-  const evaluate = async (): Promise<Step> => {
-    {
-      const failed = answers.filter((a) => !a.correct && !a.unknown).map((a) => a.item.point)
-      const unknown = answers.filter((a) => a.unknown).map((a) => a.item.point)
-      // Las preguntas de lectura/audición marcadas como "No lo sé" también son lagunas reconocidas.
-      for (const kind of ['reading', 'listening'] as const)
-        comp?.[kind].forEach((c, i) =>
-          c.questions.forEach((q, qi) => {
-            if (compAnswers[`${kind}-${i}-${qi}`] === -1)
-              unknown.push(`${kind === 'reading' ? 'reading' : 'listening'} comprehension at ${c.level}: "${q.q}"`)
-          }),
-        )
-      // Solo se evalúan las tareas grabadas (las saltadas por un fallo del micrófono se omiten).
-      const pairs = tasks
-        .map((task, k) => ({ task, ans: speech[k], k }))
-        .filter((p): p is { task: (typeof tasks)[number]; ans: SpeakingAnswer; k: number } => !!p.ans && p.ans !== 'skipped')
-      // Normalmente ya están listas: se evaluaron mientras grababas las siguientes.
-      const pre = await Promise.all(pairs.map((p) => preEval.current[p.k] ?? Promise.resolve(null)))
-      const ev = pairs.length
-        ? await evaluateSpeaking(settings.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry, pre)
-        : {
-            // Sin ninguna grabación: el habla se estima un nivel por debajo de la gramática y se mide en el próximo test.
-            level: levelAt(levelIdx(estimateMcqLevel(answers)) - 1),
-            criteria: undefined as unknown as Record<'fluency' | 'grammar' | 'vocabulary' | 'pronunciation' | 'coherence', Level>,
-            strengthsEs: [],
-            weaknessesEs: ['No se pudo evaluar el habla en este test: se medirá con tus clases y en el próximo re-test.'],
-            weaknessesEn: [],
-            summaryEs: 'No pudimos grabar tu voz, así que tu nivel de habla es una estimación.',
-          }
-      const levels = buildLevels(estimateMcqLevel(answers), scoreComp('reading'), scoreComp('listening'), ev.level)
-      // En un re-test se guardan los niveles del test anterior para enseñar el progreso.
-      const before = await getProfile()
-      const prev = before.tests?.length ? (before.tests.at(-1)!.levels as CalibrationResult['prev']) : undefined
-      const r: CalibrationResult = { levels, speaking: ev, mcq: answers, prev }
-      await saveCalibration(r)
-      update({ ttsRate: rateForLevel(levels.overall) })
-      return { k: 'result', r }
+  const prepare = async (kind: PrepareKind, title: string, work: () => Promise<Step>, retry: () => void) => {
+    setStep({ k: 'prep', kind, title, state: 'loading' })
+    try {
+      const next = await work()
+      setStep({ k: 'prep', kind, title, state: 'done' })
+      await new Promise((r) => setTimeout(r, 1300))
+      setStep(next)
+    } catch (e) {
+      setStep({ k: 'prep', kind, title, state: 'error', error: friendlyError(e), retry })
     }
   }
 
-  // ---- UI
-  const section =
-    step.k === 'mcq' || (step.k === 'section' && step.s === 'grammar')
-      ? 0
-      : step.k === 'reading' || (step.k === 'section' && step.s === 'reading')
-        ? 1
-        : step.k === 'listening' || (step.k === 'section' && step.s === 'listening')
-          ? 2
-          : step.k === 'speaking' || (step.k === 'section' && step.s === 'speaking')
-            ? 3
-            : -1
-  const pad = 'relative z-[2] flex h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
+  const evaluate = async (): Promise<Step> => {
+    const failed = gAnswers.filter((a) => !a.correct && !a.unknown).map((a) => a.item.point)
+    const unknown = gAnswers.filter((a) => a.unknown).map((a) => a.item.point)
+    for (const kind of ['reading', 'listening'] as const)
+      blocks[kind].forEach((b) =>
+        b.item.questions.forEach((q, qi) => {
+          if (b.answers[qi] === -1 || b.answers[qi] === null) unknown.push(`${kind} comprehension at ${b.level} (${q.type}): "${q.prompt}"`)
+        }),
+      )
+    const pairs = tasks
+      .map((task, k) => ({ task, ans: speech[k], k }))
+      .filter((p): p is { task: SpeakingTask; ans: SpeakingAnswer; k: number } => !!p.ans && p.ans !== 'skipped')
+    const pre = await Promise.all(pairs.map((p) => preEval.current[p.k] ?? Promise.resolve(null)))
+    const ev: SpeakingEval = pairs.length
+      ? await evaluateSpeaking(settings.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry, pre)
+      : {
+          // Sin ninguna grabación: el habla se estima un nivel por debajo de la gramática y se medirá en el próximo test.
+          level: levelAt(levelIdx(gLevel) - 1),
+          criteria: undefined as unknown as SpeakingEval['criteria'],
+          reasonsEs: {},
+          strengthsEs: [],
+          weaknessesEs: ['No se pudo evaluar el habla en este test: se medirá en el próximo re-test.'],
+          weaknessesEn: [],
+          summaryEs: 'No pudimos grabar tu voz, así que tu nivel de habla es una estimación.',
+        }
+    const reading = blocksLevel(blocks.reading)
+    const listen = blocksLevel(blocks.listening)
+    const testLevels = buildLevels(gLevel, reading.level, listen.level, ev.level)
+    const p = await getProfile()
+    const fin = finalLevels(testLevels, p)
+    const crit = ev.criteria ? Object.values(ev.criteria).map(levelIdx) : []
+    const confidence: Record<Skill, Confidence> = {
+      grammar: grammarConfidence(gAnswers, gLevel),
+      reading: reading.confidence,
+      listening: listeningConfidence(blocks.listening, listen),
+      // Habla: alta con las 3 tareas evaluadas y criterios coherentes (a un nivel de distancia); baja si faltó alguna.
+      speaking: pairs.length < 3 ? 'low' : pre.every(Boolean) && Math.max(...crit) - Math.min(...crit) <= 1 ? 'high' : 'medium',
+    }
+    const r: CalibrationResult = { ...fin, testLevels, confidence, speaking: ev, grammar: gAnswers, reading: blocks.reading, listening: blocks.listening }
+    await saveCalibration(r, used.current, settings.geminiModel)
+    update({ ttsRate: rateForLevel(r.levels.overall) })
+    return { k: 'result', r }
+  }
 
-  if (step.k === 'intro') {
+  // ---- UI
+  const pad = 'relative z-[2] flex h-full flex-col px-5 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+20px)]'
+
+  if (step.k === 'loading' || !profile) return null
+
+  // Explicaciones de la mascota antes de empezar (primer test: cómo se evalúa; re-test: la ponderación).
+  if (step.k === 'explain') {
+    const pages = retest ? retestPages(profile, mascotName) : firstPages(teacher.name, mascotName)
+    const page = pages[step.i]
+    const last = step.i === pages.length - 1
     return (
-      <div className={pad}>
-        <div className="anim-up flex flex-1 flex-col">
-          <div className="grid flex-1 place-items-center">
-            <Mascot element={THEME_INFO[settings.theme].mascot} size={190} />
-          </div>
-          <h1 className="text-[32px] leading-[1.1] font-semibold tracking-[-.8px]">Test de nivel</h1>
-          <p className="txt-sub mt-2 text-[15px] leading-snug">
-            {teacher.name} necesita conocer tu inglés para adaptar las clases. Son unos 12–15 minutos y tiene 4 partes:
-          </p>
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            {[
-              ['Gramática', '15 preguntas adaptativas'],
-              ['Lectura', '2 textos cortos'],
-              ['Audición', '2 audios'],
-              ['Habla', '3 respuestas por voz'],
-            ].map(([a, b]) => (
-              <div key={a} className="glass rounded-[20px] px-3.5 py-3">
-                <div className="font-semibold">{a}</div>
-                <div className="txt-sub text-[12.5px]">{b}</div>
-              </div>
-            ))}
-          </div>
-          <p className="txt-sub mt-3 text-[13px] leading-snug">
-            Responde sin ayuda. Si no sabes una respuesta, marca <b>«No lo sé»</b> en vez de adivinar: así {teacher.name} sabrá exactamente qué enseñarte. Tu nivel no se puede cambiar a mano; irá subiendo con la práctica y con un nuevo test cada 4 semanas.
-          </p>
-          <button onClick={startMcq} className="btn-acc mt-5 h-[58px] rounded-full text-[17px]">
-            Empezar el test
-          </button>
-        </div>
-      </div>
+      <MascotPage
+        element={mascot}
+        mood={step.i === 0 ? 'happy' : 'speaking'}
+        step={{ i: step.i, n: pages.length }}
+        title={page.title}
+        subtitle={page.subtitle}
+        onBack={step.i > 0 ? () => setStep({ k: 'explain', i: step.i - 1 }) : undefined}
+        primary={{ label: last ? 'Empezar el test' : 'Siguiente', onClick: () => (last ? startGrammar() : setStep({ k: 'explain', i: step.i + 1 })) }}
+      >
+        {page.body}
+      </MascotPage>
     )
   }
 
   if (step.k === 'section') {
     const info = SECTION_INFO[step.s]
     const start = () => {
-      if (step.s === 'grammar') setStep({ k: 'mcq' })
+      if (step.s === 'grammar') setStep({ k: 'grammar' })
       else if (step.s === 'speaking') {
         setStep({ k: 'speaking', i: 0 })
-        setTimeout(() => sayTask(0), 400)
-      } else setStep({ k: step.s, i: 0 })
+        setTimeout(() => sayTask(tasks[0]), 400)
+      } else setStep({ k: 'block', kind: step.s, n: 0 })
     }
     return (
-      <div className={pad}>
-        <Header section={section} />
-        <div key={step.s} className="anim-in flex flex-1 flex-col">
-          <div className="grid flex-1 place-items-center">
-            <div className="btn-acc grid h-28 w-28 place-items-center rounded-full" style={{ boxShadow: '0 0 0 10px var(--g), 0 14px 40px var(--glow)' }}>
-              <Icon name={info.icon} size={48} stroke={1.5} />
-            </div>
-          </div>
-          <div className="txt-acc2 text-xs tracking-[1.2px] uppercase">Parte {section + 1} de 4</div>
-          <h1 className="mt-1 text-[30px] leading-tight font-semibold tracking-[-.6px]">{info.title}</h1>
-          <ul className="mt-4 flex flex-col gap-2.5">
-            {info.points.map((p) => (
-              <li key={p} className="flex gap-2.5 text-[15px] leading-snug">
-                <span className="txt-acc mt-0.5 flex-none">
-                  <Icon name="check" size={17} stroke={2.2} />
-                </span>
-                {p}
-              </li>
-            ))}
-          </ul>
-          {info.tip && (
-            <div className="glass mt-4 flex items-start gap-3 rounded-[20px] px-4 py-3">
-              <span className="txt-acc2 mt-0.5 flex-none">
-                <Icon name="headphones" size={20} />
+      <MascotPage
+        element={mascot}
+        mood="speaking"
+        step={{ i: SECTION_IDX[step.s], n: 4 }}
+        title={`Parte ${SECTION_IDX[step.s] + 1}: ${info.title}`}
+        primary={{ label: 'Entendido, empezar', onClick: start }}
+      >
+        <ul className="flex flex-col gap-2.5">
+          {info.points.map((p) => (
+            <li key={p} className="flex gap-2.5 text-[15px] leading-snug">
+              <span className="txt-acc mt-0.5 flex-none">
+                <Icon name="check" size={17} stroke={2.2} />
               </span>
-              <span className="text-[14px] leading-snug">{info.tip}</span>
-            </div>
-          )}
-          <button onClick={start} className="btn-acc mt-6 h-[58px] rounded-full text-[17px]">
-            Entendido, empezar
-          </button>
-        </div>
-      </div>
+              {p}
+            </li>
+          ))}
+        </ul>
+        {info.tip && (
+          <div className="glass mt-4 flex items-start gap-3 rounded-[20px] px-4 py-3">
+            <span className="txt-acc2 mt-0.5 flex-none">
+              <Icon name={info.icon} size={20} />
+            </span>
+            <span className="text-[14px] leading-snug">{info.tip}</span>
+          </div>
+        )}
+      </MascotPage>
     )
   }
 
   if (step.k === 'prep') {
-    return (
-      <PrepareScreen
-        kind={step.kind}
-        state={step.state}
-        mascot={THEME_INFO[settings.theme].mascot}
-        teacherName={teacher.name}
-        title={step.title}
-        errorText={step.error}
-        onRetry={step.retry}
-      />
-    )
+    return <PrepareScreen kind={step.kind} state={step.state} mascot={mascot} teacherName={teacher.name} title={step.title} errorText={step.error} onRetry={step.retry} />
   }
 
-  if (step.k === 'mcq' && current) {
+  if (step.k === 'deciding') {
+    return <MascotPage element={mascot} mood="thinking" title="Un momento…" subtitle="Estoy escuchando tus dos primeras respuestas para elegir la última pregunta." />
+  }
+
+  if (step.k === 'grammar' && gCurrent) {
+    const it = gCurrent
     return (
       <div className={pad}>
-        <Header section={section} />
-        <div key={answers.length} className="anim-in flex flex-1 flex-col">
+        <Header section={0} />
+        <div key={gAnswers.length} className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="txt-sub text-sm">
-            Pregunta {answers.length + 1} de {MCQ_COUNT} · {current.skill === 'grammar' ? 'Gramática' : 'Vocabulario'}
+            Pregunta {gAnswers.length + 1} de {gItems.length} · {it.format === 'mc' ? 'elige la correcta' : 'escribe la forma correcta'}
           </div>
-          <div className="glass mt-3 rounded-[24px] p-5 text-[19px] leading-snug font-medium">{current.question}</div>
-          <div className="mt-4 flex flex-col gap-2">
-            {current.options.map((o, i) => (
-              <Option key={i} text={o} sel={picked === i} onClick={() => answerMcq(i)} />
-            ))}
-            <UnknownOption sel={picked === -1} onClick={() => answerMcq(-1)} />
+          <div className="glass mt-3 rounded-[24px] p-5 text-[19px] leading-snug font-medium">
+            {it.prompt}
+            {it.format === 'short' && (
+              <span className="txt-acc2 ml-2 text-[16px] whitespace-nowrap">({it.hint})</span>
+            )}
           </div>
+          {it.format === 'mc' ? (
+            <div className="mt-4 flex flex-col gap-2">
+              {it.options.map((o, i) => (
+                <Option key={i} text={o} sel={gValue === i} onClick={() => answerGrammar(i)} />
+              ))}
+              <UnknownOption sel={false} onClick={() => answerGrammar(-1)} />
+            </div>
+          ) : (
+            <div className="mt-4 flex flex-col gap-3">
+              <ShortAnswer value={gValue} onChange={setGValue} placeholder="De 1 a 4 palabras" />
+              <button
+                onClick={() => answerGrammar(gValue === -1 || gValue === null ? -1 : String(gValue))}
+                disabled={gValue === null}
+                className="btn-acc h-[54px] rounded-full text-[16px] disabled:opacity-45"
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
         </div>
       </div>
     )
   }
 
-  if ((step.k === 'reading' || step.k === 'listening') && comp) {
-    const kind = step.k
-    const i = step.i
-    const c = comp[kind][i]
-    const isLast = i === comp[kind].length - 1
-    const next = () => {
-      stopSpeaking()
-      setPlaying(false)
-      if (!isLast) setStep({ k: kind, i: i + 1 })
-      else if (kind === 'reading') setStep({ k: 'section', s: 'listening' })
-      else setStep({ k: 'section', s: 'speaking' })
+  if (step.k === 'block' && item) {
+    const { kind, n } = step
+    const allDone = cur.every(answered)
+    if (kind === 'reading' && item.skill === 'reading') {
+      return (
+        <div className={pad}>
+          <Header section={1} />
+          <div key={`r${n}`} className="anim-in no-scrollbar -mx-1 flex min-h-0 flex-1 flex-col overflow-y-auto px-1">
+            <div className="txt-sub text-sm">Texto {n + 1} de 2 · {item.questions.length} preguntas</div>
+            <div className="glass mt-3 rounded-[24px] p-4">
+              <div className="mb-2 text-[17px] font-semibold">{item.title}</div>
+              <div className="text-[15.5px] leading-relaxed whitespace-pre-line">{item.text}</div>
+            </div>
+            {item.questions.map((q, qi) => (
+              <Question key={qi} q={q} n={qi + 1} value={cur[qi]} onChange={(v) => setAnswer(qi, v)} />
+            ))}
+            <button onClick={() => finishReadingBlock(n)} disabled={!allDone} className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full text-[16px] disabled:opacity-45">
+              {allDone ? 'Siguiente' : `Responde las ${item.questions.length} preguntas`}
+            </button>
+          </div>
+        </div>
+      )
     }
-    const used = plays[i] ?? 0
+    if (item.skill === 'listening') {
+      const scoredLeft = 3 - plays
+      return (
+        <div className={pad}>
+          <Header section={2} />
+          <div key={`l${n}`} className="anim-in no-scrollbar -mx-1 flex min-h-0 flex-1 flex-col overflow-y-auto px-1">
+            <div className="txt-sub text-sm">
+              Audio {n + 1} de 2 · {item.speakers.length > 1 ? `${item.speakers.length} voces` : 'una voz'}
+            </div>
+            <div className="glass mt-3 rounded-[24px] p-4">
+              {inPreview ? (
+                <div className="flex items-center gap-4">
+                  <div className="btn-acc grid h-16 w-16 flex-none place-items-center rounded-full text-[22px] font-semibold tabular-nums">{countdown}</div>
+                  <div className="flex-1 text-[14.5px] leading-snug">
+                    Lee las preguntas antes de escuchar. El audio se activa en {countdown} s.
+                    <button onClick={() => setPhase('listen')} className="txt-acc2 mt-1 block text-[13.5px] underline underline-offset-2">
+                      Ya las leí, escuchar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={play}
+                    disabled={playing}
+                    className="btn-acc grid h-16 w-16 flex-none place-items-center rounded-full disabled:opacity-50"
+                    aria-label="Escuchar"
+                  >
+                    <Icon name="speakerWave" size={26} />
+                  </button>
+                  <div className="flex-1">
+                    <Wave n={14} on={playing} />
+                    <div className="txt-sub mt-1 text-[13px]">
+                      {locked
+                        ? 'Nota cerrada · puedes seguir escuchando para practicar'
+                        : playing
+                          ? `Escucha ${plays} de 3`
+                          : plays === 0
+                            ? 'Toca para escuchar (3 escuchas con nota)'
+                            : `Te ${scoredLeft === 1 ? 'queda 1 escucha' : `quedan ${scoredLeft} escuchas`} con nota`}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {confirm3 && (
+                <div className="mt-3 rounded-[18px] p-3 text-[14px] leading-snug" style={{ background: 'var(--field)' }}>
+                  <b>Última escucha con nota.</b> Al terminar, las preguntas sin responder contarán como «No sé». Después podrás seguir escuchando, pero ya no puntuará.
+                  <div className="mt-2.5 flex gap-2">
+                    <button onClick={play} className="btn-acc h-10 flex-1 rounded-full text-[14px]">
+                      Escuchar
+                    </button>
+                    <button onClick={() => setConfirm3(false)} className="glass h-10 flex-1 rounded-full text-[14px]">
+                      Aún no
+                    </button>
+                  </div>
+                </div>
+              )}
+              {locked && (
+                <div className="txt-sub mt-3 text-[12.5px] leading-snug">
+                  Regla de evaluación: lo que respondas a partir de ahora es práctica y no cuenta para tu nota.
+                </div>
+              )}
+            </div>
+            {item.questions.map((q, qi) => (
+              <Question key={qi} q={q} n={qi + 1} value={cur[qi]} onChange={(v) => setAnswer(qi, v)} />
+            ))}
+            <button
+              onClick={() => finishListeningBlock(n)}
+              disabled={plays === 0 || playing}
+              className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full text-[16px] disabled:opacity-45"
+            >
+              {plays === 0 ? 'Escucha el audio primero' : 'Terminar y ver respuestas'}
+            </button>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  // Revisión tras cada audio: la respuesta correcta y qué contó como "No sé" por llegar tarde.
+  if (step.k === 'review') {
+    const b = blocks.listening[step.n]
+    if (!b) return null
     return (
       <div className={pad}>
-        <Header section={section} />
-        <div key={`${kind}-${i}`} className="anim-in no-scrollbar -mx-1 flex flex-1 flex-col overflow-y-auto px-1">
-          <div className="txt-sub text-sm">
-            {kind === 'reading' ? 'Lee el texto' : 'Escucha el audio'} {i + 1} de {comp[kind].length}
-          </div>
-          {kind === 'reading' ? (
-            <div className="glass mt-3 rounded-[24px] p-4 text-[15.5px] leading-relaxed">{c.text}</div>
-          ) : (
-            <div className="glass mt-3 flex items-center gap-4 rounded-[24px] p-4">
-              <button
-                onClick={() => play(i)}
-                disabled={playing || used >= 3}
-                className="btn-acc grid h-16 w-16 flex-none place-items-center rounded-full disabled:opacity-50"
-                aria-label="Escuchar"
-              >
-                <Icon name="speakerWave" size={26} />
-              </button>
-              <div className="flex-1">
-                <Wave n={14} on={playing} />
-                <div className="txt-sub mt-1 text-[13px]">
-                  {used >= 3 ? 'Ya no quedan reproducciones' : `Puedes escucharlo ${3 - used} ${3 - used === 1 ? 'vez' : 'veces'} más`}
-                </div>
+        <Header section={2} />
+        <div className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
+          <div className="flex items-center gap-3">
+            <Mascot element={mascot} size={64} mood={blockScore(b) >= 4 ? 'happy' : 'idle'} />
+            <div>
+              <div className="text-[20px] font-semibold">
+                {blockScore(b)} de {b.item.questions.length} correctas
               </div>
+              <div className="txt-sub text-[13.5px]">Así fue el audio {step.n + 1}. Mira las respuestas antes de seguir.</div>
             </div>
-          )}
-          {c.questions.map((q, qi) => {
-            const key = `${kind}-${i}-${qi}`
-            return (
-              <div key={key} className="mt-4">
-                <div className="mb-2 font-medium">{q.q}</div>
-                <div className="flex flex-col gap-2">
-                  {q.options.map((o, oi) => (
-                    <Option key={oi} text={o} sel={compAnswers[key] === oi} onClick={() => setCompAnswers((a) => ({ ...a, [key]: oi }))} />
-                  ))}
-                  <UnknownOption sel={compAnswers[key] === -1} onClick={() => setCompAnswers((a) => ({ ...a, [key]: -1 }))} />
+          </div>
+          <div className="mt-3 flex flex-col gap-2">
+            {b.item.questions.map((q, qi) => (
+              <div key={qi} className="glass rounded-[18px] px-4 py-3 text-[14px] leading-snug">
+                <div className="font-medium">
+                  {qi + 1}. {q.prompt}
+                </div>
+                <div className="mt-1 flex items-start gap-2">
+                  <span className={b.correct[qi] ? 'txt-acc' : 'txt-sub'}>
+                    {b.correct[qi] ? <Icon name="check" size={16} stroke={2.2} /> : <span className="text-[14px] font-semibold">✕</span>}
+                  </span>
+                  <span>
+                    {b.late?.[qi] ? (
+                      <>
+                        <b>No sé</b> · la respondiste después de cerrar la nota
+                      </>
+                    ) : (
+                      <>Tu respuesta: {givenText(q, b.answers[qi])}</>
+                    )}
+                    {!b.correct[qi] && (
+                      <>
+                        <br />
+                        Correcta: <b>{correctText(q)}</b>
+                      </>
+                    )}
+                  </span>
                 </div>
               </div>
-            )
-          })}
-          <button
-            onClick={next}
-            disabled={!compDone(kind, i) || (kind === 'listening' && used === 0)}
-            className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full text-[16px]"
-          >
-            Siguiente
+            ))}
+          </div>
+          <button onClick={() => afterReview(step.n)} className="btn-acc mt-4 mb-1 h-[54px] flex-none rounded-full text-[16px]">
+            {step.n === 0 ? 'Siguiente audio' : 'Pasar a la parte de habla'}
           </button>
         </div>
       </div>
@@ -573,21 +860,39 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   if (step.k === 'speaking') {
     const i = step.i
     const task = tasks[i]
+    if (!task) return null
     const done = !!speech[i]
     const recording = recState === 'recording'
     return (
       <div className={pad}>
-        <Header section={section} />
-        <div key={i} className="anim-in flex flex-1 flex-col">
+        <Header section={3} />
+        <div key={i} className="anim-in flex min-h-0 flex-1 flex-col">
           <div className="txt-sub text-sm">
-            Tarea {i + 1} de {tasks.length} · {task.title} · unos {task.seconds} s
+            Tarea {i + 1} de 3 · {task.title} · unos {task.seconds} s
           </div>
-          <div className="glass mt-3 rounded-[24px] p-5">
+          <div className="glass mt-3 rounded-[24px] p-4">
             <div className="flex items-start gap-3">
-              <Mascot element={THEME_INFO[settings.theme].mascot} size={56} mood={recState === 'recording' ? 'listening' : recState === 'processing' ? 'thinking' : 'idle'} />
-              <div className="flex-1 text-[17px] leading-snug">{task.prompt}</div>
+              <Mascot element={mascot} size={52} mood={recording ? 'listening' : recState === 'processing' ? 'thinking' : 'idle'} />
+              <div className="flex-1 text-[16.5px] leading-snug">
+                {task.item.task === 1 ? (
+                  <ol className="list-decimal space-y-1 pl-5">
+                    {task.prompts.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ol>
+                ) : (
+                  task.prompts[0]
+                )}
+                {task.cues && (
+                  <ul className="txt-sub mt-2 list-disc space-y-0.5 pl-5 text-[14px]">
+                    {task.cues.map((c) => (
+                      <li key={c}>{c}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
-            <button onClick={() => sayTask(i)} className="txt-sub mt-3 flex items-center gap-1.5 text-[13px]">
+            <button onClick={() => sayTask(task)} className="txt-sub mt-2 flex items-center gap-1.5 text-[13px]">
               <Icon name="speaker" size={14} /> Escuchar otra vez
             </button>
           </div>
@@ -596,7 +901,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
               <Wave on={recording} />
               <button
                 onClick={() => toggleRecord(i)}
-                className="grid h-[96px] w-[96px] place-items-center rounded-full"
+                className="grid h-[92px] w-[92px] place-items-center rounded-full"
                 style={{
                   border: '1px solid rgba(255,255,255,.35)',
                   background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 45%), var(--acc)',
@@ -620,86 +925,286 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
                     ? 'Pregunta saltada · puedes intentar grabarla otra vez'
                     : done
                       ? 'Grabado ✓ · toca para repetir la grabación'
-                    : 'Toca para empezar a hablar'}
+                      : task.item.task === 1
+                        ? 'Toca y contesta las dos preguntas seguidas'
+                        : 'Toca para empezar a hablar'}
             </div>
             {hint && <div className="txt-sub text-center text-[13px]">{hint}</div>}
             {micFailures > 0 && !done && recState === 'idle' && (
-              <button
-                onClick={() => skipTask(i)}
-                className="txt-sub h-10 rounded-[20px] px-4 text-[13.5px]"
-                style={{ border: '1.5px dashed var(--sub)' }}
-              >
+              <button onClick={() => skipTask(i)} className="txt-sub h-10 rounded-[20px] px-4 text-[13.5px]" style={{ border: '1.5px dashed var(--sub)' }}>
                 ¿Sigue sin funcionar? Saltar esta pregunta
               </button>
             )}
           </div>
           <button
             onClick={() => {
-              if (i < tasks.length - 1) {
-                setMicFailures(0)
-                setStep({ k: 'speaking', i: i + 1 })
-                setTimeout(() => sayTask(i + 1), 400)
-              } else finish()
+              setMicFailures(0)
+              if (i === 0) {
+                setStep({ k: 'speaking', i: 1 })
+                setTimeout(() => sayTask(tasks[1]), 400)
+              } else if (i === 1) decideTask3()
+              else finish()
             }}
             disabled={!done || recState !== 'idle'}
-            className="btn-acc h-[54px] rounded-full text-[16px]"
+            className="btn-acc h-[54px] flex-none rounded-full text-[16px] disabled:opacity-45"
           >
-            {i < tasks.length - 1 ? 'Siguiente' : 'Ver mi nivel'}
+            {i < 2 ? 'Siguiente' : 'Ver mi nivel'}
           </button>
         </div>
       </div>
     )
   }
 
-  if (step.k === 'result') {
-    const { r } = step
-    const rows: [string, Level, Level | undefined][] = [
-      ['Gramática', r.levels.grammar, r.prev?.grammar],
-      ['Lectura', r.levels.reading, r.prev?.reading],
-      ['Audición', r.levels.listening, r.prev?.listening],
-      ['Habla', r.levels.speaking, r.prev?.speaking],
-    ]
-    const delta = (from: Level | undefined, to: Level) => (from ? levelIdx(to) - levelIdx(from) : 0)
-    return (
-      <div className={pad}>
-        <div className="anim-up no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto">
-          <div className="glass flex flex-col items-center gap-2 rounded-[28px] p-5 text-center">
-            <div className="txt-sub text-sm">{r.prev ? 'Tu nivel tras el re-test' : 'Tu nivel de inglés'}</div>
-            <div className="text-[56px] leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
-              {r.levels.overall}
+  if (step.k === 'result') return <Result r={step.r} mascot={mascot} mascotName={mascotName} teacherName={teacher.name} onDone={onDone} />
+
+  return null
+}
+
+/** Confianza en gramática: alta si el nivel final se aprobó con holgura (≥ 75 %); baja si no aprobó ni A1. */
+function grammarConfidence(answers: GrammarAnswer[], level: Level): Confidence {
+  const at = answers.filter((a) => a.item.level === level)
+  const ok = at.filter((a) => a.correct).length
+  if (!at.length || ok / at.length < 0.6) return 'low'
+  return ok / at.length >= 0.75 ? 'high' : 'medium'
+}
+
+// ---------------------------------------------------------------------------
+// Pantallas explicativas de la mascota.
+
+interface Page {
+  title: string
+  subtitle?: string
+  body: ReactNode
+}
+
+function Card({ children }: { children: ReactNode }) {
+  return <div className="glass rounded-[20px] px-4 py-3 text-[14.5px] leading-snug">{children}</div>
+}
+
+function firstPages(teacherName: string, mascotName: string): Page[] {
+  return [
+    {
+      title: 'Vamos a conocer tu inglés',
+      subtitle: `Soy ${mascotName}. Te acompaño en el test para que ${teacherName} sepa desde dónde empezar. Son unos 25–30 minutos.`,
+      body: (
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            ['Gramática', '20 preguntas, de A1 a C2'],
+            ['Lectura', '2 textos × 6 preguntas'],
+            ['Audición', '2 audios × 6 preguntas'],
+            ['Habla', '3 respuestas por voz'],
+          ].map(([a, b]) => (
+            <div key={a} className="glass rounded-[20px] px-3.5 py-3">
+              <div className="font-semibold">{a}</div>
+              <div className="txt-sub text-[12.5px]">{b}</div>
             </div>
-            {r.prev && (
-              <div className="text-sm font-semibold">
-                {delta(r.prev.overall, r.levels.overall) > 0
-                  ? `¡Has subido desde ${r.prev.overall}!`
-                  : delta(r.prev.overall, r.levels.overall) < 0
-                    ? `Antes: ${r.prev.overall}. Tu plan se adapta para recuperarlo.`
-                    : `Mantienes tu ${r.prev.overall}. Sigue así: el próximo salto está cerca.`}
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Así calculo tu nivel',
+      subtitle: 'Te lo cuento antes, para que no haya sorpresas.',
+      body: (
+        <div className="flex flex-col gap-2">
+          <Card>
+            <b>Gramática</b> marca el punto de partida: un nivel cuenta como aprobado con el 60 % de sus preguntas.
+          </Card>
+          <Card>
+            <b>Lectura y audición</b> se adaptan a ti: si aciertas 6 de 6, el segundo bloque sube dos niveles; con 4–5 sube uno; con 3 se queda; con menos, baja. Tu nivel es el más alto con al menos 4 de 6.
+          </Card>
+          <Card>
+            <b>Habla</b>: puntúo 4 criterios (fluidez, vocabulario, gramática y pronunciación) y me quedo con la mediana.
+          </Card>
+          <Card>
+            <b>Nivel general</b> = (Gramática + Lectura + Audición + Habla) ÷ 4, con A1 = 1 … C2 = 6. Las cuatro pesan lo mismo; un ,5 se redondea hacia abajo y nunca supera en más de 2 a tu destreza más baja.
+          </Card>
+        </div>
+      ),
+    },
+    {
+      title: 'Mejor sincero que perfecto',
+      subtitle: 'Este test es una colocación, no un examen oficial.',
+      body: (
+        <div className="flex flex-col gap-2">
+          <Card>
+            Si no sabes una respuesta, marca <b>«No lo sé»</b>. No resta, y así {teacherName} sabrá exactamente qué enseñarte.
+          </Card>
+          <Card>Junto a cada destreza verás la confianza del resultado (alta, media o baja), según cuánta evidencia hubo.</Card>
+          <Card>
+            Tu nivel no se cambia a mano. Las clases irán proponiendo tu progreso y, cada 4 semanas, un re-test lo ajusta: 70 % el test y 30 % lo que demostraste en clase.
+          </Card>
+        </div>
+      ),
+    },
+  ]
+}
+
+function retestPages(p: Profile, mascotName: string): Page[] {
+  const traj = trajectoryOf(p)
+  const last = p.calibratedAt ? new Date(p.calibratedAt).toLocaleDateString('es', { day: 'numeric', month: 'long' }) : ''
+  const sessions = p.trajectory?.sessions ?? 0
+  const ex = { test: levelAt(levelIdx(traj.speaking) + 1), traj: traj.speaking }
+  const exW = weightedLevel(ex.test, ex.traj)
+  return [
+    {
+      title: '¡Toca tu re-test!',
+      subtitle: `Han pasado 4 semanas desde tu último test (${last}). Soy ${mascotName} y vamos a ver cuánto has avanzado.`,
+      body: (
+        <div className="flex flex-col gap-2">
+          <Card>Las mismas 4 partes que la otra vez, con textos y audios nuevos: no repetirás ninguno que ya hayas visto.</Card>
+          <Card>
+            Tu nivel actual: <b>{p.levels.overall}</b> · Gram. {p.levels.grammar} · Lect. {p.levels.reading} · Aud. {p.levels.listening} · Habla {p.levels.speaking}
+          </Card>
+        </div>
+      ),
+    },
+    {
+      title: 'Lo que proponen tus clases',
+      subtitle: 'Las clases no cambian tu nivel: proponen una trayectoria.',
+      body: (
+        <div className="flex flex-col gap-2">
+          {(['grammar', 'reading', 'listening', 'speaking'] as const).map((k) => {
+            const now = levelAt(levelIdx(p.levels[k]))
+            const prop = traj[k]
+            return (
+              <div key={k} className="glass flex items-center gap-3 rounded-[18px] px-4 py-2.5">
+                <span className="w-[86px] text-[14.5px] font-medium">{SKILL_ES[k]}</span>
+                <span className="txt-sub flex-1 text-[12.5px] leading-snug">
+                  {k === 'speaking'
+                    ? sessions
+                      ? `según tus últimas ${sessions} clases habladas`
+                      : 'aún sin clases suficientes: se mantiene'
+                    : 'las clases no la miden por separado: se mantiene'}
+                </span>
+                <span className="txt-acc2 text-[15px] font-semibold whitespace-nowrap">{prop === now ? now : `${now} → ${prop}`}</span>
               </div>
-            )}
-            <p className="txt-sub text-sm leading-snug">
-              <b className="font-semibold" style={{ color: 'var(--tx)' }}>
-                Al hablar ({r.levels.speaking}):
-              </b>{' '}
-              {r.speaking.summaryEs}
-            </p>
+            )
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Cómo decido tu nuevo nivel',
+      subtitle: 'Solo el re-test ajusta tu nivel, y lo hace con esta fórmula:',
+      body: (
+        <div className="flex flex-col gap-2">
+          <Card>
+            <div className="text-center text-[16px] font-semibold">
+              nivel = {Math.round(TEST_WEIGHT * 100)} % test + {Math.round((1 - TEST_WEIGHT) * 100)} % clases
+            </div>
+            <div className="txt-sub mt-1 text-center text-[12.5px]">por cada destreza, con A1 = 1 … C2 = 6 · un ,5 se redondea hacia abajo</div>
+          </Card>
+          <Card>
+            Ejemplo: si en el test sacas <b>{ex.test}</b> en habla y tus clases proponen <b>{ex.traj}</b>: 0,7 × {levelIdx(ex.test) + 1} + 0,3 × {levelIdx(ex.traj) + 1} ={' '}
+            {exW.value.toFixed(1).replace('.', ',')} → <b>{exW.level}</b>.
+          </Card>
+          <Card>Así un mal día no te hunde, y un buen día tampoco te sube de golpe. Después, el nivel general se calcula como siempre.</Card>
+        </div>
+      ),
+    },
+  ]
+}
+
+// ---------------------------------------------------------------------------
+// Resultado: la mascota explica el nivel y la fórmula con tus números.
+
+function Result({ r, mascot, mascotName, teacherName, onDone }: { r: CalibrationResult; mascot: MascotElement; mascotName: string; teacherName: string; onDone: () => void }) {
+  const b = overallBreakdown(r.levels)
+  const skills = ['grammar', 'reading', 'listening', 'speaking'] as const
+  const fmt = (n: number) => n.toFixed(2).replace(/\.?0+$/, '').replace('.', ',')
+  const delta = r.prev ? levelIdx(r.levels.overall) - levelIdx(r.prev.overall) : 0
+  const lowConf = skills.filter((k) => r.confidence[k] === 'low')
+  return (
+    <div className="relative z-[2] flex h-full flex-col px-5 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+20px)]">
+      <div className="anim-up no-scrollbar flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+        <div className="glass flex flex-col items-center gap-1 rounded-[28px] p-5 text-center">
+          <Mascot element={mascot} size={96} mood="happy" />
+          <div className="txt-sub mt-1 text-sm">{r.prev ? `${mascotName}: tu nivel tras el re-test` : `${mascotName}: ¡ya te conozco! Tu nivel es`}</div>
+          <div className="text-[56px] leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
+            {r.levels.overall}
           </div>
-          <div className="glass rounded-[28px] p-4">
-            {rows.map(([n, l, before]) => (
-              <div key={n} className="flex items-center gap-3 py-1.5">
-                <span className="w-[84px] text-sm">{n}</span>
-                <div className="relative h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
-                  <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />
-                </div>
-                {before && before !== l && (
-                  <span className="txt-sub text-xs">
-                    {before} {delta(before, l) > 0 ? '↗' : '↘'}
-                  </span>
-                )}
-                <span className="txt-acc2 w-7 text-right font-semibold">{l}</span>
+          {r.prev && (
+            <div className="text-sm font-semibold">
+              {delta > 0 ? `¡Has subido desde ${r.prev.overall}!` : delta < 0 ? `Antes: ${r.prev.overall}. Tu plan se adapta para recuperarlo.` : `Mantienes tu ${r.prev.overall}. El próximo salto está cerca.`}
+            </div>
+          )}
+        </div>
+
+        <div className="glass rounded-[24px] p-4 text-[14px] leading-snug">
+          <div className="mb-1.5 font-semibold">Cómo lo calculé</div>
+          <div className="text-center text-[15px]">
+            ({skills.map((k) => b.values[k]).join(' + ')}) ÷ 4 = <b>{fmt(b.mean)}</b>
+          </div>
+          <div className="txt-sub mt-1.5">
+            Media de tus 4 destrezas (A1 = 1 … C2 = 6).{' '}
+            {b.mean % 1 === 0.5 ? `Un ,5 exacto se redondea hacia abajo → ${levelAt(b.rounded - 1)}.` : `Redondeado → ${levelAt(b.rounded - 1)}.`}{' '}
+            {b.capped
+              ? `Pero tu destreza más baja es ${levelAt(b.cap - 3)} y el nivel general no puede superarla en más de 2: se queda en ${b.final}.`
+              : `Tope por destreza débil: ${levelAt(b.cap - 1)} (tu más baja + 2), no se aplica.`}
+          </div>
+        </div>
+
+        {r.prev && r.trajectory && (
+          <div className="glass rounded-[24px] p-4 text-[14px]">
+            <div className="mb-1 font-semibold">Test 70 % + clases 30 %</div>
+            {skills.map((k) => (
+              <div key={k} className="flex items-center gap-2 py-1">
+                <span className="w-[78px]">{SKILL_ES[k]}</span>
+                <span className="txt-sub flex-1 text-[12.5px]">
+                  test {r.testLevels[k]} · clases {r.trajectory![k]}
+                </span>
+                <span className="txt-acc2 font-semibold">{r.levels[k]}</span>
               </div>
             ))}
           </div>
+        )}
+
+        <div className="glass rounded-[24px] p-4">
+          {skills.map((k) => {
+            const l = r.levels[k]
+            const before = r.prev?.[k]
+            return (
+              <div key={k} className="flex items-center gap-2.5 py-1.5">
+                <span className="w-[74px] text-sm">{SKILL_ES[k]}</span>
+                <div className="relative h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
+                  <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />
+                </div>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[11px]"
+                  style={{ border: '1px solid var(--gb)', color: r.confidence[k] === 'low' ? 'var(--acc2)' : 'var(--sub)' }}
+                  title="Confianza"
+                >
+                  {CONF_ES[r.confidence[k]]}
+                </span>
+                {before && before !== l && <span className="txt-sub text-xs">{before}{levelIdx(l) > levelIdx(before) ? '↗' : '↘'}</span>}
+                <span className="txt-acc2 w-7 text-right font-semibold">{l}</span>
+              </div>
+            )
+          })}
+          <div className="txt-sub mt-1.5 text-[12px] leading-snug">
+            Confianza: alta con dos bloques aprobados en niveles contiguos, media con uno, baja si hubo poca evidencia.
+            {lowConf.length > 0 && ` En ${lowConf.map((k) => SKILL_ES[k].toLowerCase()).join(' y ')} la evidencia fue poca: el próximo re-test lo confirmará.`}
+          </div>
+        </div>
+
+        {r.speaking.criteria && (
+          <div className="glass rounded-[24px] p-4 text-[14px]">
+            <div className="mb-1 font-semibold">Tu habla: mediana de 4 criterios</div>
+            {SPEAK_CRITERIA.map((c) => (
+              <div key={c} className="py-1">
+                <div className="flex items-center justify-between">
+                  <span>{CRITERION_ES[c]}</span>
+                  <span className="txt-acc2 font-semibold">{r.speaking.criteria[c]}</span>
+                </div>
+                {r.speaking.reasonsEs[c] && <div className="txt-sub text-[12.5px] leading-snug">{r.speaking.reasonsEs[c]}</div>}
+              </div>
+            ))}
+            <div className="txt-sub mt-1 text-[12.5px] leading-snug">{r.speaking.summaryEs}</div>
+          </div>
+        )}
+
+        {r.speaking.strengthsEs.length > 0 && (
           <div className="glass rounded-[24px] p-4 text-[15px]">
             <div className="mb-1.5 font-semibold">Lo que haces bien</div>
             <ul className="list-disc space-y-1 pl-5">
@@ -708,26 +1213,25 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
               ))}
             </ul>
           </div>
-          <div className="glass rounded-[24px] p-4 text-[15px]">
-            <div className="mb-1.5 font-semibold">En qué te ayudará {teacher.name}</div>
-            <ul className="list-disc space-y-1 pl-5">
-              {r.speaking.weaknessesEs.map((s, i) => (
-                <li key={i}>{s}</li>
-              ))}
-            </ul>
-          </div>
-          {r.prev && (
-            <div className="txt-sub px-2 text-center text-[13px] leading-snug">
-              Tu plan de 12 semanas se adapta ahora a este resultado: las semanas que faltan trabajarán tus nuevos puntos débiles.
-            </div>
-          )}
-          <button onClick={onDone} className="btn-acc mt-1 h-[58px] flex-none rounded-full text-[17px]">
-            Empezar a hablar
-          </button>
+        )}
+        <div className="glass rounded-[24px] p-4 text-[15px]">
+          <div className="mb-1.5 font-semibold">En qué te ayudará {teacherName}</div>
+          <ul className="list-disc space-y-1 pl-5">
+            {r.speaking.weaknessesEs.map((s, i) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ul>
         </div>
+        <div className="txt-sub px-2 text-center text-[12.5px] leading-snug">
+          {r.prev
+            ? 'Tu plan de 12 semanas se adapta ahora a este resultado.'
+            : 'A partir de ahora tus clases irán proponiendo tu progreso; el re-test de dentro de 4 semanas lo ajustará.'}{' '}
+          Banco del test v{BANK_VERSION}.
+        </div>
+        <button onClick={onDone} className="btn-acc mt-1 h-[58px] flex-none rounded-full text-[17px]">
+          Empezar a hablar
+        </button>
       </div>
-    )
-  }
-
-  return null
+    </div>
+  )
 }

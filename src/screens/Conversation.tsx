@@ -8,8 +8,8 @@ import { friendlyError } from '../lib/errors'
 import TalkButton, { type Phase } from '../components/TalkButton'
 import TappableText from '../components/TappableText'
 import { sentenceAround } from '../lib/lookup'
-import { db, type LevelEvent, type Session, type Topic, type Turn } from '../lib/db'
-import { levelIdx, updateLevelsFromPractice } from '../lib/levels'
+import { db, type Session, type Topic, type Turn } from '../lib/db'
+import { levelIdx, updateTrajectoryFromPractice, type TrajectoryChange } from '../lib/levels'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
 import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
@@ -84,7 +84,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   const [session, setSession] = useState<Session | null>(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState<string | null>(null)
-  const [levelChange, setLevelChange] = useState<LevelEvent | null>(null)
+  const [levelChange, setLevelChange] = useState<TrajectoryChange | null>(null)
   // Lección del plan de 12 semanas (si la clase es una de ellas) y si ya cuenta como hecha.
   const [planInfo, setPlanInfo] = useState<{ week: PlanWeek; lesson: PlanLesson } | null>(null)
   const [lessonDone, setLessonDone] = useState(false)
@@ -435,8 +435,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     setSession(s)
     setView('report')
     buildReport(s, allTurns)
-    // El nivel de habla evoluciona con la práctica (nunca a mano).
-    updateLevelsFromPractice()
+    // Las clases no cambian el nivel: proponen una trayectoria que pesa un 30 % en el próximo re-test.
+    updateTrajectoryFromPractice()
       .then(setLevelChange)
       .catch(() => {})
   }, [onExit, buildReport, planLesson])
@@ -539,11 +539,11 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
               className="anim-up mb-3 rounded-[24px] p-4 text-center"
               style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 10px 30px var(--glow)' }}
             >
-              <div className="text-sm">{levelIdx(levelChange.to) > levelIdx(levelChange.from) ? '¡Has subido de nivel al hablar!' : 'Ajuste de nivel al hablar'}</div>
+              <div className="text-sm">{levelIdx(levelChange.to) > levelIdx(levelChange.level) ? 'Tus clases proponen subir tu habla' : levelIdx(levelChange.to) < levelIdx(levelChange.level) ? 'Tus clases proponen repasar tu habla' : 'Tus clases confirman tu nivel de habla'}</div>
               <div className="text-3xl font-semibold tracking-[-1px]">
-                {levelChange.from} → {levelChange.to}
+                {levelChange.to === levelChange.level ? levelChange.level : `${levelChange.level} → ${levelChange.to}`}
               </div>
-              <div className="text-xs opacity-85">Según tus últimas 5 sesiones</div>
+              <div className="text-xs opacity-85">Según tus últimas {levelChange.sessions} clases · cuenta un 30 % en tu próximo re-test</div>
             </div>
           )}
           <ReportView

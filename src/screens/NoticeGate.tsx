@@ -98,7 +98,7 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
         mood="happy"
         step={step}
         title="¡Te toca el re-test!"
-        subtitle="Han pasado 4 semanas desde tu último test. En unos 12 minutos verás cuánto has avanzado, y tu plan se adaptará a tu nuevo nivel."
+        subtitle="Han pasado 4 semanas desde tu último test. En unos 25 minutos verás cuánto has avanzado; tu nuevo nivel será 70 % el test y 30 % lo que propusieron tus clases."
         primary={{ label: 'Hacer el re-test ahora', onClick: onRetest }}
         secondary={{
           label: 'Más tarde (te lo recuerdo mañana)',

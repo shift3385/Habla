@@ -187,7 +187,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
           )}
           <div className="flex-1" />
           <p className="txt-sub mb-3 text-center text-[13px] leading-snug">
-            A continuación harás un test de nivel (12–15 min) para que {teacher.name} adapte las clases a ti.
+            A continuación harás un test de nivel (25–30 min) para que {teacher.name} adapte las clases a ti.
           </p>
           <button onClick={finish} disabled={!keyOk} className="btn-acc h-[58px] rounded-full text-[17px]">
             Continuar al test de nivel

@@ -7,7 +7,7 @@ import { askNotificationPermission } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import { APP_VERSION } from '../lib/changelog'
-import { levelIdx, nextRetestAt } from '../lib/levels'
+import { levelAt, levelIdx, nextRetestAt, trajectoryOf } from '../lib/levels'
 import { getProfile } from '../lib/profile'
 import type { Settings } from '../lib/settings'
 import { englishVoices, speak, type VoiceOption } from '../lib/tts'
@@ -417,7 +417,14 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
   const retestAt = nextRetestAt(profile)
   const canRetest = !retestAt || now >= retestAt
   const fmt = (ts: number) => new Date(ts).toLocaleDateString('es', { day: 'numeric', month: 'long' })
-  const events = [...(profile.levelEvents ?? [])].reverse().slice(0, 6)
+  // El primer test no es un "cambio": el B1 previo era solo un marcador.
+  const firstTest = profile.tests?.[0]?.date
+  const events = [...(profile.levelEvents ?? [])]
+    .filter((e) => !(e.reason === 'test' && e.date === firstTest))
+    .reverse()
+    .slice(0, 6)
+  const traj = trajectoryOf(profile)
+  const speakingNow = levelAt(levelIdx(profile.levels.speaking))
   return (
     <>
       <Card className="text-center">
@@ -427,7 +434,7 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
         </div>
         <div className="txt-sub mt-2 text-[13px] leading-snug">
           {profile.calibratedAt ? `Medido en el test del ${fmt(profile.calibratedAt)}.` : 'Aún sin test.'} No se puede
-          cambiar a mano: sube con la práctica y con cada re-test.
+          cambiar a mano: tus clases proponen tu progreso y el re-test de cada 4 semanas lo ajusta (70 % test + 30 % clases).
         </div>
       </Card>
       <Card>
@@ -444,6 +451,21 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
           ))}
         </div>
       </Card>
+      {profile.calibratedAt && (
+        <Card>
+          <div className="txt-sub text-sm">Lo que proponen tus clases</div>
+          <div className="mt-1.5 flex items-center justify-between text-sm">
+            <span>Habla</span>
+            <b className="txt-acc2">{traj.speaking === speakingNow ? `se mantiene en ${speakingNow}` : `${speakingNow} → ${traj.speaking}`}</b>
+          </div>
+          <div className="txt-sub mt-1 text-[12.5px] leading-snug">
+            {profile.trajectory?.sessions
+              ? `Según tus últimas ${profile.trajectory.sessions} clases habladas. `
+              : 'Tras 5 clases habladas verás aquí lo que proponen. '}
+            No cambia tu nivel ahora: cuenta un 30 % en el próximo re-test.
+          </div>
+        </Card>
+      )}
       {events.length > 0 && (
         <Card>
           <div className="txt-sub mb-2 text-sm">Cambios de nivel</div>

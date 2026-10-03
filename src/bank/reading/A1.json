@@ -1,0 +1,101 @@
+[
+{"id":"read_a1_0001","skill":"reading","level":"A1","topic":"home","genre":"nota","title":"A note on the fridge","model":"Cambridge A1 Movers / A2 Key – Reading Part 1 (short messages)","tags":["food","shopping","family"],
+"text":"Hi Sam,\nI'm at work until seven o'clock today, so I can't cook lunch. There is some soup in the fridge. You can eat it with bread. Please don't eat the chocolate cake! It's for Maria's birthday party tomorrow.\nCan you go to the supermarket this afternoon? We need milk, eggs, tomatoes and some apples. The money is in the blue box on the kitchen table. The supermarket closes at eight, but it is very busy after six, so please go early.\nTonight I want to cook pasta for dinner. Your friend Tom can come too, if you want. Dinner is at half past eight.\nOh, and the cat is hungry all the time, but she only eats twice a day: in the morning and in the evening. Please don't give her more food!\nSee you later,\nAnna",
+"questions":[
+{"type":"gist","format":"mc","prompt":"Why did Anna write this note?","options":["To ask Sam to do some jobs at home","To invite Sam to a birthday party","To tell Sam about a new recipe","To say she is going on holiday"],"key":0},
+{"type":"detail","format":"short","prompt":"What must Sam not eat? (1–3 words)","accepted":["the chocolate cake","chocolate cake","the cake","cake"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"Where is the money for the shopping?","options":["In Anna's bag","In the fridge","In a box on the kitchen table","At the supermarket"],"key":2},
+{"type":"vocab","format":"mc","prompt":"In the note, the word 'busy' (paragraph 2) means:","options":["full of people","closed","expensive","far away"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: For dinner tonight, Anna wants to make ___.","accepted":["pasta"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"What do we learn about the cat?","options":["It is ill","It asks for more food than it should eat","It doesn't like Anna","It lives at Tom's house"],"key":1}]},
+
+{"id":"read_a1_0002","skill":"reading","level":"A1","topic":"sports","genre":"aviso","title":"Sunrise Gym – new opening hours","model":"Cambridge A2 Key – Reading Part 1 (notices)","tags":["gym","timetable","swimming"],
+"text":"SUNRISE GYM – NEW OPENING HOURS\nFrom Monday 3rd March, the gym has new opening hours.\nMonday to Friday: 6 am to 10 pm\nSaturday: 8 am to 8 pm\nSunday: 9 am to 2 pm\nThe swimming pool opens one hour later and closes one hour earlier every day.\nYoga classes are on Tuesday and Thursday evenings at 7 pm. They are free for members. Other people pay five pounds a class. Please bring your own mat.\nChildren under 14 can use the pool only with an adult. They cannot use the gym machines.\nThere are lockers in the changing rooms. They cost one pound, and you get your coin back at the end. Please do not leave bags on the floor.\nThe café on the first floor sells drinks, sandwiches and fresh fruit. It is open from 9 am to 6 pm, Monday to Saturday.\nQuestions? Ask at reception or call 0161 555 0198.",
+"questions":[
+{"type":"gist","format":"mc","prompt":"What is the main purpose of this notice?","options":["To advertise a new café","To tell people about the gym's new times","To sell yoga mats","To find people for a swimming team"],"key":1},
+{"type":"detail","format":"short","prompt":"On Sundays, what time does the gym close? (1–3 words)","accepted":["2 pm","2pm","two pm","2 o'clock","two o'clock","2","two","2 p.m."],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"How much do members pay for a yoga class?","options":["Five pounds","One pound","Nothing","Fourteen pounds"],"key":2},
+{"type":"vocab","format":"mc","prompt":"In the notice, 'lockers' are:","options":["teachers at the gym","tickets for the pool","seats in the café","small cupboards to keep your things"],"key":3},
+{"type":"summary","format":"short","prompt":"Complete: Children under 14 are not allowed to use the gym ___.","accepted":["machines","the machines"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"What time does the pool open on Saturdays?","options":["7 am","9 am","8 am","10 am"],"key":1}]},
+
+{"id":"read_a1_0003","skill":"reading","level":"A1","topic":"friendship","genre":"correo","title":"A new pen friend","model":"Cambridge A1 Movers – Reading (personal email)","tags":["introductions","family","hobbies"],
+"text":"Hello Lucas,\nMy name is Mei and I'm your new pen friend. I'm twenty-two years old and I live in Taipei, in Taiwan. I'm a student at the university here. I study music, and I play the piano and the guitar.\nI live in a small flat with my older sister. She is a nurse and she works at night, so I often eat dinner alone. My parents live in a village near the sea. I visit them every month.\nIn my free time I like cooking and taking photos of the city. On Sundays I go to the night market with my friends. The food there is cheap and very good!\nI want to learn English because I want to study in Canada next year. My English is not very good, but I practise every day.\nWhat about you? Do you have any brothers or sisters? What do you do at the weekend?\nWrite soon!\nMei",
+"questions":[
+{"type":"gist","format":"mc","prompt":"What is Mei's email mainly about?","options":["Her plans for a holiday","Herself and her life","Her sister's job","A problem at university"],"key":1},
+{"type":"detail","format":"short","prompt":"What does Mei study? (1–3 words)","accepted":["music"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"Why does Mei often eat dinner alone?","options":["Her sister works at night","She doesn't like her sister","Her parents are in Canada","She works in the evening"],"key":0},
+{"type":"vocab","format":"mc","prompt":"In the email, 'cheap' means:","options":["not tasty","very hot","not expensive","very new"],"key":2},
+{"type":"summary","format":"short","prompt":"Complete: Mei wants to study in ___ next year.","accepted":["Canada"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"What can we say about Mei?","options":["She doesn't like her family","She wants to stop studying","She never goes out","She works hard to improve her English"],"key":3}]},
+
+{"id":"read_a1_0004","skill":"reading","level":"A1","topic":"pets","genre":"anuncio","title":"Lost cat","model":"Cambridge A2 Key – Reading Part 1 (notices)","tags":["animals","neighbourhood"],
+"text":"LOST CAT – PLEASE HELP!\nOur cat, Biscuit, is lost. We last saw him on Tuesday evening in Park Street, near the post office.\nBiscuit is two years old. He is orange with a white face and white feet. He has a green collar with a small bell. He is very friendly, but he is afraid of dogs and loud noises, so he may hide in gardens or under cars.\nBiscuit is not well. He needs to take medicine every day, so we are very worried about him.\nIf you see him, please don't try to catch him. Call us and we can come quickly. Please also look in your garage or garden shed. Maybe he is inside!\nThere is a reward of fifty euros for anyone who finds him.\nPhone: Emma or Jack – 0612 334 908\nThank you very much!",
+"questions":[
+{"type":"gist","format":"mc","prompt":"Why did Emma and Jack write this notice?","options":["To sell a cat","To find their cat","To give away a collar","To ask for a new pet"],"key":1},
+{"type":"detail","format":"short","prompt":"What colour is Biscuit's collar? (1–3 words)","accepted":["green"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"Why are the owners very worried?","options":["Biscuit is very old","Biscuit is afraid of people","Biscuit needs medicine every day","Biscuit is very big"],"key":2},
+{"type":"vocab","format":"mc","prompt":"In the notice, 'reward' means:","options":["money for helping","a kind of medicine","a new collar","a phone number"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: If you see Biscuit, don't try to catch him; ___ the owners.","accepted":["call","phone","ring","call the","telephone"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"Where might Biscuit be hiding?","options":["In the post office","In a shop","At the vet","Under a car or in a garden"],"key":3}]},
+
+{"id":"read_a1_0005","skill":"reading","level":"A1","topic":"school","genre":"aviso","title":"School trip to the science museum","model":"Cambridge A2 Key – Reading Part 1 (notices)","tags":["trip","museum","children"],
+"text":"Dear parents,\nOn Friday 14th May, Class 4B is going on a trip to the Science Museum in the city centre.\nWe are leaving school by bus at 8:30 am, so children must arrive at school at 8:15. We are coming back at 3:30 pm.\nThe trip costs eight euros. This pays for the bus and the museum ticket. Please give the money to Mrs Clark before Wednesday.\nChildren need to bring a packed lunch and a bottle of water. Please don't send fizzy drinks or sweets. There is no shop in the museum.\nThe weather may be cold, so children should wear warm clothes and comfortable shoes. We are walking a lot!\nPlease sign the form below and return it with the money.\nThank you,\nMr Patel\nClass teacher, 4B",
+"questions":[
+{"type":"gist","format":"mc","prompt":"What is this letter about?","options":["A change in the school timetable","A class visit to a museum","A new teacher","A school party"],"key":1},
+{"type":"detail","format":"short","prompt":"How much does the trip cost? (1–3 words)","accepted":["eight euros","8 euros","€8","8","eight"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"What time must children arrive at school?","options":["8:30","3:30","8:15","8:00"],"key":2},
+{"type":"vocab","format":"mc","prompt":"A 'packed lunch' is:","options":["food you bring from home","lunch in a restaurant","a big breakfast","food from the museum shop"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: Parents must give the money to Mrs Clark before ___.","accepted":["Wednesday"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"Why should children wear comfortable shoes?","options":["The bus is very small","The museum has a dance class","It is going to rain","They are going to walk a lot"],"key":3}]},
+
+{"id":"read_a1_0006","skill":"reading","level":"A1","topic":"food","genre":"anuncio","title":"The Green Cup Café","model":"Cambridge A2 Key – Reading Part 1 (adverts)","tags":["café","offers","breakfast"],
+"text":"THE GREEN CUP CAFÉ – NOW OPEN!\nCome and try our new café on Lime Street, next to the bookshop.\nWe are open every day from 7 am to 7 pm.\nBREAKFAST (7 am – 11 am)\nToast with butter and jam – 2 euros\nEggs and bacon – 5 euros\nFruit salad – 4 euros\nLUNCH (12 pm – 3 pm)\nSoup of the day with bread – 6 euros\nChicken sandwich – 5 euros\nVegetable pizza – 8 euros\nDRINKS\nCoffee or tea – 2 euros\nFresh orange juice – 3 euros\nSPECIAL OFFER this week: buy any breakfast and get a free coffee!\nStudents get ten per cent off all food from Monday to Thursday. Please show your student card.\nWe have free wifi and a quiet room upstairs for working or studying.\nSorry, no dogs inside. You can sit with your dog in our garden.",
+"questions":[
+{"type":"gist","format":"mc","prompt":"What is this advert for?","options":["A bookshop","A new café","A cooking class","A student restaurant at a university"],"key":1},
+{"type":"detail","format":"short","prompt":"How much is the vegetable pizza? (1–3 words)","accepted":["8 euros","eight euros","€8","8","eight"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"What do you get free this week?","options":["Toast","Wifi only on Mondays","A coffee with breakfast","Orange juice with lunch"],"key":2},
+{"type":"vocab","format":"mc","prompt":"In the advert, 'ten per cent off' means:","options":["the food is cheaper","the food is hotter","the café is closed","the food is bigger"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: People with dogs can sit in the café's ___.","accepted":["garden"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"Who might like the room upstairs?","options":["People with dogs","Children who want to play","People who want to dance","People who want to work quietly"],"key":3}]},
+
+{"id":"read_a1_0007","skill":"reading","level":"A1","topic":"family","genre":"mensaje","title":"A message from Mum","model":"Cambridge A1 Movers – Reading (text message)","tags":["family","visit","weekend"],
+"text":"Hi darling,\nGood news! Dad and I can visit you this weekend. We are taking the train on Saturday morning and we arrive at your station at 11:20. Can you meet us there?\nWe want to see your new flat and meet your flatmates. Don't worry, we don't need to sleep at your place. We have a room in a small hotel near the river for two nights.\nOn Saturday afternoon, Dad wants to go to the football stadium. You know he loves football! I want to go shopping in the old town. Maybe you can come with me?\nOn Sunday, let's have lunch together. You choose the restaurant, but please not a very expensive one!\nWe go back home on Monday morning, so we have lots of time.\nI'm so happy to see you soon.\nLove,\nMum",
+"questions":[
+{"type":"gist","format":"mc","prompt":"Why does Mum write this message?","options":["To tell her child about a visit","To invite her child to their home","To ask for money","To say that Dad is ill"],"key":0},
+{"type":"detail","format":"short","prompt":"Where are the parents sleeping? (1–3 words)","accepted":["in a hotel","a hotel","hotel","a small hotel"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"What does Dad want to do on Saturday afternoon?","options":["Go shopping","See a football stadium","Sleep at the hotel","Walk by the river"],"key":1},
+{"type":"vocab","format":"mc","prompt":"In the message, 'flatmates' are:","options":["the people who live with you","your neighbours' children","furniture in a flat","people who work in a hotel"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: The parents are going home on ___ morning.","accepted":["Monday"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"What can we understand about Mum?","options":["She doesn't like the new flat","She is excited about the visit","She wants a very expensive lunch","She doesn't like trains"],"key":1}]},
+
+{"id":"read_a1_0008","skill":"reading","level":"A1","topic":"libraries","genre":"aviso","title":"City Library rules","model":"Cambridge A2 Key – Reading Part 1 (notices)","tags":["library","books","rules"],
+"text":"WELCOME TO THE CITY LIBRARY\nPlease read our rules.\nYou can take out up to six books at a time. You can keep them for three weeks. If you want more time, you can renew them online or at the front desk.\nIf you bring a book back late, you pay twenty cents for every day.\nPlease speak quietly. Phone calls are not allowed in the reading rooms. You can use your phone in the entrance hall.\nYou can drink water in the library, but please do not eat. There is a small café on the ground floor.\nThe computers are free for members. You can use them for one hour a day. Please book a computer at the front desk.\nChildren under ten must be with an adult.\nOPENING TIMES: Monday to Saturday, 9 am to 8 pm. Closed on Sundays.",
+"questions":[
+{"type":"gist","format":"mc","prompt":"What is this notice about?","options":["How to become a librarian","The rules of a library","A new café","Prices of books"],"key":1},
+{"type":"detail","format":"short","prompt":"How many books can you take at one time? (1–3 words)","accepted":["six","6","six books","6 books"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"Where can you make a phone call?","options":["In the reading rooms","At the computers","In the entrance hall","In the children's area"],"key":2},
+{"type":"vocab","format":"mc","prompt":"In the notice, to 'renew' a book means:","options":["to keep it for more time","to buy it","to read it again","to clean it"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: Members can use the computers for one ___ every day.","accepted":["hour"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"A member brings a book back five days late. How much does she pay?","options":["Twenty cents","Fifty cents","Five euros","One euro"],"key":3}]},
+
+{"id":"read_a1_0009","skill":"reading","level":"A1","topic":"hotels","genre":"tarjeta","title":"Welcome to Hotel Marina","model":"Cambridge A2 Key – Reading Part 1 (information)","tags":["hotel","travel","services"],
+"text":"WELCOME TO HOTEL MARINA\nWe hope you enjoy your stay with us!\nBreakfast is in the restaurant on the ground floor, from 7 to 10 am. On Saturdays and Sundays, breakfast finishes at 11.\nThe swimming pool is on the roof. It is open from 9 am to 8 pm. Towels are next to the pool, so you don't need to take the towels from your room.\nThe wifi password is MARINA2024. It is free in all rooms.\nYou must leave your room by 12 o'clock on your last day. If you want to stay longer, please ask at reception. It costs fifteen euros for every extra hour.\nWe can call a taxi for you at any time. The airport is forty minutes away by car.\nIf you need anything, call reception: press 9 on your room phone.\nHave a nice day!",
+"questions":[
+{"type":"gist","format":"mc","prompt":"Who is this card for?","options":["People who work at the hotel","Guests staying at the hotel","Taxi drivers","People who want to swim in the sea"],"key":1},
+{"type":"detail","format":"short","prompt":"Where is the swimming pool? (1–3 words)","accepted":["on the roof","the roof","roof"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"When does breakfast finish on Sundays?","options":["At 10 am","At 9 am","At 12 pm","At 11 am"],"key":3},
+{"type":"vocab","format":"mc","prompt":"In the card, 'extra' means:","options":["more","free","last","early"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: To call reception, you press ___ on the room phone.","accepted":["9","nine"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"A guest leaves the room at 2 pm on the last day. How much extra does she pay?","options":["Fifteen euros","Thirty euros","Nothing","Forty euros"],"key":1}]},
+
+{"id":"read_a1_0010","skill":"reading","level":"A1","topic":"travel","genre":"postal","title":"A postcard from the mountains","model":"Cambridge A1 Movers – Reading (postcard)","tags":["holiday","weather","mountains"],
+"text":"Dear Grandma,\nHello from the mountains! We are staying in a small wooden house near a lake. It's very quiet here and the air is clean.\nThe weather is cold in the morning, but in the afternoon it's sunny and warm. Yesterday we walked to the top of a hill. It took three hours! My legs hurt now, but the view was beautiful. We saw some goats and a big bird.\nIn the evenings we play cards and Dad cooks dinner. His food is not very good, but don't tell him!\nThere is no internet here, so I can't send you photos. I'm writing this postcard in the kitchen next to the fire.\nWe are going home on Friday. I want to visit you on Sunday and tell you everything.\nLots of love,\nNoah",
+"questions":[
+{"type":"gist","format":"mc","prompt":"What is the postcard mainly about?","options":["Noah's holiday","Noah's new school","Grandma's house","A cooking competition"],"key":0},
+{"type":"detail","format":"short","prompt":"What animals did they see? Write one. (1–3 words)","accepted":["goats","some goats","a big bird","a bird","bird","birds"],"maxWords":3},
+{"type":"detail","format":"mc","prompt":"Why can't Noah send photos?","options":["He doesn't have a camera","His phone is broken","There is no internet","Grandma doesn't want photos"],"key":2},
+{"type":"vocab","format":"mc","prompt":"In the postcard, 'view' means:","options":["what you can see from a place","a kind of food","a long walk","the weather"],"key":0},
+{"type":"summary","format":"short","prompt":"Complete: The family is going home on ___.","accepted":["Friday"],"maxWords":3},
+{"type":"inference","format":"mc","prompt":"What does Noah think about Dad's cooking?","options":["It is wonderful","It is very healthy","He doesn't know","It isn't very good"],"key":3}]}
+]

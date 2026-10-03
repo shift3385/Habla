@@ -114,6 +114,10 @@ export interface Profile {
   levelEvents?: LevelEvent[]
   /** Plan de 12 semanas (fase 4). */
   plan?: StudyPlan
+  /** Lo que proponen las clases desde el último test (no cambia el nivel; pesa un 30 % en el re-test). */
+  trajectory?: { speaking?: string; date: number; sessions: number }
+  /** Ítems del banco del test ya vistos y veces que se ha servido cada uno (rotación). */
+  bankUsage?: { seen: string[]; uses: Record<string, number> }
 }
 
 export type Skill = 'grammar' | 'reading' | 'listening' | 'speaking'
@@ -126,6 +130,15 @@ export interface CalibrationRecord {
   weaknessesEs: string[]
   summaryEs: string
   grammarAnswers: { level: string; correct: boolean; unknown?: boolean; point?: string }[]
+  /** Nivel que dio el test por sí solo (en el re-test, antes de ponderar con la trayectoria). */
+  testLevels?: Record<Skill | 'overall', string>
+  /** Trayectoria usada en el re-test (30 %). */
+  trajectory?: Record<Skill, string>
+  confidence?: Partial<Record<Skill, 'high' | 'medium' | 'low'>>
+  /** Ítems del banco usados y versión del banco/modelo (para auditar cambios de nivel). */
+  bankIds?: string[]
+  bankVersion?: number
+  model?: string
 }
 
 export interface LevelEvent {

@@ -17,6 +17,23 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.6',
+    date: '2026-10-03',
+    title: 'Un test de nivel nuevo, con banco de preguntas',
+    added: [
+      'Banco de 450 preguntas, textos y audios originales (estilo IELTS y Cambridge), de A1 a C2: el test ya no gasta tokens salvo para corregir tu habla',
+      'Gramática con 20 preguntas (5 de escribir), lectura y audición adaptativas por bloques y 3 tareas de habla',
+      'Audición con vista previa de las preguntas, 3 escuchas con nota, varias voces y la revisión de respuestas',
+      'Tu mascota te explica antes cómo se calcula tu nivel, y en el resultado te enseña la fórmula con tus números y la confianza de cada destreza',
+      'Nunca repetirás un texto o audio que ya viste en un test anterior',
+    ],
+    improved: [
+      'Las clases ya no cambian tu nivel: proponen tu progreso, y solo el re-test lo ajusta (70 % test + 30 % clases)',
+      'Nivel general: las cuatro destrezas pesan igual, con tope por la destreza más débil',
+      'El primer test ya no aparece como un cambio desde B1',
+    ],
+  },
+  {
     v: '5.5',
     date: '2026-10-03',
     title: 'Tu mascota te cuenta las novedades',
