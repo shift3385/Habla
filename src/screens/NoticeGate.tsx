@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import MascotPage from '../components/MascotPage'
 import { APP_VERSION, RELEASES } from '../lib/changelog'
-import { todayKey, type Notice } from '../lib/notices'
+import type { Notice } from '../lib/notices'
 import type { Settings } from '../lib/settings'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot from '../ui/Mascot'
@@ -91,21 +91,24 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
     )
   }
 
-  if (notice === 'retest') {
+  if (notice === 'retest' || notice === 'recalibrate') {
+    const recal = notice === 'recalibrate'
     return (
       <MascotPage
         element={element}
         mood="happy"
         step={step}
-        title="¡Te toca el re-test!"
-        subtitle="Han pasado 4 semanas desde tu último test. En unos 25 minutos verás cuánto has avanzado; tu nuevo nivel será 70 % el test y 30 % lo que propusieron tus clases."
-        primary={{ label: 'Hacer el re-test ahora', onClick: onRetest }}
+        title={recal ? 'Ya puedes repetir tu test' : '¡Te toca el re-test!'}
+        subtitle={
+          recal
+            ? 'Tu primer test se hizo antes de calibrar las preguntas y no era justo. El nuevo test (unos 25 minutos) lo sustituye por completo: tu nivel será lo que saques en él.'
+            : 'Han pasado 4 semanas desde tu último test. En unos 25 minutos verás cuánto has avanzado; tu nuevo nivel será 70 % el test y 30 % lo que propusieron tus clases.'
+        }
+        primary={{ label: recal ? 'Hacer el test ahora' : 'Hacer el re-test ahora', onClick: onRetest }}
         secondary={{
-          label: 'Más tarde (te lo recuerdo mañana)',
-          onClick: () => {
-            update({ retestSnoozed: todayKey() })
-            next()
-          },
+          // Sin aplazar días: mientras esté disponible, te lo recuerdo cada vez que entres.
+          label: 'Más tarde (te lo recuerdo la próxima vez que entres)',
+          onClick: next,
         }}
       >
         <div className="flex justify-center gap-2.5">

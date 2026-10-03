@@ -81,8 +81,18 @@ export function rateForLevel(l: string): number {
   return [0.8, 0.85, 0.95, 1, 1.05, 1.1][levelIdx(l)]
 }
 
+/**
+ * ¿El último test es de antes del banco calibrado (v5.6)? Aquel test no era fiable: se puede repetir ya,
+ * y el nuevo lo sustituye por completo (sin la ponderación 70/30, como un primer test).
+ */
+export function needsRecalibration(p: Profile): boolean {
+  return !!p.calibratedAt && !!p.tests?.length && !p.tests.at(-1)!.bankVersion
+}
+
 export function nextRetestAt(p: Profile): number | null {
-  return p.calibratedAt ? p.calibratedAt + RETEST_DAYS * 86400000 : null
+  if (!p.calibratedAt) return null
+  if (needsRecalibration(p)) return p.calibratedAt
+  return p.calibratedAt + RETEST_DAYS * 86400000
 }
 
 export interface TrajectoryChange {

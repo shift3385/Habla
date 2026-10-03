@@ -1,7 +1,7 @@
 import { BANK_VERSION, recordUse, type BankItem, type SpeakingItem } from './bank'
 import { db, type CalibrationRecord, type Profile, type Skill } from './db'
 import { askGemini, withRetry, type GeminiPart, type JsonSchema, type Models, type RetryInfo } from './gemini'
-import { LEVELS, levelAt, levelIdx, overallFrom, trajectoryOf, weightedLevel, type Level } from './levels'
+import { LEVELS, levelAt, levelIdx, needsRecalibration, overallFrom, trajectoryOf, weightedLevel, type Level } from './levels'
 import { medianLevel, SPEAK_CRITERIA, type BlockResult, type Confidence, type GrammarAnswer, type SpeakCriterion } from './placement'
 import { getProfile } from './profile'
 
@@ -226,15 +226,16 @@ export function buildLevels(grammar: Level, reading: Level, listening: Level, sp
  */
 export function finalLevels(test: Record<Skill | 'overall', Level>, p: Profile): Pick<CalibrationResult, 'levels' | 'trajectory' | 'prev'> {
   if (!p.calibratedAt) return { levels: test }
+  // Test anterior sin calibrar: el nuevo lo sustituye entero (se enseña el antes, pero sin ponderar).
+  if (needsRecalibration(p)) return { levels: test, prev: prevLevels(p) }
   const trajectory = trajectoryOf(p)
   const w = (k: Skill) => weightedLevel(test[k], trajectory[k]).level
   const levels = buildLevels(w('grammar'), w('reading'), w('listening'), w('speaking'))
-  const prev = Object.fromEntries((['grammar', 'reading', 'listening', 'speaking', 'overall'] as const).map((k) => [k, levelAt(levelIdx(p.levels[k]))])) as Record<
-    Skill | 'overall',
-    Level
-  >
-  return { levels, trajectory, prev }
+  return { levels, trajectory, prev: prevLevels(p) }
 }
+
+const prevLevels = (p: Profile) =>
+  Object.fromEntries((['grammar', 'reading', 'listening', 'speaking', 'overall'] as const).map((k) => [k, levelAt(levelIdx(p.levels[k]))])) as Record<Skill | 'overall', Level>
 
 /** Guarda el resultado: niveles, debilidades (para el profe), registro del test y uso del banco. */
 export async function saveCalibration(r: CalibrationResult, used: BankItem[], model: string): Promise<Profile> {

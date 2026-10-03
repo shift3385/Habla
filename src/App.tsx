@@ -18,7 +18,7 @@ import ReviewScreen from './screens/ReviewScreen'
 import SettingsScreen, { type SettingsPage } from './screens/SettingsScreen'
 import WordsScreen from './screens/WordsScreen'
 import { getProfile, isPersonalized } from './lib/profile'
-import { nextRetestAt } from './lib/levels'
+import { needsRecalibration, nextRetestAt } from './lib/levels'
 import { adaptPlanAfterTest, doneToday, findLesson, todayLesson, type StudyPlan } from './lib/plan'
 import { syncReminders } from './lib/reminders'
 import PlanScreen from './screens/PlanScreen'
@@ -126,7 +126,7 @@ export default function App() {
       const s = settingsRef.current
       // Solo para quien ya usaba la app: a un usuario nuevo no se le enseñan novedades ni avisos.
       if (s?.onboarded && isPersonalized(p) && p.calibratedAt) {
-        setGate(pendingNotices(s, { retestReady: retestReadyRef.current, streak, homeworkDate: homework?.date }))
+        setGate(pendingNotices(s, { retestReady: retestReadyRef.current, recalibrate: needsRecalibration(p), streak, homeworkDate: homework?.date }))
       }
       setSplash(false)
     })

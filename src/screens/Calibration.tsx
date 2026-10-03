@@ -18,7 +18,7 @@ import PrepareScreen, { type PrepareKind, type PrepareState } from '../component
 import type { Profile, Skill } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
-import { levelAt, levelIdx, overallBreakdown, rateForLevel, TEST_WEIGHT, trajectoryOf, weightedLevel, type Level } from '../lib/levels'
+import { levelAt, levelIdx, needsRecalibration, overallBreakdown, rateForLevel, TEST_WEIGHT, trajectoryOf, weightedLevel, type Level } from '../lib/levels'
 import {
   blockScore,
   blocksLevel,
@@ -597,7 +597,11 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
 
   // Explicaciones de la mascota antes de empezar (primer test: cómo se evalúa; re-test: la ponderación).
   if (step.k === 'explain') {
-    const pages = retest ? retestPages(profile, mascotName) : firstPages(teacher.name, mascotName)
+    const pages = needsRecalibration(profile)
+      ? [recalPage(profile, mascotName), ...firstPages(teacher.name, mascotName).slice(1)]
+      : retest
+        ? retestPages(profile, mascotName)
+        : firstPages(teacher.name, mascotName)
     const page = pages[step.i]
     const last = step.i === pages.length - 1
     return (
@@ -981,6 +985,28 @@ function Card({ children }: { children: ReactNode }) {
   return <div className="glass rounded-[20px] px-4 py-3 text-[14.5px] leading-snug">{children}</div>
 }
 
+/** Primer test hecho antes del banco calibrado: se repite y sustituye por completo (sin 70/30). */
+function recalPage(p: Profile, mascotName: string): Page {
+  const last = p.calibratedAt ? new Date(p.calibratedAt).toLocaleDateString('es', { day: 'numeric', month: 'long' }) : ''
+  return {
+    title: 'Repitamos tu test',
+    subtitle: `Soy ${mascotName}. Tu test del ${last} se hizo antes de calibrar las preguntas, y no era justo contigo.`,
+    body: (
+      <div className="flex flex-col gap-2">
+        <Card>
+          Este test nuevo usa un banco de preguntas revisado, de A1 a C2. <b>Lo sustituye por completo</b>: tu nivel será lo que saques hoy, sin
+          mezclarlo con el anterior.
+        </Card>
+        <Card>
+          Tu nivel actual (del test anterior): <b>{p.levels.overall}</b> · Gram. {p.levels.grammar} · Lect. {p.levels.reading} · Aud. {p.levels.listening} · Habla{' '}
+          {p.levels.speaking}
+        </Card>
+        <Card>Son 4 partes y unos 25–30 minutos. A partir de este test, el re-test será cada 4 semanas.</Card>
+      </div>
+    ),
+  }
+}
+
 function firstPages(teacherName: string, mascotName: string): Page[] {
   return [
     {
@@ -1120,7 +1146,7 @@ function Result({ r, mascot, mascotName, teacherName, onDone }: { r: Calibration
       <div className="anim-up no-scrollbar flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
         <div className="glass flex flex-col items-center gap-1 rounded-[28px] p-5 text-center">
           <Mascot element={mascot} size={96} mood="happy" />
-          <div className="txt-sub mt-1 text-sm">{r.prev ? `${mascotName}: tu nivel tras el re-test` : `${mascotName}: ¡ya te conozco! Tu nivel es`}</div>
+          <div className="txt-sub mt-1 text-sm">{r.prev && !r.trajectory ? `${mascotName}: tu nivel recalibrado` : r.prev ? `${mascotName}: tu nivel tras el re-test` : `${mascotName}: ¡ya te conozco! Tu nivel es`}</div>
           <div className="text-[56px] leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
             {r.levels.overall}
           </div>
