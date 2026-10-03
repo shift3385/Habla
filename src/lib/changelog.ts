@@ -17,6 +17,12 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.3',
+    date: '2026-10-02',
+    title: 'Micrófono con auriculares Bluetooth',
+    fixed: ['Con auriculares Bluetooth la app grababa silencio y no te entendía: ahora detecta el micrófono mudo y usa el del teléfono, también si conectas o desconectas los auriculares con la app abierta'],
+  },
+  {
     v: '5.2',
     date: '2026-10-02',
     title: 'Tu compañero te da la bienvenida',
