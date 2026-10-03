@@ -24,6 +24,7 @@ export interface Settings {
   modelList: string[] // última lista de modelos que devolvió Google (por si luego no responde)
   reminderOn: boolean // aviso diario de la lección
   reminderTime: string // HH:MM
+  audioPrefs: Record<string, 'headset' | 'split' | 'phone'> // por auriculares: por dónde escuchar y hablar
 }
 
 const DEFAULTS: Settings = {
@@ -45,6 +46,7 @@ const DEFAULTS: Settings = {
   modelList: [],
   reminderOn: false,
   reminderTime: '19:00',
+  audioPrefs: {},
 }
 
 const KEY = 'habla.settings'

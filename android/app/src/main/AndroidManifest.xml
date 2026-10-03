@@ -41,6 +41,10 @@
     <!-- Micrófono: Capacitor lo pide en tiempo de ejecución cuando el WebView llama a getUserMedia -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- Android 12+: usar el micrófono de unos auriculares Bluetooth (se pide al elegirlos) -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Android 11 o anterior -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
 
     <!-- Android 11+: necesario para encontrar el motor de texto a voz -->
     <queries>

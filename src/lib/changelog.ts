@@ -19,8 +19,14 @@ export const RELEASES: Release[] = [
   {
     v: '5.3',
     date: '2026-10-02',
-    title: 'Micrófono con auriculares Bluetooth',
-    fixed: ['Con auriculares Bluetooth la app grababa silencio y no te entendía: ahora detecta el micrófono mudo y usa el del teléfono, también si conectas o desconectas los auriculares con la app abierta'],
+    title: 'Auriculares: elige por dónde escuchar y hablar',
+    added: [
+      'Al conectar auriculares, Habla te pregunta por dónde escuchar al profe y por dónde hablar (todo por los auriculares, escuchar por los auriculares y hablar al teléfono, o todo por el teléfono) y lo recuerda para esos auriculares',
+      'Ajustes → Profe y voz → Audio con auriculares',
+    ],
+    fixed: [
+      'Con auriculares Bluetooth la app grababa silencio y no te entendía: ahora usa de verdad el micrófono de los auriculares (con el permiso de Dispositivos cercanos), también si los conectas o desconectas con la app abierta',
+    ],
   },
   {
     v: '5.2',

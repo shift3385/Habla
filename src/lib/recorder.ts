@@ -13,6 +13,13 @@
 // muestras); si solo llega silencio digital se prueban: 1) los micrófonos del teléfono (abren en <1 s) y 2) el
 // micro por defecto sin procesado (Android tarda 3–7 s en salir del "modo llamada"). La elección se recuerda
 // para toda la sesión y se olvida al conectar o desconectar auriculares.
+//
+// Con auriculares, el usuario elige el modo (selector de audio, ver audioRoute.ts):
+//   headset → el plugin nativo pone los auriculares como dispositivo de comunicación; micro por defecto con
+//             procesado de voz (Android lo toma de los auriculares).
+//   split   → micro por defecto SIN procesado: Android no entra en "modo llamada", usa el micro del teléfono y
+//             la voz del profe sigue saliendo por los auriculares con calidad normal.
+//   phone   → todo por el teléfono (detección automática de arriba).
 
 const MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4']
 
@@ -22,6 +29,26 @@ export class MicError extends Error {}
 const AUDIO_BPS = 24_000
 
 const PROCESSING = { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+const RAW = { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+
+export type MicMode = 'auto' | 'headset' | 'split' | 'phone'
+let micMode: MicMode = 'auto'
+
+// Se llama justo después de abrir el micrófono. En modo auriculares vuelve a fijar los auriculares como
+// dispositivo de comunicación: el WebView elige el suyo al abrir el micro y pisaría la elección.
+let afterOpen: (() => Promise<void>) | null = null
+export function onMicOpened(fn: (() => Promise<void>) | null) {
+  afterOpen = fn
+}
+
+/** Cambia cómo se abre el micrófono (lo llama el selector de audio). Se aplica en la próxima grabación. */
+export function setMicMode(mode: MicMode) {
+  if (mode === micMode) return
+  micMode = mode
+  chosen = null
+  defaultOk = false
+  recorders.forEach((r) => r.releaseIfIdle())
+}
 
 // Micrófono elegido tras detectar silencio (p. ej. con auriculares Bluetooth). Es compartido por todas las
 // grabadoras (clase, test, repaso) y se olvida al conectar o desconectar un dispositivo de audio.
@@ -87,11 +114,21 @@ export class Recorder {
     }
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
-        audio: chosen ?? PROCESSING,
+        audio: micMode === 'split' ? RAW : (chosen ?? PROCESSING),
       })
       this.label = this.stream.getAudioTracks()[0]?.label || 'default'
       recorders.add(this)
-      if (!chosen && !defaultOk) {
+      await afterOpen?.().catch(() => {})
+      if (micMode === 'headset') {
+        // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
+        if (!defaultOk) {
+          if (await hasSignal(this.stream, 5000)) defaultOk = true
+          else {
+            console.warn('[HABLA-MIC] el micrófono de los auriculares no da señal en 5 s; uso el del teléfono')
+            await this.fallback()
+          }
+        }
+      } else if (micMode !== 'split' && !chosen && !defaultOk) {
         if (await hasSignal(this.stream)) defaultOk = true
         else await this.fallback()
       }
@@ -119,7 +156,7 @@ export class Recorder {
       if (await hasSignal(this.stream)) {
         chosen = o.c
         this.label = o.label
-        console.info(`[HABLA-MIC] micrófono por defecto mudo; usando "${o.label}"`)
+        console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); usando "${o.label}"`)
         return
       }
     }

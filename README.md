@@ -114,6 +114,14 @@ Otros controles:
 - **🔊 Repetir**: vuelve a escuchar una frase del profe.
 - **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta. Al salir se cancela lo que el profe estuviera preparando: no hay más reintentos ni respuesta ni voz (una petición que ya salió hacia Google puede contarse igualmente, pero no se reintenta).
 
+### Con auriculares
+Al conectar unos auriculares (o al abrir Habla con ellos puestos) aparece un selector: **¿por dónde quieres escuchar al profe y hablar?**
+- **Todo por los auriculares**: escuchas y hablas por los auriculares. Con auriculares Bluetooth, Android pide el permiso de **Dispositivos cercanos** (es lo que permite usar su micrófono).
+- **Escucho por los auriculares, hablo al teléfono**: la voz del profe suena con mejor calidad; habla cerca del teléfono.
+- **Todo por el teléfono**: altavoz y micrófono del teléfono.
+
+Se recuerda para cada par de auriculares y se cambia en *Ajustes → Profe y voz → Audio con auriculares*. Al salir de la app, el audio del teléfono vuelve a la normalidad.
+
 ### Palabras (consultas en contexto)
 - En la pestaña **Palabras**, escribe una palabra o expresión y, si puedes, **la frase donde la viste**. No es un traductor literal: te explica qué significa **en esa frase** y por qué.
 - La respuesta incluye además la pronunciación (con audio), otros significados con ejemplos, el registro, las combinaciones típicas y un aviso si es un falso amigo.

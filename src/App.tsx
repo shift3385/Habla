@@ -25,6 +25,7 @@ import PlanScreen from './screens/PlanScreen'
 import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
 import Background from './ui/Background'
+import AudioPicker from './components/AudioPicker'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, themeVars } from './ui/theme'
 
@@ -167,9 +168,12 @@ export default function App() {
 
   if (!settings || !t || calibrated === null) return null
 
+  // Selector de audio con auriculares: puede aparecer en cualquier pantalla.
+  const picker = <AudioPicker settings={settings} update={update} />
+
   if (splash) {
     return (
-      <Shell t={t}>
+      <Shell t={t} overlay={picker}>
         <WelcomeScreen
           returning={returning}
           onImport={importFromWelcome}
@@ -184,7 +188,7 @@ export default function App() {
 
   if (!settings.onboarded) {
     return (
-      <Shell t={t}>
+      <Shell t={t} overlay={picker}>
         <Onboarding settings={settings} t={t} update={update} onDone={() => setTab('home')} />
       </Shell>
     )
@@ -193,7 +197,7 @@ export default function App() {
   // Orden obligatorio para cada perfil: bienvenida → tu perfil → test de nivel.
   if (!personalized) {
     return (
-      <Shell t={t}>
+      <Shell t={t} overlay={picker}>
         <ProfileSetup onDone={() => setPersonalized(true)} />
       </Shell>
     )
@@ -201,7 +205,7 @@ export default function App() {
 
   if (!calibrated || retest) {
     return (
-      <Shell t={t}>
+      <Shell t={t} overlay={picker}>
         <Calibration
           settings={settings}
           t={t}
@@ -229,7 +233,7 @@ export default function App() {
 
   if (review) {
     return (
-      <Shell t={t}>
+      <Shell t={t} overlay={picker}>
         <ReviewScreen
           settings={settings}
           t={t}
@@ -245,7 +249,7 @@ export default function App() {
 
   if (lesson) {
     return (
-      <Shell t={t}>
+      <Shell t={t} overlay={picker}>
         <Conversation
           key={lesson.key}
           scenarioId={lesson.scenarioId}
@@ -293,7 +297,7 @@ export default function App() {
   }
 
   return (
-    <Shell t={t}>
+    <Shell t={t} overlay={picker}>
       <div className="no-scrollbar relative z-[2] h-full overflow-y-auto px-5 pt-[calc(env(safe-area-inset-top)+10px)] pb-[calc(env(safe-area-inset-bottom)+112px)]">
         {about ? (
           <AboutScreen settings={settings} t={t} initialPage={about} onBack={closeAbout} />
@@ -360,11 +364,12 @@ export default function App() {
   )
 }
 
-function Shell({ t, children }: { t: ReturnType<typeof themeVars>; children: React.ReactNode }) {
+function Shell({ t, children, overlay }: { t: ReturnType<typeof themeVars>; children: React.ReactNode; overlay?: React.ReactNode }) {
   return (
     <div className="relative mx-auto h-full max-w-xl overflow-hidden" style={{ color: 'var(--tx)' }}>
       <Background t={t} />
       {children}
+      {overlay}
     </div>
   )
 }

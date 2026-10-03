@@ -4,6 +4,7 @@ import type { Profile } from '../lib/db'
 import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel, type NetLog } from '../lib/gemini'
 import { Share } from '@capacitor/share'
 import { askNotificationPermission } from '../lib/reminders'
+import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import { APP_VERSION } from '../lib/changelog'
 import { levelIdx, nextRetestAt } from '../lib/levels'
@@ -265,6 +266,10 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
         <button onClick={test} className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
           <Icon name="speakerWave" size={18} />
           {testing ? `${teacher.name} hablando…` : 'Probar voz'}
+        </button>
+        <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
+          <Icon name="headphones" size={18} />
+          Audio con auriculares
         </button>
         <p className="txt-sub mt-2.5 text-xs leading-snug">
           Si la voz suena rara, elige otra voz en inglés. Si no hay ninguna, instala "Speech Services by Google" desde Play Store.
