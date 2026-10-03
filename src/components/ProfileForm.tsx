@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { db, type Profile } from '../lib/db'
 import { getProfile, PURPOSES } from '../lib/profile'
-import { TOPIC_CATEGORIES } from '../lib/topics'
+import { FAV_COUNT, TOPIC_CATEGORIES } from '../lib/topics'
+import FavoritesPicker from './FavoritesPicker'
 import { Icon } from '../ui/icons'
 
 function Chip({ on, label, onClick }: { on: boolean; label: string; onClick: () => void }) {
@@ -28,7 +29,7 @@ export default function ProfileForm({ submitLabel, onSaved }: { submitLabel: str
       setName(p.name ?? '')
       setAbout(p.about ?? '')
       setPurposes(p.purposes ?? [])
-      setInterests(p.interests ?? [])
+      setInterests((p.interests ?? []).filter((id) => TOPIC_CATEGORIES.some((c) => c.id === id)).slice(0, FAV_COUNT))
     })
   }, [])
 
@@ -37,7 +38,7 @@ export default function ProfileForm({ submitLabel, onSaved }: { submitLabel: str
     set((list) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]))
 
   const save = async () => {
-    if (!profile || !name.trim()) return
+    if (!profile || !name.trim() || interests.length !== FAV_COUNT) return
     setSaving(true)
     const next: Profile = { ...profile, name: name.trim(), about: about.trim(), purposes, interests }
     await db.profile.put(next)
@@ -75,15 +76,16 @@ export default function ProfileForm({ submitLabel, onSaved }: { submitLabel: str
       </div>
       <div>
         <div className="mb-2 text-[15px] font-semibold">
-          Temas que te gustan <span className="txt-sub text-[13px] font-normal">(el profe los elegirá más a menudo)</span>
+          Tus 3 temas <span className="txt-sub text-[13px] font-normal">(los verás en el Inicio)</span>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {TOPIC_CATEGORIES.map((c) => (
-            <Chip key={c.id} on={interests.includes(c.id)} label={c.title} onClick={() => toggle(setInterests, c.id)} />
-          ))}
-        </div>
+        <FavoritesPicker value={interests} onChange={setInterests} />
       </div>
-      <button onClick={save} disabled={!name.trim() || saving} className="btn-acc mt-1 h-[56px] rounded-full text-[16px]">
+      <button
+        onClick={save}
+        disabled={!name.trim() || interests.length !== FAV_COUNT || saving}
+        className="btn-acc mt-1 h-[56px] rounded-full text-[16px] transition-opacity"
+        style={{ opacity: name.trim() && interests.length === FAV_COUNT ? 1 : 0.45 }}
+      >
         {submitLabel}
       </button>
     </div>

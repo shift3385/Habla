@@ -22,6 +22,8 @@ import { nextRetestAt } from './lib/levels'
 import { adaptPlanAfterTest, doneToday, findLesson, todayLesson, type StudyPlan } from './lib/plan'
 import { syncReminders } from './lib/reminders'
 import PlanScreen from './screens/PlanScreen'
+import FavoritesSetup from './screens/FavoritesSetup'
+import { hasValidFavorites } from './lib/topics'
 import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
 import Background from './ui/Background'
@@ -35,6 +37,7 @@ interface Lesson {
   key: number // cada clase monta un componente nuevo: nunca arrastra la anterior
   scenarioId: string
   categoryId?: string
+  customTopic?: string // tema escrito por el alumno
   planLesson?: string // lección del plan de 12 semanas
 }
 
@@ -56,6 +59,8 @@ export default function App() {
   const [retestAt, setRetestAt] = useState<number | null>(null)
   const [retestReady, setRetestReady] = useState(false)
   const [level, setLevel] = useState('B1')
+  // Exactamente 3 temas favoritos (5.4): a quien venga de una versión anterior con otro número se le piden.
+  const [needsFavs, setNeedsFavs] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
   const tabRef = useRef(tab)
   useEffect(() => {
@@ -69,6 +74,7 @@ export default function App() {
   const refreshProfile = useCallback(async () => {
     const p = await getProfile() // también siembra el perfil inicial
     setPersonalized(isPersonalized(p))
+    setNeedsFavs(isPersonalized(p) && !hasValidFavorites(p.interests))
     setCalibrated(!!p.calibratedAt)
     setPlan(p.plan ?? null)
     const at = nextRetestAt(p)
@@ -203,6 +209,14 @@ export default function App() {
     )
   }
 
+  if (needsFavs) {
+    return (
+      <Shell t={t} overlay={picker}>
+        <FavoritesSetup onDone={() => refreshProfile()} />
+      </Shell>
+    )
+  }
+
   if (!calibrated || retest) {
     return (
       <Shell t={t} overlay={picker}>
@@ -254,6 +268,7 @@ export default function App() {
           key={lesson.key}
           scenarioId={lesson.scenarioId}
           categoryId={lesson.categoryId}
+          customTopic={lesson.customTopic}
           planLesson={lesson.planLesson}
           settings={settings}
           t={t}
@@ -270,7 +285,8 @@ export default function App() {
     )
   }
 
-  const start = (scenarioId: string, categoryId?: string) => setLesson({ key: Date.now(), scenarioId, categoryId })
+  const start = (scenarioId: string, categoryId?: string, customTopic?: string) =>
+    setLesson({ key: Date.now(), scenarioId, categoryId, customTopic })
   const startPlanLesson = (id: string) => {
     backHandler.current = null
     setPlanOpen(false)
@@ -328,6 +344,7 @@ export default function App() {
                 onOpenPlan={openPlan}
                 retestReady={retestReady}
                 onRetest={() => setRetest(true)}
+                registerBack={registerBack}
                 onOpenThemes={() => {
                   setSettingsPage('look')
                   setTab('settings')

@@ -6,7 +6,10 @@ import PlanCard from '../components/PlanCard'
 import type { StudyPlan } from '../lib/plan'
 import type { Settings } from '../lib/settings'
 import { loadDashboard, type Dashboard } from '../lib/stats'
-import { TOPIC_CATEGORIES } from '../lib/topics'
+import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
+import { getProfile } from '../lib/profile'
+import AllTopicsView from '../components/AllTopicsView'
+import TopicAskSheet, { type AskKind } from '../components/TopicAskSheet'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import Segmented from '../ui/Segmented'
@@ -16,7 +19,7 @@ interface Props {
   settings: Settings
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
-  onStart: (scenarioId: string, categoryId?: string) => void
+  onStart: (scenarioId: string, categoryId?: string, customTopic?: string) => void
   onGoSettings: () => void
   onOpenNews: () => void
   onReview: () => void
@@ -28,6 +31,7 @@ interface Props {
   retestReady: boolean
   onRetest: () => void
   onOpenThemes: () => void // Ajustes → Tema y mascota
+  registerBack: (h: (() => void) | null) => void
 }
 
 function greeting() {
@@ -52,10 +56,25 @@ export default function Home({
   retestReady,
   onRetest,
   onOpenThemes,
+  registerBack,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
   const [hwOpen, setHwOpen] = useState(false)
+  // Tus 3 temas (5.4): el Inicio solo muestra esos; el resto está en "Más temas".
+  const [favs, setFavs] = useState<string[]>([])
+  const [allOpen, setAllOpen] = useState(false)
+  const [ask, setAsk] = useState<AskKind | null>(null)
+  useEffect(() => {
+    getProfile().then((p) => setFavs(p.interests ?? []))
+  }, [])
+  // Atrás (Android): cierra la hoja o "Más temas" antes de salir del Inicio.
+  // Solo mientras hay algo abierto: así no se borra el "atrás" de otras pantallas (Mi plan, Acerca de).
+  useEffect(() => {
+    if (!ask && !allOpen) return
+    registerBack(ask ? () => setAsk(null) : () => setAllOpen(false))
+    return () => registerBack(null)
+  }, [ask, allOpen, registerBack])
   const keysReady = settings.geminiKey.trim().length > 0
   const teacher = TEACHERS[settings.teacher]
   const info = THEME_INFO[settings.theme]
@@ -89,11 +108,41 @@ export default function Home({
   // Minutos enteros en la cabecera para que quepa en una línea, como en el diseño.
   const minsLabel = String(Math.floor(mins))
   const pct = Math.min(1, mins / goal)
-  const start = (scenarioId: string, categoryId?: string) => (keysReady ? onStart(scenarioId, categoryId) : onGoSettings())
+  const start = (scenarioId: string, categoryId?: string, customTopic?: string) =>
+    keysReady ? onStart(scenarioId, categoryId, customTopic) : onGoSettings()
   const surprise = () => start('free')
+
+  const askSheet = ask && (
+    <TopicAskSheet
+      kind={ask}
+      onClose={() => setAsk(null)}
+      onStart={(text) => {
+        setAsk(null)
+        start(ask === 'debate' ? 'debate' : 'free', undefined, text)
+      }}
+    />
+  )
+
+  if (allOpen) {
+    return (
+      <>
+        <AllTopicsView
+          favs={favs}
+          onPick={(id) => start('free', id)}
+          onFree={() => setAsk('free')}
+          onFavsChange={setFavs}
+          onBack={() => setAllOpen(false)}
+        />
+        {askSheet}
+      </>
+    )
+  }
+
+  const favCats = favoriteCategories(favs)
 
   return (
     <div className="anim-up">
+      {askSheet}
       {/* Cabecera */}
       <div className="flex h-[54px] items-center justify-between gap-2.5">
         <div className="min-w-0">
@@ -295,7 +344,7 @@ export default function Home({
           value={seg}
           onChange={setSeg}
           options={[
-            { value: 'topics', label: 'Temas', count: TOPIC_CATEGORIES.length },
+            { value: 'topics', label: 'Temas', count: FAV_COUNT },
             { value: 'practices', label: 'Prácticas', count: PRACTICES.length },
           ]}
         />
@@ -303,51 +352,79 @@ export default function Home({
 
       {seg === 'topics' ? (
         <div key="topics" className="anim-up">
+          {/* Tus 3 temas: tarjetas grandes, sin scroll */}
           <div className="mt-3 grid grid-cols-3 gap-2">
-            {TOPIC_CATEGORIES.map((c) => (
+            {favCats.map((c) => (
               <button
                 key={c.id}
                 onClick={() => start('free', c.id)}
-                className="glass relative flex h-[78px] flex-col items-center justify-between rounded-[20px] px-1.5 pt-2.5 pb-2"
+                className="glass relative flex h-[96px] flex-col items-center justify-center gap-2 rounded-[22px] px-1.5"
               >
-                <span className="field txt-acc2 grid h-[34px] w-[34px] place-items-center rounded-full">
-                  <Icon name={c.icon} size={18} stroke={1.6} />
+                <span className="field txt-acc2 grid h-[40px] w-[40px] place-items-center rounded-full">
+                  <Icon name={c.icon} size={20} stroke={1.6} />
                 </span>
-                <span className="text-center text-[11.5px] leading-[1.15] text-balance">{c.title}</span>
+                <span className="text-center text-[12px] leading-[1.15] font-medium text-balance">{c.title}</span>
                 {c.live && (
                   <span
-                    className="absolute top-[9px] right-[9px] h-1.5 w-1.5 rounded-full"
+                    className="absolute top-[10px] right-[10px] h-1.5 w-1.5 rounded-full"
                     style={{ background: 'var(--dot)', boxShadow: '0 0 8px var(--dot)' }}
                   />
                 )}
               </button>
             ))}
           </div>
-          <div className="txt-sub mt-2.5 flex items-center justify-center gap-1.5 text-xs">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--dot)' }} />
-            con noticias reales y recientes
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <button onClick={() => (keysReady ? setAsk('free') : onGoSettings())} className="glass flex h-[52px] items-center gap-2.5 rounded-[26px] px-3">
+              <span className="field txt-acc2 grid h-8 w-8 flex-none place-items-center rounded-full">
+                <Icon name="pencil" size={15} />
+              </span>
+              <span className="text-left text-[13.5px] leading-tight font-semibold">Tema libre</span>
+            </button>
+            <button onClick={() => setAllOpen(true)} className="glass flex h-[52px] items-center gap-2.5 rounded-[26px] px-3">
+              <span className="field txt-acc2 grid h-8 w-8 flex-none place-items-center rounded-full">
+                <Icon name="cards" size={15} />
+              </span>
+              <span className="min-w-0 flex-1 text-left text-[13.5px] leading-tight font-semibold">Más temas</span>
+              <span className="txt-sub text-xs">{TOPIC_CATEGORIES.length}</span>
+            </button>
           </div>
+          {favCats.some((c) => c.live) && (
+            <div className="txt-sub mt-2.5 flex items-center justify-center gap-1.5 text-xs">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--dot)' }} />
+              con noticias reales y recientes
+            </div>
+          )}
         </div>
       ) : (
-        <div key="practices" className="anim-up mt-3 flex flex-col gap-2">
-          {PRACTICES.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => start(p.id)}
-              className="glass flex h-[62px] items-center gap-3 rounded-[31px] px-2.5 text-left"
-            >
-              <span className="field txt-acc2 grid h-[42px] w-[42px] flex-none place-items-center rounded-full">
-                <Icon name={p.icon} size={19} stroke={1.6} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">{p.title}</span>
-                <span className="txt-sub block truncate text-[12.5px]">{p.subtitle}</span>
-              </span>
-              <span className="txt-sub grid w-[30px] flex-none place-items-center">
-                <Icon name="arrowUR" size={17} />
-              </span>
-            </button>
-          ))}
+        <div key="practices" className="anim-up mt-3 grid grid-cols-2 gap-2">
+          {PRACTICES.map((p, i) => {
+            const open = () => (p.id === 'debate' ? (keysReady ? setAsk('debate') : onGoSettings()) : start(p.id))
+            // La primera (tus puntos débiles) ocupa toda la fila; el resto, en cuadrícula de 2.
+            return i === 0 ? (
+              <button key={p.id} onClick={open} className="glass col-span-2 flex h-[60px] items-center gap-3 rounded-[30px] px-2.5 text-left">
+                <span className="btn-acc grid h-[40px] w-[40px] flex-none place-items-center rounded-full">
+                  <Icon name={p.icon} size={18} stroke={1.7} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-semibold">{p.title}</span>
+                  <span className="txt-sub block truncate text-[12.5px]">{p.subtitle}</span>
+                </span>
+                <span className="txt-sub grid w-[28px] flex-none place-items-center">
+                  <Icon name="arrowUR" size={16} />
+                </span>
+              </button>
+            ) : (
+              <button key={p.id} onClick={open} className="glass flex h-[88px] flex-col gap-1.5 rounded-[22px] px-2.5 py-2.5 text-left">
+                <span className="flex w-full items-center gap-2">
+                  <span className="field txt-acc2 grid h-[32px] w-[32px] flex-none place-items-center rounded-full">
+                    <Icon name={p.icon} size={16} stroke={1.6} />
+                  </span>
+                  <span className="line-clamp-2 min-w-0 flex-1 text-[13px] leading-[1.15] font-semibold">{p.title}</span>
+                </span>
+                <span className="txt-sub line-clamp-2 block text-[11.5px] leading-[1.2]">{p.subtitle}</span>
+              </button>
+            )
+          })}
         </div>
       )}
     </div>

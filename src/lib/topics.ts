@@ -27,7 +27,40 @@ export const TOPIC_CATEGORIES: TopicCategory[] = [
   { id: 'whatif', title: '¿Y si…?', emoji: '🌀', icon: 'what', live: false, brief: 'a fun hypothetical "what if" question (e.g. what if you could live in any decade, what if AI ran a city) that sparks imagination' },
 ]
 
+/** Temas favoritos: exactamente 3 (son los que se ven en el Inicio, sin scroll). */
+export const FAV_COUNT = 3
+
+/** ¿El perfil tiene exactamente 3 temas favoritos válidos? Si no, la app pide elegirlos. */
+export function hasValidFavorites(interests: string[] | undefined): boolean {
+  const ok = (interests ?? []).filter((id) => TOPIC_CATEGORIES.some((c) => c.id === id))
+  return ok.length === FAV_COUNT && new Set(ok).size === FAV_COUNT
+}
+
+/** Los 3 temas favoritos, en el orden del catálogo. */
+export function favoriteCategories(interests: string[] | undefined): TopicCategory[] {
+  return TOPIC_CATEGORIES.filter((c) => (interests ?? []).includes(c.id)).slice(0, FAV_COUNT)
+}
+
+// "Tema libre": el tema lo escribe el alumno (también vale para proponer el tema de un debate).
+export const CUSTOM_ID = 'custom'
+const CUSTOM_BASE: TopicCategory = {
+  id: CUSTOM_ID,
+  title: 'Tema libre',
+  emoji: '✍️',
+  icon: 'pencil',
+  live: false,
+  brief: 'a topic chosen by the student',
+}
+
+export function customCategory(text: string): TopicCategory {
+  return {
+    ...CUSTOM_BASE,
+    brief: `exactly this topic, chosen by the student (do not change it, just make it engaging and clear): "${text.trim()}"`,
+  }
+}
+
 export function getCategory(id: string): TopicCategory {
+  if (id === CUSTOM_ID) return CUSTOM_BASE
   return TOPIC_CATEGORIES.find((c) => c.id === id) ?? TOPIC_CATEGORIES[0]
 }
 
@@ -89,7 +122,9 @@ export async function generateTopic(
   category: TopicCategory,
   onRetry?: (info: RetryInfo) => void,
 ): Promise<Topic> {
-  const avoid = (await recentTopics(15)).map((t) => `- ${t.title}`).join('\n') || '- (none)'
+  // Con tema libre manda el alumno: no se evita nada aunque ya se haya hablado de ello.
+  const avoid =
+    category.id === CUSTOM_ID ? '- (none)' : (await recentTopics(15)).map((t) => `- ${t.title}`).join('\n') || '- (none)'
   const today = new Date().toISOString().slice(0, 10)
   const angle = ANGLES[Math.floor(Math.random() * ANGLES.length)]
 

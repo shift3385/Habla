@@ -20,7 +20,7 @@ import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
-import { generateTopic, getCategory, randomCategory } from '../lib/topics'
+import { customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotMood } from '../ui/Mascot'
@@ -40,6 +40,7 @@ type PendingAnswer = SpokenAnswer | { text: string }
 interface Props {
   scenarioId: string
   categoryId?: string // para escenarios con tema; sin él, categoría al azar
+  customTopic?: string // tema escrito por el alumno (Tema libre o debate propuesto)
   planLesson?: string // id de la lección del plan de 12 semanas
   settings: Settings
   t: ThemeVars
@@ -54,7 +55,7 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, planLesson, settings, update, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, settings, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
   const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -258,7 +259,7 @@ export default function Conversation({ scenarioId, categoryId, planLesson, setti
 
       let tp: Topic | undefined
       if (scenario.topic) {
-        const cat = categoryId ? getCategory(categoryId) : await randomCategory()
+        const cat = customTopic ? customCategory(customTopic) : categoryId ? getCategory(categoryId) : await randomCategory()
         setStatus(cat.live ? `Buscando algo reciente sobre ${cat.title.toLowerCase()}…` : 'Eligiendo un tema…')
         try {
           tp = await generateTopic(settingsRef.current.geminiKey, quick(), cat)

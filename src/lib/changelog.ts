@@ -17,6 +17,21 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.4',
+    date: '2026-10-03',
+    title: 'Tus 3 temas y un Inicio sin scroll',
+    added: [
+      'Eliges exactamente 3 temas favoritos: son los que ves en el Inicio',
+      'Tema libre: escribe de qué quieres hablar y el profe prepara la clase',
+      'Más temas: todos los temas para hablar de cualquiera, y cambiar tus 3',
+      'Debate: eliges si el tema lo pone el profe o lo propones tú',
+    ],
+    improved: [
+      'Temas y Prácticas caben en la pantalla, sin scroll',
+      'Si tenías más o menos de 3 temas, la app te pide elegir tus 3 al abrirla',
+    ],
+  },
+  {
     v: '5.3',
     date: '2026-10-02',
     title: 'Auriculares: elige por dónde escuchar y hablar',
