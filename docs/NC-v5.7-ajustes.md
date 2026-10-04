@@ -44,6 +44,10 @@ Actúa como desarrollador senior Android/UX y QA. Resuelve cada NC sobre la vers
 ### NC-25 | Confirmación con el bloqueo del teléfono para la clave
 - **Esperado:** para **ver** o **cambiar** la clave de Gemini se pide como confirmación secundaria el patrón (o PIN/huella) del teléfono.
 
+### NC-26 | Orientación forzada
+- **Actual:** en algunos teléfonos la app no gira a horizontal (sensor o versión de Android). Una raya en el borde izquierdo de la pantalla tapa las primeras letras de cada frase.
+- **Esperado:** una opción en Ajustes (en **Tema y mascota**) que fuerce la orientación de la app de vertical a horizontal, aunque el teléfono no gire.
+
 **Verificación:** capturas del panel de Ajustes en 360×780 sin scroll, y navegación a Mi nivel, Mi perfil (con Mis datos), Profe y voz y el resumen de un test.
 
 ---
@@ -65,6 +69,8 @@ APK: `apk/Habla-v5.7.apk` (misma versión 5.7, build 32, nuevo rebuild con todo 
 | NC-24 | El botón dice "**Nuevo test disponible el 30 de octubre**" (y, cuando ya toca, "Hacer el nuevo test de nivel"). |
 
 | NC-25 | Plugin nativo propio `DeviceAuthPlugin`: Android 11+ abre el diálogo del sistema (BiometricPrompt) con huella **o** patrón/PIN/contraseña; Android 7–10, la pantalla de confirmación de credencial del sistema. Se pide al tocar el ojo para **ver** la clave y al **guardar una clave distinta** (en Gemini y en el aviso/la pantalla de error con otra clave). El campo de la clave ya **no viene relleno**: muestra «Clave guardada · termina en …XXXX» y solo se carga tras confirmar. Comprobar la clave actual no lo pide. Tras confirmar no se vuelve a pedir durante 1 minuto. Si el teléfono no tiene bloqueo, deja pasar y avisa de que conviene ponerlo. La primera vez que se escribe la clave (bienvenida) no se pide, porque no hay ninguna que proteger. Comprobado en el Poco X6: al tocar el ojo se abre el diálogo de seguridad del sistema (Android no permite capturarlo). |
+
+| NC-26 | **Tema y mascota → Orientación de la pantalla**: Automática (gira con el teléfono), Vertical, **Horizontal** y **Horizontal al revés**. Las horizontales fijan la pantalla sin depender del sensor (plugin nativo `OrientationPlugin`). Con las dos direcciones, la raya del borde izquierdo pasa a quedar arriba o abajo, a elección, y deja de tapar el principio de las frases. Se guarda y se aplica al abrir la app. Mejoras para usarla siempre en horizontal: las pestañas pasan a un **carril vertical a la derecha** (el contenido usa toda la altura) y la bienvenida baja sola hasta «Continuar». Comprobado en el Poco X6 con `dumpsys`: Horizontal → `LANDSCAPE` (pantalla girada 90°), al revés → `REVERSE_LANDSCAPE` (270°), Automática → `UNSPECIFIED` (vertical); la opción se mantiene tras cerrar y abrir la app (`21-poco-horizontal-forzada.png`). |
 
 **Evidencia:** `docs/evidencia-v5.7/17-a11-ajustes-resumen-nivel.jpg` (panel sin scroll en 360×780, con la invitación de la mascota y "Nuevo test el 30 oct"), `18-a11-mi-nivel-detalle.jpg`, `19-a11-mis-tests-mini-resumen.jpg` (tests con mini resumen y el nuevo texto del botón) y `20-a11-resumen-completo-test.jpg` (resumen completo). Comprobado en vista previa: Mi perfil contiene Mis datos y la bienvenida, Gemini contiene Diagnóstico y la tarjeta superior abre Mi nivel.
 

@@ -63,6 +63,9 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
   }, [cheer])
 
   const fileInput = useRef<HTMLInputElement>(null)
+  // En horizontal la bienvenida se dibuja más alta que la pantalla: al aparecer el botón, se desplaza hasta él
+  // para que se vea sin tener que buscarlo.
+  const continueBtn = useRef<HTMLButtonElement>(null)
   // Al terminar la caída de la intro, la mascota sonríe; con cada interacción salta contenta.
   const cheerUp = () => setCheer(Date.now())
 
@@ -111,6 +114,16 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
     await db.profile.put(profile)
     setPhase('enter')
   }
+
+  useEffect(() => {
+    if (phase !== 'back' || !('landscape' in document.documentElement.dataset)) return
+    const id = setTimeout(() => {
+      // El lienzo alto se desplaza en #root: hasta el final, donde queda el botón con su margen.
+      const root = document.getElementById('root')
+      if (root && continueBtn.current) root.scrollTo({ top: root.scrollHeight, behavior: 'smooth' })
+    }, 700)
+    return () => clearTimeout(id)
+  }, [phase])
 
   const firstName = (returning?.name ?? name).split(' ')[0]
   const chip = (sel: boolean) => (sel ? 'btn-acc scale-[1.04]' : 'glass')
@@ -514,6 +527,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                 </div>
               )}
               <button
+                ref={continueBtn}
                 onClick={() => {
                   cheerUp()
                   setPhase('enter')

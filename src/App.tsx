@@ -28,6 +28,7 @@ import { pendingNotices, type Notice } from './lib/notices'
 import { hasValidFavorites } from './lib/topics'
 import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
+import { applyOrientation } from './lib/orientation'
 import Background from './ui/Background'
 import AudioPicker from './components/AudioPicker'
 import GeminiTroubleSheet from './components/GeminiTroubleSheet'
@@ -201,6 +202,12 @@ export default function App() {
     const teacher = TEACHERS[settings.teacher]
     setTeacherVoice(teacher.lang, teacher.gender)
   }, [settings, t])
+
+  // Orientación elegida en Tema y mascota (p. ej. horizontal fija si el teléfono no gira).
+  const orientation = settings?.orientation ?? 'auto'
+  useEffect(() => {
+    applyOrientation(orientation)
+  }, [orientation])
 
   // Botón "atrás" de Android: primero la pantalla activa; si no, vuelve a Inicio; en Inicio sale.
   useEffect(() => {
@@ -489,7 +496,7 @@ export default function App() {
 
   return (
     <Shell t={t} overlay={picker}>
-      <div className="no-scrollbar relative z-[2] h-full overflow-y-auto px-5 pt-[calc(env(safe-area-inset-top)+10px)] pb-[calc(env(safe-area-inset-bottom)+112px)]">
+      <div className="tab-content no-scrollbar relative z-[2] h-full overflow-y-auto px-5 pt-[calc(env(safe-area-inset-top)+10px)] pb-[calc(env(safe-area-inset-bottom)+112px)]">
         {about ? (
           <AboutScreen settings={settings} t={t} initialPage={about} onBack={closeAbout} />
         ) : planOpen ? (
@@ -573,7 +580,7 @@ const TABS: { key: Tab; label: string; icon: IconName }[] = [
 function TabBar({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void }) {
   return (
     <nav
-      className="absolute right-5 left-5 z-[5] grid h-[66px] gap-1 rounded-[33px] p-1.5"
+      className="tabbar absolute right-5 left-5 z-[5] grid h-[66px] gap-1 rounded-[33px] p-1.5"
       style={{
         bottom: 'calc(env(safe-area-inset-bottom) + 18px)',
         gridTemplateColumns: TABS.map((x) => (x.key === tab ? '1.9fr' : '1fr')).join(' '),
@@ -596,7 +603,7 @@ function TabBar({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void }) {
             aria-label={x.label}
           >
             <Icon name={x.icon} size={19} stroke={sel ? 1.8 : 1.7} />
-            {sel && x.label}
+            {sel && <span className="tab-label">{x.label}</span>}
           </button>
         )
       })}

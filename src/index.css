@@ -414,3 +414,24 @@ html[data-landscape] .cv-ctrl {
   overflow-y: auto;
   padding-top: 4px;
 }
+
+/* Pestañas en horizontal: carril vertical a la derecha, así el contenido usa toda la altura. */
+html[data-landscape] .tabbar {
+  left: auto !important;
+  right: calc(env(safe-area-inset-right) + 10px) !important;
+  top: 50%;
+  bottom: auto !important;
+  transform: translateY(-50%);
+  width: 64px;
+  height: auto !important;
+  grid-template-columns: 1fr !important;
+  grid-auto-rows: 52px;
+  border-radius: 32px !important;
+}
+html[data-landscape] .tabbar .tab-label {
+  display: none;
+}
+html[data-landscape] .tab-content {
+  padding-right: calc(env(safe-area-inset-right) + 92px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24px) !important;
+}

@@ -6,6 +6,7 @@ import { Share } from '@capacitor/share'
 import { askNotificationPermission } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
+import { ORIENTATIONS } from '../lib/orientation'
 import SkillProgressCard from '../components/SkillProgressCard'
 import { Capacitor } from '@capacitor/core'
 import { confirmIdentity, INSECURE_HINT } from '../lib/deviceAuth'
@@ -370,6 +371,36 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
               {m === 'dark' ? 'Oscuro' : 'Claro'}
             </button>
           ))}
+        </div>
+      </Card>
+      <Card>
+        <div className="txt-sub text-sm">Orientación de la pantalla</div>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          {ORIENTATIONS.map((o) => (
+            <button
+              key={o.key}
+              onClick={() => update({ orientation: o.key })}
+              className={`flex min-h-[64px] flex-col justify-center rounded-[18px] px-3 py-2 text-left ${settings.orientation === o.key ? 'btn-acc' : 'field'}`}
+              aria-pressed={settings.orientation === o.key}
+            >
+              <span className="flex items-center gap-1.5 text-[14px] font-semibold">
+                <span
+                  className="inline-block flex-none rounded-[3px]"
+                  style={{
+                    width: o.key === 'landscape' || o.key === 'reverseLandscape' ? 16 : 10,
+                    height: o.key === 'landscape' || o.key === 'reverseLandscape' ? 10 : 16,
+                    border: '2px solid currentColor',
+                    opacity: o.key === 'auto' ? 0.6 : 1,
+                  }}
+                />
+                {o.title}
+              </span>
+              <span className={`text-[11.5px] leading-snug ${settings.orientation === o.key ? 'opacity-85' : 'txt-sub'}`}>{o.desc}</span>
+            </button>
+          ))}
+        </div>
+        <div className="txt-sub mt-2 text-[12px] leading-snug">
+          Útil si tu teléfono no gira solo o si una parte de la pantalla se ve mal: en horizontal, lo que quedaba en el borde izquierdo pasa arriba o abajo.
         </div>
       </Card>
       <div className="txt-sub px-2.5 text-center text-[13px] leading-snug">

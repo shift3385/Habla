@@ -1,6 +1,7 @@
 import { Preferences } from '@capacitor/preferences'
 import { normalizeTheme, type Mode, type TeacherKey, type ThemeKey } from '../ui/theme'
 import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL, type Models } from './gemini'
+import type { OrientationMode } from './orientation'
 
 // La clave API vive solo en el almacenamiento local del teléfono (Preferences).
 // Nunca se escribe en el código, en IndexedDB ni en las copias de seguridad.
@@ -27,6 +28,7 @@ export interface Settings {
   audioPrefs: Record<string, 'headset' | 'split' | 'phone'> // por auriculares: por dónde escuchar y hablar
   retestSnoozed: string // día (AAAA-MM-DD) en que dijo "Más tarde" al re-test
   homeworkSeen: number // fecha de la última tarea ya enseñada antes del Inicio
+  orientation: OrientationMode // automática, vertical u horizontal forzada (Tema y mascota)
 }
 
 const DEFAULTS: Settings = {
@@ -51,6 +53,7 @@ const DEFAULTS: Settings = {
   audioPrefs: {},
   retestSnoozed: '',
   homeworkSeen: 0,
+  orientation: 'auto',
 }
 
 const KEY = 'habla.settings'

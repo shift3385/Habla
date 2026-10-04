@@ -12,6 +12,8 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(AudioRoutePlugin.class);
         // Plugin propio: confirmar con el bloqueo del teléfono antes de ver o cambiar la clave de Gemini.
         registerPlugin(DeviceAuthPlugin.class);
+        // Plugin propio: orientación forzada (vertical u horizontal) elegida en Ajustes.
+        registerPlugin(OrientationPlugin.class);
         super.onCreate(savedInstanceState);
     }
 

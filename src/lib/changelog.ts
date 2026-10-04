@@ -29,6 +29,7 @@ export const RELEASES: Release[] = [
       'Resumen con tus respuestas y las correctas al final de cada parte del test',
       'Duración del audio y transcripción por personas en la audición del test',
       'Nueva sección Mi nivel, separada de Mi perfil',
+      'Orientación de la pantalla en Tema y mascota: automática, vertical u horizontal fija (aunque el teléfono no gire)',
     ],
     improved: [
       'Batería: en segundo plano la app se queda quieta (micrófono, voz y animaciones apagados)',
