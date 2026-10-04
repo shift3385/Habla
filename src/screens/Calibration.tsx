@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { BANK_VERSION, type BankItem, type BankQuestion, type BankUsage, type GrammarItem, type ListeningItem, type Speaker } from '../lib/bank'
+import { BANK, BANK_VERSION, type BankItem, type BankQuestion, type BankUsage, type GrammarItem, type ListeningItem, type Speaker } from '../lib/bank'
 import {
   assessSpeakingTask,
   buildLevels,
@@ -13,6 +13,7 @@ import {
   type SpeakingTask,
   type TaskAssessment,
 } from '../lib/calibration'
+import GeminiFix from '../components/GeminiFix'
 import MascotPage from '../components/MascotPage'
 import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
 import type { Profile, Skill } from '../lib/db'
@@ -43,6 +44,7 @@ import {
   type SpeakCriterion,
 } from '../lib/placement'
 import { getProfile } from '../lib/profile'
+import { clearDraft, loadDraft, saveDraft, type TestDraft } from '../lib/testDraft'
 import { MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
@@ -65,6 +67,7 @@ type Step =
   | { k: 'speaking'; i: number }
   | { k: 'deciding' }
   | { k: 'prep'; kind: PrepareKind; title: string; state: PrepareState; error?: string; retry?: () => void }
+  | { k: 'evalFail'; error: string }
   | { k: 'result'; r: CalibrationResult }
 
 const SECTIONS = ['Gramática', 'Lectura', 'Audición', 'Habla']
@@ -249,6 +252,11 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   const usage = useRef<BankUsage>({ seen: [], uses: {} })
   const used = useRef<BankItem[]>([])
   const [hint, setHint] = useState<string | null>(null)
+  // Ajustes vivos: al reintentar tras cambiar de modelo o de clave se usan los nuevos.
+  const live = useRef(settings)
+  useEffect(() => {
+    live.current = settings
+  }, [settings])
 
   // Gramática
   const [gItems, setGItems] = useState<GrammarItem[]>([])
@@ -282,7 +290,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   const preEval = useRef<Promise<TaskAssessment | null>[]>([])
   const preDone = useRef<(TaskAssessment | null | undefined)[]>([])
 
-  const models = (): Models => mainModels(settings)
+  const models = (): Models => mainModels(live.current)
   const onRetry = undefined as ((i: RetryInfo) => void) | undefined
   const retest = !!profile?.calibratedAt
 
@@ -293,10 +301,12 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   }, [registerBack])
 
   useEffect(() => {
-    getProfile().then((p) => {
+    Promise.all([getProfile(), loadDraft()]).then(([p, d]) => {
       setProfile(p)
       usage.current = p.bankUsage ?? { seen: [], uses: {} }
-      setStep({ k: 'explain', i: 0 })
+      // Un test terminado que no se pudo evaluar: se retoma en la evaluación, sin repetirlo.
+      if (d) runEval(d)
+      else setStep({ k: 'explain', i: 0 })
     })
     const rec = recorder.current
     return () => {
@@ -529,24 +539,49 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     setMicFailures(0)
   }
 
-  const finish = () => {
+  const EVAL_TITLE = 'Evaluando tu habla y tu nivel'
+
+  /** Fin del test: primero se guarda todo (respuestas y audios) y después se evalúa. */
+  const finish = async () => {
     recorder.current.close()
-    return prepare('eval', 'Evaluando tu habla y tu nivel', evaluate, finish)
+    setStep({ k: 'prep', kind: 'eval', title: EVAL_TITLE, state: 'loading' })
+    const draft: TestDraft = {
+      v: 1,
+      savedAt: Date.now(),
+      gAnswers,
+      gLevel,
+      blocks,
+      tasks,
+      speech,
+      pre: tasks.map((_, k) => preDone.current[k] ?? null),
+      usedIds: used.current.map((i) => i.id),
+    }
+    await saveDraft(draft).catch(() => {})
+    // Las evaluaciones de cada respuesta que aún estén en marcha.
+    draft.pre = await Promise.all(tasks.map((_, k) => preEval.current[k] ?? Promise.resolve(null)))
+    await saveDraft(draft).catch(() => {})
+    return runEval(draft)
   }
 
-  const prepare = async (kind: PrepareKind, title: string, work: () => Promise<Step>, retry: () => void) => {
-    setStep({ k: 'prep', kind, title, state: 'loading' })
+  const runEval = async (d: TestDraft) => {
+    setStep({ k: 'prep', kind: 'eval', title: EVAL_TITLE, state: 'loading' })
     try {
-      const next = await work()
-      setStep({ k: 'prep', kind, title, state: 'done' })
+      const next = await evaluate(d)
+      await clearDraft()
+      setStep({ k: 'prep', kind: 'eval', title: EVAL_TITLE, state: 'done' })
       await new Promise((r) => setTimeout(r, 1300))
       setStep(next)
     } catch (e) {
-      setStep({ k: 'prep', kind, title, state: 'error', error: friendlyError(e), retry })
+      setStep({ k: 'evalFail', error: friendlyError(e) })
     }
   }
+  const retryEval = async () => {
+    const d = await loadDraft()
+    if (d) runEval(d)
+  }
 
-  const evaluate = async (): Promise<Step> => {
+  const evaluate = async (d: TestDraft): Promise<Step> => {
+    const { gAnswers, gLevel, blocks, tasks, speech } = d
     const failed = gAnswers.filter((a) => !a.correct && !a.unknown).map((a) => a.item.point)
     const unknown = gAnswers.filter((a) => a.unknown).map((a) => a.item.point)
     for (const kind of ['reading', 'listening'] as const)
@@ -558,9 +593,9 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     const pairs = tasks
       .map((task, k) => ({ task, ans: speech[k], k }))
       .filter((p): p is { task: SpeakingTask; ans: SpeakingAnswer; k: number } => !!p.ans && p.ans !== 'skipped')
-    const pre = await Promise.all(pairs.map((p) => preEval.current[p.k] ?? Promise.resolve(null)))
+    const pre = pairs.map((p) => d.pre[p.k] ?? null)
     const ev: SpeakingEval = pairs.length
-      ? await evaluateSpeaking(settings.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry, pre)
+      ? await evaluateSpeaking(live.current.geminiKey, models(), pairs.map((p) => p.task), pairs.map((p) => p.ans), failed, unknown, onRetry, pre)
       : {
           // Sin ninguna grabación: el habla se estima un nivel por debajo de la gramática y se medirá en el próximo test.
           level: levelAt(levelIdx(gLevel) - 1),
@@ -585,7 +620,8 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
       speaking: pairs.length < 3 ? 'low' : pre.every(Boolean) && Math.max(...crit) - Math.min(...crit) <= 1 ? 'high' : 'medium',
     }
     const r: CalibrationResult = { ...fin, testLevels, confidence, speaking: ev, grammar: gAnswers, reading: blocks.reading, listening: blocks.listening }
-    await saveCalibration(r, used.current, settings.geminiModel)
+    const usedItems = d.usedIds.map((id) => BANK.find((i) => i.id === id)).filter((i): i is BankItem => !!i)
+    await saveCalibration(r, usedItems, live.current.geminiModel)
     update({ ttsRate: rateForLevel(r.levels.overall) })
     return { k: 'result', r }
   }
@@ -655,6 +691,18 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
           </div>
         )}
       </MascotPage>
+    )
+  }
+
+  if (step.k === 'evalFail') {
+    return (
+      <EvalFail
+        error={step.error}
+        mascot={mascot}
+        settings={settings}
+        update={update}
+        onRetry={retryEval}
+      />
     )
   }
 
@@ -962,6 +1010,21 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   if (step.k === 'result') return <Result r={step.r} mascot={mascot} mascotName={mascotName} teacherName={teacher.name} onDone={onDone} />
 
   return null
+}
+
+/** La evaluación falló: el test está guardado; reintentar con otro modelo o con otra clave. */
+function EvalFail({ error, mascot, settings, update, onRetry }: { error: string; mascot: MascotElement; settings: Settings; update: (p: Partial<Settings>) => void; onRetry: () => void }) {
+  return (
+    <MascotPage
+      element={mascot}
+      mood="thinking"
+      title="No pude evaluar tu test"
+      subtitle={`${error} Tus respuestas y tus audios están guardados: no se pierden aunque cierres la app.`}
+      primary={{ label: 'Reintentar', onClick: onRetry }}
+    >
+      <GeminiFix settings={settings} update={update} />
+    </MascotPage>
+  )
 }
 
 /** Confianza en gramática: alta si el nivel final se aprobó con holgura (≥ 75 %); baja si no aprobó ni A1. */

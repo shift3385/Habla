@@ -26,6 +26,8 @@ export const RELEASES: Release[] = [
       'Audición con vista previa de las preguntas, 3 escuchas con nota, varias voces y la revisión de respuestas',
       'Tu mascota te explica antes cómo se calcula tu nivel, y en el resultado te enseña la fórmula con tus números y la confianza de cada destreza',
       'Nunca repetirás un texto o audio que ya viste en un test anterior',
+      'Si Gemini se satura, va lento, se queda sin cuota o rechaza la clave, tu mascota te propone otro modelo u otra clave',
+      'Si falla la evaluación del test, tus respuestas y audios quedan guardados para reintentar sin repetirlo',
     ],
     improved: [
       'Las clases ya no cambian tu nivel: proponen tu progreso, y solo el re-test lo ajusta (70 % test + 30 % clases)',

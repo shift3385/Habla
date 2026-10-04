@@ -30,6 +30,8 @@ import { loadSettings, mainModels, saveSettings, type Settings } from './lib/set
 import { setTeacherVoice } from './lib/tts'
 import Background from './ui/Background'
 import AudioPicker from './components/AudioPicker'
+import GeminiTroubleSheet from './components/GeminiTroubleSheet'
+import { onGeminiTrouble, type Trouble } from './lib/geminiTrouble'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, themeVars } from './ui/theme'
 
@@ -73,6 +75,18 @@ export default function App() {
   const [splash, setSplash] = useState(true)
   // Avisos antes del Inicio (novedades, re-test, compañeros): se calculan una vez al terminar la bienvenida.
   const [gate, setGate] = useState<Notice[]>([])
+  // Problema con Gemini (saturado, lento, sin cuota, clave…): la mascota propone otro modelo u otra clave.
+  const [trouble, setTrouble] = useState<Trouble | null>(null)
+  const troubleSnooze = useRef(0)
+  useEffect(
+    () =>
+      onGeminiTrouble((tr) => {
+        // "Ahora no" calla los avisos de saturación un rato; los de clave o modelo se enseñan siempre.
+        if ((tr.kind === 'slow' || tr.kind === 'quota') && Date.now() < troubleSnooze.current) return
+        setTrouble((cur) => cur ?? tr)
+      }),
+    [],
+  )
   const [streak, setStreak] = useState(0)
   const [homework, setHomework] = useState<{ text: string; date: number } | null>(null)
   const settingsRef = useRef<Settings | null>(null)
@@ -197,7 +211,25 @@ export default function App() {
   if (!settings || !t || calibrated === null) return null
 
   // Selector de audio con auriculares: puede aparecer en cualquier pantalla.
-  const picker = <AudioPicker settings={settings} update={update} />
+  const audioPicker = <AudioPicker settings={settings} update={update} />
+  const picker = (
+    <>
+      {audioPicker}
+      {trouble && settings.onboarded && (
+        <GeminiTroubleSheet
+          trouble={trouble}
+          settings={settings}
+          t={t}
+          update={update}
+          onClose={() => setTrouble(null)}
+          onLater={() => {
+            troubleSnooze.current = Date.now() + 10 * 60_000
+            setTrouble(null)
+          }}
+        />
+      )}
+    </>
+  )
 
   if (splash) {
     return (
@@ -241,7 +273,7 @@ export default function App() {
 
   if (!calibrated || retest) {
     return (
-      <Shell t={t} overlay={picker}>
+      <Shell t={t} overlay={audioPicker}>
         <Calibration
           settings={settings}
           t={t}

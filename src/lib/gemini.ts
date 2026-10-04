@@ -1,4 +1,5 @@
 import { CapacitorHttp } from '@capacitor/core'
+import { reportGeminiTrouble, troubleKind } from './geminiTrouble'
 
 export const DEFAULT_MODEL = 'gemini-3.8-flash'
 export const DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash-lite'
@@ -26,6 +27,8 @@ export class ApiError extends Error {
   /** En un 429: si la cuota agotada es por minuto o por día, y cuánto pide Google esperar. */
   quota?: 'minute' | 'day'
   retryAfterMs?: number
+  /** Google rechaza la clave (llega como 400 "API key not valid"). */
+  keyError?: boolean
   constructor(message: string, status: number, transient = TRANSIENT_STATUS.has(status)) {
     super(message)
     this.status = status
@@ -129,6 +132,7 @@ export async function askGeminiMeta<T>(apiKey: string, model: string, opts: AskO
   if (status !== 200) {
     const err = new ApiError(describeError(status, data, model), status)
     if (status === 429) Object.assign(err, quotaInfo(data))
+    if (isKeyError(data)) err.keyError = true
     throw err
   }
   if (data?.promptFeedback?.blockReason) {
@@ -259,12 +263,25 @@ export function clearExhausted() {
   }
 }
 
-/** Reintentos genéricos para cualquier llamada que reciba el modelo a usar. */
-export async function withRetry<T>(
-  models: Models,
-  call: (model: string) => Promise<T>,
-  onRetry?: (info: RetryInfo) => void,
-): Promise<T> {
+/**
+ * Reintentos genéricos para cualquier llamada que reciba el modelo a usar. Si al final falla por algo que el
+ * usuario puede arreglar (saturado, lento, sin cuota, clave o modelo), se avisa a la app para que la mascota
+ * proponga cambiar de modelo o de clave.
+ */
+export async function withRetry<T>(models: Models, call: (model: string) => Promise<T>, onRetry?: (info: RetryInfo) => void): Promise<T> {
+  try {
+    return await retryLoop(models, call, onRetry)
+  } catch (e) {
+    // La búsqueda en Google tiene su propia cuota y la app sigue sin ella: no es motivo para avisar.
+    if (e instanceof ApiError && !models.quotaScope) {
+      const kind = e.keyError ? 'key' : troubleKind(e.status, e.transient)
+      if (kind) reportGeminiTrouble({ kind, message: e.message, model: models.primary })
+    }
+    throw e
+  }
+}
+
+async function retryLoop<T>(models: Models, call: (model: string) => Promise<T>, onRetry?: (info: RetryInfo) => void): Promise<T> {
   const { signal, quotaScope } = models
   if (quotaScope && isExhausted(quotaScope)) throw new ApiError(describeError(429, null), 429)
 
