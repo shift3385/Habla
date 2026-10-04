@@ -10,6 +10,8 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         // Plugin propio: elegir por dónde se escucha y se habla (auriculares o teléfono).
         registerPlugin(AudioRoutePlugin.class);
+        // Plugin propio: confirmar con el bloqueo del teléfono antes de ver o cambiar la clave de Gemini.
+        registerPlugin(DeviceAuthPlugin.class);
         super.onCreate(savedInstanceState);
     }
 

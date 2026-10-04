@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { confirmIdentity } from '../lib/deviceAuth'
 import { clearExhausted, mergeModels } from '../lib/gemini'
 import type { Settings } from '../lib/settings'
 
@@ -9,6 +10,7 @@ import type { Settings } from '../lib/settings'
 export default function GeminiFix({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   const [key, setKey] = useState('')
   const [keySaved, setKeySaved] = useState(false)
+  const [denied, setDenied] = useState(false)
   const models = mergeModels(settings.modelList).filter((m) => !/pro/.test(m) || m === settings.geminiModel)
   return (
     <div className="flex flex-col gap-3">
@@ -29,7 +31,7 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
       </div>
       <div className="glass rounded-[20px] p-4">
         <div className="text-[15px] font-semibold">Usar otra clave de Gemini</div>
-        <div className="txt-sub mt-0.5 text-[12.5px] leading-snug">Por ejemplo, una de pago, que no se satura. Se guarda solo en este teléfono.</div>
+        <div className="txt-sub mt-0.5 text-[12.5px] leading-snug">Por ejemplo, una de pago, que no se satura. Se guarda solo en este teléfono; para cambiarla te pediremos el patrón, PIN o huella.</div>
         <input
           type="password"
           value={key}
@@ -45,10 +47,16 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
           style={{ color: 'var(--tx)' }}
         />
         <button
-          onClick={() => {
+          onClick={async () => {
+            // Cambiar una clave que ya existe exige confirmar con el bloqueo del teléfono (D-02).
+            if (settings.geminiKey && key.trim() !== settings.geminiKey) {
+              const r = await confirmIdentity('Para cambiar tu clave de Gemini')
+              if (!r.ok) return setDenied(true)
+            }
             update({ geminiKey: key.trim() })
             clearExhausted() // las cuotas agotadas eran de la clave anterior
             setKey('')
+            setDenied(false)
             setKeySaved(true)
           }}
           disabled={key.trim().length < 20}
@@ -56,6 +64,7 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
         >
           {keySaved ? 'Clave cambiada ✓' : 'Usar esta clave'}
         </button>
+        {denied && <div className="txt-sub mt-1.5 text-center text-[12.5px]">No se confirmó tu identidad: la clave no se cambió.</div>}
       </div>
     </div>
   )

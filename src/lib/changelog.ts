@@ -37,6 +37,7 @@ export const RELEASES: Release[] = [
       'Pantallas pequeñas (p. ej. Galaxy A11) y en horizontal se ven bien',
       'Palabras: nada se sale de las tarjetas',
       'Tu clave de Gemini ya no entra en las copias automáticas de Android',
+      'Para ver o cambiar tu clave de Gemini se pide el patrón, PIN o huella del teléfono',
     ],
   },
   {

@@ -41,6 +41,9 @@ Actúa como desarrollador senior Android/UX y QA. Resuelve cada NC sobre la vers
 - **Actual:** "Re-test disponible el 1 de noviembre".
 - **Esperado:** "**Nuevo test disponible el** 1 de noviembre" (misma fecha, mismo formato).
 
+### NC-25 | Confirmación con el bloqueo del teléfono para la clave
+- **Esperado:** para **ver** o **cambiar** la clave de Gemini se pide como confirmación secundaria el patrón (o PIN/huella) del teléfono.
+
 **Verificación:** capturas del panel de Ajustes en 360×780 sin scroll, y navegación a Mi nivel, Mi perfil (con Mis datos), Profe y voz y el resumen de un test.
 
 ---
@@ -60,6 +63,8 @@ APK: `apk/Habla-v5.7.apk` (misma versión 5.7, build 32, nuevo rebuild con todo 
 | NC-22 | Antes de la fecha, la etiqueta dice "**Nuevo test el 30 oct**". Cuando ya toca, se convierte en un botón resaltado "**¡Toca aquí para revalidar tu nivel!**" que abre el test directamente (sin pasar por Mi nivel). |
 | NC-23 | Cada test de "Tus tests de nivel" muestra la fecha, el nivel y un **mini resumen**: "Gramática 14/20 · Lectura 9/12 · Audición 9/12 · Habla B1", más "Ver el resumen completo y guardarlo". Al tocarlo se abre el **resumen final**: la fórmula como fracción, cómo te fue en cada texto y audio (aciertos), tu habla por criterio con su justificación, lo que haces bien, qué trabajar y cada pregunta con tu respuesta y la correcta (plegado por partes). Botón **Guardar el resumen**: lo guarda como texto en Documentos/Habla y abre Compartir (Drive, WhatsApp, correo…). El resumen se guarda **automáticamente con cada test** desde esta versión; los tests anteriores muestran lo que se guardó entonces y lo indican. |
 | NC-24 | El botón dice "**Nuevo test disponible el 30 de octubre**" (y, cuando ya toca, "Hacer el nuevo test de nivel"). |
+
+| NC-25 | Plugin nativo propio `DeviceAuthPlugin`: Android 11+ abre el diálogo del sistema (BiometricPrompt) con huella **o** patrón/PIN/contraseña; Android 7–10, la pantalla de confirmación de credencial del sistema. Se pide al tocar el ojo para **ver** la clave y al **guardar una clave distinta** (en Gemini y en el aviso/la pantalla de error con otra clave). El campo de la clave ya **no viene relleno**: muestra «Clave guardada · termina en …XXXX» y solo se carga tras confirmar. Comprobar la clave actual no lo pide. Tras confirmar no se vuelve a pedir durante 1 minuto. Si el teléfono no tiene bloqueo, deja pasar y avisa de que conviene ponerlo. La primera vez que se escribe la clave (bienvenida) no se pide, porque no hay ninguna que proteger. Comprobado en el Poco X6: al tocar el ojo se abre el diálogo de seguridad del sistema (Android no permite capturarlo). |
 
 **Evidencia:** `docs/evidencia-v5.7/17-a11-ajustes-resumen-nivel.jpg` (panel sin scroll en 360×780, con la invitación de la mascota y "Nuevo test el 30 oct"), `18-a11-mi-nivel-detalle.jpg`, `19-a11-mis-tests-mini-resumen.jpg` (tests con mini resumen y el nuevo texto del botón) y `20-a11-resumen-completo-test.jpg` (resumen completo). Comprobado en vista previa: Mi perfil contiene Mis datos y la bienvenida, Gemini contiene Diagnóstico y la tarjeta superior abre Mi nivel.
 

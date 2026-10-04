@@ -42,6 +42,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Micrófono: Capacitor lo pide en tiempo de ejecución cuando el WebView llama a getUserMedia -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Confirmar con huella o bloqueo del teléfono antes de ver o cambiar la clave de Gemini. -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- Android 12+: usar el micrófono de unos auriculares Bluetooth (se pide al elegirlos) -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />

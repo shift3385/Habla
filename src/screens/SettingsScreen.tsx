@@ -7,6 +7,8 @@ import { askNotificationPermission } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import SkillProgressCard from '../components/SkillProgressCard'
+import { Capacitor } from '@capacitor/core'
+import { confirmIdentity, INSECURE_HINT } from '../lib/deviceAuth'
 import TestSummaryView from '../components/TestSummaryView'
 import { miniSummary } from '../lib/testSummary'
 import { APP_VERSION } from '../lib/changelog'
@@ -535,8 +537,27 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
 const KNOWN_IDS = new Set(KNOWN_MODELS)
 
 function GeminiPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
-  const [key, setKey] = useState(settings.geminiKey)
+  // La clave guardada no se carga en el campo: solo tras confirmar con el bloqueo del teléfono (D-02).
+  const [key, setKey] = useState('')
   const [show, setShow] = useState(false)
+  const saved = settings.geminiKey
+  const ending = saved ? saved.slice(-4) : ''
+
+  /** El ojo: con el campo vacío muestra la clave guardada, previa confirmación con patrón/PIN/huella. */
+  const toggleShow = async () => {
+    if (show) {
+      setShow(false)
+      if (key === saved) setKey('') // se vuelve a ocultar del todo
+      return
+    }
+    if (!key && saved) {
+      const r = await confirmIdentity('Para ver tu clave de Gemini')
+      if (!r.ok) return setStatus({ kind: 'error', text: 'No se confirmó tu identidad: la clave sigue oculta.' })
+      if (r.insecure && Capacitor.getPlatform() === 'android') setStatus({ kind: 'info', text: INSECURE_HINT })
+      setKey(saved)
+    }
+    setShow(true)
+  }
   const [status, setStatus] = useState<Status>(null)
   const [checking, setChecking] = useState(false)
   const [listStatus, setListStatus] = useState<Status>(null)
@@ -584,7 +605,14 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
   }
 
   const save = async () => {
-    const k = key.trim()
+    // Campo vacío: se comprueba la clave guardada (sin verla ni cambiarla).
+    const k = key.trim() || saved
+    if (!k) return setStatus({ kind: 'error', text: 'Pega tu clave de Gemini.' })
+    // Cambiar una clave que ya existe exige confirmar con el bloqueo del teléfono.
+    if (saved && k !== saved) {
+      const r = await confirmIdentity('Para cambiar tu clave de Gemini')
+      if (!r.ok) return setStatus({ kind: 'error', text: 'No se confirmó tu identidad: la clave no se cambió.' })
+    }
     if (k !== settings.geminiKey) clearExhausted() // clave nueva: otras cuotas
     update({ geminiKey: k })
     setChecking(true)
@@ -623,7 +651,7 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
     <>
       <Card>
         <div className="txt-sub text-[13px] leading-snug">
-          Consigue tu clave en aistudio.google.com → "Get API key". Se guarda solo en este teléfono y no se incluye en las copias de seguridad.
+          Consigue tu clave en aistudio.google.com → "Get API key". Se guarda solo en este teléfono y no se incluye en las copias de seguridad. Para verla o cambiarla te pediremos el patrón, PIN o huella del teléfono.
         </div>
         <div className="txt-sub mt-3 text-xs tracking-[1px]">GEMINI_API_KEY</div>
         <div className="relative mt-2">
@@ -631,16 +659,16 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
             type={show ? 'text' : 'password'}
             value={key}
             onChange={(e) => setKey(e.target.value)}
-            placeholder="AIza…"
+            placeholder={saved ? `Clave guardada · termina en …${ending}` : 'AIza…'}
             autoComplete="off"
             className="input pr-[52px]"
           />
-          <button onClick={() => setShow((s) => !s)} className="txt-sub absolute top-1.5 right-1.5 grid h-[38px] w-[38px] place-items-center rounded-full" aria-label="Mostrar u ocultar la clave">
+          <button onClick={toggleShow} className="txt-sub absolute top-1.5 right-1.5 grid h-[38px] w-[38px] place-items-center rounded-full" aria-label="Mostrar u ocultar la clave">
             <Icon name="eye" size={18} />
           </button>
         </div>
         <button onClick={save} disabled={checking} className="btn-acc mt-2.5 h-[50px] w-full rounded-[25px] text-[15px]">
-          {checking ? 'Comprobando…' : 'Guardar y comprobar'}
+          {checking ? 'Comprobando…' : key.trim() && key.trim() !== saved ? 'Guardar y comprobar' : saved ? 'Comprobar mi clave' : 'Guardar y comprobar'}
         </button>
         <StatusLine s={status} />
       </Card>
