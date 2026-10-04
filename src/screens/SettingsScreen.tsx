@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, importBackup } from '../lib/backup'
-import type { Profile } from '../lib/db'
+import type { CalibrationRecord, Profile } from '../lib/db'
 import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel, type NetLog } from '../lib/gemini'
 import { Share } from '@capacitor/share'
 import { askNotificationPermission } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import SkillProgressCard from '../components/SkillProgressCard'
+import TestSummaryView from '../components/TestSummaryView'
+import { miniSummary } from '../lib/testSummary'
 import { APP_VERSION } from '../lib/changelog'
 import { levelAt, levelIdx, nextRetestAt, trajectoryOf } from '../lib/levels'
 import { getProfile } from '../lib/profile'
@@ -24,7 +26,7 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   voice: { title: 'Profe y voz', icon: 'mic' },
   look: { title: 'Tema y mascota', icon: 'palette' },
   goal: { title: 'Meta diaria', icon: 'target' },
-  profile: { title: 'Mi perfil', icon: 'pencil' },
+  profile: { title: 'Mi perfil y datos', icon: 'pencil' },
   level: { title: 'Mi nivel', icon: 'bars' },
   gemini: { title: 'Gemini', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
@@ -73,95 +75,130 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
         {page === 'look' && <LookPage settings={settings} update={update} />}
         {page === 'goal' && <GoalPage settings={settings} update={update} />}
         {page === 'profile' && profile && (
-          <Card>
-            <ProfileForm submitLabel="Guardar mi perfil" onSaved={(p) => setProfile(p)} />
-          </Card>
+          <>
+            <Card>
+              <ProfileForm submitLabel="Guardar mi perfil" onSaved={(p) => setProfile(p)} />
+            </Card>
+            <div className="txt-sub mt-1 px-1 text-sm">Mis datos</div>
+            <DataPage onImported={() => getProfile().then(setProfile)} />
+            <button onClick={() => update({ onboarded: false })} className="txt-sub h-10 text-sm underline underline-offset-[3px]">
+              Ver la bienvenida otra vez
+            </button>
+          </>
         )}
         {page === 'level' && profile && <LevelPage profile={profile} onRetest={onRetest} />}
-        {page === 'gemini' && <GeminiPage settings={settings} update={update} />}
+        {page === 'gemini' && (
+          <>
+            <GeminiPage settings={settings} update={update} />
+            <button onClick={() => setPage('diag')} className="glass flex h-[58px] items-center gap-3 rounded-[29px] px-2.5 text-left">
+              <span className="field txt-acc2 grid h-[40px] w-[40px] flex-none place-items-center rounded-full">
+                <Icon name="chart" size={18} stroke={1.6} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold">Diagnóstico</span>
+                <span className="txt-sub block text-[12.5px]">Velocidad de Gemini y errores recientes</span>
+              </span>
+              <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
+            </button>
+          </>
+        )}
         {page === 'diag' && <DiagPage />}
         {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
       </div>
     )
   }
 
-  const tiles: { page: Page; value: string }[] = [
-    { page: 'voice', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×` },
-    { page: 'look', value: `${THEME_INFO[settings.theme].mascotName} · ${THEME_INFO[settings.theme].name}` },
-    { page: 'goal', value: `${settings.dailyGoalMinutes} min al día` },
-    { page: 'profile', value: profile?.name ?? '' },
-    { page: 'level', value: `Nivel ${profile?.levels.overall ?? '—'} · tests y progreso` },
-    { page: 'gemini', value: settings.geminiKey ? settings.geminiModel : 'Falta la clave' },
-    { page: 'data', value: 'Exportar o importar' },
+  // Cada opción muestra en grande lo que tienes elegido ahora y, en pequeño, de qué sección se trata.
+  const theme = THEME_INFO[settings.theme]
+  const tiles: { key: string; icon: IconName; value: string; label: string; onClick: () => void }[] = [
+    { key: 'voice', icon: 'mic', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×`, label: 'Profe y voz', onClick: () => setPage('voice') },
+    {
+      key: 'look',
+      icon: settings.mode === 'dark' ? 'moon' : 'sun',
+      value: `${theme.mascotName} · ${theme.name}`,
+      label: 'Tema y mascota',
+      onClick: () => setPage('look'),
+    },
+    { key: 'goal', icon: 'target', value: `${settings.dailyGoalMinutes} min al día`, label: 'Meta diaria', onClick: () => setPage('goal') },
+    { key: 'profile', icon: 'pencil', value: profile?.name || 'Tu perfil', label: 'Mi perfil y datos', onClick: () => setPage('profile') },
+    {
+      key: 'gemini',
+      icon: 'key',
+      value: settings.geminiKey ? settings.geminiModel.replace('gemini-', 'Gemini ') : 'Falta la clave',
+      label: 'Gemini',
+      onClick: () => setPage('gemini'),
+    },
+    { key: 'about', icon: 'info', value: `Versión ${APP_VERSION}`, label: 'Acerca de Habla', onClick: onOpenAbout },
   ]
+  const retestAt = profile ? nextRetestAt(profile) : null
+  const days = retestAt ? Math.ceil((retestAt - Date.now()) / 86400000) : null
 
   return (
     <div className="anim-up flex flex-col gap-3">
-      <div className="flex h-[54px] items-center text-[28px] font-semibold tracking-[-.6px]">Ajustes</div>
-      <button onClick={() => setPage('voice')} className="glass flex items-center gap-1.5 rounded-[28px] py-1.5 pr-4 pl-1 text-left">
-        <Mascot element={THEME_INFO[settings.theme].mascot} size={70} />
-        <span className="min-w-0 flex-1">
-          <span className="block text-lg font-semibold">{teacher.name}</span>
-          <span className="txt-sub block text-[13px]">
-            Tu profe · nivel {profile?.levels.overall ?? '—'} · meta {settings.dailyGoalMinutes} min
-          </span>
-        </span>
-        <span className="flex h-[34px] items-center rounded-[17px] px-3 text-[13px]" style={{ border: '1px solid var(--gb)' }}>
-          Cambiar
-        </span>
-      </button>
+      <div className="flex h-[48px] items-center text-[28px] font-semibold tracking-[-.6px]">Ajustes</div>
+      {/* Resumen de tu nivel, contado por la mascota: tócalo para ver Mi nivel; con el re-test disponible, la
+          etiqueta invita a revalidar el nivel y lo abre directamente. */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setPage('level')}
+        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setPage('level')}
+        className="glass cursor-pointer rounded-[28px] p-3.5 text-left"
+        aria-label="Ver los detalles de mi nivel"
+      >
+        <div className="flex items-center gap-2">
+          <div className="relative flex-none">
+            <Mascot element={theme.mascot} size={58} mood="happy" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="txt-sub text-[12.5px]">{theme.mascotName}: tu nivel es</div>
+            <div className="text-[38px] leading-none font-semibold tracking-[-1.2px]" style={{ color: 'var(--acc)' }}>
+              {profile?.levels.overall ?? '—'}
+            </div>
+          </div>
+          {days !== null && days <= 0 ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onRetest()
+              }}
+              className="btn-acc max-w-[46%] flex-none rounded-[16px] px-3 py-1.5 text-center text-[12.5px] leading-tight font-semibold"
+            >
+              ¡Toca aquí para revalidar tu nivel!
+            </button>
+          ) : (
+            <span className="flex-none rounded-full px-2.5 py-1 text-[11.5px]" style={{ border: '1px solid var(--gb)' }}>
+              {days === null ? 'Sin test todavía' : `Nuevo test el ${new Date(retestAt!).toLocaleDateString('es', { day: 'numeric', month: 'short' })}`}
+            </span>
+          )}
+        </div>
+        {profile && (
+          <div className="mt-2.5">
+            <SkillProgressCard levels={profile.levels} title="" bare />
+          </div>
+        )}
+        {/* La mascota invita a tocar para ver el detalle. */}
+        <div className="txt-acc2 mt-2.5 flex items-center justify-center gap-1 rounded-[14px] py-1.5 text-[13px] font-medium" style={{ background: 'var(--field)' }}>
+          {theme.mascotName}: toca aquí y te cuento los detalles de tu nivel
+          <Icon name="chevR" size={13} stroke={2} />
+        </div>
+      </div>
       <div className="grid grid-cols-2 gap-2.5">
         {tiles.map((x) => (
-          <button
-            key={x.page}
-            onClick={() => setPage(x.page)}
-            className="glass flex h-[108px] flex-col justify-between rounded-[26px] p-3.5 text-left"
-          >
-            <span className="flex w-full justify-between">
-              <span className="field txt-acc2 grid h-[38px] w-[38px] place-items-center rounded-full">
-                <Icon name={x.page === 'look' ? (settings.mode === 'dark' ? 'moon' : 'sun') : PAGES[x.page].icon} size={18} stroke={1.6} />
+          <button key={x.key} onClick={x.onClick} className="glass flex h-[86px] flex-col justify-between rounded-[24px] px-3.5 py-3 text-left">
+            <span className="flex w-full items-center justify-between">
+              <span className="field txt-acc2 grid h-[32px] w-[32px] place-items-center rounded-full">
+                <Icon name={x.icon} size={16} stroke={1.6} />
               </span>
-              <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
+              <Icon name="chevR" size={15} stroke={1.8} color="var(--sub)" />
             </span>
             <span className="w-full min-w-0">
-              <span className="block text-[15px] font-semibold">{PAGES[x.page].title}</span>
-              <span className="txt-sub block truncate text-[12.5px]">{x.value}</span>
+              <span className="block truncate text-[15px] leading-tight font-semibold">{x.value}</span>
+              <span className="txt-sub block truncate text-[12px]">{x.label}</span>
             </span>
           </button>
         ))}
       </div>
-      <button onClick={onOpenAbout} className="glass flex h-[62px] items-center gap-3 rounded-[31px] px-2.5 text-left">
-        <span className="field txt-acc2 grid h-[42px] w-[42px] flex-none place-items-center rounded-full">
-          <Icon name="info" size={19} stroke={1.6} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-[15px] font-semibold">Acerca de Habla</span>
-          <span className="txt-sub block text-[12.5px]">
-            Versión {APP_VERSION} · novedades, privacidad y ayuda
-          </span>
-        </span>
-        <span className="txt-sub pr-2">
-          <Icon name="chevR" size={16} stroke={1.8} />
-        </span>
-      </button>
-      <button onClick={() => setPage('diag')} className="glass flex h-[62px] items-center gap-3 rounded-[31px] px-2.5 text-left">
-        <span className="field txt-acc2 grid h-[42px] w-[42px] flex-none place-items-center rounded-full">
-          <Icon name="chart" size={19} stroke={1.6} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-[15px] font-semibold">Diagnóstico</span>
-          <span className="txt-sub block text-[12.5px]">Velocidad de Gemini y errores recientes</span>
-        </span>
-        <span className="txt-sub pr-2">
-          <Icon name="chevR" size={16} stroke={1.8} />
-        </span>
-      </button>
-      <button
-        onClick={() => update({ onboarded: false })}
-        className="txt-sub h-10 text-sm underline underline-offset-[3px]"
-      >
-        Ver la bienvenida otra vez
-      </button>
     </div>
   )
 }
@@ -408,6 +445,8 @@ const SKILL_ES: Record<string, string> = {
 /** Solo lectura: el nivel lo fija el test y cambia con la práctica y los re-tests. */
 function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => void }) {
   const [now] = useState(() => Date.now())
+  const [open, setOpen] = useState<CalibrationRecord | null>(null)
+  if (open) return <TestSummaryView record={open} onBack={() => setOpen(null)} />
   const retestAt = nextRetestAt(profile)
   const canRetest = !retestAt || now >= retestAt
   const fmt = (ts: number) => new Date(ts).toLocaleDateString('es', { day: 'numeric', month: 'long' })
@@ -466,20 +505,28 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
         <Card>
           <div className="txt-sub mb-2 text-sm">Tus tests de nivel</div>
           {[...profile.tests!].reverse().map((tst, i) => (
-            <div key={i} className="py-1.5 text-sm tabular-nums" style={{ borderTop: i ? '1px solid var(--gb)' : 0 }}>
-              <div className="flex items-center justify-between gap-2">
-                <span>{fmt(tst.date)}</span>
-                <b className="txt-acc2">{tst.levels.overall}</b>
-              </div>
-              <div className="txt-sub text-[12.5px]">
-                Gram. {tst.levels.grammar} · Lect. {tst.levels.reading} · Aud. {tst.levels.listening} · Habla {tst.levels.speaking}
-              </div>
-            </div>
+            // Cómo fue el test (aciertos por parte); al tocarlo, el resumen completo, que también se puede guardar.
+            <button
+              key={i}
+              onClick={() => setOpen(tst)}
+              className="flex w-full items-center gap-2 py-2 text-left text-sm tabular-nums"
+              style={{ borderTop: i ? '1px solid var(--gb)' : 0 }}
+            >
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center justify-between gap-2">
+                  <span className="font-medium">{fmt(tst.date)}</span>
+                  <b className="txt-acc2">{tst.levels.overall}</b>
+                </span>
+                <span className="txt-sub block text-[12.5px] leading-snug">{miniSummary(tst)}</span>
+                <span className="txt-acc2 mt-0.5 block text-[12px]">Ver el resumen completo{tst.summary ? ' y guardarlo' : ''}</span>
+              </span>
+              <Icon name="chevR" size={15} stroke={1.8} color="var(--sub)" />
+            </button>
           ))}
         </Card>
       )}
       <button onClick={onRetest} disabled={!canRetest} className="btn-acc h-[52px] rounded-full text-[15px]">
-        {canRetest ? 'Hacer el re-test de nivel' : `Re-test disponible el ${fmt(retestAt!)}`}
+        {canRetest ? 'Hacer el nuevo test de nivel' : `Nuevo test disponible el ${fmt(retestAt!)}`}
       </button>
     </>
   )

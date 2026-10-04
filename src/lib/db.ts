@@ -1,5 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
 import type { StudyPlan } from './plan'
+import type { TestSummary } from './testSummary'
 
 export type MistakeCategory =
   | 'article'
@@ -147,6 +148,8 @@ export interface CalibrationRecord {
   bankIds?: string[]
   bankVersion?: number
   model?: string
+  /** Resumen final del test (aciertos por parte, cada pregunta y el habla) para verlo y guardarlo luego. */
+  summary?: TestSummary
 }
 
 export interface LevelEvent {

@@ -4,6 +4,7 @@ import { askGemini, withRetry, type GeminiPart, type JsonSchema, type Models, ty
 import { LEVELS, levelAt, levelIdx, needsRecalibration, overallFrom, trajectoryOf, weightedLevel, type Level } from './levels'
 import { medianLevel, SPEAK_CRITERIA, type BlockResult, type Confidence, type GrammarAnswer, type SpeakCriterion } from './placement'
 import { getProfile } from './profile'
+import type { TestSummary } from './testSummary'
 
 // Test de nivel: las preguntas salen del banco (sin tokens); Gemini solo corrige el habla, con rúbrica y temperatura 0.
 
@@ -213,6 +214,8 @@ export interface CalibrationResult {
   listening: BlockResult[]
   /** Re-test: niveles anteriores, para mostrar el antes → después. */
   prev?: Record<Skill | 'overall', Level>
+  /** Resumen final que se guarda con el test. */
+  summary?: TestSummary
 }
 
 export function buildLevels(grammar: Level, reading: Level, listening: Level, speaking: Level): Record<Skill | 'overall', Level> {
@@ -253,6 +256,7 @@ export async function saveCalibration(r: CalibrationResult, used: BankItem[], mo
     summaryEs: r.speaking.summaryEs,
     grammarAnswers: r.grammar.map((a) => ({ level: a.item.level, correct: a.correct, unknown: a.unknown, point: a.item.point })),
     bankIds: used.map((i) => i.id),
+    summary: r.summary,
     bankVersion: BANK_VERSION,
     model,
   }

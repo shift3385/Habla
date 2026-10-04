@@ -46,6 +46,7 @@ import {
   type SpeakCriterion,
 } from '../lib/placement'
 import { getProfile } from '../lib/profile'
+import { buildSummary } from '../lib/testSummary'
 import { clearDraft, loadDraft, saveDraft, type TestDraft } from '../lib/testDraft'
 import { MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
@@ -619,7 +620,8 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
       // Habla: alta con las 3 tareas evaluadas y criterios coherentes (a un nivel de distancia); baja si faltó alguna.
       speaking: pairs.length < 3 ? 'low' : pre.every(Boolean) && Math.max(...crit) - Math.min(...crit) <= 1 ? 'high' : 'medium',
     }
-    const r: CalibrationResult = { ...fin, testLevels, confidence, speaking: ev, grammar: gAnswers, reading: blocks.reading, listening: blocks.listening }
+    const summary = buildSummary(gAnswers, blocks, { level: ev.level, criteria: ev.criteria, reasons: ev.reasonsEs as Record<string, string> })
+    const r: CalibrationResult = { ...fin, testLevels, confidence, speaking: ev, grammar: gAnswers, reading: blocks.reading, listening: blocks.listening, summary }
     const usedItems = d.usedIds.map((id) => BANK.find((i) => i.id === id)).filter((i): i is BankItem => !!i)
     await saveCalibration(r, usedItems, live.current.geminiModel)
     update({ ttsRate: rateForLevel(r.levels.overall) })
