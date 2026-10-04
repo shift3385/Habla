@@ -93,7 +93,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   return (
     <div className="anim-up flex flex-col gap-3">
       <div className="flex h-[54px] items-center text-[28px] font-semibold tracking-[-.6px]">Palabras</div>
-      <div className="glass rounded-[28px] p-4">
+      <div className="glass min-w-0 rounded-[28px] p-4">
         <div className="txt-sub text-[13px] leading-snug">
           No es un traductor literal: te explica qué significa <b>en la frase donde la viste</b>. También al revés: escribe una palabra en español y te dice cómo se diría en inglés ahí.
         </div>
@@ -102,7 +102,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && ask()}
           placeholder='Palabra o expresión (p. ej. "run into")'
-          className="input mt-3"
+          className="input mt-3 w-full min-w-0"
           autoCapitalize="none"
         />
         <textarea
@@ -110,7 +110,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
           onChange={(e) => setContext(e.target.value)}
           placeholder="¿En qué frase la viste? (opcional, pero mejora mucho la respuesta)"
           rows={2}
-          className="input mt-2 h-auto resize-none py-3 leading-snug"
+          className="input mt-2 h-auto w-full min-w-0 resize-none py-3 leading-snug"
         />
         <button onClick={ask} disabled={!query.trim() || loading} className="btn-acc mt-2.5 h-[50px] w-full rounded-[25px] text-[15px]">
           {loading ? 'Consultando…' : 'Consultar'}
@@ -136,12 +136,12 @@ export default function WordsScreen({ settings, registerBack }: Props) {
           />
           <div className="flex flex-col gap-2">
             {list.map((h) => (
-              <button key={h.id} onClick={() => setCurrent(h)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-2.5 text-left">
+              <button key={h.id} onClick={() => setCurrent(h)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left">
+                {/* Palabra, traducción y frase en líneas propias: nada se sale de la tarjeta (NC-08). */}
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15px] font-semibold">
-                    {h.result.headword} <span className="txt-sub font-normal">· {h.result.translation}</span>
-                  </span>
-                  {h.context && <span className="txt-sub block truncate text-[12.5px] italic">"{h.context}"</span>}
+                  <span className="block text-[15px] leading-tight font-semibold break-words">{h.result.headword}</span>
+                  <span className="txt-acc2 mt-0.5 line-clamp-2 block text-[13.5px] leading-snug break-words">{h.result.translation}</span>
+                  {h.context && <span className="txt-sub mt-1 line-clamp-2 block text-[12px] leading-snug break-words italic">"{h.context}"</span>}
                 </span>
                 {h.saved && (
                   <span className="txt-acc2">

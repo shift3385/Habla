@@ -66,7 +66,7 @@ export default function PrepareScreen({ kind, state, mascot, teacherName, title,
   if (!error) for (let k = Math.max(0, tick - 3); k <= tick; k++) live.push(k)
 
   return (
-    <div className="relative z-[2] flex h-full flex-col items-center justify-center px-7">
+    <div className="land-tall relative z-[2] flex h-full flex-col items-center justify-center px-7">
       <div className="relative grid h-[330px] w-[330px] place-items-center">
         <div
           className="ld-ring absolute h-[250px] w-[250px] rounded-full"

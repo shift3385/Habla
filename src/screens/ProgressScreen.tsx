@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ReportView from '../components/ReportView'
 import TrendChart from '../components/TrendChart'
-import { db, type Correction, type Session } from '../lib/db'
+import { db, turnCorrections, type Correction, type Session } from '../lib/db'
 import { getScenario } from '../lib/scenarios'
 import type { Settings } from '../lib/settings'
 import { errorSummary, loadDashboard, weekMinutes, wordsCollected, type Dashboard, type ErrorSummary } from '../lib/stats'
@@ -59,7 +59,7 @@ export default function ProgressScreen({
 
   const openSession = async (s: Session) => {
     const turns = await db.turns.where('sessionId').equals(s.id!).toArray()
-    setOpen({ s, corrections: turns.map((t) => t.correction).filter((c): c is Correction => !!c) })
+    setOpen({ s, corrections: turns.flatMap(turnCorrections) })
   }
 
   if (open) {

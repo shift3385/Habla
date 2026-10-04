@@ -3,7 +3,7 @@ import type { Settings } from './settings'
 
 // Avisos que la mascota cuenta antes del Inicio (pantalla NoticeGate).
 
-export type Notice = 'news' | 'homework' | 'retest' | 'recalibrate' | 'companions'
+export type Notice = 'savedClass' | 'news' | 'homework' | 'retest' | 'recalibrate' | 'companions'
 
 /** Día local (AAAA-MM-DD) para recordar "Más tarde" hasta mañana. */
 export function todayKey() {
@@ -12,8 +12,10 @@ export function todayKey() {
 }
 
 /** Avisos que toca enseñar antes del Inicio, en este orden. */
-export function pendingNotices(s: Settings, o: { retestReady: boolean; recalibrate?: boolean; streak: number; homeworkDate?: number }): Notice[] {
+export function pendingNotices(s: Settings, o: { savedClass?: boolean; retestReady: boolean; recalibrate?: boolean; streak: number; homeworkDate?: number }): Notice[] {
   const list: Notice[] = []
+  // Una clase quedó guardada al cerrar la app: lo primero, la mascota ofrece continuarla (NC-16).
+  if (o.savedClass) list.push('savedClass')
   if (s.lastSeenVersion !== APP_VERSION) list.push('news')
   if (o.homeworkDate && o.homeworkDate !== s.homeworkSeen) list.push('homework')
   // Mientras el test esté disponible, la mascota lo recuerda cada vez que abres la app.

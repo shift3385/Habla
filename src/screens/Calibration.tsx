@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { BANK, BANK_VERSION, type BankItem, type BankQuestion, type BankUsage, type GrammarItem, type ListeningItem, type Speaker } from '../lib/bank'
+import { BANK, BANK_VERSION, scriptSeconds, type BankItem, type BankQuestion, type BankUsage, type GrammarItem, type ListeningItem, type Speaker } from '../lib/bank'
 import {
   assessSpeakingTask,
   buildLevels,
@@ -15,6 +15,8 @@ import {
 } from '../lib/calibration'
 import GeminiFix from '../components/GeminiFix'
 import MascotPage from '../components/MascotPage'
+import SkillProgressCard from '../components/SkillProgressCard'
+import Fraction from '../components/Fraction'
 import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
 import type { Profile, Skill } from '../lib/db'
 import { friendlyError } from '../lib/errors'
@@ -63,7 +65,7 @@ type Step =
   | { k: 'section'; s: Skill }
   | { k: 'grammar' }
   | { k: 'block'; kind: Kind; n: number }
-  | { k: 'review'; n: number }
+  | { k: 'review'; kind: Kind | 'grammar'; n: number } // resumen al final de cada test (NC-01)
   | { k: 'speaking'; i: number }
   | { k: 'deciding' }
   | { k: 'prep'; kind: PrepareKind; title: string; state: PrepareState; error?: string; retry?: () => void }
@@ -361,9 +363,8 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
       // Las preguntas que no llegaron a salir no cuentan como vistas.
       const asked = new Set(next.map((a) => a.item.id))
       used.current = used.current.filter((i) => i.skill !== 'grammar' || asked.has(i.id))
-      const g = grammarLevel(next)
-      setGLevel(g)
-      startBlock('reading', 0, readingStart(g), [])
+      setGLevel(grammarLevel(next))
+      setStep({ k: 'review', kind: 'grammar', n: 0 })
     }
   }
 
@@ -392,13 +393,8 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     if (!item) return
     const correct = item.questions.map((q, qi) => checkQuestion(q, cur[qi], false))
     const res: BlockResult = { item, level: itemLevel, answers: [...cur], correct }
-    const list = [...blocks.reading, res]
-    setBlocks((b) => ({ ...b, reading: list }))
-    if (n === 0) startBlock('reading', 1, nextBlockLevel(itemLevel, blockScore(res)), [item.topic])
-    else {
-      const r = blocksLevel(list).level
-      startBlock('listening', 0, listeningStart(gLevel, r), [])
-    }
+    setBlocks((b) => ({ ...b, reading: [...b.reading, res] }))
+    setStep({ k: 'review', kind: 'reading', n })
   }
 
   const playScript = async (it: ListeningItem) => {
@@ -443,15 +439,19 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     const late = item.questions.map((_, qi) => snap[qi] === null && curRef.current[qi] !== null)
     const res: BlockResult = { item, level: itemLevel, answers: snap, correct, plays: Math.max(1, plays), late }
     setBlocks((b) => ({ ...b, listening: [...b.listening, res] }))
-    setStep({ k: 'review', n })
+    setStep({ k: 'review', kind: 'listening', n })
   }
 
-  const afterReview = (n: number) => {
-    const list = blocks.listening
+  /** Tras el resumen de cada parte, lo siguiente según las reglas del test. */
+  const afterReview = (kind: Kind | 'grammar', n: number) => {
+    if (kind === 'grammar') return startBlock('reading', 0, readingStart(gLevel), [])
+    const list = blocks[kind]
     if (n === 0) {
       const res = list[0]
-      startBlock('listening', 1, nextBlockLevel(res.level, blockScore(res)), [res.item.topic])
-    } else startSpeaking()
+      return startBlock(kind, 1, nextBlockLevel(res.level, blockScore(res)), [res.item.topic])
+    }
+    if (kind === 'reading') startBlock('listening', 0, listeningStart(gLevel, blocksLevel(list).level), [])
+    else startSpeaking()
   }
 
   // ---- 4. Habla
@@ -783,7 +783,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
           <Header section={2} />
           <div key={`l${n}`} className="anim-in no-scrollbar -mx-1 flex min-h-0 flex-1 flex-col overflow-y-auto px-1">
             <div className="txt-sub text-sm">
-              Audio {n + 1} de 2 · {item.speakers.length > 1 ? `${item.speakers.length} voces` : 'una voz'}
+              Audio {n + 1} de 2 · {item.speakers.length > 1 ? `${item.speakers.length} voces` : 'una voz'} · dura unos {fmtDuration(audioSeconds(item))}
             </div>
             <div className="glass mt-3 rounded-[24px] p-4">
               {inPreview ? (
@@ -855,54 +855,62 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     }
   }
 
-  // Revisión tras cada audio: la respuesta correcta y qué contó como "No sé" por llegar tarde.
+  // Resumen al final de cada test (gramática, cada texto y cada audio): pregunta, tu respuesta y la correcta (NC-01).
   if (step.k === 'review') {
-    const b = blocks.listening[step.n]
-    if (!b) return null
+    const { kind, n } = step
+    const rows: ReviewRow[] =
+      kind === 'grammar'
+        ? gAnswers.map((g) => ({
+            prompt: g.item.format === 'short' ? `${g.item.prompt} (${g.item.hint})` : g.item.prompt,
+            given: g.unknown ? 'No sé' : g.item.format === 'mc' ? g.item.options[g.value as number] : String(g.value),
+            correct: g.item.format === 'mc' ? g.item.options[g.item.key] : g.item.accepted[0],
+            ok: g.correct,
+          }))
+        : (() => {
+            const b = blocks[kind][n]
+            if (!b) return []
+            return b.item.questions.map((q, qi) => ({
+              prompt: q.prompt,
+              given: givenText(q, b.answers[qi]),
+              correct: correctText(q),
+              ok: b.correct[qi],
+              late: b.late?.[qi],
+            }))
+          })()
+    const okCount = rows.filter((r) => r.ok).length
+    const b = kind === 'grammar' ? null : blocks[kind][n]
+    const what = kind === 'grammar' ? 'la gramática' : kind === 'reading' ? `el texto ${n + 1}` : `el audio ${n + 1}`
+    const next =
+      kind === 'grammar'
+        ? 'Pasar a la lectura'
+        : n === 0
+          ? kind === 'reading'
+            ? 'Siguiente texto'
+            : 'Siguiente audio'
+          : kind === 'reading'
+            ? 'Pasar a la audición'
+            : 'Pasar a la parte de habla'
     return (
       <div className={pad}>
-        <Header section={2} />
-        <div className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <Header section={SECTION_IDX[kind]} />
+        <div key={`${kind}${n}`} className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="flex items-center gap-3">
-            <Mascot element={mascot} size={64} mood={blockScore(b) >= 4 ? 'happy' : 'idle'} />
-            <div>
+            <Mascot element={mascot} size={64} mood={okCount / Math.max(1, rows.length) >= 0.6 ? 'happy' : 'idle'} />
+            <div className="min-w-0">
               <div className="text-[20px] font-semibold">
-                {blockScore(b)} de {b.item.questions.length} correctas
+                {okCount} de {rows.length} correctas
               </div>
-              <div className="txt-sub text-[13.5px]">Así fue el audio {step.n + 1}. Mira las respuestas antes de seguir.</div>
+              <div className="txt-sub text-[13.5px] leading-snug">Así fue {what}. Mira las respuestas antes de seguir.</div>
             </div>
           </div>
+          {b?.item.skill === 'listening' && <Transcript item={b.item} />}
           <div className="mt-3 flex flex-col gap-2">
-            {b.item.questions.map((q, qi) => (
-              <div key={qi} className="glass rounded-[18px] px-4 py-3 text-[14px] leading-snug">
-                <div className="font-medium">
-                  {qi + 1}. {q.prompt}
-                </div>
-                <div className="mt-1 flex items-start gap-2">
-                  <span className={b.correct[qi] ? 'txt-acc' : 'txt-sub'}>
-                    {b.correct[qi] ? <Icon name="check" size={16} stroke={2.2} /> : <span className="text-[14px] font-semibold">✕</span>}
-                  </span>
-                  <span>
-                    {b.late?.[qi] ? (
-                      <>
-                        <b>No sé</b> · la respondiste después de cerrar la nota
-                      </>
-                    ) : (
-                      <>Tu respuesta: {givenText(q, b.answers[qi])}</>
-                    )}
-                    {!b.correct[qi] && (
-                      <>
-                        <br />
-                        Correcta: <b>{correctText(q)}</b>
-                      </>
-                    )}
-                  </span>
-                </div>
-              </div>
+            {rows.map((r, i) => (
+              <ReviewCard key={i} n={i + 1} row={r} />
             ))}
           </div>
-          <button onClick={() => afterReview(step.n)} className="btn-acc mt-4 mb-1 h-[54px] flex-none rounded-full text-[16px]">
-            {step.n === 0 ? 'Siguiente audio' : 'Pasar a la parte de habla'}
+          <button onClick={() => afterReview(kind, n)} className="btn-acc mt-4 mb-1 h-[54px] flex-none rounded-full text-[16px]">
+            {next}
           </button>
         </div>
       </div>
@@ -1012,6 +1020,80 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   return null
 }
 
+interface ReviewRow {
+  prompt: string
+  given: string
+  correct: string
+  ok: boolean
+  late?: boolean
+}
+
+/** Una fila del resumen: pregunta, tu respuesta y, si fallaste, la correcta (mismo formato en todos los tests). */
+function ReviewCard({ n, row }: { n: number; row: ReviewRow }) {
+  return (
+    <div className="glass rounded-[18px] px-4 py-3 text-[14px] leading-snug">
+      <div className="font-medium">
+        {n}. {row.prompt}
+      </div>
+      <div className="mt-1 flex items-start gap-2">
+        <span className={`flex-none ${row.ok ? 'txt-acc' : 'txt-sub'}`}>
+          {row.ok ? <Icon name="check" size={16} stroke={2.2} /> : <span className="text-[14px] font-semibold">✕</span>}
+        </span>
+        <span className="min-w-0 break-words">
+          {row.late ? (
+            <>
+              <b>No sé</b> · la respondiste después de cerrar la nota
+            </>
+          ) : (
+            <>Tu respuesta: {row.given}</>
+          )}
+          {!row.ok && (
+            <>
+              <br />
+              Correcta: <b>{row.correct}</b>
+            </>
+          )}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/** Transcripción del audio: una línea por interlocutor, con su nombre (NC-06). Se abre al tocarla. */
+function Transcript({ item }: { item: ListeningItem }) {
+  const [open, setOpen] = useState(false)
+  const name = (id: string) => item.speakers.find((x) => x.id === id)?.name ?? id
+  return (
+    <div className="glass mt-3 rounded-[18px] px-4 py-3">
+      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between text-left text-[14.5px] font-semibold">
+        Ver lo que se dijo
+        <Icon name="chevD" size={15} stroke={2} />
+      </button>
+      {open && (
+        <ul className="mt-2 flex flex-col gap-2">
+          {item.script.map((l, i) => (
+            <li key={i} className="text-[14px] leading-snug">
+              {item.speakers.length > 1 && <b className="txt-acc2 mr-1.5">{name(l.s)}:</b>}
+              {l.t}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+/** Duración estimada del audio a la velocidad con que lo lee el teléfono (~150 palabras/min a velocidad 1). */
+function audioSeconds(item: ListeningItem) {
+  return scriptSeconds(item) / rateForLevel(item.level)
+}
+
+function fmtDuration(sec: number) {
+  const s = Math.round(sec / 5) * 5
+  const m = Math.floor(s / 60)
+  return m ? `${m} min${s % 60 ? ` ${s % 60} s` : ''}` : `${s} s`
+}
+
 /** La evaluación falló: el test está guardado; reintentar con otro modelo o con otra clave. */
 function EvalFail({ error, mascot, settings, update, onRetry }: { error: string; mascot: MascotElement; settings: Settings; update: (p: Partial<Settings>) => void; onRetry: () => void }) {
   return (
@@ -1060,10 +1142,7 @@ function recalPage(p: Profile, mascotName: string): Page {
           Este test nuevo usa un banco de preguntas revisado, de A1 a C2. <b>Lo sustituye por completo</b>: tu nivel será lo que saques hoy, sin
           mezclarlo con el anterior.
         </Card>
-        <Card>
-          Tu nivel actual (del test anterior): <b>{p.levels.overall}</b> · Gram. {p.levels.grammar} · Lect. {p.levels.reading} · Aud. {p.levels.listening} · Habla{' '}
-          {p.levels.speaking}
-        </Card>
+        <SkillProgressCard levels={p.levels} title={`Tu nivel del test anterior: ${p.levels.overall}`} />
         <Card>Son 4 partes y unos 25–30 minutos. A partir de este test, el re-test será cada 4 semanas.</Card>
       </div>
     ),
@@ -1106,7 +1185,15 @@ function firstPages(teacherName: string, mascotName: string): Page[] {
             <b>Habla</b>: puntúo 4 criterios (fluidez, vocabulario, gramática y pronunciación) y me quedo con la mediana.
           </Card>
           <Card>
-            <b>Nivel general</b> = (Gramática + Lectura + Audición + Habla) ÷ 4, con A1 = 1 … C2 = 6. Las cuatro pesan lo mismo; un ,5 se redondea hacia abajo y nunca supera en más de 2 a tu destreza más baja.
+            <b>Nivel general</b>: la media de tus 4 destrezas.
+            <div className="my-2.5 rounded-[16px] px-1 py-2.5" style={{ background: 'var(--field)' }}>
+              <Fraction left="Nivel =" num="Gram. + Lect. + Aud. + Habla" den="4" />
+            </div>
+            <ul className="txt-sub flex list-disc flex-col gap-0.5 pl-5 text-[13.5px]">
+              <li>A1 = 1, A2 = 2 … C2 = 6. Las cuatro pesan lo mismo.</li>
+              <li>Un ,5 exacto se redondea hacia abajo.</li>
+              <li>Nunca supera en más de 2 a tu destreza más baja.</li>
+            </ul>
           </Card>
         </div>
       ),
@@ -1142,9 +1229,7 @@ function retestPages(p: Profile, mascotName: string): Page[] {
       body: (
         <div className="flex flex-col gap-2">
           <Card>Las mismas 4 partes que la otra vez, con textos y audios nuevos: no repetirás ninguno que ya hayas visto.</Card>
-          <Card>
-            Tu nivel actual: <b>{p.levels.overall}</b> · Gram. {p.levels.grammar} · Lect. {p.levels.reading} · Aud. {p.levels.listening} · Habla {p.levels.speaking}
-          </Card>
+          <SkillProgressCard levels={p.levels} title={`Tu nivel actual: ${p.levels.overall}`} />
         </div>
       ),
     },
@@ -1221,17 +1306,31 @@ function Result({ r, mascot, mascotName, teacherName, onDone }: { r: Calibration
         </div>
 
         <div className="glass rounded-[24px] p-4 text-[14px] leading-snug">
-          <div className="mb-1.5 font-semibold">Cómo lo calculé</div>
-          <div className="text-center text-[15px]">
-            ({skills.map((k) => b.values[k]).join(' + ')}) ÷ 4 = <b>{fmt(b.mean)}</b>
+          <div className="mb-3 font-semibold">Cómo lo calculé</div>
+          <div className="rounded-[18px] px-2 py-3" style={{ background: 'var(--field)', color: 'var(--tx)' }}>
+            <Fraction
+              left="Nivel ="
+              num={skills.map((k) => b.values[k]).join(' + ')}
+              den="4"
+              right={
+                <>
+                  = {fmt(b.mean)} <span style={{ color: 'var(--acc)' }}>→ {b.final}</span>
+                </>
+              }
+            />
           </div>
-          <div className="txt-sub mt-1.5">
-            Media de tus 4 destrezas (A1 = 1 … C2 = 6).{' '}
-            {b.mean % 1 === 0.5 ? `Un ,5 exacto se redondea hacia abajo → ${levelAt(b.rounded - 1)}.` : `Redondeado → ${levelAt(b.rounded - 1)}.`}{' '}
-            {b.capped
-              ? `Pero tu destreza más baja es ${levelAt(b.cap - 3)} y el nivel general no puede superarla en más de 2: se queda en ${b.final}.`
-              : `Tope por destreza débil: ${levelAt(b.cap - 1)} (tu más baja + 2), no se aplica.`}
-          </div>
+          <ul className="txt-sub mt-3 flex list-disc flex-col gap-1 pl-5">
+            <li>
+              Arriba, tus 4 destrezas con A1 = 1 … C2 = 6: {skills.map((k) => `${SKILL_ES[k].toLowerCase()} ${r.levels[k]} = ${b.values[k]}`).join(', ')}.
+            </li>
+            <li>Abajo, cuántas son: 4. Todas pesan lo mismo.</li>
+            <li>{b.mean % 1 === 0.5 ? `Un ,5 exacto se redondea hacia abajo: ${levelAt(b.rounded - 1)}.` : `Redondeado al más cercano: ${levelAt(b.rounded - 1)}.`}</li>
+            <li>
+              {b.capped
+                ? `Tope: tu destreza más baja es ${levelAt(b.cap - 3)} y el nivel general no puede superarla en más de 2, así que se queda en ${b.final}.`
+                : `Tope por destreza débil: ${levelAt(b.cap - 1)} (tu más baja + 2). No hace falta aplicarlo.`}
+            </li>
+          </ul>
         </div>
 
         {r.prev && r.trajectory && (
@@ -1250,28 +1349,34 @@ function Result({ r, mascot, mascotName, teacherName, onDone }: { r: Calibration
         )}
 
         <div className="glass rounded-[24px] p-4">
-          {skills.map((k) => {
-            const l = r.levels[k]
-            const before = r.prev?.[k]
-            return (
-              <div key={k} className="flex items-center gap-2.5 py-1.5">
-                <span className="w-[74px] text-sm">{SKILL_ES[k]}</span>
-                <div className="relative h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
-                  <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />
-                </div>
-                <span
-                  className="rounded-full px-2 py-0.5 text-[11px]"
-                  style={{ border: '1px solid var(--gb)', color: r.confidence[k] === 'low' ? 'var(--acc2)' : 'var(--sub)' }}
-                  title="Confianza"
-                >
-                  {CONF_ES[r.confidence[k]]}
-                </span>
-                {before && before !== l && <span className="txt-sub text-xs">{before}{levelIdx(l) > levelIdx(before) ? '↗' : '↘'}</span>}
-                <span className="txt-acc2 w-7 text-right font-semibold">{l}</span>
-              </div>
-            )
-          })}
-          <div className="txt-sub mt-1.5 text-[12px] leading-snug">
+          <SkillProgressCard
+            bare
+            levels={r.levels}
+            extra={Object.fromEntries(
+              skills.map((k) => {
+                const before = r.prev?.[k]
+                return [
+                  k,
+                  <>
+                    <span
+                      className="rounded-full px-1.5 py-0.5 text-[10.5px]"
+                      style={{ border: '1px solid var(--gb)', color: r.confidence[k] === 'low' ? 'var(--acc2)' : 'var(--sub)' }}
+                      title="Confianza"
+                    >
+                      {CONF_ES[r.confidence[k]]}
+                    </span>
+                    {before && before !== r.levels[k] && (
+                      <span className="txt-sub text-[11px]">
+                        {before}
+                        {levelIdx(r.levels[k]) > levelIdx(before) ? '↗' : '↘'}
+                      </span>
+                    )}
+                  </>,
+                ]
+              }),
+            )}
+          />
+          <div className="txt-sub mt-2 text-[12px] leading-snug">
             Confianza: alta con dos bloques aprobados en niveles contiguos, media con uno, baja si hubo poca evidencia.
             {lowConf.length > 0 && ` En ${lowConf.map((k) => SKILL_ES[k].toLowerCase()).join(' y ')} la evidencia fue poca: el próximo re-test lo confirmará.`}
           </div>

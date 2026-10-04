@@ -17,6 +17,29 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.7',
+    date: '2026-10-04',
+    title: 'Tu clase te espera y la batería dura',
+    added: [
+      'Si sales de una clase, queda guardada: tu mascota se despide y al volver puedes continuarla donde quedó',
+      'Al abrir la app con una clase a medias, tu mascota te ofrece seguirla',
+      'Tu mascota te pregunta antes de cerrar la app',
+      'Todas las correcciones de cada respuesta, no solo una',
+      'Dicta por voz el tema en Tema libre y Debate',
+      'Resumen con tus respuestas y las correctas al final de cada parte del test',
+      'Duración del audio y transcripción por personas en la audición del test',
+      'Nueva sección Mi nivel, separada de Mi perfil',
+    ],
+    improved: [
+      'Batería: en segundo plano la app se queda quieta (micrófono, voz y animaciones apagados)',
+      'Las respuestas escritas aceptan formas de la misma palabra (reversible / reversibility)',
+      'La fórmula del nivel se ve como una fracción, con tus números',
+      'Pantallas pequeñas (p. ej. Galaxy A11) y en horizontal se ven bien',
+      'Palabras: nada se sale de las tarjetas',
+      'Tu clave de Gemini ya no entra en las copias automáticas de Android',
+    ],
+  },
+  {
     v: '5.6',
     date: '2026-10-03',
     title: 'Un test de nivel nuevo, con banco de preguntas',

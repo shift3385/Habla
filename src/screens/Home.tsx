@@ -4,6 +4,7 @@ import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
 import type { StudyPlan } from '../lib/plan'
 import type { Settings } from '../lib/settings'
+import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
@@ -27,6 +28,8 @@ interface Props {
   onStartLesson: (id: string) => void
   onOpenPlan: () => void
   registerBack: (h: (() => void) | null) => void
+  savedClass?: SavedClass | null
+  onResumeClass?: () => void
 }
 
 function greeting() {
@@ -49,6 +52,8 @@ export default function Home({
   onStartLesson,
   onOpenPlan,
   registerBack,
+  savedClass,
+  onResumeClass,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
@@ -106,6 +111,7 @@ export default function Home({
   const askSheet = ask && (
     <TopicAskPage
       kind={ask}
+      settings={settings}
       element={THEME_INFO[settings.theme].mascot}
       t={t}
       onClose={() => setAsk(null)}
@@ -137,7 +143,7 @@ export default function Home({
     <div className="anim-up">
       {askSheet}
       {/* Cabecera */}
-      <div className="flex h-[54px] items-center justify-between gap-2.5">
+      <div className="flex min-h-[54px] items-center justify-between gap-2.5">
         <div className="min-w-0">
           <div className="text-[27px] leading-[1.1] font-semibold tracking-[-.7px]">
             {greeting()}
@@ -226,6 +232,19 @@ export default function Home({
           </div>
         )}
       </div>
+
+      {savedClass && (
+        <button onClick={onResumeClass} className="glass mt-2 flex h-[48px] w-full items-center gap-2.5 rounded-[24px] pr-1.5 pl-2 text-left">
+          <span className="btn-acc grid h-8 w-8 flex-none place-items-center rounded-full">
+            <Icon name="mic" size={15} />
+          </span>
+          <span className="min-w-0 flex-1 leading-tight">
+            <b className="block truncate text-[14px] font-semibold">Clase en progreso</b>
+            <span className="txt-sub block truncate text-[12px]">{savedClass.title}</span>
+          </span>
+          <span className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 text-[13px]">Continuar</span>
+        </button>
+      )}
 
       <PlanCard
         settings={settings}

@@ -212,6 +212,19 @@ export default function AboutScreen({
               ['Iconos', 'Diseño propio'],
             ]}
           />
+          <div className="txt-sub mt-1 px-1 text-sm">Tecnología con la que está hecha</div>
+          <Rows
+            items={[
+              ['Desarrollo', 'Claude Code (Anthropic)'],
+              ['App Android', 'Capacitor 8 · Java (plugin de audio propio)'],
+              ['Interfaz', 'React 19 · TypeScript · Tailwind CSS 4'],
+              ['Compilación', 'Vite 8 · Gradle'],
+              ['Datos en el teléfono', 'IndexedDB (Dexie) · Preferences'],
+              ['Voz del profe', 'Texto a voz del sistema Android'],
+              ['Test de nivel', 'Banco propio de 450 preguntas (estilo IELTS y Cambridge)'],
+            ]}
+          />
+          <div className="txt-sub px-4 text-center text-[12px] leading-snug">Versión {APP_VERSION} · build {APP_BUILD}</div>
           <div className="txt-sub px-4 text-center text-[13px] leading-snug">
             Las noticias de los temas vienen de fuentes públicas y se resumen con IA.
           </div>

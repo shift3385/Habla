@@ -119,7 +119,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
   const hideMascot = phase === 'setup' && step === 1 // el paso del compañero tiene su propia mascota grande
 
   return (
-    <div className="relative z-[2] h-full w-full overflow-hidden select-none">
+    <div className="land-tall relative z-[2] h-full w-full overflow-hidden select-none">
       {/* La mascota del tema elegido: cae en la intro y se coloca en cada fase. */}
       <div
         className="absolute left-1/2 z-[1] transition-[top,opacity] duration-700"

@@ -33,50 +33,71 @@ interface Props {
  * Página de la mascota: el mismo formato que la bienvenida (mascota arriba, pregunta grande, respuesta en el
  * centro y botones abajo). Se usa para novedades, avisos, Tema libre y Debate: la mascota te habla y respondes.
  */
-export default function MascotPage({ element, mood = 'idle', step, title, subtitle, children, primary, secondary, onBack, overlay, onMascotTap }: Props) {
+export default function MascotPage({
+  element,
+  mood = 'idle',
+  step,
+  title,
+  subtitle,
+  children,
+  primary,
+  secondary,
+  onBack,
+  overlay,
+  onMascotTap,
+}: Props) {
   const page = (
     <div
-      className="anim-up relative z-[2] mx-auto flex h-full w-full max-w-xl flex-col px-[18px] pt-[calc(env(safe-area-inset-top)+18px)] pb-[calc(env(safe-area-inset-bottom)+24px)]"
+      className="mp-page anim-up relative z-[2] mx-auto flex h-full w-full max-w-xl flex-col px-[18px] pt-[calc(env(safe-area-inset-top)+18px)] pb-[calc(env(safe-area-inset-bottom)+24px)]"
       style={{ color: 'var(--tx)' }}
     >
-      <div className="flex flex-none justify-center">
-        <Mascot element={element} mood={mood} size={150} onTap={onMascotTap} />
-      </div>
-      {step && step.n > 1 && (
-        <div className="mt-1 flex justify-center gap-1.5">
-          {Array.from({ length: step.n }, (_, i) => (
-            <span
-              key={i}
-              className="h-[7px] rounded transition-all duration-300"
-              style={{ width: i === step.i ? 24 : 7, background: i <= step.i ? 'var(--acc)' : 'var(--gb)' }}
-            />
-          ))}
+      {/* En horizontal, la mascota va en su columna (mp-side) y el resto en la otra (mp-main); en vertical, igual que siempre. */}
+      <div className="mp-side">
+        <div className="flex flex-none justify-center">
+          <Mascot element={element} mood={mood} size={150} onTap={onMascotTap} />
         </div>
-      )}
-      <div className="mt-[14px] text-center text-[28px] leading-tight font-semibold tracking-[-.6px] text-balance">{title}</div>
-      {subtitle && <div className="txt-sub mt-1.5 text-center text-[15px] leading-snug text-pretty">{subtitle}</div>}
-      <div className="no-scrollbar mt-5 min-h-0 flex-1 overflow-y-auto">{children}</div>
-      {secondary && (
-        <button onClick={secondary.onClick} disabled={secondary.disabled} className="txt-sub mt-2 h-10 text-[15px] underline underline-offset-[3px]">
-          {secondary.label}
-        </button>
-      )}
-      <div className="mt-3 flex gap-2.5">
-        {onBack && (
-          <button onClick={onBack} className="glass grid h-[58px] w-[58px] flex-none place-items-center rounded-full" aria-label="Atrás">
-            <Icon name="back" size={20} stroke={1.8} />
-          </button>
+        {step && step.n > 1 && (
+          <div className="mt-1 flex justify-center gap-1.5">
+            {Array.from({ length: step.n }, (_, i) => (
+              <span
+                key={i}
+                className="h-[7px] rounded transition-all duration-300"
+                style={{ width: i === step.i ? 24 : 7, background: i <= step.i ? 'var(--acc)' : 'var(--gb)' }}
+              />
+            ))}
+          </div>
         )}
-        {primary && (
+      </div>
+      <div className="mp-main">
+        <div className="mt-[14px] text-center text-[28px] leading-tight font-semibold tracking-[-.6px] text-balance">{title}</div>
+        {subtitle && <div className="txt-sub mt-1.5 text-center text-[15px] leading-snug text-pretty">{subtitle}</div>}
+        <div className="no-scrollbar mt-5 min-h-0 flex-1 overflow-y-auto">{children}</div>
+        {secondary && (
           <button
-            onClick={primary.onClick}
-            disabled={primary.disabled}
-            className="btn-acc h-[58px] flex-1 rounded-full text-[17px] transition-opacity"
-            style={{ opacity: primary.disabled ? 0.45 : 1 }}
+            onClick={secondary.onClick}
+            disabled={secondary.disabled}
+            className="txt-sub mt-2 h-10 text-[15px] underline underline-offset-[3px]"
           >
-            {primary.label}
+            {secondary.label}
           </button>
         )}
+        <div className="mt-3 flex gap-2.5">
+          {onBack && (
+            <button onClick={onBack} className="glass grid h-[58px] w-[58px] flex-none place-items-center rounded-full" aria-label="Atrás">
+              <Icon name="back" size={20} stroke={1.8} />
+            </button>
+          )}
+          {primary && (
+            <button
+              onClick={primary.onClick}
+              disabled={primary.disabled}
+              className="btn-acc h-[58px] flex-1 rounded-full text-[17px] transition-opacity"
+              style={{ opacity: primary.disabled ? 0.45 : 1 }}
+            >
+              {primary.label}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

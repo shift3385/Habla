@@ -8,7 +8,8 @@ import { friendlyError } from '../lib/errors'
 import TalkButton, { type Phase } from '../components/TalkButton'
 import TappableText from '../components/TappableText'
 import { sentenceAround } from '../lib/lookup'
-import { db, type Session, type Topic, type Turn } from '../lib/db'
+import { splitDialogue } from '../lib/dialogue'
+import { db, turnCorrections, type Session, type Topic, type Turn } from '../lib/db'
 import { levelIdx, updateTrajectoryFromPractice, type TrajectoryChange } from '../lib/levels'
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
 import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/gemini'
@@ -22,6 +23,9 @@ import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
+import { whenBackground } from '../lib/lifecycle'
+import { clearSavedClass, saveClass, type SavedClass } from '../lib/savedClass'
+import MascotPage from '../components/MascotPage'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotMood } from '../ui/Mascot'
 import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
@@ -42,6 +46,8 @@ interface Props {
   categoryId?: string // para escenarios con tema; sin él, categoría al azar
   customTopic?: string // tema escrito por el alumno (Tema libre o debate propuesto)
   planLesson?: string // id de la lección del plan de 12 semanas
+  /** Clase guardada que se retoma en el punto en que quedó (NC-16). */
+  resume?: SavedClass
   settings: Settings
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
@@ -55,7 +61,7 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, settings, update, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, settings, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
   const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -88,6 +94,10 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   // Lección del plan de 12 semanas (si la clase es una de ellas) y si ya cuenta como hecha.
   const [planInfo, setPlanInfo] = useState<{ week: PlanWeek; lesson: PlanLesson } | null>(null)
   const [lessonDone, setLessonDone] = useState(false)
+  // Despedida de la mascota al salir de la clase sin terminarla (queda guardada).
+  const [bye, setBye] = useState(false)
+  const topicRef = useRef<Topic | undefined>(undefined)
+  const titleRef = useRef('')
 
   const recorder = useRef(new Recorder())
   const sessionId = useRef<number | null>(null)
@@ -186,12 +196,11 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
               ? { audioSeconds: spoken.seconds, speechSeconds: spoken.analysis?.speechSeconds, pauses: spoken.analysis?.pauses }
               : { typed: true }),
             createdAt: Date.now(),
-            ...(res.correction ? { correction: res.correction } : {}),
+            ...(res.corrections.length ? { correction: res.corrections[0], corrections: res.corrections } : {}),
           }
           turn.id = await db.turns.add(turn)
-          if (res.correction) {
-            await db.mistakes.add({ ...res.correction, sessionId: sid, turnId: turn.id!, createdAt: Date.now() })
-          }
+          // Cada error va al cuaderno de errores (repaso espaciado).
+          for (const c of res.corrections) await db.mistakes.add({ ...c, sessionId: sid, turnId: turn.id!, createdAt: Date.now() })
           setTurns((ts) => [...ts, turn])
           setCardOpen(false) // la tarjeta del tema se pliega sola al responder
           history.current.push({ role: 'user', content: said })
@@ -207,6 +216,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         }
         teacher.id = await db.turns.add(teacher)
         setTurns((ts) => [...ts, teacher])
+        persist()
         if (prepRef.current === 'loading') {
           // Primera intervención: animación de "¡Clase lista!" y después el chat.
           setPrep('done')
@@ -239,7 +249,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     [say],
   )
 
-  // Arranque: micrófono, tema del día, prompt y saludo del profe. Siempre es una sesión NUEVA.
+  // Arranque: micrófono, tema del día, prompt y saludo del profe; o, con `resume`, la clase guardada tal como quedó.
   useEffect(() => {
     if (started.current) return
     started.current = true
@@ -251,6 +261,27 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         setError(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
       }
       if (gone()) return rec.close() // saliste mientras se abría el micrófono
+      if (resume) {
+        const profile = await getProfile()
+        setLevel(profile.levels.overall)
+        const found = resume.planLesson && profile.plan ? findLesson(profile.plan, resume.planLesson) : null
+        if (found) setPlanInfo(found)
+        if (resume.topic) {
+          setTopic(resume.topic)
+          topicRef.current = resume.topic
+        }
+        titleRef.current = resume.title
+        system.current = resume.system
+        history.current = resume.history
+        sessionId.current = resume.sessionId
+        const saved = await db.turns.where('sessionId').equals(resume.sessionId).sortBy('createdAt')
+        setTurns(saved)
+        setCardOpen(false)
+        setStatus('')
+        setPrep(null)
+        setPhase('idle')
+        return
+      }
       const [profile, recent] = await Promise.all([
         getProfile(),
         db.mistakes.orderBy('createdAt').reverse().limit(12).toArray(),
@@ -264,6 +295,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         try {
           tp = await generateTopic(settingsRef.current.geminiKey, quick(), cat)
           setTopic(tp)
+          topicRef.current = tp
         } catch {
           // Sin tema: el profe elige uno él mismo.
         }
@@ -275,6 +307,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       // Lección del plan: el profe recibe la situación, el objetivo y las frases de esa lección.
       const found = planLesson && profile.plan ? findLesson(profile.plan, planLesson) : null
       if (found) setPlanInfo(found)
+      titleRef.current = found ? found.lesson.titleEs : tp?.title ?? scenario.title
       const brief = found ? { ...scenario, brief: lessonBrief(found.week, found.lesson) } : scenario
       system.current = buildSystemPrompt(profile, brief, recent, tp, TEACHERS[settingsRef.current.teacher].persona)
       sessionId.current =
@@ -292,6 +325,48 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       stopSpeaking()
     }
   }, [])
+
+  /** Guarda la clase en progreso (una sola entrada). Sin ninguna respuesta tuya todavía, no hay nada que guardar. */
+  const persist = useCallback(() => {
+    const sid = sessionId.current
+    const answers = history.current.filter((m) => m.role === 'user').length - 1 // la primera es la orden de empezar
+    if (!sid || answers < 1) return
+    saveClass({
+      sessionId: sid,
+      scenarioId,
+      categoryId,
+      customTopic,
+      planLesson,
+      topic: topicRef.current,
+      system: system.current,
+      history: history.current,
+      mascot: settingsRef.current.theme,
+      title: titleRef.current,
+      turns: answers,
+      savedAt: Date.now(),
+    }).catch(() => {})
+  }, [scenarioId, categoryId, customTopic, planLesson])
+
+  // Al minimizar o cerrar la app con la clase abierta, también se guarda (el micrófono y la voz los cierra lifecycle).
+  useEffect(() => whenBackground(persist), [persist])
+
+  /** Salir sin terminar: la clase queda guardada y la mascota se despide hasta la vuelta. */
+  const leave = useCallback(async () => {
+    abort.current.abort()
+    recorder.current.close()
+    await stopSpeaking()
+    const sid = sessionId.current
+    const answers = history.current.filter((m) => m.role === 'user').length - 1
+    if (!sid || answers < 1) {
+      // Nada que guardar: la sesión vacía no cuenta.
+      if (sid) await deleteSessionIfEmpty(sid)
+      return onExit()
+    }
+    persist()
+    setBye(true)
+    await new Promise((r) => setTimeout(r, 1800))
+    onExit()
+  }, [persist, onExit])
 
   // Si sueltas el botón antes de que la grabación haya arrancado, onRelease espera a que arranque.
   const starting = useRef<Promise<void>>(Promise.resolve())
@@ -415,6 +490,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   }, [])
 
   const finish = useCallback(async () => {
+    // Terminar de verdad: ya no hay clase que continuar.
+    clearSavedClass().catch(() => {})
     // Lo que el profe estuviera preparando ya no hace falta.
     abort.current.abort()
     recorder.current.close()
@@ -441,11 +518,12 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       .catch(() => {})
   }, [onExit, buildReport, planLesson])
 
-  // Botón "atrás" de Android: en el chat termina la sesión (con informe); en el informe vuelve al inicio.
+  // Botón "atrás" de Android: en el chat sale guardando la clase (Terminar, con informe, está en la cabecera);
+  // en el informe vuelve al inicio.
   useEffect(() => {
-    registerBack(lookupReq ? () => setLookupReq(null) : view === 'report' ? onExit : () => finish())
+    registerBack(lookupReq ? () => setLookupReq(null) : view === 'report' ? onExit : bye ? () => {} : () => leave())
     return () => registerBack(null)
-  }, [view, finish, onExit, registerBack, lookupReq])
+  }, [view, leave, onExit, registerBack, lookupReq, bye])
 
   const userTurns = turns.filter((x) => x.role === 'user')
   const mascotEl = THEME_INFO[settings.theme].mascot
@@ -486,6 +564,17 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   // Vocabulario del tema o frases de la lección del plan (tócalas para oírlas).
   const chips = topic?.vocab ?? planInfo?.lesson.phrases ?? []
+
+  if (bye) {
+    return (
+      <MascotPage
+        element={mascotEl}
+        mood="happy"
+        title="Te espero aquí"
+        subtitle="Seguimos cuando vuelvas. Tu clase quedó guardada: la encontrarás en Hablar → Continuar clase."
+      />
+    )
+  }
 
   if (view === 'chat' && prep) {
     return (
@@ -558,7 +647,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                 .sortBy('createdAt')
                 .then((ts) => buildReport(session, ts))
             }
-            corrections={userTurns.map((x) => x.correction).filter((c) => !!c)}
+            corrections={userTurns.flatMap(turnCorrections)}
             topic={session.topic}
             ttsRate={settings.ttsRate}
             voiceIndex={settings.voiceIndex}
@@ -572,10 +661,10 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   }
 
   return (
-    <div className="anim-up relative z-[2] flex h-full flex-col pt-[env(safe-area-inset-top)]">
+    <div className="cv-root anim-up relative z-[2] flex h-full flex-col pt-[env(safe-area-inset-top)]">
       {/* Cabecera */}
-      <div className="flex items-center gap-2.5 px-[18px] pt-1.5 pb-2.5">
-        <button onClick={finish} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Terminar y salir">
+      <div className="cv-head flex items-center gap-2.5 px-[18px] pt-1.5 pb-2.5">
+        <button onClick={leave} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Salir y guardar la clase">
           <Icon name="back" size={20} stroke={1.8} />
         </button>
         <div className="flex flex-1 items-center justify-center gap-2.5">
@@ -591,7 +680,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       </div>
 
       {/* Velocidad + modo oído */}
-      <div className="flex items-center gap-2.5 px-[18px] pb-2.5">
+      <div className="cv-speed flex items-center gap-2.5 px-[18px] pb-2.5">
         <Icon name="speaker" size={18} color="var(--sub)" />
         <input
           type="range"
@@ -615,7 +704,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       </div>
 
       {/* Tarjeta del tema: se pliega sola al responder */}
-      <div className="flex-none px-[18px] pb-2">
+      <div className="cv-card flex-none px-[18px] pb-2">
         <div className="glass rounded-[24px] py-3 pr-3 pl-3.5">
           <button onClick={() => setCardOpen((o) => !o)} className="flex w-full items-center gap-3 text-left">
             <span className="field txt-acc2 grid h-9 w-9 flex-none place-items-center rounded-full">
@@ -660,7 +749,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       </div>
 
       {/* Mensajes */}
-      <div ref={listRef} className="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-[18px] pt-1.5 pb-4">
+      <div ref={listRef} className="cv-list no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-[18px] pt-1.5 pb-4">
 
         {turns.map((m, i) => {
           if (m.role === 'user') {
@@ -691,7 +780,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           }
           // La corrección de tu respuesta aparece dentro de la siguiente burbuja del profe, como en el diseño.
           const prev = turns[i - 1]
-          const fix = prev?.role === 'user' ? prev.correction : undefined
+          const fixes = prev?.role === 'user' ? turnCorrections(prev) : []
           const hidden = settings.earMode && !revealed.has(m.id!)
           const showEs = translated.has(m.id!)
           return (
@@ -703,13 +792,30 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                 </button>
               ) : (
                 <div className="text-base leading-[1.42]">
-                  <TappableText text={m.text} onWord={(w, start) => setLookupReq({ query: w, context: sentenceAround(m.text, start) })} />
+                  {(() => {
+                    // Un diálogo (A: … B: …) se ve una línea por persona (NC-06).
+                    const lines = splitDialogue(m.text)
+                    if (!lines) return <TappableText text={m.text} onWord={(w, start) => setLookupReq({ query: w, context: sentenceAround(m.text, start) })} />
+                    return (
+                      <ul className="flex flex-col gap-1">
+                        {lines.map((l, k) => (
+                          <li key={k}>
+                            {l.who && <b className="txt-acc2 mr-1">{l.who}:</b>}
+                            <TappableText text={l.text} onWord={(w, start) => setLookupReq({ query: w, context: sentenceAround(l.text, start) })} />
+                          </li>
+                        ))}
+                      </ul>
+                    )
+                  })()}
                 </div>
               )}
               {showEs && m.translation && <div className="txt-sub mt-1.5 text-sm leading-snug">{m.translation}</div>}
-              {fix && (
-                <div className="mt-2.5">
-                  <CorrectionView c={fix} />
+              {fixes.length > 0 && (
+                <div className="mt-2.5 flex flex-col gap-1.5">
+                  {fixes.length > 1 && <div className="txt-sub text-[11.5px]">{fixes.length} correcciones</div>}
+                  {fixes.map((c, k) => (
+                    <CorrectionView key={k} c={c} />
+                  ))}
                 </div>
               )}
               <div className="mt-2 flex gap-3.5">
@@ -753,7 +859,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       </div>
 
       {/* Zona inferior: ideas, avisos y micrófono */}
-      <div className="flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
+      <div className="cv-ctrl flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
         {ideas && (
           <div className="anim-up flex w-full flex-col gap-2">
             {ideas.map((i) => (

@@ -6,6 +6,7 @@ import { Share } from '@capacitor/share'
 import { askNotificationPermission } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
+import SkillProgressCard from '../components/SkillProgressCard'
 import { APP_VERSION } from '../lib/changelog'
 import { levelAt, levelIdx, nextRetestAt, trajectoryOf } from '../lib/levels'
 import { getProfile } from '../lib/profile'
@@ -16,14 +17,15 @@ import Switch from '../ui/Switch'
 import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars } from '../ui/theme'
 import Mascot from '../ui/Mascot'
 
-export type SettingsPage = 'voice' | 'look' | 'goal' | 'level' | 'gemini' | 'data' | 'diag'
+export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag'
 type Page = SettingsPage
 
 const PAGES: Record<Page, { title: string; icon: IconName }> = {
   voice: { title: 'Profe y voz', icon: 'mic' },
   look: { title: 'Tema y mascota', icon: 'palette' },
   goal: { title: 'Meta diaria', icon: 'target' },
-  level: { title: 'Mi perfil', icon: 'bars' },
+  profile: { title: 'Mi perfil', icon: 'pencil' },
+  level: { title: 'Mi nivel', icon: 'bars' },
   gemini: { title: 'Gemini', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
   diag: { title: 'Diagnóstico', icon: 'chart' },
@@ -70,15 +72,12 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
         {page === 'voice' && <VoicePage settings={settings} update={update} />}
         {page === 'look' && <LookPage settings={settings} update={update} />}
         {page === 'goal' && <GoalPage settings={settings} update={update} />}
-        {page === 'level' && profile && (
-          <>
-            <Card>
-              <ProfileForm submitLabel="Guardar mi perfil" onSaved={(p) => setProfile(p)} />
-            </Card>
-            <div className="txt-sub mt-1 px-1 text-sm">Mi nivel</div>
-            <LevelPage profile={profile} onRetest={onRetest} />
-          </>
+        {page === 'profile' && profile && (
+          <Card>
+            <ProfileForm submitLabel="Guardar mi perfil" onSaved={(p) => setProfile(p)} />
+          </Card>
         )}
+        {page === 'level' && profile && <LevelPage profile={profile} onRetest={onRetest} />}
         {page === 'gemini' && <GeminiPage settings={settings} update={update} />}
         {page === 'diag' && <DiagPage />}
         {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
@@ -90,7 +89,8 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
     { page: 'voice', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×` },
     { page: 'look', value: `${THEME_INFO[settings.theme].mascotName} · ${THEME_INFO[settings.theme].name}` },
     { page: 'goal', value: `${settings.dailyGoalMinutes} min al día` },
-    { page: 'level', value: `${profile?.name ?? ''} · nivel ${profile?.levels.overall ?? '—'}` },
+    { page: 'profile', value: profile?.name ?? '' },
+    { page: 'level', value: `Nivel ${profile?.levels.overall ?? '—'} · tests y progreso` },
     { page: 'gemini', value: settings.geminiKey ? settings.geminiModel : 'Falta la clave' },
     { page: 'data', value: 'Exportar o importar' },
   ]
@@ -408,12 +408,6 @@ const SKILL_ES: Record<string, string> = {
 /** Solo lectura: el nivel lo fija el test y cambia con la práctica y los re-tests. */
 function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => void }) {
   const [now] = useState(() => Date.now())
-  const skills: [string, string][] = [
-    ['Gramática', profile.levels.grammar],
-    ['Lectura', profile.levels.reading],
-    ['Audición', profile.levels.listening],
-    ['Habla', profile.levels.speaking],
-  ]
   const retestAt = nextRetestAt(profile)
   const canRetest = !retestAt || now >= retestAt
   const fmt = (ts: number) => new Date(ts).toLocaleDateString('es', { day: 'numeric', month: 'long' })
@@ -437,20 +431,7 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
           cambiar a mano: tus clases proponen tu progreso y el re-test de cada 4 semanas lo ajusta (70 % test + 30 % clases).
         </div>
       </Card>
-      <Card>
-        <div className="txt-sub text-sm">Por habilidad</div>
-        <div className="mt-2.5 flex flex-col gap-2">
-          {skills.map(([n, l]) => (
-            <div key={n} className="flex items-center gap-3">
-              <span className="w-[84px] text-sm">{n}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
-                <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />
-              </div>
-              <span className="txt-acc2 w-7 text-right font-semibold">{l}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
+      <SkillProgressCard levels={profile.levels} />
       {profile.calibratedAt && (
         <Card>
           <div className="txt-sub text-sm">Lo que proponen tus clases</div>
@@ -485,12 +466,14 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
         <Card>
           <div className="txt-sub mb-2 text-sm">Tus tests de nivel</div>
           {[...profile.tests!].reverse().map((tst, i) => (
-            <div key={i} className="flex items-center justify-between py-1 text-sm tabular-nums">
-              <span>{fmt(tst.date)}</span>
-              <span className="txt-sub">
+            <div key={i} className="py-1.5 text-sm tabular-nums" style={{ borderTop: i ? '1px solid var(--gb)' : 0 }}>
+              <div className="flex items-center justify-between gap-2">
+                <span>{fmt(tst.date)}</span>
+                <b className="txt-acc2">{tst.levels.overall}</b>
+              </div>
+              <div className="txt-sub text-[12.5px]">
                 Gram. {tst.levels.grammar} · Lect. {tst.levels.reading} · Aud. {tst.levels.listening} · Habla {tst.levels.speaking}
-              </span>
-              <b className="txt-acc2">{tst.levels.overall}</b>
+              </div>
             </div>
           ))}
         </Card>

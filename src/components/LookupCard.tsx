@@ -27,7 +27,7 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lo
             <Icon name="speakerWave" size={20} />
           </button>
           <div className="min-w-0 flex-1">
-            <div className="text-[22px] leading-tight font-semibold">{r.headword}</div>
+            <div className="text-[22px] leading-tight font-semibold break-words">{r.headword}</div>
             <div className="txt-sub text-[13px]">
               {[r.ipa, r.partOfSpeech].filter(Boolean).join(' · ')}
             </div>
@@ -98,7 +98,7 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lo
           {r.collocations.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
               {r.collocations.map((c) => (
-                <button key={c} onClick={() => speak(c, ttsRate, voiceIndex)} className="field h-8 rounded-2xl px-2.5 text-[13px]">
+                <button key={c} onClick={() => speak(c, ttsRate, voiceIndex)} className="field min-h-8 max-w-full rounded-2xl px-2.5 py-1 text-left text-[13px] break-words">
                   {c}
                 </button>
               ))}

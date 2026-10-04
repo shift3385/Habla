@@ -63,6 +63,15 @@ navigator.mediaDevices?.addEventListener?.('devicechange', () => {
   recorders.forEach((r) => r.releaseIfIdle())
 })
 
+/**
+ * Cierra TODOS los micrófonos abiertos (también uno que esté grabando: esa grabación se descarta).
+ * Se llama al pasar la app a segundo plano: un micrófono abierto mantiene despierto el audio del teléfono
+ * toda la noche y vacía la batería (NC-14). Al volver, la próxima grabación lo reabre sola.
+ */
+export function releaseAllMics() {
+  ;[...recorders].forEach((r) => r.close())
+}
+
 /** ¿Llega algo del micrófono? Un micro real siempre tiene ruido de fondo; uno "mudo" da ceros exactos. */
 async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
   let ctx: AudioContext | null = null

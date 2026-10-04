@@ -32,8 +32,10 @@ import Background from './ui/Background'
 import AudioPicker from './components/AudioPicker'
 import GeminiTroubleSheet from './components/GeminiTroubleSheet'
 import { onGeminiTrouble, type Trouble } from './lib/geminiTrouble'
+import { discardSavedClass, getSavedClass, type SavedClass } from './lib/savedClass'
+import MascotPage from './components/MascotPage'
 import { Icon, type IconName } from './ui/icons'
-import { cssVars, TEACHERS, themeVars } from './ui/theme'
+import { cssVars, TEACHERS, THEME_INFO, themeVars } from './ui/theme'
 
 type Tab = 'home' | 'words' | 'progress' | 'settings'
 
@@ -43,6 +45,7 @@ interface Lesson {
   categoryId?: string
   customTopic?: string // tema escrito por el alumno
   planLesson?: string // lección del plan de 12 semanas
+  resume?: SavedClass // clase guardada que se retoma (NC-16)
 }
 
 export default function App() {
@@ -63,6 +66,7 @@ export default function App() {
   const [retestAt, setRetestAt] = useState<number | null>(null)
   const [retestReady, setRetestReady] = useState(false)
   const [level, setLevel] = useState('B1')
+  const [profileLevels, setProfileLevels] = useState<Record<'grammar' | 'reading' | 'listening' | 'speaking', string> | null>(null)
   // Exactamente 3 temas favoritos (5.4): a quien venga de una versión anterior con otro número se le piden.
   const [needsFavs, setNeedsFavs] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
@@ -87,6 +91,17 @@ export default function App() {
       }),
     [],
   )
+  // Clase en progreso guardada (NC-16) y preguntas de la mascota: empezar otra clase o cerrar la app (NC-15).
+  const [savedClass, setSavedClass] = useState<SavedClass | null>(null)
+  const savedRef = useRef<SavedClass | null>(null)
+  const [askNew, setAskNew] = useState<(() => void) | null>(null)
+  const [askExit, setAskExit] = useState(false)
+  const loadSaved = useCallback(async () => {
+    const s = await getSavedClass()
+    savedRef.current = s
+    setSavedClass(s)
+    return s
+  }, [])
   const [streak, setStreak] = useState(0)
   const [homework, setHomework] = useState<{ text: string; date: number } | null>(null)
   const settingsRef = useRef<Settings | null>(null)
@@ -103,13 +118,14 @@ export default function App() {
     setRetestAt(at)
     setRetestReady(!!at && Date.now() >= at)
     setLevel(p.levels.overall)
+    setProfileLevels(p.levels)
     return p
   }, [])
 
   useEffect(() => {
     // Los setState ocurren tras cargar datos asíncronos (IndexedDB/Preferences), no de forma síncrona.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    Promise.all([loadSettings(), refreshProfile(), loadDashboard()]).then(async ([s, p, dash]) => {
+    Promise.all([loadSettings(), refreshProfile(), loadDashboard(), loadSaved()]).then(async ([s, p, dash]) => {
       if (s.onboarded && isPersonalized(p)) {
         const last = (await db.sessions.orderBy('startedAt').reverse().limit(10).toArray()).find((x) => x.metrics?.turns)
         setReturning({
@@ -128,7 +144,7 @@ export default function App() {
       setHomework(dash.lastHomework)
       setSettings(s)
     })
-  }, [refreshProfile])
+  }, [refreshProfile, loadSaved])
 
   useEffect(() => {
     settingsRef.current = settings
@@ -140,7 +156,15 @@ export default function App() {
       const s = settingsRef.current
       // Solo para quien ya usaba la app: a un usuario nuevo no se le enseñan novedades ni avisos.
       if (s?.onboarded && isPersonalized(p) && p.calibratedAt) {
-        setGate(pendingNotices(s, { retestReady: retestReadyRef.current, recalibrate: needsRecalibration(p), streak, homeworkDate: homework?.date }))
+        setGate(
+          pendingNotices(s, {
+            savedClass: !!savedRef.current,
+            retestReady: retestReadyRef.current,
+            recalibrate: needsRecalibration(p),
+            streak,
+            homeworkDate: homework?.date,
+          }),
+        )
       }
       setSplash(false)
     })
@@ -183,7 +207,8 @@ export default function App() {
     const sub = CapApp.addListener('backButton', () => {
       if (backHandler.current) backHandler.current()
       else if (tabRef.current !== 'home') setTab('home')
-      else CapApp.minimizeApp()
+      // En el Inicio: la mascota pregunta antes de cerrar (NC-15).
+      else setAskExit((open) => !open)
     })
     return () => {
       sub.then((s) => s.remove())
@@ -309,6 +334,12 @@ export default function App() {
           settings={settings}
           notices={gate}
           homework={homework}
+          savedClass={savedClass}
+          levels={profileLevels ?? undefined}
+          onResumeClass={() => {
+            setGate([])
+            resumeClass()
+          }}
           update={update}
           onDone={() => setGate([])}
           onRetest={() => {
@@ -350,6 +381,7 @@ export default function App() {
           categoryId={lesson.categoryId}
           customTopic={lesson.customTopic}
           planLesson={lesson.planLesson}
+          resume={lesson.resume}
           settings={settings}
           t={t}
           update={update}
@@ -358,6 +390,7 @@ export default function App() {
             setLesson(null)
             setTab('home')
             refreshProfile() // lección del plan hecha, nivel por la práctica…
+            loadSaved() // ¿quedó guardada para continuar?
           }}
           registerBack={registerBack}
         />
@@ -365,13 +398,75 @@ export default function App() {
     )
   }
 
+  /** Con una clase guardada, antes de empezar otra se pregunta (solo se guarda una a la vez). */
+  const guardNew = (go: () => void) => {
+    if (!savedRef.current) return go()
+    setAskNew(() => go)
+  }
   const start = (scenarioId: string, categoryId?: string, customTopic?: string) =>
-    setLesson({ key: Date.now(), scenarioId, categoryId, customTopic })
-  const startPlanLesson = (id: string) => {
+    guardNew(() => setLesson({ key: Date.now(), scenarioId, categoryId, customTopic }))
+  const startPlanLesson = (id: string) =>
+    guardNew(() => {
+      backHandler.current = null
+      setPlanOpen(false)
+      setLesson({ key: Date.now(), scenarioId: 'plan', planLesson: id })
+    })
+  function resumeClass() {
+    const s = savedRef.current
+    if (!s) return
     backHandler.current = null
     setPlanOpen(false)
-    setLesson({ key: Date.now(), scenarioId: 'plan', planLesson: id })
+    setLesson({ key: Date.now(), scenarioId: s.scenarioId, categoryId: s.categoryId, customTopic: s.customTopic, planLesson: s.planLesson, resume: s })
   }
+
+  // Preguntas de la mascota encima del Inicio.
+  const mascotEl = THEME_INFO[settings.theme].mascot
+  const dialogs = (
+    <>
+      {askNew && (
+        <MascotPage
+          overlay={{ t }}
+          element={mascotEl}
+          mood="thinking"
+          title="Tienes una clase en progreso"
+          subtitle={`«${savedClass?.title ?? 'Tu clase'}» quedó a medias. Si empiezas una nueva, se perderá. ¿Continuar?`}
+          primary={{
+            label: 'Reanudar la anterior',
+            onClick: () => {
+              setAskNew(null)
+              resumeClass()
+            },
+          }}
+          secondary={{
+            label: 'Empezar nueva',
+            onClick: async () => {
+              const go = askNew
+              setAskNew(null)
+              await discardSavedClass()
+              await loadSaved()
+              go()
+            },
+          }}
+          onBack={() => setAskNew(null)}
+        />
+      )}
+      {askExit && (
+        <MascotPage
+          overlay={{ t }}
+          element={mascotEl}
+          mood="idle"
+          title="¿Ya te vas?"
+          subtitle={
+            savedClass
+              ? `Tu clase «${savedClass.title}» quedó guardada: la seguimos cuando vuelvas.`
+              : 'Aquí te espero para la próxima clase.'
+          }
+          primary={{ label: 'Quedarme', onClick: () => setAskExit(false) }}
+          secondary={{ label: 'Salir de Habla', onClick: () => CapApp.exitApp() }}
+        />
+      )}
+    </>
+  )
   const openPlan = () => {
     setPlanOpen(true)
     backHandler.current = closePlan
@@ -422,6 +517,8 @@ export default function App() {
                 onStartLesson={startPlanLesson}
                 onOpenPlan={openPlan}
                 registerBack={registerBack}
+                savedClass={savedClass}
+                onResumeClass={resumeClass}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
@@ -440,6 +537,7 @@ export default function App() {
           </>
         )}
       </div>
+      {dialogs}
       <TabBar
         tab={tab}
         onChange={(k) => {
@@ -456,7 +554,7 @@ export default function App() {
 
 function Shell({ t, children, overlay }: { t: ReturnType<typeof themeVars>; children: React.ReactNode; overlay?: React.ReactNode }) {
   return (
-    <div className="relative mx-auto h-full max-w-xl overflow-hidden" style={{ color: 'var(--tx)' }}>
+    <div className="shell relative mx-auto h-full max-w-xl overflow-hidden" style={{ color: 'var(--tx)' }}>
       <Background t={t} />
       {children}
       {overlay}

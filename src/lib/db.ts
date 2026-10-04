@@ -81,7 +81,15 @@ export interface Turn {
   speechSeconds?: number // de la primera a la última palabra (análisis local)
   pauses?: number[] // silencios ≥ 1 s dentro del habla, en segundos
   typed?: boolean // respuesta escrita con el teclado
+  /** Primera corrección (las clases anteriores a la v5.7 solo guardaban una). */
   correction?: Correction
+  /** Todas las correcciones de la respuesta (NC-03). */
+  corrections?: Correction[]
+}
+
+/** Correcciones de una respuesta, también de las clases antiguas (que solo tenían una). */
+export function turnCorrections(t: Turn): Correction[] {
+  return t.corrections?.length ? t.corrections : t.correction ? [t.correction] : []
 }
 
 export interface Mistake extends Correction {

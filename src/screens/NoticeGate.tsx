@@ -2,6 +2,9 @@ import { useState } from 'react'
 import MascotPage from '../components/MascotPage'
 import { APP_VERSION, RELEASES } from '../lib/changelog'
 import type { Notice } from '../lib/notices'
+import type { SavedClass } from '../lib/savedClass'
+import type { Skill } from '../lib/db'
+import SkillProgressCard from '../components/SkillProgressCard'
 import type { Settings } from '../lib/settings'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot from '../ui/Mascot'
@@ -14,6 +17,10 @@ interface Props {
   update: (p: Partial<Settings>) => void
   onRetest: () => void
   onOpenThemes: () => void
+  savedClass?: SavedClass | null
+  onResumeClass?: () => void
+  /** Niveles actuales (para enseñar el progreso con la tarjeta "Por habilidad"). */
+  levels?: Record<Skill, string>
   onDone: () => void
 }
 
@@ -21,13 +28,32 @@ interface Props {
  * Antes del Inicio, la mascota cuenta lo que hay que saber, de uno en uno y a pantalla completa (como la
  * bienvenida): novedades de la versión, re-test disponible y otros compañeros. Así el Inicio no se llena de avisos.
  */
-export default function NoticeGate({ settings, notices, homework, update, onRetest, onOpenThemes, onDone }: Props) {
+export default function NoticeGate({ settings, notices, homework, update, onRetest, onOpenThemes, onDone, savedClass, onResumeClass, levels }: Props) {
   const [i, setI] = useState(0)
   const element = THEME_INFO[settings.theme].mascot
   const notice = notices[i]
   const step = { i, n: notices.length }
   const next = () => (i + 1 < notices.length ? setI(i + 1) : onDone())
   const last = i + 1 >= notices.length
+
+  if (notice === 'savedClass') {
+    const when = savedClass ? new Date(savedClass.savedAt).toLocaleString('es', { weekday: 'long', hour: '2-digit', minute: '2-digit' }) : ''
+    return (
+      <MascotPage
+        element={element}
+        mood="happy"
+        step={step}
+        title="¡Hola de nuevo!"
+        subtitle={
+          savedClass
+            ? `Dejamos una clase a medias: «${savedClass.title}» (${savedClass.turns} ${savedClass.turns === 1 ? 'respuesta' : 'respuestas'}, ${when}). ¿La seguimos donde quedó?`
+            : 'Dejamos una clase a medias. ¿La seguimos donde quedó?'
+        }
+        primary={{ label: 'Continuar mi clase', onClick: () => onResumeClass?.() }}
+        secondary={{ label: 'Ir al inicio', onClick: next }}
+      />
+    )
+  }
 
   if (notice === 'news') {
     const r = RELEASES.find((x) => x.v === APP_VERSION) ?? RELEASES[0]
@@ -111,13 +137,9 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
           onClick: next,
         }}
       >
-        <div className="flex justify-center gap-2.5">
-          {(['Gramática', 'Lectura', 'Audición', 'Habla'] as const).map((x) => (
-            <span key={x} className="glass rounded-[16px] px-3 py-2 text-[13px]">
-              {x}
-            </span>
-          ))}
-        </div>
+        {levels ? (
+          <SkillProgressCard levels={levels} title="Así estás ahora" />
+        ) : null}
       </MascotPage>
     )
   }

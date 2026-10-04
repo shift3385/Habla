@@ -42,21 +42,24 @@ export const STRUCTURE_HINTS: Record<MistakeCategory, string> = {
 export const TEACHER_SCHEMA: JsonSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['heard_speech', 'transcript', 'correction', 'reply', 'reply_es'],
+  required: ['heard_speech', 'transcript', 'corrections', 'reply', 'reply_es'],
   properties: {
     heard_speech: { type: 'boolean' },
     transcript: { type: 'string' },
-    correction: {
-      type: 'object',
-      additionalProperties: false,
-      required: ['has_error', 'original', 'corrected', 'explanation_es', 'category', 'spanish'],
-      properties: {
-        has_error: { type: 'boolean' },
-        original: { type: 'string' },
-        corrected: { type: 'string' },
-        explanation_es: { type: 'string' },
-        category: { type: 'string', enum: CATEGORIES },
-        spanish: { type: 'string' },
+    // Todos los errores reales de la respuesta (NC-03), cada uno con su corrección. Vacío si no hay errores.
+    corrections: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['original', 'corrected', 'explanation_es', 'category', 'spanish'],
+        properties: {
+          original: { type: 'string' },
+          corrected: { type: 'string' },
+          explanation_es: { type: 'string' },
+          category: { type: 'string', enum: CATEGORIES },
+          spanish: { type: 'string' },
+        },
       },
     },
     reply: { type: 'string' },
@@ -67,14 +70,13 @@ export const TEACHER_SCHEMA: JsonSchema = {
 interface RawTeacherResponse {
   heard_speech: boolean
   transcript: string
-  correction: {
-    has_error: boolean
+  corrections: {
     original: string
     corrected: string
     explanation_es: string
     category: MistakeCategory
     spanish: string
-  }
+  }[]
   reply: string
   reply_es: string
 }
@@ -84,7 +86,8 @@ export interface TeacherResponse {
   transcript: string
   reply: string
   replyEs: string
-  correction: Correction | null
+  /** Todos los errores de la respuesta, en el orden en que aparecen. */
+  corrections: Correction[]
 }
 
 export const START_MESSAGE =
@@ -148,11 +151,11 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 - "reply_es": a natural Spanish translation of "reply".
 
 # Correcting
-- Look only at the student's LAST answer. Correct exactly ONE error: the most important one. Priority: errors that change the meaning, then the student's usual problem areas listed below, then other grammar, then word choice.
+- Look only at the student's LAST answer and list EVERY real error in it, in the order they appear: grammar, word choice, word order, missing words, false friends. A long answer with several mistakes must get several corrections; do not stop at the first one. One item per error (do not merge two different errors into one item).
 - Ignore natural speech features: filler words, repetitions, self-corrections, and accent. Only correct pronunciation if it made a word impossible to understand.
-- If there is no real error, set has_error to false and leave original, corrected, explanation_es and spanish as empty strings (category "other").
-- Never "correct" something that is already correct English. Before reporting an error, check that your corrected version really is better and means what the student meant; if you are not sure, set has_error to false. A correct sentence must never get a correction.
-- "original": the student's sentence (or the relevant part, max about 15 words) exactly as they said it.
+- If there is no real error, "corrections" is an empty array.
+- Never "correct" something that is already correct English. Before reporting an error, check that your corrected version really is better and means what the student meant; if you are not sure, leave it out. A correct sentence must never get a correction.
+- "original": the fragment with the error (max about 15 words) exactly as the student said it.
 - "corrected": that same fragment with the minimal change that makes it correct and natural.
 - "explanation_es": one short sentence in Spanish explaining the rule, e.g. "Software es incontable: no lleva plural ni 'a'."
 - "spanish": a natural Spanish translation of the corrected fragment (it will be used later as a translation drill).
@@ -201,23 +204,21 @@ export async function teacherTurn(
     (model) => askGemini<RawTeacherResponse>(apiKey, model, { system, contents, schema: TEACHER_SCHEMA }),
     onRetry,
   )
-  const c = raw.correction
-  const hasError =
-    c?.has_error && c.original?.trim() && c.corrected?.trim() && c.original.trim() !== c.corrected.trim()
+  const corrections: Correction[] = (raw.corrections ?? [])
+    .filter((c) => c?.original?.trim() && c.corrected?.trim() && c.original.trim() !== c.corrected.trim())
+    .map((c) => ({
+      original: c.original.trim(),
+      corrected: c.corrected.trim(),
+      explanationEs: (c.explanation_es ?? '').trim(),
+      category: CATEGORIES.includes(c.category) ? c.category : 'other',
+      spanish: (c.spanish ?? '').trim(),
+    }))
   return {
     heardSpeech: raw.heard_speech !== false,
     transcript: (raw.transcript ?? '').trim(),
     reply: (raw.reply ?? '').trim(),
     replyEs: (raw.reply_es ?? '').trim(),
-    correction: hasError
-      ? {
-          original: c.original.trim(),
-          corrected: c.corrected.trim(),
-          explanationEs: (c.explanation_es ?? '').trim(),
-          category: CATEGORIES.includes(c.category) ? c.category : 'other',
-          spanish: (c.spanish ?? '').trim(),
-        }
-      : null,
+    corrections,
   }
 }
 

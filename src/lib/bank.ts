@@ -199,13 +199,53 @@ function editDistance(a: string, b: string) {
   return d[a.length][b.length]
 }
 
-/** ¿Es correcta la respuesta escrita? En audición se tolera un error de una letra en palabras de 4+ letras. */
+// Validación flexible (NC-04): misma raíz = misma respuesta. "reversibility" ↔ "reversible", "exposure" ↔
+// "exposed", "repairing" ↔ "repair", "biologically" ↔ "biology". Se quitan sufijos derivativos e inflexivos
+// hasta dejar una raíz de al menos 4 letras; los artículos no cuentan. No acepta palabras distintas.
+const SUFFIXES = [
+  'abilities', 'ibilities', 'ability', 'ibility', 'ically', 'ations', 'ation', 'itions', 'ition', 'ments', 'ment',
+  'nesses', 'ness', 'ities', 'ity', 'ively', 'ive', 'iv', 'ical', 'ally', 'ings', 'ing', 'able', 'ible', 'ures', 'ure',
+  'encies', 'ency', 'ences', 'ence', 'ents', 'ent', 'ancies', 'ancy', 'ances', 'ance', 'ants', 'ant',
+  'ies', 'ied', 'ers', 'er', 'est', 'ed', 'ly', 'es', 'al', 'ic', 'y', 's', 'e',
+]
+const ARTICLES = new Set(['a', 'an', 'the'])
+// Los números no se recortan: "eighty" no es "eight" ni "sixty" es "six".
+const NUMBERS = new Set(['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'hundred', 'thousand', 'million', 'billion'])
+
+export function stem(word: string): string {
+  let w = word.toLowerCase()
+  if (NUMBERS.has(w)) return w
+  // Se repite: "biologically" → "biologic" → "biolog".
+  for (let pass = 0; pass < 3; pass++) {
+    const suf = SUFFIXES.find((x) => w.endsWith(x) && w.length - x.length >= 4)
+    if (!suf) break
+    w = w.slice(0, -suf.length)
+  }
+  // "earlier" → "earli" y "early" → "earl": la i final (de una y) no cuenta.
+  if (w.endsWith('i') && w.length > 4) w = w.slice(0, -1)
+  return w
+}
+
+const stems = (s: string) =>
+  normalizeAnswer(s)
+    .split(' ')
+    .filter((w) => w && !ARTICLES.has(w))
+    .map(stem)
+
+/**
+ * ¿Es correcta la respuesta escrita? Acepta la respuesta exacta (normalizada), la misma con o sin artículo y
+ * las formas de la misma raíz. En audición se tolera además un error de una letra en palabras de 4+ letras.
+ */
 export function checkShort(answer: string, accepted: string[], tolerateTypo = false) {
   const a = normalizeAnswer(answer)
   if (!a) return false
+  const as = stems(answer)
   return accepted.some((x) => {
     const k = normalizeAnswer(x)
     if (a === k) return true
-    return tolerateTypo && k.length >= 4 && editDistance(a, k) <= 1
+    if (tolerateTypo && k.length >= 4 && editDistance(a, k) <= 1) return true
+    const ks = stems(x)
+    if (!ks.length || ks.length !== as.length) return false
+    return ks.every((w, i) => w === as[i] || (tolerateTypo && w.length >= 4 && editDistance(w, as[i]) <= 1))
   })
 }

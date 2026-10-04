@@ -334,3 +334,83 @@ select {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ---------------------------------------------------------------------------------------------------------
+   Horizontal (NC-12). viewport.ts marca <html data-landscape> cuando la pantalla es más ancha que alta.
+   - Las pantallas maquetadas por alturas relativas (.land-tall: bienvenida, preparación) se dibujan en un
+     lienzo de al menos 660 px de alto y la página se desplaza en vertical, sin solaparse.
+   - El resto, en una columna centrada de ancho cómodo, con su propio desplazamiento.
+   - Las páginas de la mascota (avisos, test, Tema libre…) pasan a dos columnas: mascota | contenido.
+     En vertical sus contenedores usan display: contents, así que no cambian nada. */
+html[data-landscape] #root {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+html[data-landscape] .shell {
+  max-width: 920px;
+}
+/* Pantallas maquetadas por alturas relativas (bienvenida, preparación): lienzo alto y desplazable. */
+html[data-landscape] .shell:has(.land-tall) {
+  height: max(100%, 660px);
+  max-width: 640px;
+}
+/* Pantallas de pestañas, test y clase: columna centrada de ancho cómodo. */
+html[data-landscape] .shell:not(:has(.mp-page)) > .relative.z-[2] {
+  margin-inline: auto;
+  max-width: 640px;
+}
+.mp-side,
+.mp-main {
+  display: contents;
+}
+html[data-landscape] .mp-page {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 20px;
+  max-width: 920px;
+}
+html[data-landscape] .mp-side {
+  display: flex;
+  flex: 0 0 32%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+html[data-landscape] .mp-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* La clase en horizontal: el chat a la izquierda a toda altura; cabecera, tema y botón de hablar a la derecha. */
+html[data-landscape] .cv-root {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 40%);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-areas:
+    'list head'
+    'list speed'
+    'list card'
+    'list ctrl';
+}
+html[data-landscape] .cv-head {
+  grid-area: head;
+}
+html[data-landscape] .cv-speed {
+  grid-area: speed;
+}
+html[data-landscape] .cv-card {
+  grid-area: card;
+}
+html[data-landscape] .cv-list {
+  grid-area: list;
+  min-height: 0;
+}
+html[data-landscape] .cv-ctrl {
+  grid-area: ctrl;
+  justify-content: flex-end;
+  overflow-y: auto;
+  padding-top: 4px;
+}

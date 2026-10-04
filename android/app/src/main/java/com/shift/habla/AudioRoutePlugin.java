@@ -61,8 +61,33 @@ public class AudioRoutePlugin extends Plugin {
         am.registerAudioDeviceCallback(callback, main);
     }
 
+    /**
+     * En segundo plano no se retiene el "modo llamada" ni el Bluetooth SCO: mantenerlos impide que el audio del
+     * teléfono se duerma y gasta mucha batería (NC-14). Se hace aquí, en nativo, para que ocurra aunque el
+     * JavaScript del WebView no llegue a ejecutarse. Al volver, la app reaplica la ruta elegida.
+     */
+    @Override
+    protected void handleOnStop() {
+        releaseRoute();
+    }
+
+    private void releaseRoute() {
+        if (am == null) return;
+        try {
+            if (Build.VERSION.SDK_INT >= 31) am.clearCommunicationDevice();
+            else {
+                am.setBluetoothScoOn(false);
+                am.stopBluetoothSco();
+            }
+            if (am.getMode() != AudioManager.MODE_NORMAL) am.setMode(AudioManager.MODE_NORMAL);
+        } catch (Exception e) {
+            Log.w("HablaAudio", "releaseRoute: " + e.getMessage());
+        }
+    }
+
     @Override
     protected void handleOnDestroy() {
+        releaseRoute();
         if (am != null) am.unregisterAudioDeviceCallback(callback);
     }
 

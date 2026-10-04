@@ -1,4 +1,4 @@
-import type { SessionMetrics, SessionReport, Topic, Turn } from './db'
+import { turnCorrections, type SessionMetrics, type SessionReport, type Topic, type Turn } from './db'
 import { askGemini, withRetry, type JsonSchema, type Models, type RetryInfo } from './gemini'
 import { getProfile } from './profile'
 
@@ -42,7 +42,9 @@ export function sessionMetrics(turns: Turn[]): SessionMetrics | null {
   const spokenWords = spoken.reduce((a, t) => a + countWords(t.text), 0)
   const speechSeconds = spoken.reduce((a, t) => a + (t.speechSeconds ?? t.audioSeconds ?? 0), 0)
   const pauses = spoken.reduce((a, t) => a + (t.pauses?.length ?? 0), 0)
-  const corrections = user.filter((t) => t.correction).length
+  // Total de errores corregidos; la precisión mira qué parte de las respuestas tuvo alguno.
+  const corrections = user.reduce((a, t) => a + turnCorrections(t).length, 0)
+  const withErrors = user.filter((t) => turnCorrections(t).length > 0).length
   const minutes = Math.max(speechSeconds / 60, 0.05)
   const wpm = spoken.length ? Math.round(spokenWords / minutes) : 0
   const pausesPerMin = spoken.length ? Math.round((pauses / minutes) * 10) / 10 : 0
@@ -52,7 +54,7 @@ export function sessionMetrics(turns: Turn[]): SessionMetrics | null {
   const speed = clamp((wpm - WPM_FLOOR) / (WPM_TARGET - WPM_FLOOR))
   const length = clamp((avgWords - 5) / (40 - 5))
   const smooth = clamp(1 - pausesPerMin / 6)
-  const accuracy = clamp(1 - (corrections / user.length) * 0.8)
+  const accuracy = clamp(1 - (withErrors / user.length) * 0.8)
   const score = spoken.length
     ? Math.round((speed * 0.3 + length * 0.3 + smooth * 0.2 + accuracy * 0.2) * 100)
     : Math.round(((length * 0.3 + accuracy * 0.2) / 0.5) * 100)
@@ -115,7 +117,7 @@ export async function generateReport(
   const transcript = turns
     .map((t) => {
       const line = `${t.role === 'user' ? (t.typed ? 'STUDENT (typed)' : 'STUDENT') : 'COACH'}: ${t.text}`
-      return t.correction ? `${line}\n  [corrected: "${t.correction.original}" → "${t.correction.corrected}"]` : line
+      return [line, ...turnCorrections(t).map((c) => `  [corrected: "${c.original}" → "${c.corrected}"]`)].join('\n')
     })
     .join('\n')
 
