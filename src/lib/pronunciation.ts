@@ -171,18 +171,42 @@ async function assessOnce(key: string, region: string, wav: Wav, reference: stri
   }
 }
 
+/** Palabras de una frase, para comparar transcripciones (sin mayúsculas ni puntuación). */
+const wordsOf = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}'\s]/gu, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+
+const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety']
+function numberWords(n: number): string {
+  if (n < 20) return ONES[n]
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? '-' + ONES[n % 10] : '')
+  if (n < 1000) return ONES[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' ' + numberWords(n % 100) : '')
+  return numberWords(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberWords(n % 1000) : '')
+}
+
+/** Cifras en palabras ("20" → "twenty"): Azure alinea mal una cifra del texto de referencia con lo que se dijo. */
+export const spellNumbers = (s: string) => s.replace(/\b\d{1,6}\b/g, (d) => numberWords(Number(d)))
+
+/** ¿Azure y Gemini entendieron las mismas palabras? */
+export const sameWords = (a: string, b: string) => wordsOf(spellNumbers(a)).join(' ') === wordsOf(spellNumbers(b)).join(' ')
+
 /**
- * Evalúa la pronunciación del audio. Primero sin texto de referencia (habla libre); si Azure no devuelve
- * notas así, vuelve a evaluar usando como referencia lo que transcribió Gemini (que llega en paralelo).
- * Devuelve null si no se oyó habla.
+ * Evalúa la pronunciación del audio. Primero sin texto de referencia (habla libre), en paralelo con Gemini.
+ * Sin referencia, Azure puntúa lo que ÉL cree que oyó: una palabra mal dicha que suena a otra ("jesterday" →
+ * "just stared", "jears" → "jeers") sale como bien dicha o en otra palabra. Por eso, si lo que entendió Azure no
+ * coincide con la transcripción de Gemini (lo que querías decir), se vuelve a evaluar con ese texto como
+ * referencia y manda esa nota. Devuelve null si no se oyó habla.
  */
 export async function assessPronunciation(key: string, region: string, wav: Wav, reference: () => Promise<string>): Promise<PronResult | null> {
   const free = await assessOnce(key, region, wav, '')
-  if (free) return free
   const text = (await reference()).trim()
-  if (!text) return null
-  const scripted = await assessOnce(key, region, wav, text)
-  return scripted ? { ...scripted, scripted: true } : null
+  if (!text || (free && sameWords(free.text, text))) return free
+  const scripted = await assessOnce(key, region, wav, spellNumbers(text))
+  return scripted ? { ...scripted, scripted: true } : free
 }
 
 /** Comprueba la clave y la región pidiendo un token (no gasta audio). */
@@ -226,7 +250,7 @@ export function weakWords(r: PronResult, max = 4): { word: string; error: PronEr
 /** Una frase natural sobre la pronunciación (en español). */
 export function pronunciationLine(r: PronResult): string {
   const weak = weakWords(r, 3)
-  const head = r.pron >= 85 ? '¡Muy buena pronunciación!' : r.pron >= 70 ? 'Buena pronunciación.' : r.pron >= 50 ? 'Se te entiende, pero hay sonidos por pulir.' : 'Tu pronunciación necesita práctica.'
+  const head = r.pron >= 90 ? '¡Muy buena pronunciación!' : r.pron >= 80 ? 'Buena pronunciación.' : r.pron >= 60 ? 'Se te entiende, pero hay sonidos por pulir.' : 'Tu pronunciación necesita práctica.'
   if (!weak.length) return `${head} No encontré palabras con problemas.`
   const list = weak.map((w) => `«${w.word}»${w.phoneme ? ` (el sonido /${w.phoneme}/)` : w.error === 'Omission' ? ' (te la comiste)' : ''}`).join(', ')
   return `${head} Cuida ${list}.`

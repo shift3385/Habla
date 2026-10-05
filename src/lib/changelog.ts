@@ -39,6 +39,7 @@ export const RELEASES: Release[] = [
       'Al guardar tu clave de Azure, la fonética se enciende al momento (antes hacía falta reabrir la app)',
       'Si Azure no puede evaluar una respuesta, la clase te dice por qué en lugar de callarlo',
       'Las claves ya no aparecen en el registro interno del teléfono',
+      'Fonética más fiel: si Azure entiende otra palabra («jesterday» → «just stared»), se evalúa contra lo que querías decir',
     ],
   },
   {
