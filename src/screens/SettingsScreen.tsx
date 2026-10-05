@@ -364,6 +364,9 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
           </button>
         )
       })}
+      <div className="txt-sub -mt-0.5 px-2.5 text-center text-[13px] leading-snug">
+        Tu progreso, tu racha y la voz de tu profe no cambian. Tócala 5 veces seguidas: cada mascota guarda un secreto.
+      </div>
       <Card>
         <div className="txt-sub text-sm">Modo</div>
         <div className="field mt-2 grid grid-cols-2 gap-1 rounded-[22px] p-1">
@@ -431,9 +434,6 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
           Salen de uno en uno: el primero a los pocos segundos de abrir el Inicio, cada globo se queda lo que tardas en leerlo (de 9 a 20 s) y entre uno y otro pasa entre 40 s y un minuto largo. Toca a tu mascota para oír el siguiente cuando quieras.
         </div>
       </Card>
-      <div className="txt-sub px-2.5 text-center text-[13px] leading-snug">
-        Tu progreso, tu racha y la voz de tu profe no cambian. Tócala 5 veces seguidas: cada mascota guarda un secreto.
-      </div>
     </>
   )
 }
