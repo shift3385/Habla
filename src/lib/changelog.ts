@@ -17,6 +17,28 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.8',
+    date: '2026-10-05',
+    title: 'Corrector fonético con Azure',
+    added: [
+      'Corrector fonético opcional (Azure Speech): nota de pronunciación, fluidez, completitud y entonación, y las palabras o sonidos a cuidar, junto a las correcciones del profe',
+      'Ajustes → Modelos (antes Gemini) con el bloque «Azure Speech (fonética)»: clave, región, interruptor y plan, protegidos con tu patrón, PIN o huella como la clave de Gemini',
+      'Consumo del mes del plan gratis (≈ horas usadas de 5) si das acceso a Azure Monitor',
+      'Si se acaba el plan gratis del mes, la fonética se apaga sola, sigues con Gemini y tu mascota te avisa de lo que costaría un plan de pago',
+      'Con la fonética activa, cada respuesta dura como máximo 60 s, con cuenta atrás (naranja en los últimos 10 s) y envío automático',
+    ],
+    improved: [
+      'La tarjeta del tema empieza plegada y brilla hasta que la abres por primera vez',
+      'Las frases largas de la lección van cada una en su caja, en inglés y español, sin salirse',
+      'La tarjeta Modelos muestra Gemini y Azure con su plan, y si la fonética está activa',
+      'Ajustes: la tarjeta de tu nivel, más limpia («Nivel B1»)',
+    ],
+    fixed: [
+      'El recordatorio diario lo da tu mascota (su nombre e imagen) y llega a la hora exacta, sin pedir permisos extra',
+      'Si Android quita el permiso de notificaciones, Meta diaria te lo dice; y puedes probar el aviso en 5 s',
+    ],
+  },
+  {
     v: '5.7',
     date: '2026-10-04',
     title: 'Tu clase te espera y la batería dura',

@@ -23,6 +23,10 @@ import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
+import { AzureError, assessPronunciation, type PronResult } from '../lib/pronunciation'
+import { phoneticsActive, quotaExhaustedPatch, reportPhoneticsQuota } from '../lib/phonetics'
+import { MAX_SECONDS, toWav16k } from '../lib/wav'
+import PronunciationView from '../components/PronunciationView'
 import { whenBackground } from '../lib/lifecycle'
 import { clearSavedClass, saveClass, type SavedClass } from '../lib/savedClass'
 import MascotPage from '../components/MascotPage'
@@ -36,6 +40,7 @@ interface SpokenAnswer {
   mimeType: string
   seconds: number
   analysis: SpeechAnalysis | null
+  blob: Blob // la grabación original (para el corrector fonético de Azure)
 }
 
 /** Tu respuesta: grabada (audio) o escrita con el teclado. */
@@ -68,7 +73,9 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
   const [topic, setTopic] = useState<Topic | undefined>()
-  const [cardOpen, setCardOpen] = useState(true)
+  // La tarjeta del objetivo empieza plegada y brilla hasta que la abres por primera vez.
+  const [cardOpen, setCardOpen] = useState(false)
+  const [cardSeen, setCardSeen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hint, setHint] = useState<string | null>(null)
   const [canRetry, setCanRetry] = useState(false)
@@ -155,6 +162,40 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     setPhase((p) => (p === 'speaking' ? 'idle' : p))
   }, [])
 
+  // Turnos cuya pronunciación aún está evaluando Azure.
+  const [pronPending, setPronPending] = useState<Set<number>>(new Set())
+
+  /** Lanza la evaluación fonética (si está activa): convierte el audio a WAV y lo manda a Azure. */
+  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | null> | null => {
+    const s = settingsRef.current
+    if (!phoneticsActive(s)) return null
+    return (async () => assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(spoken.blob), () => reference))().catch((e) => {
+      if (e instanceof AzureError && e.kind === 'quota') {
+        // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
+        update(quotaExhaustedPatch())
+        reportPhoneticsQuota()
+      } else console.warn('[HABLA-NET] azure:', (e as Error).message)
+      return null
+    })
+  }
+
+  /** Une la pronunciación a tu respuesta cuando llega (un momento después que la del profe). */
+  const attachPronunciation = (turnId: number, p: Promise<PronResult | null>) => {
+    setPronPending((s) => new Set(s).add(turnId))
+    p.then(async (r) => {
+      if (r && !gone()) {
+        await db.turns.update(turnId, { pronunciation: r })
+        setTurns((ts) => ts.map((t) => (t.id === turnId ? { ...t, pronunciation: r } : t)))
+      }
+    }).finally(() =>
+      setPronPending((s) => {
+        const n = new Set(s)
+        n.delete(turnId)
+        return n
+      }),
+    )
+  }
+
   /**
    * Pide al profe la siguiente intervención. Con `answer` (tu audio), Gemini lo transcribe,
    * te corrige y responde en una sola llamada. Si falla, el audio queda guardado para reenviarlo.
@@ -166,6 +207,10 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       setIdeas(null)
       const spoken = answer && 'base64' in answer ? answer : null
       const typed = answer && 'text' in answer ? answer.text : null
+      // Corrector fonético (Azure) EN PARALELO a Gemini con el mismo audio. Si no se usa o falla, solo Gemini.
+      let giveReference: (t: string) => void = () => {}
+      const reference = new Promise<string>((r) => (giveReference = r))
+      const pron = spoken ? startPronunciation(spoken, reference) : null
       try {
         const res = await teacherTurn(
           settingsRef.current.geminiKey,
@@ -174,6 +219,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           history.current,
           spoken ? { base64: spoken.base64, mimeType: spoken.mimeType } : typed ? { text: typed } : undefined,
         )
+        giveReference(typed ?? res.transcript) // por si Azure necesita el texto como referencia
         if (gone()) return
         setHint(null)
         const sid = sessionId.current!
@@ -202,6 +248,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           // Cada error va al cuaderno de errores (repaso espaciado).
           for (const c of res.corrections) await db.mistakes.add({ ...c, sessionId: sid, turnId: turn.id!, createdAt: Date.now() })
           setTurns((ts) => [...ts, turn])
+          if (pron && turn.id) attachPronunciation(turn.id, pron)
           setCardOpen(false) // la tarjeta del tema se pliega sola al responder
           history.current.push({ role: 'user', content: said })
         }
@@ -226,6 +273,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         }
         await say(res.reply)
       } catch (e) {
+        giveReference('')
         if (isAborted(e) || gone()) return
         setHint(null)
         if (prepRef.current === 'loading') {
@@ -414,6 +462,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         mimeType: blob.type.split(';')[0] || 'audio/webm',
         seconds,
         analysis,
+        blob,
       }
       pending.current = answer
       await askTeacher(answer)
@@ -705,14 +754,24 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
       {/* Tarjeta del tema: se pliega sola al responder */}
       <div className="cv-card flex-none px-[18px] pb-2">
-        <div className="glass rounded-[24px] py-3 pr-3 pl-3.5">
-          <button onClick={() => setCardOpen((o) => !o)} className="flex w-full items-center gap-3 text-left">
+        <div className={`glass rounded-[24px] py-3 pr-3 pl-3.5 ${!cardSeen && (card.sub || chips.length) ? 'card-glow' : ''}`}>
+          <button
+            onClick={() => {
+              setCardOpen((o) => !o)
+              setCardSeen(true)
+            }}
+            className="flex w-full items-center gap-3 text-left"
+            aria-expanded={cardOpen}
+          >
             <span className="field txt-acc2 grid h-9 w-9 flex-none place-items-center rounded-full">
               <Icon name={card.icon} size={17} />
             </span>
             <span className="min-w-0 flex-1">
               <span className="txt-acc2 block text-[10.5px] tracking-[1.2px] uppercase">{card.label}</span>
               <span className="block truncate text-base font-semibold">{card.title}</span>
+              {!cardSeen && !cardOpen && (card.sub || chips.length) ? (
+                <span className="txt-sub block text-[11.5px]">{planInfo ? 'Toca para ver el objetivo de la clase' : 'Toca para ver de qué va'}</span>
+              ) : null}
             </span>
             <span
               className="txt-sub grid h-[30px] w-[30px] flex-none place-items-center rounded-full transition-transform duration-300"
@@ -725,21 +784,44 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
             <div className="anim-up pl-12">
               {topic?.titleEs && <div className="txt-sub mt-1 text-[13px]">{topic.titleEs}</div>}
               {card.sub && <div className="mt-1 text-[13px] leading-snug">{card.sub}</div>}
-              {chips.length > 0 && (
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {chips.map((v) => (
-                    <button
-                      key={v.en}
-                      onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}
-                      className="field flex h-8 items-center gap-1.5 rounded-2xl px-2.5 text-[13px]"
-                    >
-                      <Icon name="speaker" size={13} stroke={1.8} />
-                      <b className="font-semibold">{v.en}</b>
-                      <span className="txt-sub">· {v.es}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+              {chips.length > 0 &&
+                // Frases (lección del plan) o palabras largas: cada idea en su caja, inglés y español en líneas
+                // propias que se ajustan al ancho. Palabras cortas (tema del día): píldoras que también se ajustan.
+                (chips.some((v) => v.en.length > 22) ? (
+                  <div className="mt-2.5 flex flex-col gap-1.5">
+                    {chips.map((v) => (
+                      <button
+                        key={v.en}
+                        onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}
+                        className="field flex w-full items-start gap-2 rounded-[16px] px-3 py-2 text-left text-[13.5px] leading-snug"
+                      >
+                        <span className="txt-acc2 mt-0.5 flex-none">
+                          <Icon name="speaker" size={14} stroke={1.8} />
+                        </span>
+                        <span className="min-w-0 flex-1 break-words">
+                          <b className="block font-semibold">{v.en}</b>
+                          <span className="txt-sub block text-[12.5px]">{v.es}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {chips.map((v) => (
+                      <button
+                        key={v.en}
+                        onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}
+                        className="field flex min-h-8 max-w-full items-center gap-1.5 rounded-2xl px-2.5 py-1 text-left text-[13px] break-words"
+                      >
+                        <Icon name="speaker" size={13} stroke={1.8} />
+                        <span className="min-w-0">
+                          <b className="font-semibold">{v.en}</b>
+                          <span className="txt-sub"> · {v.es}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ))}
               {topic?.sources && topic.sources.length > 0 && (
                 <div className="txt-sub mt-2 truncate text-[11px]">Fuente: {topic.sources.map((s) => s.title).join(' · ')}</div>
               )}
@@ -781,6 +863,9 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           // La corrección de tu respuesta aparece dentro de la siguiente burbuja del profe, como en el diseño.
           const prev = turns[i - 1]
           const fixes = prev?.role === 'user' ? turnCorrections(prev) : []
+          // Mensaje del coach: correcciones (Gemini) y pronunciación (Azure) juntas, bajo la respuesta del profe.
+          const pron = prev?.role === 'user' ? prev.pronunciation : undefined
+          const pronWaiting = prev?.role === 'user' && prev.id !== undefined && pronPending.has(prev.id)
           const hidden = settings.earMode && !revealed.has(m.id!)
           const showEs = translated.has(m.id!)
           return (
@@ -810,12 +895,19 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                 </div>
               )}
               {showEs && m.translation && <div className="txt-sub mt-1.5 text-sm leading-snug">{m.translation}</div>}
-              {fixes.length > 0 && (
+              {(fixes.length > 0 || pron || pronWaiting) && (
                 <div className="mt-2.5 flex flex-col gap-1.5">
                   {fixes.length > 1 && <div className="txt-sub text-[11.5px]">{fixes.length} correcciones</div>}
                   {fixes.map((c, k) => (
                     <CorrectionView key={k} c={c} />
                   ))}
+                  {pron ? (
+                    <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} />
+                  ) : pronWaiting ? (
+                    <div className="txt-sub flex items-center gap-1.5 text-[12px]">
+                      <Icon name="ear" size={13} /> Revisando tu pronunciación…
+                    </div>
+                  ) : null}
                 </div>
               )}
               <div className="mt-2 flex gap-3.5">
@@ -892,6 +984,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         )}
         {inputMode === 'voice' ? (
           <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')}
+            maxSeconds={phoneticsActive(settings) ? MAX_SECONDS : undefined}
             companion={<Mascot element={mascotEl} mood={mood} size={84} />}
           />
         ) : (

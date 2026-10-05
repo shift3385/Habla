@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie'
 import type { StudyPlan } from './plan'
 import type { TestSummary } from './testSummary'
+import type { PronResult } from './pronunciation'
 
 export type MistakeCategory =
   | 'article'
@@ -86,6 +87,8 @@ export interface Turn {
   correction?: Correction
   /** Todas las correcciones de la respuesta (NC-03). */
   corrections?: Correction[]
+  /** Pronunciación evaluada por Azure (corrector fonético opcional). */
+  pronunciation?: PronResult
 }
 
 /** Correcciones de una respuesta, también de las clases antiguas (que solo tenían una). */

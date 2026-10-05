@@ -3,11 +3,13 @@ import { exportBackup, importBackup } from '../lib/backup'
 import type { CalibrationRecord, Profile } from '../lib/db'
 import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel, type NetLog } from '../lib/gemini'
 import { Share } from '@capacitor/share'
-import { askNotificationPermission } from '../lib/reminders'
+import { askNotificationPermission, notificationsGranted, testReminder } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import { ORIENTATIONS } from '../lib/orientation'
 import SkillProgressCard from '../components/SkillProgressCard'
+import AzureSettings from '../components/AzureSettings'
+import { azureModelName, phoneticsState } from '../lib/phonetics'
 import { Capacitor } from '@capacitor/core'
 import { confirmIdentity, INSECURE_HINT } from '../lib/deviceAuth'
 import TestSummaryView from '../components/TestSummaryView'
@@ -31,7 +33,7 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   goal: { title: 'Meta diaria', icon: 'target' },
   profile: { title: 'Mi perfil y datos', icon: 'pencil' },
   level: { title: 'Mi nivel', icon: 'bars' },
-  gemini: { title: 'Gemini', icon: 'key' },
+  gemini: { title: 'Modelos', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
   diag: { title: 'Diagnóstico', icon: 'chart' },
 }
@@ -93,6 +95,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
         {page === 'gemini' && (
           <>
             <GeminiPage settings={settings} update={update} />
+            <AzureSettings settings={settings} update={update} />
             <button onClick={() => setPage('diag')} className="glass flex h-[58px] items-center gap-3 rounded-[29px] px-2.5 text-left">
               <span className="field txt-acc2 grid h-[40px] w-[40px] flex-none place-items-center rounded-full">
                 <Icon name="chart" size={18} stroke={1.6} />
@@ -113,7 +116,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
 
   // Cada opción muestra en grande lo que tienes elegido ahora y, en pequeño, de qué sección se trata.
   const theme = THEME_INFO[settings.theme]
-  const tiles: { key: string; icon: IconName; value: string; label: string; onClick: () => void }[] = [
+  const tiles: { key: string; icon: IconName; value: string; value2?: string | null; label: string; onClick: () => void }[] = [
     { key: 'voice', icon: 'mic', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×`, label: 'Profe y voz', onClick: () => setPage('voice') },
     {
       key: 'look',
@@ -128,7 +131,8 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
       key: 'gemini',
       icon: 'key',
       value: settings.geminiKey ? settings.geminiModel.replace('gemini-', 'Gemini ') : 'Falta la clave',
-      label: 'Gemini',
+      value2: azureModelName(settings),
+      label: `Modelos · ${phoneticsState(settings)}`,
       onClick: () => setPage('gemini'),
     },
     { key: 'about', icon: 'info', value: `Versión ${APP_VERSION}`, label: 'Acerca de Habla', onClick: onOpenAbout },
@@ -154,9 +158,9 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
             <Mascot element={theme.mascot} size={58} mood="happy" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="txt-sub text-[12.5px]">{theme.mascotName}: tu nivel es</div>
-            <div className="text-[38px] leading-none font-semibold tracking-[-1.2px]" style={{ color: 'var(--acc)' }}>
-              {profile?.levels.overall ?? '—'}
+            <div className="leading-none font-semibold tracking-[-1.2px]" style={{ color: 'var(--acc)' }}>
+              <span className="text-[22px] tracking-[-0.4px]">Nivel </span>
+              <span className="text-[38px]">{profile?.levels.overall ?? '—'}</span>
             </div>
           </div>
           {days !== null && days <= 0 ? (
@@ -182,13 +186,13 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
         )}
         {/* La mascota invita a tocar para ver el detalle. */}
         <div className="txt-acc2 mt-2.5 flex items-center justify-center gap-1 rounded-[14px] py-1.5 text-[13px] font-medium" style={{ background: 'var(--field)' }}>
-          {theme.mascotName}: toca aquí y te cuento los detalles de tu nivel
+          Toca aquí y te cuento los detalles de tu nivel
           <Icon name="chevR" size={13} stroke={2} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2.5">
         {tiles.map((x) => (
-          <button key={x.key} onClick={x.onClick} className="glass flex h-[86px] flex-col justify-between rounded-[24px] px-3.5 py-3 text-left">
+          <button key={x.key} onClick={x.onClick} className="glass flex min-h-[86px] flex-col justify-between gap-1.5 rounded-[24px] px-3.5 py-3 text-left">
             <span className="flex w-full items-center justify-between">
               <span className="field txt-acc2 grid h-[32px] w-[32px] place-items-center rounded-full">
                 <Icon name={x.icon} size={16} stroke={1.6} />
@@ -197,6 +201,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
             </span>
             <span className="w-full min-w-0">
               <span className="block truncate text-[15px] leading-tight font-semibold">{x.value}</span>
+              {x.value2 && <span className="block truncate text-[15px] leading-tight font-semibold">{x.value2}</span>}
               <span className="txt-sub block truncate text-[12px]">{x.label}</span>
             </span>
           </button>
@@ -412,6 +417,16 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
 
 function GoalPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   const [denied, setDenied] = useState(false)
+  const [probe, setProbe] = useState<'' | 'sent' | 'fail'>('')
+  // Si el recordatorio está encendido pero Android ya no deja notificar, se avisa (si no, no llegaría nada).
+  useEffect(() => {
+    if (settings.reminderOn && Capacitor.isNativePlatform()) notificationsGranted().then((ok) => setDenied(!ok))
+  }, [settings.reminderOn])
+  const tryReminder = async () => {
+    const ok = await testReminder(settings.theme)
+    setProbe(ok ? 'sent' : 'fail')
+    setDenied(!ok)
+  }
   const toggleReminder = async () => {
     if (settings.reminderOn) return update({ reminderOn: false })
     const ok = await askNotificationPermission()
@@ -457,6 +472,12 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
             />
           </label>
         )}
+        {settings.reminderOn && (
+          <button onClick={tryReminder} className="txt-acc2 mt-3 w-full rounded-full py-2.5 text-[14px] font-medium" style={{ background: 'var(--field)' }}>
+            Probar el aviso (llega en 5 s)
+          </button>
+        )}
+        {probe === 'sent' && <p className="txt-sub mt-2 text-center text-xs">Bloquea o sal de la app: tu mascota te avisará en unos segundos.</p>}
         {denied && (
           <p className="mt-3 text-sm" style={{ color: '#f87171' }}>
             Android no dio permiso para notificaciones. Actívalo en Ajustes del teléfono → Apps → Habla → Notificaciones.

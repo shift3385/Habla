@@ -1,5 +1,5 @@
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from '../ui/icons'
 import Wave from '../ui/Wave'
 
@@ -26,6 +26,8 @@ interface Props {
   onCancel: () => void // descarta la grabación
   onKeyboard?: () => void // cambia a escribir la respuesta
   companion?: ReactNode // mascota del tema, a la izquierda del micrófono (diseño V4)
+  /** Duración máxima de la respuesta (p. ej. 60 s con el corrector fonético): cuenta atrás y envío automático. */
+  maxSeconds?: number
 }
 
 function haptic() {
@@ -43,7 +45,7 @@ function clock(s: number) {
  * - mantener y deslizar ↑ → bloquea: puedes soltar y seguir hablando; tocar ➤ envía
  * - mantener y deslizar ← → cancela
  */
-export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel, onKeyboard, companion }: Props) {
+export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel, onKeyboard, companion, maxSeconds }: Props) {
   const busy = phase === 'starting' || phase === 'transcribing' || phase === 'thinking'
   const recording = phase === 'recording'
   const [lockedRaw, setLocked] = useState(false)
@@ -56,6 +58,25 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
     gesture.current.active = false
     setDrag({ x: 0, y: 0 })
   }
+
+  // Límite de duración: al llegar, se envía solo (una vez); soltar el dedo después ya no vuelve a enviar.
+  const autoSent = useRef(false)
+  useEffect(() => {
+    if (!recording) {
+      autoSent.current = false
+      return
+    }
+    if (maxSeconds && elapsed >= maxSeconds && !autoSent.current) {
+      autoSent.current = true
+      gesture.current = { ...gesture.current, active: false, done: true }
+      setDrag({ x: 0, y: 0 })
+      setLocked(false)
+      haptic()
+      onRelease()
+    }
+  }, [elapsed, recording, maxSeconds, onRelease])
+  const left = maxSeconds ? Math.max(0, maxSeconds - elapsed) : null
+  const time = left !== null ? `quedan ${clock(left)}` : clock(elapsed)
 
   const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (busy) return
@@ -107,10 +128,14 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
   const wavesOn = recording || phase === 'speaking'
 
   const label = locked
-    ? `Bloqueado · ${clock(elapsed)} · toca ➤ para enviar`
+    ? `Bloqueado · ${time} · toca ➤ para enviar`
     : recording
-      ? `${clock(elapsed)} · suelta para enviar · ↑ bloquear · ← cancelar`
-      : LABELS[phase]
+      ? `${time} · suelta para enviar · ↑ bloquear · ← cancelar`
+      : maxSeconds && phase === 'idle'
+        ? `${LABELS[phase]} · máx. ${maxSeconds} s`
+        : LABELS[phase]
+  // Últimos 10 s: el aviso se vuelve naranja.
+  const ending = recording && left !== null && left <= 10
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -194,7 +219,9 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
           )}
         </div>
       </div>
-      <div className="txt-sub h-5 text-center text-[13px] tabular-nums">{label}</div>
+      <div className="txt-sub h-5 text-center text-[13px] tabular-nums" style={ending ? { color: '#f59e0b', fontWeight: 600 } : undefined}>
+        {label}
+      </div>
     </div>
   )
 }

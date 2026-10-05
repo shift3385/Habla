@@ -435,3 +435,27 @@ html[data-landscape] .tab-content {
   padding-right: calc(env(safe-area-inset-right) + 92px) !important;
   padding-bottom: calc(env(safe-area-inset-bottom) + 24px) !important;
 }
+
+/* Tarjeta del objetivo de la clase: brilla (titila) hasta que la abres por primera vez. */
+.card-glow {
+  animation: card-glow 2.4s ease-in-out infinite;
+}
+@keyframes card-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    border-color: var(--gb);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px var(--glow),
+      0 0 26px var(--glow);
+    border-color: var(--acc);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-glow {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--glow);
+  }
+}

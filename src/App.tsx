@@ -29,6 +29,8 @@ import { hasValidFavorites } from './lib/topics'
 import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
 import { setTeacherVoice } from './lib/tts'
 import { applyOrientation } from './lib/orientation'
+import { onPhoneticsQuota, startupCheck } from './lib/phonetics'
+import PhoneticsAlert from './components/PhoneticsAlert'
 import Background from './ui/Background'
 import AudioPicker from './components/AudioPicker'
 import GeminiTroubleSheet from './components/GeminiTroubleSheet'
@@ -103,6 +105,9 @@ export default function App() {
     setSavedClass(s)
     return s
   }, [])
+  // Corrector fonético (Azure): comprobación al abrir y aviso de la mascota si el F0 se agota.
+  const [phonAlert, setPhonAlert] = useState(false)
+  useEffect(() => onPhoneticsQuota(() => setPhonAlert(true)), [])
   const [streak, setStreak] = useState(0)
   const [homework, setHomework] = useState<{ text: string; date: number } | null>(null)
   const settingsRef = useRef<Settings | null>(null)
@@ -203,6 +208,17 @@ export default function App() {
     setTeacherVoice(teacher.lang, teacher.gender)
   }, [settings, t])
 
+  const phonChecked = useRef(false)
+  useEffect(() => {
+    if (!settings || phonChecked.current) return
+    phonChecked.current = true
+    startupCheck(settings).then((r) => {
+      if (Object.keys(r.patch).length) update(r.patch)
+      if (r.alert) setPhonAlert(true)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings])
+
   // Orientación elegida en Tema y mascota (p. ej. horizontal fija si el teléfono no gira).
   const orientation = settings?.orientation ?? 'auto'
   useEffect(() => {
@@ -229,6 +245,7 @@ export default function App() {
   // Avisos: recordatorio diario con la lección que toca y aviso del re-test. Se reprograman al cambiar algo.
   const reminderOn = settings?.reminderOn ?? false
   const reminderTime = settings?.reminderTime ?? '19:00'
+  const reminderTheme = settings?.theme ?? 'lumi'
   useEffect(() => {
     const today = plan ? todayLesson(plan) : null
     syncReminders({
@@ -237,8 +254,9 @@ export default function App() {
       lessonTitle: today?.lesson?.titleEs,
       doneToday: plan ? doneToday(plan) : false,
       retestAt,
+      theme: reminderTheme,
     })
-  }, [reminderOn, reminderTime, plan, retestAt])
+  }, [reminderOn, reminderTime, plan, retestAt, reminderTheme])
 
   if (!settings || !t || calibrated === null) return null
 
@@ -247,6 +265,19 @@ export default function App() {
   const picker = (
     <>
       {audioPicker}
+      {phonAlert && settings.onboarded && (
+        <PhoneticsAlert
+          settings={settings}
+          t={t}
+          onClose={() => setPhonAlert(false)}
+          onOpenModels={() => {
+            setPhonAlert(false)
+            setLesson(null)
+            setSettingsPage('gemini')
+            setTab('settings')
+          }}
+        />
+      )}
       {trouble && settings.onboarded && (
         <GeminiTroubleSheet
           trouble={trouble}

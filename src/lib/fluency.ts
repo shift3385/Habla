@@ -117,7 +117,10 @@ export async function generateReport(
   const transcript = turns
     .map((t) => {
       const line = `${t.role === 'user' ? (t.typed ? 'STUDENT (typed)' : 'STUDENT') : 'COACH'}: ${t.text}`
-      return [line, ...turnCorrections(t).map((c) => `  [corrected: "${c.original}" → "${c.corrected}"]`)].join('\n')
+      // Pronunciación de Azure (si la hubo), para que el informe también hable de ella.
+      const weak = t.pronunciation?.words.filter((w) => w.error !== 'None' || w.accuracy < 70).map((w) => w.word) ?? []
+      const pron = t.pronunciation ? [`  [pronunciation ${t.pronunciation.pron}/100${weak.length ? `; weak words: ${weak.slice(0, 5).join(', ')}` : ''}]`] : []
+      return [line, ...turnCorrections(t).map((c) => `  [corrected: "${c.original}" → "${c.corrected}"]`), ...pron].join('\n')
     })
     .join('\n')
 

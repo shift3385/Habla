@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono de las notificaciones: la silueta de la mascota con dos ojos. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="132"
+    android:viewportHeight="132">
+    <group android:translateX="66" android:translateY="70">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M0,-41.8C7.5,-41.9 15.6,-41.2 22.5,-38.7C29.4,-36.1 36.4,-31.6 41.4,-26.6C46.5,-21.5 50.2,-14.8 52.9,-8.4C55.6,-2 57.3,6.8 57.7,12C58.2,17.2 58.1,19.5 55.8,22.7C53.4,26 49,29.2 43.7,31.7C38.5,34.2 31.5,36.4 24.2,37.8C16.9,39.2 8.1,40.1 0,40.1C-8.1,40.1 -17,39.3 -24.3,37.9C-31.6,36.5 -38.5,34.3 -43.9,31.8C-49.2,29.3 -54,26.2 -56.4,22.9C-58.8,19.6 -58.8,17.2 -58.2,12C-57.5,6.8 -55.5,-2 -52.6,-8.3C-49.7,-14.6 -45.9,-21 -40.8,-26C-35.8,-31 -29.1,-35.4 -22.3,-38.1C-15.5,-40.7 -7.5,-41.7 0,-41.8Z M-21,-4a7.5,10 0,1 0,15 0a7.5,10 0,1 0,-15 0Z M6,-4a7.5,10 0,1 0,15 0a7.5,10 0,1 0,-15 0Z" />
+    </group>
+</vector>

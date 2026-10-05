@@ -2,6 +2,7 @@ import { Preferences } from '@capacitor/preferences'
 import { normalizeTheme, type Mode, type TeacherKey, type ThemeKey } from '../ui/theme'
 import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL, type Models } from './gemini'
 import type { OrientationMode } from './orientation'
+import type { AzurePlan } from './phonetics'
 
 // La clave API vive solo en el almacenamiento local del teléfono (Preferences).
 // Nunca se escribe en el código, en IndexedDB ni en las copias de seguridad.
@@ -29,6 +30,19 @@ export interface Settings {
   retestSnoozed: string // día (AAAA-MM-DD) en que dijo "Más tarde" al re-test
   homeworkSeen: number // fecha de la última tarea ya enseñada antes del Inicio
   orientation: OrientationMode // automática, vertical u horizontal forzada (Tema y mascota)
+  // Corrector fonético con Azure Speech (Ajustes → Modelos). Claves y secretos: mismo almacenamiento y misma
+  // protección con el bloqueo del teléfono que la clave de Gemini; nunca en el código ni en las copias.
+  azureKey: string
+  azureRegion: string // p. ej. eastus
+  azurePlan: AzurePlan // plan del recurso en Azure (la app no lo cambia)
+  phoneticsOn: boolean
+  phoneticsUserOff: boolean // la apagaste tú: no se reactiva sola
+  f0ExhaustedMonth: string // AAAA-MM en que Azure dijo que el F0 se agotó
+  phoneticsAlertMonth: string // AAAA-MM del último aviso de la mascota
+  azureTenantId: string // service principal para leer el consumo en Azure Monitor (opcional)
+  azureClientId: string
+  azureClientSecret: string
+  azureResourceId: string
 }
 
 const DEFAULTS: Settings = {
@@ -54,6 +68,17 @@ const DEFAULTS: Settings = {
   retestSnoozed: '',
   homeworkSeen: 0,
   orientation: 'auto',
+  azureKey: '',
+  azureRegion: '',
+  azurePlan: 'F0',
+  phoneticsOn: false,
+  phoneticsUserOff: false,
+  f0ExhaustedMonth: '',
+  phoneticsAlertMonth: '',
+  azureTenantId: '',
+  azureClientId: '',
+  azureClientSecret: '',
+  azureResourceId: '',
 }
 
 const KEY = 'habla.settings'
