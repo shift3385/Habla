@@ -21,6 +21,8 @@ export const RELEASES: Release[] = [
     date: '2026-10-05',
     title: 'Tu pronunciación, con nota, y tu mascota te habla',
     added: [
+      'Al instalar Habla, tu mascota te explica cómo funciona: que tu profe es una IA (Gemini), para qué es tu clave, cómo conseguirla gratis paso a paso y qué aporta Azure (opcional) para la pronunciación',
+      'Si ya usabas Habla, tu mascota te cuenta una vez para qué sirve la clave que pusiste y qué es Azure',
       'Corrector fonético opcional (Azure Speech): bajo cada respuesta, tu nota de pronunciación con Precisión, Fluidez, Completa y Entonación, y las palabras o sonidos a cuidar. Toca cada nota y una burbuja te explica qué mide',
       'Ajustes → Modelos (antes «Gemini»): bloque «Azure Speech (fonética)» con clave, región, interruptor y plan. Ver o cambiar la clave pide tu patrón, PIN o huella, como la de Gemini',
       'Con la fonética activa, cada respuesta dura como máximo 60 s, con cuenta atrás (naranja en los últimos 10 s) y envío automático',

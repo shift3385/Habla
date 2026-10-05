@@ -57,6 +57,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 ## 🗣️ Cómo usarla
 
 ### Bienvenida, profe y apariencia
+- **Tutorial de la mascota (primera vez):** antes de pedir nada, tu mascota explica cómo funciona Habla (tu profe es una IA: Gemini), para qué es la clave de Gemini, cómo conseguirla gratis paso a paso (con botón a Google AI Studio) y que Azure Speech es opcional para la pronunciación. Quien ya tenía la app ve una vez el aviso «¿Para qué es tu clave?».
 - La primera vez verás una **bienvenida en 3 pasos**: el saludo, la elección de profe y tu nivel con la meta diaria. Puedes repetirla desde *Ajustes → Ver la bienvenida otra vez*.
 - **Profes:**
   - **Emma**: acento americano; paciente, clara y muy positiva.

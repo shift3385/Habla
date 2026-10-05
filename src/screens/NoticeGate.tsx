@@ -5,6 +5,7 @@ import type { Notice } from '../lib/notices'
 import type { SavedClass } from '../lib/savedClass'
 import type { Skill } from '../lib/db'
 import SkillProgressCard from '../components/SkillProgressCard'
+import HelpPoint from '../components/HelpPoint'
 import type { Settings } from '../lib/settings'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot from '../ui/Mascot'
@@ -87,6 +88,38 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
             </div>
           ))}
         </div>
+      </MascotPage>
+    )
+  }
+
+  if (notice === 'keysIntro') {
+    const done = () => {
+      update({ keysIntroSeen: true })
+      next()
+    }
+    return (
+      <MascotPage
+        element={element}
+        mood="happy"
+        step={step}
+        title="¿Para qué es tu clave?"
+        subtitle="Cuando empezaste te pedí una clave de Gemini y no te conté bien para qué. Te lo explico en un momento."
+        primary={{ label: last ? 'Entendido' : 'Siguiente', onClick: done }}
+      >
+        <ul className="glass flex flex-col gap-3 rounded-[26px] px-4 py-3.5 text-left">
+          <HelpPoint icon="spark">
+            Tu profe es una <b>inteligencia artificial</b>: Habla usa <b>Gemini</b>, de Google, para entenderte, corregirte y responderte.
+          </HelpPoint>
+          <HelpPoint icon="key">
+            Tu <b>clave de Gemini</b> es tu pase personal para usarla. Es <b>gratis</b>, con un límite de uso al día.
+          </HelpPoint>
+          <HelpPoint icon="shield">
+            Se guarda <b>solo en este teléfono</b>, protegida con tu patrón, PIN o huella. No va en la app ni en tus copias.
+          </HelpPoint>
+          <HelpPoint icon="ear">
+            <b>Opcional:</b> con una clave de <b>Azure Speech</b> (5 h gratis al mes) también te corrijo la pronunciación sonido a sonido. Se activa en Ajustes → Modelos.
+          </HelpPoint>
+        </ul>
       </MascotPage>
     )
   }

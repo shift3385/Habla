@@ -4,10 +4,44 @@ import { clearExhausted, listModels, pickDefaultModel, pickFallbackModel } from 
 import type { Settings } from '../lib/settings'
 import { speak } from '../lib/tts'
 import { Icon } from '../ui/icons'
-import Mascot from '../ui/Mascot'
+import HelpPoint from '../components/HelpPoint'
+import Mascot, { type MascotElement } from '../ui/Mascot'
 import { TEACHERS, THEME_INFO, type TeacherKey, type ThemeVars } from '../ui/theme'
+import type { ReactNode } from 'react'
 
 const GOALS = [3, 5, 10, 15]
+/** Pasos: hola · cómo funciona · clave de Gemini · Azure (opcional) · profe · meta diaria. */
+const STEPS = 6
+const AISTUDIO = 'https://aistudio.google.com/apikey'
+const AZURE = 'https://portal.azure.com'
+
+/** La mascota explica: ella arriba y su globo debajo (mismo estilo que los globos del Inicio). */
+function MascotSays({ element, children, speaking }: { element: MascotElement; children: ReactNode; speaking?: boolean }) {
+  return (
+    <div className="flex flex-col items-center">
+      <Mascot element={element} size={110} mood={speaking ? 'speaking' : 'happy'} />
+      <div className="tip-bubble relative mt-2 w-full rounded-[20px] px-4 py-3 text-[14.5px] leading-snug">
+        <span
+          className="absolute -top-[7px] left-1/2 h-3 w-3 -translate-x-1/2 rotate-45"
+          style={{ background: 'var(--tip-bg)', borderLeft: '1px solid var(--tip-border)', borderTop: '1px solid var(--tip-border)' }}
+        />
+        <div className="relative">{children}</div>
+      </div>
+    </div>
+  )
+}
+
+const Point = HelpPoint
+
+/** Enlace que Android abre en el navegador (Capacitor manda fuera de la app las webs ajenas). */
+function OutLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a href={href} className="field txt-acc2 flex h-11 items-center justify-center gap-1.5 rounded-[22px] text-[14px] font-semibold">
+      <Icon name="arrowUR" size={15} />
+      {children}
+    </a>
+  )
+}
 
 interface Props {
   settings: Settings
@@ -16,7 +50,11 @@ interface Props {
   onDone: () => void
 }
 
-/** Bienvenida: 1) hola · 2) elige profe · 3) meta diaria (+ clave de Gemini si falta). El nivel lo fija el test. */
+/**
+ * Bienvenida (solo la primera vez, o desde Ajustes → Ver la bienvenida otra vez). La mascota explica cómo funciona
+ * Habla y para qué sirve cada clave antes de pedirla: 1) hola · 2) cómo funciona · 3) clave de Gemini ·
+ * 4) Azure, opcional · 5) elige profe · 6) meta diaria. El nivel lo fija el test.
+ */
 export default function Onboarding({ settings, update, onDone }: Props) {
   const [step, setStep] = useState(0)
   const [speaking, setSpeaking] = useState(false)
@@ -25,6 +63,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
   const [keyStatus, setKeyStatus] = useState<{ ok: boolean; text: string } | null>(null)
   const [checking, setChecking] = useState(false)
   const teacher = TEACHERS[settings.teacher]
+  const element = THEME_INFO[settings.theme].mascot
   const keyOk = !needsKey || keyStatus?.ok
 
   const checkKey = async () => {
@@ -56,7 +95,8 @@ export default function Onboarding({ settings, update, onDone }: Props) {
 
   const finish = () => {
     // Quien instala desde cero no necesita el aviso de novedades de esta versión.
-    update({ onboarded: true, lastSeenVersion: APP_VERSION })
+    // …ni la explicación de las claves: se la acaba de dar la mascota en la bienvenida.
+    update({ onboarded: true, lastSeenVersion: APP_VERSION, keysIntroSeen: true })
     onDone()
   }
 
@@ -77,7 +117,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
           </div>
         )}
         <div className="flex gap-1.5">
-          {[0, 1, 2].map((i) => (
+          {Array.from({ length: STEPS }, (_, i) => i).map((i) => (
             <div
               key={i}
               className="h-[7px] rounded transition-all duration-300"
@@ -103,7 +143,109 @@ export default function Onboarding({ settings, update, onDone }: Props) {
       )}
 
       {step === 1 && (
-        <div key="s1" className="anim-up flex flex-1 flex-col">
+        <div key="s1" className="anim-up flex flex-1 flex-col overflow-y-auto">
+          <h1 className="mt-4 text-[28px] font-semibold tracking-[-.7px]">Así funciona Habla</h1>
+          <div className="mt-4">
+            <MascotSays element={element}>
+              Tu profe es una <b>inteligencia artificial</b>. Para que te escuche y te responda, Habla se conecta a una IA de Google: <b>Gemini</b>.
+            </MascotSays>
+          </div>
+          <ul className="mt-5 flex flex-col gap-3">
+            <Point icon="mic">Hablas en inglés como en un audio de WhatsApp.</Point>
+            <Point icon="spark">Gemini entiende lo que dijiste, te corrige y tu profe te responde por voz.</Point>
+            <Point icon="lock">Tu progreso, tus errores y tus palabras se guardan solo en este teléfono.</Point>
+          </ul>
+          <div className="flex-1" />
+          <button onClick={() => setStep(2)} className="btn-acc mt-5 h-[58px] flex-none rounded-full text-[17px]">
+            Entendido
+          </button>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div key="s2" className="anim-up flex flex-1 flex-col overflow-y-auto">
+          <h1 className="mt-4 text-[28px] font-semibold tracking-[-.7px]">Tu llave de Gemini</h1>
+          <div className="mt-4">
+            <MascotSays element={element}>
+              Para usar Gemini cada persona necesita su propia <b>clave</b>: es como tu pase personal. Es <b>gratis</b> (con un límite de uso al día) y{' '}
+              <b>se guarda solo en este teléfono</b>, protegida con tu patrón, PIN o huella.
+            </MascotSays>
+          </div>
+          {needsKey ? (
+            <>
+              <ol className="txt-sub mt-4 list-decimal pl-5 text-[13.5px] leading-snug">
+                <li>Abre Google AI Studio (botón de abajo) e inicia sesión con tu cuenta de Google.</li>
+                <li>Toca «Create API key» (Crear clave).</li>
+                <li>Copia la clave: empieza por «AIza».</li>
+                <li>Vuelve aquí, pégala y toca «Comprobar clave».</li>
+              </ol>
+              <div className="mt-3">
+                <OutLink href={AISTUDIO}>Abrir Google AI Studio</OutLink>
+              </div>
+              <input
+                type="password"
+                value={key}
+                onChange={(e) => {
+                  setKey(e.target.value)
+                  setKeyStatus(null)
+                }}
+                placeholder="Pega tu clave (AIza…)"
+                autoComplete="off"
+                className="input mt-3"
+              />
+              <button onClick={checkKey} disabled={checking || !key.trim()} className="field mt-2 h-11 w-full flex-none rounded-[22px] font-medium disabled:opacity-50">
+                {checking ? 'Comprobando…' : 'Comprobar clave'}
+              </button>
+              {keyStatus && (
+                <p className="mt-2 text-sm" style={{ color: keyStatus.ok ? 'var(--acc2)' : '#f87171' }}>
+                  {keyStatus.text}
+                </p>
+              )}
+              <p className="txt-sub mt-2 text-[12px] leading-snug">Nunca va dentro de la app ni en tus copias de seguridad. Puedes cambiarla en Ajustes → Modelos.</p>
+            </>
+          ) : (
+            <p className="mt-4 text-[14px]" style={{ color: 'var(--acc2)' }}>
+              Ya tienes tu clave guardada ✓
+            </p>
+          )}
+          <div className="flex-1" />
+          <button onClick={() => setStep(3)} disabled={!keyOk} className="btn-acc mt-5 h-[58px] flex-none rounded-full text-[17px]">
+            {keyOk ? 'Continuar' : 'Comprueba tu clave para seguir'}
+          </button>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div key="s3" className="anim-up flex flex-1 flex-col overflow-y-auto">
+          <h1 className="mt-4 text-[28px] font-semibold tracking-[-.7px]">
+            Tu pronunciación <span className="txt-sub text-[18px] font-medium">(opcional)</span>
+          </h1>
+          <div className="mt-4">
+            <MascotSays element={element}>
+              Gemini corrige <b>lo que dices</b>. Si además quieres saber <b>cómo lo pronuncias</b>, sonido a sonido, puedo usar <b>Azure Speech</b> de Microsoft, con su
+              propia clave.
+            </MascotSays>
+          </div>
+          <ul className="mt-5 flex flex-col gap-3">
+            <Point icon="ear">Bajo cada respuesta verás tu nota de pronunciación y las palabras o sonidos a cuidar.</Point>
+            <Point icon="star">El plan F0 es gratis: 5 horas de audio al mes. Azure puede pedir una tarjeta solo para verificar tu cuenta.</Point>
+            <Point icon="shield">Su clave también se guarda solo aquí, protegida igual que la de Gemini.</Point>
+          </ul>
+          <p className="txt-sub mt-4 text-[13px] leading-snug">
+            <b>No hace falta ahora.</b> Sin Azure todo funciona con Gemini. Cuando quieras, actívalo en <b>Ajustes → Modelos → Azure Speech</b>.
+          </p>
+          <div className="mt-3">
+            <OutLink href={AZURE}>Ver el portal de Azure</OutLink>
+          </div>
+          <div className="flex-1" />
+          <button onClick={() => setStep(4)} className="btn-acc mt-5 h-[58px] flex-none rounded-full text-[17px]">
+            Entendido, sigamos
+          </button>
+        </div>
+      )}
+
+      {step === 4 && (
+        <div key="s4" className="anim-up flex flex-1 flex-col">
           <h1 className="mt-6 text-[32px] font-semibold tracking-[-.8px]">Elige a tu profe</h1>
           <p className="txt-sub mt-2 text-[15px]">Puedes cambiarlo cuando quieras en Ajustes.</p>
           <div className="mt-7 flex flex-col gap-3.5">
@@ -135,14 +277,14 @@ export default function Onboarding({ settings, update, onDone }: Props) {
             })}
           </div>
           <div className="flex-1" />
-          <button onClick={() => setStep(2)} className="btn-acc h-[58px] rounded-full text-[17px]">
+          <button onClick={() => setStep(5)} className="btn-acc h-[58px] rounded-full text-[17px]">
             Continuar con {teacher.name}
           </button>
         </div>
       )}
 
-      {step === 2 && (
-        <div key="s2" className="anim-up flex flex-1 flex-col">
+      {step === 5 && (
+        <div key="s5" className="anim-up flex flex-1 flex-col">
           <h1 className="mt-6 text-[32px] font-semibold tracking-[-.8px]">Tu meta diaria</h1>
           <p className="txt-sub mt-1.5 text-sm leading-snug">
             Minutos hablando tú. 5 minutos de voz equivalen a unos 15 de clase.
@@ -158,33 +300,6 @@ export default function Onboarding({ settings, update, onDone }: Props) {
               </button>
             ))}
           </div>
-          {needsKey && (
-            <div className="glass mt-6 rounded-[24px] p-4">
-              <div className="font-semibold">Conecta Gemini</div>
-              <p className="txt-sub mt-1 text-[13px] leading-snug">
-                Es el cerebro de {teacher.name}. Crea una clave gratis en aistudio.google.com → "Get API key" y pégala aquí. Se guarda solo en este teléfono.
-              </p>
-              <input
-                type="password"
-                value={key}
-                onChange={(e) => {
-                  setKey(e.target.value)
-                  setKeyStatus(null)
-                }}
-                placeholder="AIza…"
-                autoComplete="off"
-                className="input mt-3"
-              />
-              <button onClick={checkKey} disabled={checking || !key.trim()} className="field mt-2 h-11 w-full rounded-[22px] font-medium disabled:opacity-50">
-                {checking ? 'Comprobando…' : 'Comprobar clave'}
-              </button>
-              {keyStatus && (
-                <p className="mt-2 text-sm" style={{ color: keyStatus.ok ? 'var(--acc2)' : '#f87171' }}>
-                  {keyStatus.text}
-                </p>
-              )}
-            </div>
-          )}
           <div className="flex-1" />
           <p className="txt-sub mb-3 text-center text-[13px] leading-snug">
             A continuación harás un test de nivel (25–30 min) para que {teacher.name} adapte las clases a ti.
