@@ -32,6 +32,8 @@ export const RELEASES: Release[] = [
       'Las frases largas de la lección van cada una en su caja, en inglés y español, sin salirse',
       'La tarjeta Modelos muestra Gemini y Azure con su plan, y si la fonética está activa',
       'Ajustes: la tarjeta de tu nivel, más limpia («Nivel B1»)',
+      'Toca Precisión, Fluidez, Completa o Entonación y una burbuja te explica qué mide; toca fuera para ocultarla',
+      'La tarjeta del tema dice «Toca para ver el objetivo de esta clase» (o «de esta conversación»)',
     ],
     fixed: [
       'El recordatorio diario lo da tu mascota (su nombre e imagen) y llega a la hora exacta, sin pedir permisos extra',

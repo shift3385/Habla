@@ -774,7 +774,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
               <span className="txt-acc2 block text-[10.5px] tracking-[1.2px] uppercase">{card.label}</span>
               <span className="block truncate text-base font-semibold">{card.title}</span>
               {!cardSeen && !cardOpen && (card.sub || chips.length) ? (
-                <span className="txt-sub block text-[11.5px]">{planInfo ? 'Toca para ver el objetivo de la clase' : 'Toca para ver de qué va'}</span>
+                <span className="txt-sub block text-[11.5px]">{planInfo ? 'Toca para ver el objetivo de esta clase' : 'Toca para ver el objetivo de esta conversación'}</span>
               ) : null}
             </span>
             <span
