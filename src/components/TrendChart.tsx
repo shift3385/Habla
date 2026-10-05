@@ -9,12 +9,12 @@ export interface Point {
 const MARK = 'var(--acc)' // acento del tema (validado contra el fondo de cada tema)
 
 /** Línea de una sola serie (nota de fluidez por sesión) con tooltip al tocar cada punto. */
-export default function TrendChart({ points, max = 100, unit = '' }: { points: Point[]; max?: number; unit?: string }) {
+export default function TrendChart({ points, max = 100, unit = '', height = 140 }: { points: Point[]; max?: number; unit?: string; height?: number }) {
   const [active, setActive] = useState<number | null>(points.length ? points.length - 1 : null)
   if (points.length === 0) return null
 
   const W = 320
-  const H = 140
+  const H = height
   const pad = { l: 28, r: 12, t: 12, b: 22 }
   const iw = W - pad.l - pad.r
   const ih = H - pad.t - pad.b

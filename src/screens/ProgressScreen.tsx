@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import InfiniteList from '../components/InfiniteList'
 import ReportView from '../components/ReportView'
 import TrendChart from '../components/TrendChart'
 import { db, turnCorrections, type Correction, type Session } from '../lib/db'
@@ -13,7 +14,10 @@ import { SmallRing } from './Home'
 type Seg = 'errors' | 'words' | 'sessions'
 
 function shortDate(ts: number) {
-  return new Date(ts).toLocaleDateString('es', { day: 'numeric', month: 'short' })
+  return new Date(ts).toLocaleDateString('es', {
+    day: 'numeric',
+    month: 'short',
+  })
 }
 
 function sessionTitle(s: Session) {
@@ -37,7 +41,10 @@ export default function ProgressScreen({
   const [sessions, setSessions] = useState<Session[]>([])
   const [seg, setSeg] = useState<Seg>('errors')
   const [openErr, setOpenErr] = useState<number | null>(null)
-  const [open, setOpen] = useState<{ s: Session; corrections: Correction[] } | null>(null)
+  const [open, setOpen] = useState<{
+    s: Session
+    corrections: Correction[]
+  } | null>(null)
   const [todayIdx] = useState(() => (new Date().getDay() + 6) % 7)
 
   useEffect(() => {
@@ -148,37 +155,58 @@ export default function ProgressScreen({
               Repasar mis errores en voz alta
             </button>
           )}
-          {errors.map((e, i) => (
-            <button
-              key={i}
-              onClick={() => setOpenErr(openErr === i ? null : i)}
-              className="glass flex items-center gap-2.5 rounded-[22px] px-4 py-2.5 text-left"
-            >
-              <div className="min-w-0 flex-1 text-sm leading-[1.35]">
-                <span className="txt-sub line-through">{e.original}</span>
-                <br />
-                <span className="font-semibold">{e.corrected}</span>
-                {openErr === i && e.explanationEs && <span className="txt-sub mt-1 block text-[13px]">{e.explanationEs}</span>}
-              </div>
-              <div className="txt-sub flex-none text-xs">{e.count === 1 ? '1 vez' : `${e.count} veces`}</div>
-            </button>
-          ))}
+          {errors.length > 0 && (
+            <InfiniteList
+              items={errors}
+              render={(e, i) => (
+                <button
+                  key={i}
+                  onClick={() => setOpenErr(openErr === i ? null : i)}
+                  className="glass flex items-center gap-2.5 rounded-[20px] px-4 py-2.5 text-left"
+                >
+                  <div className="min-w-0 flex-1 text-sm leading-[1.35]">
+                    <span className="txt-sub line-through">{e.original}</span>
+                    <br />
+                    <span className="font-semibold">{e.corrected}</span>
+                    {openErr === i && e.explanationEs && <span className="txt-sub mt-1 block text-[13px]">{e.explanationEs}</span>}
+                  </div>
+                  <div className="txt-sub flex-none text-xs">{e.count === 1 ? '1 vez' : `${e.count} veces`}</div>
+                </button>
+              )}
+            />
+          )}
         </div>
       )}
 
       {seg === 'words' && (
-        <div key="words" className="anim-up flex flex-wrap gap-2">
+        <div key="words" className="anim-up flex flex-col gap-2">
           {words.length === 0 && <Empty text="Las palabras de tus temas y las frases del día se guardan aquí." />}
-          {words.map((w) => (
-            <button
-              key={w.en}
-              onClick={() => speak(w.en, settings.ttsRate, settings.voiceIndex)}
-              className="glass flex h-[38px] items-center gap-1.5 rounded-[19px] px-3.5 text-sm"
-            >
-              <b className="font-semibold">{w.en}</b>
-              <span className="txt-sub">{w.es}</span>
-            </button>
-          ))}
+          {words.length > 0 && (
+            <InfiniteList
+              items={words}
+              render={(w) => (
+                <button
+                  key={w.en}
+                  onClick={() => speak(w.en, settings.ttsRate, settings.voiceIndex)}
+                  className="glass flex items-center gap-2.5 rounded-[20px] px-4 py-2.5 text-left"
+                  aria-label={`Escuchar ${w.en}`}
+                >
+                  <div className="min-w-0 flex-1 text-sm leading-[1.35] break-words">
+                    <span className="font-semibold">{w.en}</span>
+                    {w.es && (
+                      <>
+                        <br />
+                        <span className="txt-sub">{w.es}</span>
+                      </>
+                    )}
+                  </div>
+                  <span className="txt-acc2 flex-none">
+                    <Icon name="speaker" size={16} />
+                  </span>
+                </button>
+              )}
+            />
+          )}
         </div>
       )}
 
@@ -197,29 +225,26 @@ export default function ProgressScreen({
                     detail: `${s.metrics!.wpm} ppm · ${s.metrics!.avgWords} palabras/resp. · ${s.metrics!.level}`,
                   }))}
                   unit="/100"
+                  height={96}
                 />
               </div>
-              {[...sessions].reverse().map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => openSession(s)}
-                  className="glass flex items-center gap-3 rounded-[24px] p-2.5 text-left"
-                >
-                  <span className="field txt-acc2 grid h-11 w-11 flex-none place-items-center rounded-full font-semibold">
-                    {s.metrics!.score}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-semibold">{sessionTitle(s)}</span>
-                    <span className="txt-sub block text-[12.5px]">
-                      {shortDate(s.startedAt)} · {s.metrics!.wpm} ppm · {s.metrics!.turns}{' '}
-                      {s.metrics!.turns === 1 ? 'respuesta' : 'respuestas'}
+              <InfiniteList
+                items={[...sessions].reverse()}
+                render={(s) => (
+                  <button key={s.id} onClick={() => openSession(s)} className="glass flex items-center gap-3 rounded-[20px] p-2.5 text-left">
+                    <span className="field txt-acc2 grid h-11 w-11 flex-none place-items-center rounded-full font-semibold">{s.metrics!.score}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[15px] font-semibold">{sessionTitle(s)}</span>
+                      <span className="txt-sub block text-[12.5px]">
+                        {shortDate(s.startedAt)} · {s.metrics!.wpm} ppm · {s.metrics!.turns} {s.metrics!.turns === 1 ? 'respuesta' : 'respuestas'}
+                      </span>
                     </span>
-                  </span>
-                  <span className="txt-sub pr-2">
-                    <Icon name="chevR" size={16} stroke={1.8} />
-                  </span>
-                </button>
-              ))}
+                    <span className="txt-sub pr-2">
+                      <Icon name="chevR" size={16} stroke={1.8} />
+                    </span>
+                  </button>
+                )}
+              />
             </>
           )}
         </div>

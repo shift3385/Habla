@@ -34,6 +34,7 @@ export const RELEASES: Release[] = [
       'Ajustes: la tarjeta de tu nivel, más limpia («Nivel B1»)',
       'Toca Precisión, Fluidez, Completa o Entonación y una burbuja te explica qué mide; toca fuera para ocultarla',
       'La tarjeta del tema dice «Toca para ver el objetivo de esta clase» (o «de esta conversación»)',
+      'Progreso: Errores, Palabras y Sesiones en un panel con scroll infinito que ocupa la pantalla visible; Palabras con el mismo estilo que Errores',
     ],
     fixed: [
       'El recordatorio diario lo da tu mascota (su nombre e imagen) y llega a la hora exacta, sin pedir permisos extra',
