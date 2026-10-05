@@ -164,26 +164,30 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   // Turnos cuya pronunciación aún está evaluando Azure.
   const [pronPending, setPronPending] = useState<Set<number>>(new Set())
+  const [pronFailed, setPronFailed] = useState<Map<number, string>>(new Map())
 
   /** Lanza la evaluación fonética (si está activa): convierte el audio a WAV y lo manda a Azure. */
-  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | null> | null => {
+  /** Resultado de Azure, o el motivo (texto) por el que no hay nota de pronunciación en esa respuesta. */
+  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | string> | null => {
     const s = settingsRef.current
     if (!phoneticsActive(s)) return null
-    return (async () => assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(spoken.blob), () => reference))().catch((e) => {
+    return (async () => (await assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(spoken.blob), () => reference)) ?? 'Azure no oyó habla clara en este audio')().catch((e) => {
       if (e instanceof AzureError && e.kind === 'quota') {
         // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
         update(quotaExhaustedPatch())
         reportPhoneticsQuota()
       } else console.warn('[HABLA-NET] azure:', (e as Error).message)
-      return null
+      return e instanceof AzureError ? e.message : 'No se pudo preparar el audio para Azure'
     })
   }
 
   /** Une la pronunciación a tu respuesta cuando llega (un momento después que la del profe). */
-  const attachPronunciation = (turnId: number, p: Promise<PronResult | null>) => {
+  const attachPronunciation = (turnId: number, p: Promise<PronResult | string>) => {
     setPronPending((s) => new Set(s).add(turnId))
     p.then(async (r) => {
-      if (r && !gone()) {
+      if (gone()) return
+      if (typeof r === 'string') setPronFailed((m) => new Map(m).set(turnId, r))
+      else {
         await db.turns.update(turnId, { pronunciation: r })
         setTurns((ts) => ts.map((t) => (t.id === turnId ? { ...t, pronunciation: r } : t)))
       }
@@ -866,6 +870,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           // Mensaje del coach: correcciones (Gemini) y pronunciación (Azure) juntas, bajo la respuesta del profe.
           const pron = prev?.role === 'user' ? prev.pronunciation : undefined
           const pronWaiting = prev?.role === 'user' && prev.id !== undefined && pronPending.has(prev.id)
+          const pronError = prev?.role === 'user' && prev.id !== undefined ? pronFailed.get(prev.id) : undefined
           const hidden = settings.earMode && !revealed.has(m.id!)
           const showEs = translated.has(m.id!)
           return (
@@ -895,7 +900,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                 </div>
               )}
               {showEs && m.translation && <div className="txt-sub mt-1.5 text-sm leading-snug">{m.translation}</div>}
-              {(fixes.length > 0 || pron || pronWaiting) && (
+              {(fixes.length > 0 || pron || pronWaiting || pronError) && (
                 <div className="mt-2.5 flex flex-col gap-1.5">
                   {fixes.length > 1 && <div className="txt-sub text-[11.5px]">{fixes.length} correcciones</div>}
                   {fixes.map((c, k) => (
@@ -906,6 +911,10 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                   ) : pronWaiting ? (
                     <div className="txt-sub flex items-center gap-1.5 text-[12px]">
                       <Icon name="ear" size={13} /> Revisando tu pronunciación…
+                    </div>
+                  ) : pronError ? (
+                    <div className="txt-sub flex items-center gap-1.5 text-[12px]">
+                      <Icon name="ear" size={13} /> Sin nota de pronunciación: {pronError.replace(/\.$/, '')}.
                     </div>
                   ) : null}
                 </div>

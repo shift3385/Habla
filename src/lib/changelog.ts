@@ -36,6 +36,9 @@ export const RELEASES: Release[] = [
     fixed: [
       'El recordatorio diario lo da tu mascota (su nombre e imagen) y llega a la hora exacta, sin pedir permisos extra',
       'Si Android quita el permiso de notificaciones, Meta diaria te lo dice; y puedes probar el aviso en 5 s',
+      'Al guardar tu clave de Azure, la fonética se enciende al momento (antes hacía falta reabrir la app)',
+      'Si Azure no puede evaluar una respuesta, la clase te dice por qué en lugar de callarlo',
+      'Las claves ya no aparecen en el registro interno del teléfono',
     ],
   },
   {

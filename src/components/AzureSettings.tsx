@@ -107,7 +107,9 @@ export default function AzureSettings({ settings, update }: { settings: Settings
     setStatus({ kind: 'info', text: 'Comprobando con Azure…' })
     try {
       await checkAzureKey(k, r)
-      update({ azureKey: k, azureRegion: r })
+      // Con clave válida la fonética se enciende ya (salvo que la apagaras tú o el F0 esté agotado este mes).
+      const f0Out = settings.azurePlan === 'F0' && settings.f0ExhaustedMonth === monthKey()
+      update({ azureKey: k, azureRegion: r, ...(!settings.phoneticsUserOff && !f0Out ? { phoneticsOn: true } : {}) })
       setKey('')
       setStatus({ kind: 'ok', text: 'Clave y región válidas ✓' })
     } catch (e) {
