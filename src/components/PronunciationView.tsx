@@ -65,10 +65,8 @@ export default function PronunciationView({ r, onSay }: { r: PronResult; onSay: 
         <div
           role="tooltip"
           aria-hidden={tip === null}
-          className="absolute top-full right-0 left-0 z-20 mt-2 rounded-[14px] px-3 py-2 text-left text-[12.5px] leading-snug shadow-lg transition-opacity duration-150"
+          className="tip-bubble absolute top-full right-0 left-0 z-20 mt-2 rounded-[14px] px-3 py-2 text-left text-[12.5px] leading-snug shadow-lg transition-opacity duration-150"
           style={{
-            background: 'var(--bg)',
-            border: '1px solid var(--gb)',
             opacity: tip === null ? 0 : 1,
             visibility: tip === null ? 'hidden' : 'visible',
             pointerEvents: tip === null ? 'none' : 'auto',
@@ -77,7 +75,7 @@ export default function PronunciationView({ r, onSay }: { r: PronResult; onSay: 
           {/* Flecha que apunta a la nota tocada. */}
           <span
             className="absolute -top-[7px] h-3 w-3 rotate-45"
-            style={{ left: `calc(${shown * 25 + 12.5}% - 6px)`, background: 'var(--bg)', borderLeft: '1px solid var(--gb)', borderTop: '1px solid var(--gb)' }}
+            style={{ left: `calc(${shown * 25 + 12.5}% - 6px)`, background: 'var(--tip-bg)', borderLeft: '1px solid var(--tip-border)', borderTop: '1px solid var(--tip-border)' }}
           />
           <b>{tipLabel}</b>
           {tipValue !== undefined && (

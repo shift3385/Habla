@@ -459,3 +459,18 @@ html[data-landscape] .tab-content {
     box-shadow: 0 0 0 2px var(--glow);
   }
 }
+
+/* Burbujas de ayuda (globo de la mascota, notas de pronunciación): teñidas con el color del tema. */
+.tip-bubble {
+  --tip-bg: color-mix(in srgb, var(--acc) 20%, var(--bg));
+  --tip-border: color-mix(in srgb, var(--acc) 55%, transparent);
+  background: var(--tip-bg);
+  border: 1px solid var(--tip-border);
+  color: var(--tx);
+}
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .tip-bubble {
+    --tip-bg: var(--bg);
+    --tip-border: var(--gb);
+  }
+}

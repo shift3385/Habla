@@ -23,6 +23,8 @@ export interface Settings {
   lastSeenVersion: string // para avisar de novedades una vez por versión
   mascotTapped: boolean // ya tocó a su mascota (oculta el globo "¡Tócame!")
   mascotNudgeSeen: boolean // ya vio la tarjeta "…quieren conocerte" (racha de 3 días)
+  mascotNotices: boolean // globos de la mascota en el Inicio: avisos de hoy (clase, meta, repaso, racha, test)
+  mascotAdvice: boolean // globos de la mascota en el Inicio: consejos de uso y qué significa cada nota
   modelList: string[] // última lista de modelos que devolvió Google (por si luego no responde)
   reminderOn: boolean // aviso diario de la lección
   reminderTime: string // HH:MM
@@ -61,6 +63,8 @@ const DEFAULTS: Settings = {
   lastSeenVersion: '',
   mascotTapped: false,
   mascotNudgeSeen: false,
+  mascotNotices: true,
+  mascotAdvice: true,
   modelList: [],
   reminderOn: false,
   reminderTime: '19:00',

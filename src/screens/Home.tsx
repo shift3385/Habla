@@ -4,7 +4,8 @@ import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
 import { doneToday, todayLesson, type StudyPlan } from '../lib/plan'
 import { nextRetestAt } from '../lib/levels'
-import { buildTips, type Tip } from '../lib/mascotTips'
+import { buildAdvice, buildTips, interleave, rotate, type Tip } from '../lib/mascotTips'
+import { hasAzure } from '../lib/phonetics'
 import MascotBubble from '../components/MascotBubble'
 import type { Settings } from '../lib/settings'
 import type { SavedClass } from '../lib/savedClass'
@@ -65,10 +66,12 @@ export default function Home({
   const [allOpen, setAllOpen] = useState(false)
   const [ask, setAsk] = useState<AskKind | null>(null)
   const [retestAt, setRetestAt] = useState<number | null>(null)
+  const [hasPurpose, setHasPurpose] = useState(true)
   useEffect(() => {
     getProfile().then((p) => {
       setFavs(p.interests ?? [])
       setRetestAt(nextRetestAt(p))
+      setHasPurpose(!!(p.purposes?.length || p.goal?.trim()))
     })
   }, [])
   // Atrás (Android): cierra la hoja o "Más temas" antes de salir del Inicio.
@@ -132,22 +135,41 @@ export default function Home({
 
   const today = plan ? todayLesson(plan) : null
   const favCats = favoriteCategories(favs)
-  const tips = useMemo(
-    () =>
-      buildTips({
-        minutesToday: mins,
-        goal,
-        streak: dash?.streak ?? 0,
-        dueCards: due?.total ?? 0,
-        savedTitle: savedClass?.title,
-        lessonTitle: today?.lesson?.titleEs,
-        lessonDone: plan ? doneToday(plan) : false,
-        liveTopics: favCats.some((c) => c.live),
-        retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
-      }),
+  // Por qué consejo se va (se guarda en este teléfono; si no se puede, empieza por el primero).
+  const [adviceCursor] = useState(() => {
+    try {
+      return Number(localStorage.getItem('habla.adviceCursor')) || 0
+    } catch {
+      return 0
+    }
+  })
+  const onTipShown = useCallback((tip: Tip) => {
+    if (!tip.id.startsWith('a-')) return
+    try {
+      localStorage.setItem('habla.adviceCursor', String((Number(localStorage.getItem('habla.adviceCursor')) || 0) + 1))
+    } catch {
+      // sin almacenamiento: no pasa nada
+    }
+  }, [])
+  const azureOn = hasAzure(settings)
+  const tips = useMemo(() => {
+    const notices = settings.mascotNotices
+      ? buildTips({
+          minutesToday: mins,
+          goal,
+          streak: dash?.streak ?? 0,
+          dueCards: due?.total ?? 0,
+          savedTitle: savedClass?.title,
+          lessonTitle: today?.lesson?.titleEs,
+          lessonDone: plan ? doneToday(plan) : false,
+          liveTopics: favCats.some((c) => c.live),
+          retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
+        })
+      : []
+    const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn }), adviceCursor) : []
+    return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt],
-  )
+  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor])
   const onTip = (tip: Tip) => {
     if (tip.action === 'resume') onResumeClass?.()
     else if (tip.action === 'review') onReview()
@@ -235,6 +257,7 @@ export default function Home({
           paused={!settings.mascotTapped || !dash}
           onAction={onTip}
           onSpeaking={onSpeaking}
+          onShown={onTipShown}
         />
         {settings.theme === 'ember' && (
           <div className="glass flex items-center gap-1.5 rounded-full py-1 pr-2 pl-0.5">

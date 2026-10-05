@@ -35,6 +35,8 @@ export const RELEASES: Release[] = [
       'Toca Precisión, Fluidez, Completa o Entonación y una burbuja te explica qué mide; toca fuera para ocultarla',
       'La tarjeta del tema dice «Toca para ver el objetivo de esta clase» (o «de esta conversación»)',
       'En el Inicio tu mascota te va contando cosas en globos: tu clase a medias, la lección de hoy, tu meta, el repaso, tu racha y cuándo puedes repetir el test. Tócala para oír la siguiente',
+      'Tu mascota también te da consejos: qué significa cada nota, dónde cambiar tus temas o tu perfil y trucos de la clase. Avisos y consejos se activan por separado en Tema y mascota',
+      'Los globos salen sin agobiar (el primero a los pocos segundos, cada uno se queda de 9 a 20 s y entre uno y otro pasa casi un minuto) y se tiñen con el color de tu tema',
       'Progreso: Errores, Palabras y Sesiones en un panel con scroll infinito que ocupa la pantalla visible; Palabras con el mismo estilo que Errores',
     ],
     fixed: [

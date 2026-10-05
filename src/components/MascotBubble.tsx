@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
-import { tipDuration, type Tip } from '../lib/mascotTips'
+import { firstDelay, nextGap, tipDuration, type Tip } from '../lib/mascotTips'
 import { Icon } from '../ui/icons'
-
-/** Pausa entre un globo y el siguiente, y espera antes del primero. */
-const GAP_MS = 8000
-const FIRST_MS = 1500
 
 /**
  * Globo flotante de la mascota en el Inicio. Va mostrando los consejos de uno en uno: aparece junto a la mascota,
@@ -20,6 +16,7 @@ export default function MascotBubble({
   paused,
   onAction,
   onSpeaking,
+  onShown,
 }: {
   tips: Tip[]
   wrap: RefObject<HTMLElement | null>
@@ -29,6 +26,8 @@ export default function MascotBubble({
   paused?: boolean
   onAction: (tip: Tip) => void
   onSpeaking: (on: boolean) => void
+  /** Cada vez que se muestra un globo (para recordar por qué consejo se va). */
+  onShown?: (tip: Tip) => void
 }) {
   const [idx, setIdx] = useState(-1)
   const [open, setOpen] = useState(false)
@@ -47,7 +46,7 @@ export default function MascotBubble({
     if (!w || !m) return
     const a = avoid?.current?.getBoundingClientRect()
     // Si al lado del botón no cabe con holgura (p. ej. Ember), usa todo el ancho: lo tapa solo mientras se ve.
-    const right = a && a.left - m.right >= 210 ? w.right - a.left + 6 : 6
+    const right = a && a.left - m.right >= 222 ? w.right - a.left + 14 : 6
     setBox({ left: m.right - w.left - 4, right, top: m.top + m.height / 2 - w.top })
   }
   const showNext = () => {
@@ -59,7 +58,12 @@ export default function MascotBubble({
     setIdx(next)
     setOpen(true)
     hideTimer.current = window.setTimeout(() => setOpen(false), tipDuration(list[next].text))
+    onShownRef.current?.(list[next])
   }
+  const onShownRef = useRef(onShown)
+  useEffect(() => {
+    onShownRef.current = onShown
+  })
   const showRef = useRef(showNext)
   useEffect(() => {
     showRef.current = showNext
@@ -70,7 +74,7 @@ export default function MascotBubble({
     if (paused || open || !tips.length) return
     const t = window.setTimeout(
       () => (document.hidden ? setRetry((r) => r + 1) : showRef.current()),
-      live.current.idx < 0 ? FIRST_MS : GAP_MS,
+      live.current.idx < 0 ? firstDelay() : nextGap(),
     )
     return () => window.clearTimeout(t)
   }, [open, paused, tips.length, retry])
@@ -97,14 +101,11 @@ export default function MascotBubble({
         setOpen(false)
         if (tip.action) onAction(tip)
       }}
-      className="absolute z-30 flex items-center gap-1 rounded-[16px] px-3 py-2 text-left text-[12.5px] leading-snug shadow-lg transition-[opacity,transform] duration-300"
+      className="tip-bubble absolute z-30 flex flex-col items-start gap-1.5 rounded-[16px] px-3 py-2 text-left text-[12.5px] leading-snug shadow-lg transition-[opacity,transform] duration-300"
       style={{
         left: box.left,
         right: box.right,
         top: box.top,
-        background: 'var(--bg)',
-        border: '1px solid var(--gb)',
-        color: 'var(--tx)',
         opacity: open ? 1 : 0,
         visibility: open ? 'visible' : 'hidden',
         transform: `translateY(-50%) scale(${open ? 1 : 0.92})`,
@@ -115,12 +116,14 @@ export default function MascotBubble({
       {/* Piquito hacia la mascota. */}
       <span
         className="absolute top-1/2 -left-[6px] h-3 w-3 -translate-y-1/2 rotate-45"
-        style={{ background: 'var(--bg)', borderLeft: '1px solid var(--gb)', borderBottom: '1px solid var(--gb)' }}
+        style={{ background: 'var(--tip-bg)', borderLeft: '1px solid var(--tip-border)', borderBottom: '1px solid var(--tip-border)' }}
       />
-      <span className="relative min-w-0 flex-1">{tip.text}</span>
-      {tip.action && (
-        <span className="txt-acc2 relative flex-none">
-          <Icon name="chevR" size={14} stroke={2} />
+      <span className="relative min-w-0">{tip.text}</span>
+      {/* La acción va DENTRO del globo, como botón con texto y a la izquierda: no se confunde con los botones de al lado. */}
+      {tip.action && tip.cta && (
+        <span className="btn-acc relative flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-semibold">
+          <Icon name={tip.action === 'review' ? 'cards' : 'mic'} size={12} />
+          {tip.cta}
         </span>
       )}
     </button>

@@ -408,6 +408,29 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
           Útil si tu teléfono no gira solo o si una parte de la pantalla se ve mal: en horizontal, lo que quedaba en el borde izquierdo pasa arriba o abajo.
         </div>
       </Card>
+      <Card>
+        <div className="text-[15px] font-semibold">Globos de {THEME_INFO[settings.theme].mascotName} en el Inicio</div>
+        <div className="txt-sub mt-0.5 text-[12px] leading-snug">
+          Solo los globos que salen junto a tu mascota en el Inicio. Las demás ayudas (como la de las notas de pronunciación) no cambian.
+        </div>
+        {(
+          [
+            ['mascotNotices', 'Avisos', 'Tu clase a medias, la lección de hoy, tu meta, el repaso, tu racha y cuándo repetir el test'],
+            ['mascotAdvice', 'Consejos de uso', 'Qué significa cada nota, dónde cambiar tus temas o tu perfil y trucos de la clase'],
+          ] as const
+        ).map(([key, title, desc]) => (
+          <button key={key} onClick={() => update({ [key]: !settings[key] })} className="mt-3 flex w-full items-center justify-between gap-3 text-left text-[15px]">
+            <span>
+              {title}
+              <span className="txt-sub block text-xs">{desc}</span>
+            </span>
+            <Switch on={settings[key]} />
+          </button>
+        ))}
+        <div className="txt-sub mt-3 text-[12px] leading-snug">
+          Salen de uno en uno: el primero a los pocos segundos de abrir el Inicio, cada globo se queda lo que tardas en leerlo (de 9 a 20 s) y entre uno y otro pasa entre 40 s y un minuto largo. Toca a tu mascota para oír el siguiente cuando quieras.
+        </div>
+      </Card>
       <div className="txt-sub px-2.5 text-center text-[13px] leading-snug">
         Tu progreso, tu racha y la voz de tu profe no cambian. Tócala 5 veces seguidas: cada mascota guarda un secreto.
       </div>

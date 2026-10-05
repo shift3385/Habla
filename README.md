@@ -97,6 +97,9 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 - **Racha** (icono de llama): días seguidos practicando.
 - **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember, junto a la mascota; en Lumi, la tarjeta "Charla libre"; en Marea y Nimbo, una barra junto a la mascota.
 - **Tu mascota te habla:** de vez en cuando sale un globo junto a ella con algo útil: tu clase a medias, la lección de hoy, cuánto te falta para la meta, las frases del repaso, tu racha, cuándo puedes repetir el test y que los temas con puntito traen noticias reales. Si el globo lleva una flecha, tócalo y lo hace (sigue la clase, abre el repaso o empieza la lección). Toca a la mascota para que te cuente lo siguiente.
+  - También da **consejos de uso**: qué significa cada nota (fluidez, ppm, pausas, las de Azure), dónde cambiar tus temas o decir para qué quieres el inglés, y trucos de la clase. Siguen por donde se quedaron la vez anterior.
+  - **Ritmo:** el primer globo sale a los 5–9 s de abrir el Inicio; cada uno se queda lo que se tarda en leerlo (de 9 a 20 s) y entre uno y otro pasan de 40 a 75 s.
+  - Avisos y consejos se activan o desactivan por separado en *Ajustes → Tema y mascota → Globos de tu mascota en el Inicio*.
 - **Sorpréndeme** (icono de destello): un tema al azar, distinto de los últimos que usaste.
 - **Tarea**: la tarea para mañana de tu última sesión. Tócala para leerla entera.
 - **Temas / Prácticas**: un selector entre tus temas y las 5 prácticas guiadas. Todo cabe en la pantalla, sin scroll.
