@@ -96,13 +96,14 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 ### Inicio
 - **Racha** (icono de llama): días seguidos practicando.
 - **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember, junto a la mascota; en Lumi, la tarjeta "Charla libre"; en Marea y Nimbo, una barra junto a la mascota.
+- **Tu mascota te habla:** de vez en cuando sale un globo junto a ella con algo útil: tu clase a medias, la lección de hoy, cuánto te falta para la meta, las frases del repaso, tu racha, cuándo puedes repetir el test y que los temas con puntito traen noticias reales. Si el globo lleva una flecha, tócalo y lo hace (sigue la clase, abre el repaso o empieza la lección). Toca a la mascota para que te cuente lo siguiente.
 - **Sorpréndeme** (icono de destello): un tema al azar, distinto de los últimos que usaste.
 - **Tarea**: la tarea para mañana de tu última sesión. Tócala para leerla entera.
 - **Temas / Prácticas**: un selector entre tus temas y las 5 prácticas guiadas. Todo cabe en la pantalla, sin scroll.
   - **Tus 3 temas**: se eligen al crear el perfil (exactamente 3) y se cambian en *Más temas → Cambiar mis 3 temas* o en *Ajustes → Mi perfil*. Si vienes de una versión anterior con otro número de temas, la app te pide elegir tus 3 al abrirla.
   - **Tema libre**: escribes de qué quieres hablar y el profe prepara la clase sobre eso.
   - **Más temas**: las 12 categorías para hablar hoy de cualquiera (tus 3 llevan una estrella).
-  - Los temas con punto de color (noticias, IA, tecnología, negocios y mercados, startups, ciencia, cine, deportes) **buscan en Google una noticia real y reciente**. El profe nunca repite un tema de tus últimas sesiones.
+  - Los temas con puntito de color (noticias, IA, tecnología, negocios y mercados, startups, ciencia, cine, deportes) **buscan en Google una noticia real y reciente**. El profe nunca repite un tema de tus últimas sesiones.
   - Las prácticas son: mis puntos débiles, entrevista de trabajo, explicar a qué me dedico, debate y contar una historia. En el **debate** eliges si el tema lo pone el profe o lo propones tú; el profe defiende la postura contraria.
 
 ### En la clase

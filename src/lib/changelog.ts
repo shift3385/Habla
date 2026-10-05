@@ -34,6 +34,7 @@ export const RELEASES: Release[] = [
       'Ajustes: la tarjeta de tu nivel, más limpia («Nivel B1»)',
       'Toca Precisión, Fluidez, Completa o Entonación y una burbuja te explica qué mide; toca fuera para ocultarla',
       'La tarjeta del tema dice «Toca para ver el objetivo de esta clase» (o «de esta conversación»)',
+      'En el Inicio tu mascota te va contando cosas en globos: tu clase a medias, la lección de hoy, tu meta, el repaso, tu racha y cuándo puedes repetir el test. Tócala para oír la siguiente',
       'Progreso: Errores, Palabras y Sesiones en un panel con scroll infinito que ocupa la pantalla visible; Palabras con el mismo estilo que Errores',
     ],
     fixed: [

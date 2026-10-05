@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
-import type { StudyPlan } from '../lib/plan'
+import { doneToday, todayLesson, type StudyPlan } from '../lib/plan'
+import { nextRetestAt } from '../lib/levels'
+import { buildTips, type Tip } from '../lib/mascotTips'
+import MascotBubble from '../components/MascotBubble'
 import type { Settings } from '../lib/settings'
 import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
@@ -61,8 +64,12 @@ export default function Home({
   const [favs, setFavs] = useState<string[]>([])
   const [allOpen, setAllOpen] = useState(false)
   const [ask, setAsk] = useState<AskKind | null>(null)
+  const [retestAt, setRetestAt] = useState<number | null>(null)
   useEffect(() => {
-    getProfile().then((p) => setFavs(p.interests ?? []))
+    getProfile().then((p) => {
+      setFavs(p.interests ?? [])
+      setRetestAt(nextRetestAt(p))
+    })
   }, [])
   // Atrás (Android): cierra la hoja o "Más temas" antes de salir del Inicio.
   // Solo mientras hay algo abierto: así no se borra el "atrás" de otras pantallas (Mi plan, Acerca de).
@@ -74,10 +81,25 @@ export default function Home({
   const keysReady = settings.geminiKey.trim().length > 0
   const teacher = TEACHERS[settings.teacher]
   const info = THEME_INFO[settings.theme]
-  // Toca a tu mascota: la primera vez desaparece el globo "¡Tócame!".
+  // La mascota habla en globos flotantes (MascotBubble); tocarla pasa al siguiente.
+  const mainRef = useRef<HTMLDivElement>(null)
+  const mascotRef = useRef<HTMLSpanElement>(null)
+  const surpriseRef = useRef<HTMLButtonElement>(null)
+  const [nudge, setNudge] = useState(0)
+  const [speaking, setSpeaking] = useState(false)
+  const onSpeaking = useCallback((on: boolean) => setSpeaking(on), [])
+  // Toca a tu mascota: la primera vez desaparece el globo "¡Tócame!"; después, te cuenta lo siguiente.
   const mascot = (size: number) => (
-    <span className="relative flex-none">
-      <Mascot element={info.mascot} size={size} onTap={() => !settings.mascotTapped && update({ mascotTapped: true })} />
+    <span ref={mascotRef} className="relative flex-none">
+      <Mascot
+        element={info.mascot}
+        size={size}
+        mood={speaking ? 'speaking' : undefined}
+        onTap={() => {
+          if (!settings.mascotTapped) update({ mascotTapped: true })
+          setNudge((n) => n + 1)
+        }}
+      />
       {!settings.mascotTapped && (
         <span
           className="anim-bob pointer-events-none absolute -top-3 left-[60%] rounded-[14px_14px_14px_4px] px-2.5 py-1.5 text-[12px] font-semibold whitespace-nowrap"
@@ -108,6 +130,33 @@ export default function Home({
     keysReady ? onStart(scenarioId, categoryId, customTopic) : onGoSettings()
   const surprise = () => start('free')
 
+  const today = plan ? todayLesson(plan) : null
+  const favCats = favoriteCategories(favs)
+  const tips = useMemo(
+    () =>
+      buildTips({
+        minutesToday: mins,
+        goal,
+        streak: dash?.streak ?? 0,
+        dueCards: due?.total ?? 0,
+        savedTitle: savedClass?.title,
+        lessonTitle: today?.lesson?.titleEs,
+        lessonDone: plan ? doneToday(plan) : false,
+        liveTopics: favCats.some((c) => c.live),
+        retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt],
+  )
+  const onTip = (tip: Tip) => {
+    if (tip.action === 'resume') onResumeClass?.()
+    else if (tip.action === 'review') onReview()
+    else if (tip.action === 'lesson' && today?.lesson) {
+      if (keysReady) onStartLesson(today.lesson.id)
+      else onGoSettings()
+    }
+  }
+
   const askSheet = ask && (
     <TopicAskPage
       kind={ask}
@@ -136,8 +185,6 @@ export default function Home({
       </>
     )
   }
-
-  const favCats = favoriteCategories(favs)
 
   return (
     <div className="anim-up">
@@ -177,8 +224,18 @@ export default function Home({
         </button>
       )}
 
-      {/* Bloque principal: cambia según el tema, como en el diseño */}
-      <div className="mt-4">
+      {/* Bloque principal: cambia según el tema, como en el diseño. El globo de la mascota flota encima. */}
+      <div ref={mainRef} className="relative mt-4">
+        <MascotBubble
+          tips={tips}
+          wrap={mainRef}
+          mascot={mascotRef}
+          avoid={surpriseRef}
+          nudge={nudge}
+          paused={!settings.mascotTapped || !dash}
+          onAction={onTip}
+          onSpeaking={onSpeaking}
+        />
         {settings.theme === 'ember' && (
           <div className="glass flex items-center gap-1.5 rounded-full py-1 pr-2 pl-0.5">
             {mascot(64)}
@@ -188,7 +245,7 @@ export default function Home({
               </div>
               <div className="txt-sub truncate text-[13px]">con {teacher.name}</div>
             </div>
-            <button onClick={surprise} className="btn-acc flex h-[46px] flex-none items-center gap-1.5 rounded-[23px] px-3.5 text-[14px]">
+            <button ref={surpriseRef} onClick={surprise} className="btn-acc flex h-[46px] flex-none items-center gap-1.5 rounded-[23px] px-3.5 text-[14px]">
               <Icon name="spark" size={16} stroke={1.8} />
               Sorpréndeme
             </button>
@@ -208,7 +265,7 @@ export default function Home({
                 </span>
               </span>
             </button>
-            <button onClick={surprise} className="btn-acc flex h-[86px] flex-col items-center justify-center gap-1.5 rounded-[26px] text-[15px]">
+            <button ref={surpriseRef} onClick={surprise} className="btn-acc flex h-[86px] flex-col items-center justify-center gap-1.5 rounded-[26px] text-[15px]">
               <Icon name="spark" size={16} stroke={1.8} />
               Sorpréndeme
             </button>
@@ -226,7 +283,7 @@ export default function Home({
                 {minsLabel}/{goal} min hoy
               </div>
             </div>
-            <button onClick={surprise} className="btn-acc grid h-[54px] w-[54px] flex-none place-items-center rounded-full" title="Sorpréndeme" aria-label="Sorpréndeme">
+            <button ref={surpriseRef} onClick={surprise} className="btn-acc grid h-[54px] w-[54px] flex-none place-items-center rounded-full" title="Sorpréndeme" aria-label="Sorpréndeme">
               <Icon name="spark" size={18} stroke={1.8} />
             </button>
           </div>
@@ -317,12 +374,6 @@ export default function Home({
               <span className="txt-sub text-xs">{TOPIC_CATEGORIES.length}</span>
             </button>
           </div>
-          {favCats.some((c) => c.live) && (
-            <div className="txt-sub mt-2.5 flex items-center justify-center gap-1.5 text-xs">
-              <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--dot)' }} />
-              con noticias reales y recientes
-            </div>
-          )}
         </div>
       ) : (
         <div key="practices" className="anim-up mt-3 grid grid-cols-2 gap-2">
