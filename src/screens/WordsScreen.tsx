@@ -6,6 +6,7 @@ import { getProfile } from '../lib/profile'
 import { fastModels, type Settings } from '../lib/settings'
 import { Icon } from '../ui/icons'
 import Segmented from '../ui/Segmented'
+import InfiniteList from '../components/InfiniteList'
 
 interface Props {
   settings: Settings
@@ -24,13 +25,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   const [seg, setSeg] = useState<'all' | 'saved'>('all')
   const [level, setLevel] = useState('B1')
 
-  const reload = () =>
-    db.lookups
-      .orderBy('createdAt')
-      .reverse()
-      .limit(60)
-      .toArray()
-      .then(setHistory)
+  const reload = () => db.lookups.orderBy('createdAt').reverse().limit(60).toArray().then(setHistory)
 
   useEffect(() => {
     reload()
@@ -48,13 +43,8 @@ export default function WordsScreen({ settings, registerBack }: Props) {
     setLoading(true)
     setError(null)
     try {
-      const l = await lookupWord(
-        settings.geminiKey,
-        fastModels(settings),
-        query,
-        context,
-        level,
-        ({ attempt, total }) => setHint(`Gemini está saturado, reintentando (${attempt}/${total})…`),
+      const l = await lookupWord(settings.geminiKey, fastModels(settings), query, context, level, ({ attempt, total }) =>
+        setHint(`Gemini está saturado, reintentando (${attempt}/${total})…`),
       )
       setCurrent(l)
       setQuery('')
@@ -95,7 +85,8 @@ export default function WordsScreen({ settings, registerBack }: Props) {
       <div className="flex h-[54px] items-center text-[28px] font-semibold tracking-[-.6px]">Palabras</div>
       <div className="glass min-w-0 rounded-[28px] p-4">
         <div className="txt-sub text-[13px] leading-snug">
-          No es un traductor literal: te explica qué significa <b>en la frase donde la viste</b>. También al revés: escribe una palabra en español y te dice cómo se diría en inglés ahí.
+          No es un traductor literal: te explica qué significa <b>en la frase donde la viste</b>. También al revés: escribe una palabra en español y
+          te dice cómo se diría en inglés ahí.
         </div>
         <input
           value={query}
@@ -121,7 +112,9 @@ export default function WordsScreen({ settings, registerBack }: Props) {
             {error}
           </p>
         )}
-        <p className="txt-sub mt-2.5 text-[12px] leading-snug">Consejo: en una clase, toca cualquier palabra del profe para consultarla al momento.</p>
+        <p className="txt-sub mt-2.5 text-[12px] leading-snug">
+          Consejo: en una clase, toca cualquier palabra del profe para consultarla al momento.
+        </p>
       </div>
 
       {history.length > 0 && (
@@ -134,24 +127,32 @@ export default function WordsScreen({ settings, registerBack }: Props) {
               { value: 'saved', label: 'Guardadas', count: history.filter((h) => h.saved).length },
             ]}
           />
-          <div className="flex flex-col gap-2">
-            {list.map((h) => (
-              <button key={h.id} onClick={() => setCurrent(h)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left">
-                {/* Palabra, traducción y frase en líneas propias: nada se sale de la tarjeta (NC-08). */}
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] leading-tight font-semibold break-words">{h.result.headword}</span>
-                  <span className="txt-acc2 mt-0.5 line-clamp-2 block text-[13.5px] leading-snug break-words">{h.result.translation}</span>
-                  {h.context && <span className="txt-sub mt-1 line-clamp-2 block text-[12px] leading-snug break-words italic">"{h.context}"</span>}
-                </span>
-                {h.saved && (
-                  <span className="txt-acc2">
-                    <Icon name="flag" size={15} />
+          {list.length === 0 ? (
+            <div className="glass txt-sub rounded-[22px] p-5 text-center text-sm">
+              Aún no has guardado palabras. Ábrelas desde el Historial y toca «Guardar».
+            </div>
+          ) : (
+            <InfiniteList
+              key={seg}
+              items={list}
+              render={(h) => (
+                <button key={h.id} onClick={() => setCurrent(h)} className="glass flex items-center gap-3 rounded-[20px] px-4 py-3 text-left">
+                  {/* Palabra, traducción y frase en líneas propias: nada se sale de la tarjeta (NC-08). */}
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[15px] leading-tight font-semibold break-words">{h.result.headword}</span>
+                    <span className="txt-acc2 mt-0.5 line-clamp-2 block text-[13.5px] leading-snug break-words">{h.result.translation}</span>
+                    {h.context && <span className="txt-sub mt-1 line-clamp-2 block text-[12px] leading-snug break-words italic">"{h.context}"</span>}
                   </span>
-                )}
-                <Icon name="chevR" size={16} color="var(--sub)" />
-              </button>
-            ))}
-          </div>
+                  {h.saved && (
+                    <span className="txt-acc2">
+                      <Icon name="flag" size={15} />
+                    </span>
+                  )}
+                  <Icon name="chevR" size={16} color="var(--sub)" />
+                </button>
+              )}
+            />
+          )}
         </>
       )}
     </div>

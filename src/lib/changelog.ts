@@ -38,6 +38,7 @@ export const RELEASES: Release[] = [
       'Tu mascota también te da consejos: qué significa cada nota, dónde cambiar tus temas o tu perfil y trucos de la clase. Avisos y consejos se activan por separado en Tema y mascota',
       'Los globos salen sin agobiar (el primero a los pocos segundos, cada uno se queda de 9 a 20 s y entre uno y otro pasa casi un minuto) y se tiñen con el color de tu tema',
       'Progreso: Errores, Palabras y Sesiones en un panel con scroll infinito que ocupa la pantalla visible; Palabras con el mismo estilo que Errores',
+      'Palabras: Historial y Guardadas también en un panel con scroll infinito',
     ],
     fixed: [
       'El recordatorio diario lo da tu mascota (su nombre e imagen) y llega a la hora exacta, sin pedir permisos extra',
