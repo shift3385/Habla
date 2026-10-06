@@ -1,0 +1,81 @@
+# Estado actual (2026-10-06, v5.8 build 33)
+
+Último commit funcional: `16e6240` (el test se retoma donde quedó y el paso de Habla tiene scroll en horizontal). APK distribuido: `apk/Habla-v5.8.apk`, instalado en el POCO del dueño y repartido a sus amistades. En el Galaxy A11 de la madre hay una compilación de la 5.8 de unos minutos antes de ese commit: solo le faltan dos líneas de texto en Novedades, por lo demás es igual.
+
+Hay una **auditoría QA completa de la v5.8** en `docs/auditoria/resultados/INFORME.md`, con veredicto **NO-GO para distribuir a desconocidos** (defectos del micrófono) y **GO condicional para el uso del dueño**. Es la referencia de lo que falta.
+
+## ✅ Completo
+
+**Base y fases de la hoja de ruta**
+- Fase 1: ajustes, conversación por voz, exportar e importar.
+- Fase 2: métricas de fluidez, nota 0–100, informe, tarea para mañana, temas con noticias reales (Google Search), racha, meta diaria y Progreso.
+- Fase 3 (v4.7): cuaderno de errores con repaso espaciado FSRS y ejercicio oral evaluado.
+- Fase 4 (v5.0): plan de 12 semanas, lección del día y recordatorio diario.
+- Fase 5 (v5.0): re-test cada 4 semanas con comparación antes → después y plan que se adapta.
+
+**Por versión**
+- **Diseño** (v3.0 → 5.1): 4 temas con mascota animada, profes Emma (en-US) y Leo (en-GB), modo claro y oscuro.
+- **Multiusuario básico** (v4.5): perfil obligatorio (nombre, ocupación, motivos, 3 temas), prompts personalizados, prácticas generales.
+- **Consultas de palabras en contexto** (v4.2), con historial y guardadas.
+- **Auriculares** (v5.3): selector de audio y micrófono Bluetooth real.
+- **Tus 3 temas, Tema libre, Más temas y Debate con tema propio** (v5.4).
+- **Avisos de la mascota antes del Inicio** (v5.5).
+- **Test de nivel con banco offline** de 450 ítems y política 70/30 (v5.6); recalibración; borrador del test terminado y pantalla `EvalFail` (reintentar, otro modelo, otra clave); hoja global de problemas de Gemini.
+- **v5.7 (16 NC + 2 dudas, ver `docs/NC-v5.7.md`):**
+  - batería en segundo plano, clase guardada y retomable, confirmación al salir;
+  - todas las correcciones por respuesta, respuestas por raíz de palabra, dictado del tema;
+  - resúmenes por parte del test, duración del audio y diálogos por persona;
+  - escalado en pantallas pequeñas y horizontal, sección «Mi nivel», fórmula como fracción, créditos;
+  - clave fuera de las copias de Android.
+- **Rebuilds de la v5.7 (`docs/NC-v5.7-ajustes.md`):** Ajustes rediseñado (resumen de nivel con la mascota, tarjetas con lo elegido, «Mi perfil y datos»), «Nuevo test disponible el…», mini resumen y resumen guardable de cada test, **huella/PIN para ver o cambiar claves**, **orientación forzada**.
+- **v5.8:**
+  - Fonética con Azure en paralelo a Gemini: notas, palabras y fonemas, coach, evaluación contra la transcripción de Gemini, cifras en palabras.
+  - Ajustes → Modelos con el bloque de Azure: clave, región, plan, interruptor, consumo vía Azure Monitor y alerta de F0 agotado.
+  - Límite de 60 s con cuenta atrás, ayuda flotante en las 4 notas de pronunciación y tarjeta del tema plegada con brillo.
+  - Globos de la mascota en el Inicio (avisos y consejos, tiempos pausados, configurables).
+  - Recordatorio con la mascota, alarma exacta y botón de prueba.
+  - `InfiniteList` en Progreso (Errores, Palabras, Sesiones) y Palabras (Historial, Guardadas).
+  - Tutorial de la mascota en la primera instalación y aviso «¿Para qué es tu clave?».
+  - Logs de Capacitor desactivados.
+  - Test de nivel retomable a medias y scroll del paso de Habla en horizontal.
+
+## 🟡 Parcial o sin verificar del todo
+
+- **Fonética con voz humana real:** se verificó con la llamada real a Azure desde el teléfono y con voz sintética A2 (Zira). Con voz sintética, algunas notas bajas («work», «park») pueden deberse a la propia voz. Falta una prueba larga del dueño con su voz.
+- **Recordatorio diario:** el aviso de prueba (5 s) llegó con el teléfono bloqueado, según la auditoría. No se ha verificado el aviso diario real tras horas con la app cerrada ni tras reiniciar el teléfono. En Xiaomi o POCO hace falta activar el «Inicio automático» de Habla.
+- **Auriculares Bluetooth:** no se probaron en la auditoría (no había auriculares conectados).
+- **Test de nivel retomable:** probado con el progreso real de la madre (vista previa y A11). El guardado automático en gramática y resúmenes se vio funcionar en la vista previa, pero no se ha hecho un test completo de punta a punta tras el cambio.
+- **Evaluación del habla del test con Gemini real:** probada en uso real por la madre y el dueño, pero no en un entorno de pruebas controlado.
+- **Voz masculina de Leo:** depende de las voces instaladas en el teléfono; en el POCO del dueño Leo sonaba femenino (BACKLOG 4.3).
+- **Consumo de Azure Monitor:** probado con respuestas simuladas; no consta una prueba con un service principal real.
+
+## ⏳ Pendiente (por orden previsto)
+
+1. **v5.8.1 «Micrófono seguro» (P0, bloquea cualquier otra entrega):** recorder reentrante y cancelable (doble toque, Inicio durante la apertura), guarda en `start()`, cierre del dictado del Debate al volver, red de seguridad nativa en `onPause`/`onStop`, `fallback()` sin falsos «micro mudo», tests del Recorder. Detalle en `INFORME.md` §8.2.
+2. **v5.8.2 «Claves, datos y consumo» (P1):**
+   - APK *release* no depurable;
+   - validar el Resource ID de Azure y pedir la huella al cambiar tenant, client o resource;
+   - validar las copias al importar y añadir un `ErrorBoundary` en el arranque;
+   - comprobar la clave de Gemini antes de pisar la buena;
+   - bajar la CPU de las animaciones en reposo;
+   - corregir textos;
+   - borrar los APK antiguos de `apk/`.
+3. **v5.9 «Transparencia y control»:**
+   - modelo de micro en clase (hoy está abierto toda la clase);
+   - aviso de privacidad de qué sale a Google y Microsoft (el tutorial dice que todo se guarda en el teléfono, pero el audio y el perfil se envían a la IA);
+   - salida del re-test y limpieza de borradores huérfanos;
+   - permisos de notificación guiados;
+   - importar con resumen y copia previa.
+4. **Backlog técnico:** CSP, `AbortController` en las peticiones, dividir el bundle de 1,3 MB, refactor de pantallas grandes (Calibration, Conversation, Settings), **suite de tests automatizados**.
+5. **Ideas aprobadas o a debatir sin implementar** (ver `BACKLOG.md`):
+   - voz del profe más humana (TTS en la nube con emociones);
+   - shadowing de pronunciación;
+   - situaciones a medida;
+   - dictado y comprensión;
+   - otros idiomas;
+   - idioma nativo distinto del español;
+   - **multi-proveedor de IA** (Claude, OpenAI, DeepSeek): requiere separar el «oído» del «profe», ver `decisiones.md`;
+   - acceso a la IA sin clave propia (backend o suscripción);
+   - Play Store;
+   - política de privacidad.
+6. **v6.0:** abrir la app a otras personas (reservada).
