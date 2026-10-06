@@ -47,7 +47,7 @@ import {
 } from '../lib/placement'
 import { getProfile } from '../lib/profile'
 import { buildSummary } from '../lib/testSummary'
-import { clearDraft, loadDraft, saveDraft, type TestDraft } from '../lib/testDraft'
+import { clearDraft, clearProgress, loadDraft, loadProgress, saveDraft, saveProgress, type TestDraft, type TestProgress } from '../lib/testDraft'
 import { MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
@@ -304,11 +304,13 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   }, [registerBack])
 
   useEffect(() => {
-    Promise.all([getProfile(), loadDraft()]).then(([p, d]) => {
+    Promise.all([getProfile(), loadDraft(), loadProgress()]).then(([p, d, prog]) => {
       setProfile(p)
       usage.current = p.bankUsage ?? { seen: [], uses: {} }
       // Un test terminado que no se pudo evaluar: se retoma en la evaluación, sin repetirlo.
       if (d) runEval(d)
+      // Un test a medias (se cerró o se actualizó la app): sigue en el mismo paso.
+      else if (prog && resumable(prog)) restore(prog)
       else setStep({ k: 'explain', i: 0 })
     })
     const rec = recorder.current
@@ -340,10 +342,58 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     setCur(next)
   }
 
+  // ---- Test a medias: se guarda en cada punto seguro para poder retomarlo si la app se cierra.
+  const resumable = (p: TestProgress) =>
+    p.v === 1 && ['grammar', 'review', 'speaking', 'section'].includes(p.step.k) && (p.step.k !== 'section' || p.step.s === 'speaking')
+  useEffect(() => {
+    const k = step.k
+    if (k !== 'grammar' && k !== 'review' && k !== 'speaking' && !(k === 'section' && step.s === 'speaking')) return
+    saveProgress({
+      v: 1,
+      savedAt: Date.now(),
+      step: step as TestProgress['step'],
+      gItems,
+      gAnswers,
+      gLevel,
+      blocks,
+      tasks,
+      speech,
+      pre: tasks.map((_, j) => preDone.current[j] ?? null),
+      usedIds: used.current.map((i) => i.id),
+      usage: usage.current,
+    }).catch(() => {})
+  }, [step, gItems, gAnswers, gLevel, blocks, tasks, speech])
+
+  const restore = (p: TestProgress) => {
+    setGItems(p.gItems)
+    setGAnswers(p.gAnswers)
+    setGLevel(p.gLevel)
+    setBlocks(p.blocks)
+    setTasks(p.tasks)
+    setSpeech(p.speech)
+    if (p.usage) usage.current = p.usage
+    // Preguntas ya vistas (para no repetirlas en el próximo test): las mismas que se habían apartado.
+    const grammarUsed = p.step.k === 'grammar' ? p.gItems : p.gAnswers.map((a) => a.item)
+    used.current = [...grammarUsed, ...p.blocks.reading.map((b) => b.item), ...p.blocks.listening.map((b) => b.item), ...p.tasks.map((t) => t.item)]
+    // Evaluaciones de las respuestas de habla: las que ya estaban; las que faltan se piden otra vez.
+    p.speech.forEach((ans, j) => {
+      const prev = p.pre[j] ?? null
+      preDone.current[j] = prev
+      if (prev || !ans || ans === 'skipped' || !p.tasks[j]) preEval.current[j] = Promise.resolve(prev)
+      else
+        preEval.current[j] = assessSpeakingTask(live.current.geminiKey, models(), p.tasks[j], ans)
+          .catch(() => null)
+          .then((r) => (preDone.current[j] = r))
+    })
+    setHint('Seguimos donde lo dejaste.')
+    setStep(p.step as Step)
+  }
+
   const exclude = () => new Set(used.current.map((i) => i.id))
 
   // ---- 1. Gramática
   const startGrammar = () => {
+    clearProgress()
     const items = buildGrammar(usage.current)
     used.current.push(...items)
     setGItems(items)
@@ -558,6 +608,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
       usedIds: used.current.map((i) => i.id),
     }
     await saveDraft(draft).catch(() => {})
+    clearProgress()
     // Las evaluaciones de cada respuesta que aún estén en marcha.
     draft.pre = await Promise.all(tasks.map((_, k) => preEval.current[k] ?? Promise.resolve(null)))
     await saveDraft(draft).catch(() => {})
@@ -928,7 +979,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     return (
       <div className={pad}>
         <Header section={3} />
-        <div key={i} className="anim-in flex min-h-0 flex-1 flex-col">
+        <div key={i} className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="txt-sub text-sm">
             Tarea {i + 1} de 3 · {task.title} · unos {task.seconds} s
           </div>
@@ -958,7 +1009,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
               <Icon name="speaker" size={14} /> Escuchar otra vez
             </button>
           </div>
-          <div className="flex flex-1 flex-col items-center justify-center gap-4">
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4">
             <div className="flex items-center gap-5">
               <Wave on={recording} />
               <button

@@ -40,6 +40,8 @@ export const RELEASES: Release[] = [
       'Los globos y burbujas de ayuda se tiñen con el color de tu tema y salen sin agobiar (de 9 a 20 s cada uno, casi un minuto entre uno y otro)',
     ],
     fixed: [
+      'El test de nivel guarda tu progreso sobre la marcha: si la app se cierra o se actualiza a mitad, sigue en la misma pregunta o tarea',
+      'En horizontal, la parte de Habla del test ya se desplaza y se llega al botón «Siguiente»',
       'El recordatorio diario llega a la hora exacta sin pedir permisos extra, y si Android quita el permiso de notificaciones, la app te lo dice',
       'Al guardar tu clave de Azure, la fonética se enciende al momento (antes hacía falta reabrir la app)',
       'Fonética más fiel: si Azure entiende otra palabra («jesterday» → «just stared»), se evalúa contra lo que querías decir',
