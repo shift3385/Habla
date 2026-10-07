@@ -231,7 +231,7 @@ Abre la versión web en http://localhost:5173 para probar la interfaz. El micró
 ```bash
 npm run apk
 ```
-Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleDebug`. El APK se llama `Habla-v<versión>.apk` (la versión sale de `versionName`) y se copia a la carpeta `apk\` del proyecto, donde se van acumulando las versiones.
+Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleRelease --offline`. El APK se llama `Habla-v<versión>.apk` (la versión sale de `versionName`), va firmado con `keystore/habla.jks` (si falta `keystore/keystore.properties`, el build falla a propósito) y se copia a la carpeta `apk\` del proyecto, donde se van acumulando las versiones. `npm run apk:debug` genera `Habla-v<versión>-debug.apk`: otra app («Habla debug») solo para pruebas, que nunca se reparte.
 
 Antes de cada actualización, sube `version` y `build` en **`version.json`**, en la raíz. Es la única fuente de la versión: la usan el APK (`versionName`/`versionCode`) y la pantalla *Acerca de*. Añade también la entrada de la versión en `src/lib/changelog.ts`, que es lo que se ve en **Novedades**.
 

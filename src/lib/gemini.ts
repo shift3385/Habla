@@ -382,7 +382,7 @@ export async function listModels(apiKey: string): Promise<ModelInfo[]> {
     throw new ApiError('Sin conexión con Gemini. Revisa tu internet.', 0)
   }
   const data = parseData(res.data) as { models?: RawModel[] } | null
-  if (res.status !== 200) throw new ApiError(describeError(res.status, data), res.status)
+  if (res.status !== 200) throw new ApiError(keyCheckError(res.status, data), res.status)
   return (data?.models ?? [])
     .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
     .map((m) => ({ id: m.name.replace(/^models\//, ''), displayName: m.displayName ?? m.name }))
@@ -563,6 +563,22 @@ export function describeError(status: number, data: unknown, model?: string): st
   }
   if (status >= 500) return `Gemini tiene problemas ahora mismo (${status}). Inténtalo en un momento.`
   return `Gemini devolvió un error ${status}${msg ? `: ${msg}` : ''}`
+}
+
+/**
+ * Error al pedir la lista de modelos, que solo se pide al comprobar o refrescar la clave (bienvenida, Ajustes → Gemini
+ * y la hoja de problemas). AUD-E2E-604: el texto general manda a «Ajustes», que no existe aún en la bienvenida y es
+ * justo donde ya está el usuario en Ajustes. REV-U4-1: con 429 no se puede saber si la clave es buena; el texto
+ * general invitaba a cambiar de modelo, que no tiene nada que ver con comprobar la clave.
+ */
+export function keyCheckError(status: number, data: unknown): string {
+  const d = data as GeminiResponse | null
+  if (isKeyError(d) || status === 401) {
+    return 'Esa clave no es válida: cópiala otra vez desde Google AI Studio (aistudio.google.com/apikey). Empieza por «AIza».'
+  }
+  if (status === 429) return 'Google no deja comprobar la clave ahora mismo (demasiadas peticiones). Puede que sea buena: inténtalo de nuevo en un minuto.'
+  if (status >= 500) return `Google no pudo comprobar la clave ahora mismo (error ${status}). Puede que sea buena: inténtalo en un momento.`
+  return describeError(status, data)
 }
 
 // ---------------------------------------------------------------------------

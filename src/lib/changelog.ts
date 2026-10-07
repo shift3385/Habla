@@ -17,6 +17,24 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.8.2',
+    date: '2026-10-07',
+    title: 'Tus claves y tus datos, más seguros, y menos batería',
+    fixed: [
+      'La app ya no deja leer tus claves desde un ordenador conectado por cable: ahora se instala la versión final, no la de pruebas',
+      'Si pegas una clave de Gemini mal copiada, primero se comprueba con Google: si no vale, sigues con la anterior y la app no se queda sin profe',
+      'Al restaurar una copia, se comprueba entera antes de tocar nada: si está dañada o no es de Habla, te lo explica y tus datos siguen como estaban. Antes de sustituir te dice cuántas sesiones y errores trae',
+      'Si algo falla al abrir la app, ya no se queda la pantalla en negro: te ofrece volver a intentar o exportar tus datos',
+      'Si Google falla al preparar tu plan, ya no lo vuelve a pedir cada vez que vuelves al Inicio: lo intentas tú con «Reintentar», así no gastas tu cuota',
+      'En el acceso a Azure Monitor se comprueban los datos que pegas, y cambiarlos pide tu patrón, PIN o huella',
+    ],
+    improved: [
+      'Menos batería y menos calor: el fondo ya no se mueve y tu mascota solo se anima a tope cuando hace algo; quieta, se dibuja a un ritmo mucho más bajo',
+      'Si tienes activado «Reducir movimiento» en Android, las animaciones que se repiten se paran',
+      'Textos más claros: qué pasa con tu clase a medias si empiezas otra, qué protege tu patrón o PIN, y qué hacer si una clave no es válida',
+    ],
+  },
+  {
     v: '5.8.1',
     date: '2026-10-06',
     title: 'Actualización de parches de seguridad y corrección de la v5.8',

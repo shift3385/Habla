@@ -54,3 +54,20 @@ test('Clave vacía: error sin llamar a Google', async () => {
   assert.equal(r.ok, false)
   assert.equal(called, false)
 })
+
+test('REV-U4-1 / E2E-604: textos al comprobar la clave (sin «Revísala en Ajustes» ni «prueba otro modelo»)', async () => {
+  const { keyCheckError } = await loadFresh('/src/lib/gemini.ts')
+  const invalid = { error: { code: 400, message: 'API key not valid. Please pass a valid API key.', details: [{ reason: 'API_KEY_INVALID' }] } }
+  for (const [status, data] of [[400, invalid], [401, null]]) {
+    const t = keyCheckError(status, data)
+    assert.match(t, /no es válida/)
+    assert.match(t, /AI Studio/)
+    assert.doesNotMatch(t, /Ajustes/)
+  }
+  const quota = keyCheckError(429, null)
+  assert.match(quota, /Puede que sea buena/)
+  assert.doesNotMatch(quota, /modelo|Ajustes/)
+  assert.match(keyCheckError(503, null), /Puede que sea buena/)
+  // El resto de casos siguen con el texto general (p. ej. 403: permisos de la clave).
+  assert.match(keyCheckError(403, null), /permiso/)
+})

@@ -257,6 +257,13 @@ select {
   .ld-ring {
     display: none;
   }
+  /* v5.8.2 (AUD-RES-700): con «reducir movimiento», los bucles infinitos (puntos de «escribiendo», ondas del micro,
+     anillos que giran…) dan una sola vuelta y se paran. Casi todos van en estilo en línea; !important les gana. */
+  *,
+  *::before,
+  *::after {
+    animation-iteration-count: 1 !important;
+  }
 }
 
 @layer components {

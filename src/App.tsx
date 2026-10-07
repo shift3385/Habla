@@ -477,7 +477,7 @@ export default function App() {
           element={mascotEl}
           mood="thinking"
           title="Tienes una clase en progreso"
-          subtitle={`«${savedClass?.title ?? 'Tu clase'}» quedó a medias. Si empiezas una nueva, se perderá. ¿Continuar?`}
+          subtitle={`«${savedClass?.title ?? 'Tu clase'}» quedó a medias. Si empiezas una nueva, esa se cierra tal como está (lo que hablaste cuenta en tu progreso) y ya no podrás seguirla. ¿Continuar?`}
           primary={{
             label: 'Reanudar la anterior',
             onClick: () => {

@@ -168,7 +168,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
           <div className="mt-4">
             <MascotSays element={element}>
               Para usar Gemini cada persona necesita su propia <b>clave</b>: es como tu pase personal. Es <b>gratis</b> (con un límite de uso al día) y{' '}
-              <b>se guarda solo en este teléfono</b>, protegida con tu patrón, PIN o huella.
+              <b>se guarda solo en este teléfono</b>. Para verla o cambiarla en la app te pediré tu patrón, PIN o huella.
             </MascotSays>
           </div>
           {needsKey ? (
@@ -229,7 +229,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
           <ul className="mt-5 flex flex-col gap-3">
             <Point icon="ear">Bajo cada respuesta verás tu nota de pronunciación y las palabras o sonidos a cuidar.</Point>
             <Point icon="star">El plan F0 es gratis: 5 horas de audio al mes. Azure puede pedir una tarjeta solo para verificar tu cuenta.</Point>
-            <Point icon="shield">Su clave también se guarda solo aquí, protegida igual que la de Gemini.</Point>
+            <Point icon="shield">Su clave también se guarda solo aquí, y verla o cambiarla pide tu bloqueo, igual que la de Gemini.</Point>
           </ul>
           <p className="txt-sub mt-4 text-[13px] leading-snug">
             <b>No hace falta ahora.</b> Sin Azure todo funciona con Gemini. Cuando quieras, actívalo en <b>Ajustes → Modelos → Azure Speech</b>.

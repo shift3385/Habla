@@ -23,13 +23,22 @@ interface Props {
   onOpenPlan: () => void
 }
 
+// AUD-RES-703 (v5.8.2): el error se recuerda fuera del componente. Antes vivía en su estado y se perdía al cambiar de
+// pestaña: cada vuelta al Inicio relanzaba la cadena entera de reintentos (5 peticiones) sin que el usuario lo pidiera.
+// Ahora, tras un fallo, solo se vuelve a intentar con «Reintentar», al cambiar de clave o de modelo, o pasado un rato.
+const FAIL_MEMORY_MS = 10 * 60_000
+let lastFail: { sig: string; at: number; error: string } | null = null
+
 /**
  * "Lección de hoy" en el Inicio (fase 4). Si aún no hay plan lo crea, y si la semana que toca no tiene
  * lecciones las prepara: todo automático, con un estado de carga y un botón de reintentar si falla.
  */
 export default function PlanCard({ settings, plan, calibrated, onPlanChange, onStartLesson, onOpenPlan }: Props) {
   const [busy, setBusy] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const sig = `${settings.geminiKey}|${settings.geminiModel}|${settings.geminiFallbackModel}`
+  const [error, setError] = useState<string | null>(() =>
+    lastFail && lastFail.sig === sig && Date.now() - lastFail.at < FAIL_MEMORY_MS ? lastFail.error : null,
+  )
   const today = plan ? todayLesson(plan) : null
   const needsLessons = !!today && !today.lesson
   const keyReady = !!settings.geminiKey.trim()
@@ -40,13 +49,16 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
       setError(null)
       try {
         onPlanChange(await work())
+        lastFail = null
       } catch (e) {
-        setError(friendlyError(e))
+        const msg = friendlyError(e)
+        lastFail = { sig, at: Date.now(), error: msg }
+        setError(msg)
       } finally {
         setBusy(null)
       }
     },
-    [onPlanChange],
+    [onPlanChange, sig],
   )
 
   const create = useCallback(

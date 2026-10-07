@@ -1,6 +1,6 @@
-# Estado actual (2026-10-06, v5.8.1 build 34 en preparación)
+# Estado actual (2026-10-07, v5.8.2 build 35 en preparación)
 
-> **v5.8.1 «Micrófono seguro»:** código hecho y probado en PC (tipos, lint, `npm test` 17/17, Java compilado), **sin commit, sin APK y sin probar en el teléfono**. Seguimiento en `docs/correccion/ESTADO.md` y detalle en `docs/correccion/NC-v5.8.1.md`. Lo de abajo describe la v5.8 distribuida.
+> **v5.8.1 «Micrófono seguro» + v5.8.2 «Claves, datos y consumo»:** código hecho y probado en PC (tipos, lint, `npm test`), ya en `main` (commit `e5d9c1a` y el de cierre de la 5.8.2), **sin APK y sin probar en el teléfono**. Se entregarán juntas como 5.8.2 (build 35). Seguimiento en `docs/correccion/ESTADO.md` y detalle en `docs/correccion/NC-v5.8.1.md` y `NC-v5.8.2.md`. Lo de abajo describe la v5.8 distribuida.
 
 Último commit funcional: `16e6240` (el test se retoma donde quedó y el paso de Habla tiene scroll en horizontal). APK distribuido: `apk/Habla-v5.8.apk`, instalado en el POCO del dueño y repartido a sus amistades. En el Galaxy A11 de la madre hay una compilación de la 5.8 de unos minutos antes de ese commit: solo le faltan dos líneas de texto en Novedades, por lo demás es igual.
 
@@ -53,15 +53,8 @@ Hay una **auditoría QA completa de la v5.8** en `docs/auditoria/resultados/INFO
 
 ## ⏳ Pendiente (por orden previsto)
 
-1. **v5.8.1 «Micrófono seguro» (P0):** implementada y en revisión (ver `docs/correccion/NC-v5.8.1.md`): recorder reentrante y cancelable, guarda del segundo dedo, dictado que se cancela al volver, red nativa en `onStop`, `fallback()` con 1 reintento y sin perder la cancelación de eco, primeros tests (`npm test`). Falta: revisión, prueba en el POCO (arneses B3/B8/ORQ), APK y commit.
-2. **v5.8.2 «Claves, datos y consumo» (P1):**
-   - APK *release* no depurable;
-   - validar el Resource ID de Azure y pedir la huella al cambiar tenant, client o resource;
-   - validar las copias al importar y añadir un `ErrorBoundary` en el arranque;
-   - comprobar la clave de Gemini antes de pisar la buena;
-   - bajar la CPU de las animaciones en reposo;
-   - corregir textos;
-   - borrar los APK antiguos de `apk/`.
+1. **v5.8.1 «Micrófono seguro» (P0):** aprobada en PC (ver `docs/correccion/NC-v5.8.1.md`): recorder reentrante y cancelable, guarda del segundo dedo, dictado que se cancela al volver, red nativa en `onStop`, `fallback()` con 1 reintento y sin perder la cancelación de eco, primeros tests (`npm test`). Falta: prueba en el POCO (arneses B3/B8/ORQ).
+2. **v5.8.2 «Claves, datos y consumo» (P1):** hecha en código (ver `docs/correccion/NC-v5.8.2.md`): APK *release* no depurable; Resource ID de Azure validado y huella al cambiarlo; copias validadas e `ErrorBoundary` en el arranque; clave de Gemini comprobada antes de guardarla; animaciones en reposo a ~12–19 dibujos/s (antes 60–120); textos; el plan no se relanza solo tras un error. Falta: revisión en PC de U5–U7, prueba en el POCO (sobre todo el release con R8 instalado encima de la 5.8), APK y que **el dueño borre los APK antiguos de `apk/`** (FUG-402).
 3. **v5.9 «Transparencia y control»:**
    - modelo de micro en clase (hoy está abierto toda la clase);
    - aviso de privacidad de qué sale a Google y Microsoft (el tutorial dice que todo se guarda en el teléfono, pero el audio y el perfil se envían a la IA);

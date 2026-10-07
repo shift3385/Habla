@@ -36,7 +36,7 @@ Otros ajustes relacionados con la IA (sin secretos): `geminiModel` (principal; p
 - `keystore/habla.jks`: el almacén de claves de firma. **Nunca se regenera.**
 - `keystore/keystore.properties`, con las propiedades `storeFile`, `storePassword`, `keyAlias` y `keyPassword`, que lee `android/app/build.gradle`.
 
-Si `keystore.properties` no existe, Gradle compila **sin la firma del proyecto**. Ese APK no se puede instalar encima de los que ya tienen los usuarios. La auditoría propone que el build falle en ese caso (5.8.2).
+Desde la 5.8.2 (AUD-ARQ-106), si `keystore.properties` no existe **el release no se compila** (`packageRelease`/`assembleRelease` fallan con un mensaje en español); compilar el Java o el debug sigue funcionando. El debug ya no usa la firma del proyecto: es otra app (`com.shift.habla.debug`) firmada con la clave genérica de Android (`~/.android/debug.keystore`).
 
 ## 4. Otros archivos de configuración
 
@@ -74,7 +74,7 @@ En el navegador (desarrollo), Preferences se guarda en `localStorage` como `Capa
   3. Abre `http://127.0.0.1:<puerto>/json` y conéctate al websocket de la página.
   4. Usa `Runtime.evaluate` para pulsar botones por texto o leer `document.body.innerText`.
 
-  Los APK debug tienen la depuración del WebView activada.
+  Solo los APK **debug** tienen la depuración del WebView activada. Desde la 5.8.2 el debug es otra app (`com.shift.habla.debug`, «Habla debug», con datos propios vacíos): para depurar hay que instalarla, crear un perfil de prueba y meter una clave de prueba. La app de uso diario (release) no admite CDP ni `run-as`.
 - **Capturas fieles:** `adb exec-out screencap -p > captura.png`. La captura por CDP aplasta el texto.
 - **Pantalla apagada:** el WebView se pausa y las evaluaciones por CDP se cuelgan. Despiértala con `adb shell input keyevent KEYCODE_WAKEUP` (en el Samsung sí funciona).
 - **Hablar sin persona:** genera un WAV en inglés en el PC con PowerShell `System.Speech` (voz «Microsoft Zira Desktop», 16 kHz mono, SSML con `<break time="1200ms"/>` para pausas y faltas escritas «como suenan» para simular errores). Inyéctalo en base64 y sustituye `window.MediaRecorder` por uno que grabe un `AudioBuffer`. Reproducir la voz por el altavoz del teléfono no sirve: la cancelación de eco la elimina. Para mantener pulsado el micro, envía `pointerdown` y `pointerup` a `button[aria-label="Mantener para hablar"]`.
