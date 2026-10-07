@@ -8,6 +8,7 @@ import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
 import { applyBackup, readBackup } from './lib/backup'
+import { expireRetestLeftovers } from './lib/testDraft'
 import { db } from './lib/db'
 import { getScenario } from './lib/scenarios'
 import { loadDashboard } from './lib/stats'
@@ -149,6 +150,8 @@ export default function App() {
             : null,
         })
       }
+      // Restos de un re-test abandonado hace más de un mes (audios incluidos): fuera (AUD-FLU-204).
+      if (p.calibratedAt) expireRetestLeftovers().catch(() => {})
       setStreak(dash.streak)
       setHomework(dash.lastHomework)
       setSettings(s)
@@ -352,6 +355,16 @@ export default function App() {
           t={t}
           update={update}
           registerBack={registerBack}
+          onPause={
+            calibrated
+              ? () => {
+                  // v5.9: re-test en pausa → al Inicio. Se retoma al volver a entrar al re-test (el progreso está guardado).
+                  backHandler.current = null
+                  setRetest(false)
+                  setTab('home')
+                }
+              : undefined
+          }
           onDone={() => {
             backHandler.current = null
             const wasRetest = retest

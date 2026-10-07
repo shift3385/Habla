@@ -38,6 +38,8 @@ export interface TestProgress {
   pre: (TaskAssessment | null)[]
   usedIds: string[]
   usage?: BankUsage
+  /** v5.9: la pausa «seguir luego» ya se usó en este test (solo se permite una vez por test, decisión del dueño). */
+  pauseUsed?: boolean
 }
 
 const DB = 'habla-draft'
@@ -74,3 +76,15 @@ const PROGRESS = 'progress'
 export const saveProgress = (p: TestProgress) => run('readwrite', (s) => s.put(p, PROGRESS)).then(() => undefined)
 export const loadProgress = () => run<TestProgress | undefined>('readonly', (s) => s.get(PROGRESS)).catch(() => undefined)
 export const clearProgress = () => run('readwrite', (s) => s.delete(PROGRESS)).then(() => undefined).catch(() => undefined)
+
+/**
+ * AUD-FLU-204 / AUD-MIC-311 (v5.9): un re-test que se quedó sin evaluar o a medias dejaba para siempre sus audios en
+ * el teléfono. Solo para quien ya tiene nivel (el primer test es obligatorio y siempre se retoma): pasados
+ * `maxDays` días sin volver, se borran.
+ */
+export async function expireRetestLeftovers(maxDays = 30): Promise<void> {
+  const limit = Date.now() - maxDays * 864e5
+  const [d, p] = await Promise.all([loadDraft(), loadProgress()])
+  if (d && d.savedAt < limit) await clearDraft()
+  if (p && p.savedAt < limit) await clearProgress()
+}

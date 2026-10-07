@@ -128,12 +128,19 @@ const SECTION_INFO: Record<Skill, { title: string; icon: IconName; points: strin
   },
 }
 
-function Header({ section }: { section: number }) {
+function Header({ section, onPause }: { section: number; onPause?: () => void }) {
   return (
     <div className="mb-4 flex-none">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <div className="text-lg font-semibold">Test de nivel</div>
-        <div className="txt-sub text-sm">{section >= 0 ? `${section + 1}/4 · ${SECTIONS[section]}` : ''}</div>
+        <div className="flex items-center gap-2">
+          <div className="txt-sub text-sm">{section >= 0 ? `${section + 1}/4 · ${SECTIONS[section]}` : ''}</div>
+          {onPause && (
+            <button onClick={onPause} className="glass flex h-8 items-center gap-1 rounded-full px-3 text-[13px] font-medium" aria-label="Pausar el test">
+              <span aria-hidden>⏸</span> Pausar
+            </button>
+          )}
+        </div>
       </div>
       <div className="mt-2 grid grid-cols-4 gap-1.5">
         {SECTIONS.map((s, i) => (
@@ -243,10 +250,12 @@ interface Props {
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
   onDone: () => void
+  /** Solo en el re-test: salir al Inicio tras pausar (el primer test es obligatorio y no tiene Inicio aún). */
+  onPause?: () => void
   registerBack: (h: (() => void) | null) => void
 }
 
-export default function Calibration({ settings, update, onDone, registerBack }: Props) {
+export default function Calibration({ settings, update, onDone, onPause, registerBack }: Props) {
   const teacher = TEACHERS[settings.teacher]
   const mascot = THEME_INFO[settings.theme].mascot
   const mascotName = THEME_INFO[settings.theme].mascotName
@@ -255,6 +264,10 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
   const usage = useRef<BankUsage>({ seen: [], uses: {} })
   const used = useRef<BankItem[]>([])
   const [hint, setHint] = useState<string | null>(null)
+  // v5.9 (AUD-FLU-202, decisión del dueño): «Pausar y seguir luego» una sola vez por test (también el re-test).
+  const [pauseUsed, setPauseUsed] = useState(false)
+  // Pantalla «Test en pausa» encima del paso actual (el paso no cambia: así el progreso guardado sigue apuntando a él).
+  const [paused, setPaused] = useState(false)
   // Ajustes vivos: al reintentar tras cambiar de modelo o de clave se usan los nuevos.
   const live = useRef(settings)
   useEffect(() => {
@@ -361,8 +374,9 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
       pre: tasks.map((_, j) => preDone.current[j] ?? null),
       usedIds: used.current.map((i) => i.id),
       usage: usage.current,
+      pauseUsed,
     }).catch(() => {})
-  }, [step, gItems, gAnswers, gLevel, blocks, tasks, speech])
+  }, [step, gItems, gAnswers, gLevel, blocks, tasks, speech, pauseUsed])
 
   const restore = (p: TestProgress) => {
     setGItems(p.gItems)
@@ -385,15 +399,26 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
           .catch(() => null)
           .then((r) => (preDone.current[j] = r))
     })
+    setPauseUsed(!!p.pauseUsed)
     setHint('Seguimos donde lo dejaste.')
     setStep(p.step as Step)
   }
 
   const exclude = () => new Set(used.current.map((i) => i.id))
 
+  /** «Pausar»: se guarda (con la pausa ya gastada) y se puede cerrar la app; al volver, sigue en este paso. */
+  const pause = () => {
+    playToken.current++
+    stopSpeaking()
+    recorder.current.close()
+    setPauseUsed(true) // el efecto de «Test a medias» vuelve a guardar el paso actual con la pausa gastada
+    setPaused(true)
+  }
+
   // ---- 1. Gramática
   const startGrammar = () => {
     clearProgress()
+    setPauseUsed(false)
     const items = buildGrammar(usage.current)
     used.current.push(...items)
     setGItems(items)
@@ -686,6 +711,28 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
 
   if (step.k === 'loading' || !profile) return null
 
+  if (paused) {
+    return (
+      <MascotPage
+        element={mascot}
+        mood="happy"
+        title={retest ? 'Re-test en pausa' : 'Test en pausa'}
+        subtitle="He guardado todo lo que llevas. Puedes cerrar Habla: cuando vuelvas, seguirás justo aquí. La pausa solo se puede usar una vez por test, así que la próxima vez tendrás que terminarlo."
+        primary={{
+          label: 'Seguir ahora',
+          onClick: () => {
+            setPaused(false)
+            setHint('Seguimos donde lo dejaste.')
+          },
+        }}
+        secondary={retest && onPause ? { label: 'Ir al Inicio', onClick: onPause } : undefined}
+      />
+    )
+  }
+
+  // Se puede pausar una vez, en los pasos que se retoman tal cual (no a mitad de una lectura o un audio, ni grabando).
+  const pauseBtn = !pauseUsed && recState === 'idle' ? pause : undefined
+
   // Explicaciones de la mascota antes de empezar (primer test: cómo se evalúa; re-test: la ponderación).
   if (step.k === 'explain') {
     const pages = needsRecalibration(profile)
@@ -773,7 +820,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     const it = gCurrent
     return (
       <div className={pad}>
-        <Header section={0} />
+        <Header section={0} onPause={pauseBtn} />
         <div key={gAnswers.length} className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="txt-sub text-sm">
             Pregunta {gAnswers.length + 1} de {gItems.length} · {it.format === 'mc' ? 'elige la correcta' : 'escribe la forma correcta'}
@@ -947,7 +994,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
             : 'Pasar a la parte de habla'
     return (
       <div className={pad}>
-        <Header section={SECTION_IDX[kind]} />
+        <Header section={SECTION_IDX[kind]} onPause={pauseBtn} />
         <div key={`${kind}${n}`} className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="flex items-center gap-3">
             <Mascot element={mascot} size={64} mood={okCount / Math.max(1, rows.length) >= 0.6 ? 'happy' : 'idle'} />
@@ -980,7 +1027,7 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     const recording = recState === 'recording'
     return (
       <div className={pad}>
-        <Header section={3} />
+        <Header section={3} onPause={pauseBtn} />
         <div key={i} className="anim-in no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="txt-sub text-sm">
             Tarea {i + 1} de 3 · {task.title} · unos {task.seconds} s
