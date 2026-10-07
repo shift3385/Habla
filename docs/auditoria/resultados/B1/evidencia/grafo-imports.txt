@@ -1,0 +1,127 @@
+== Violaciones de capa (importa de una capa superior) ==
+lib/reminders.ts -> ui/theme.ts
+lib/scenarios.ts -> ui/icons.tsx
+lib/settings.ts -> ui/theme.ts
+lib/topics.ts -> ui/icons.tsx
+
+== Ciclos (SCC > 1 o autoimport) ==
+SCC (2): lib/phonetics.ts, lib/settings.ts
+SCC (7): lib/placement.ts, lib/levels.ts, lib/testSummary.ts, lib/teacher.ts, lib/profile.ts, lib/plan.ts, lib/db.ts
+
+== Ciclos directos A<->B ==
+lib/db.ts <-> lib/plan.ts
+lib/db.ts <-> lib/testSummary.ts
+lib/phonetics.ts <-> lib/settings.ts
+
+== Fan-in / fan-out ==
+App.tsx	in=1	out=38	ext=@capacitor/app @capacitor/core react
+components/AllTopicsView.tsx	in=1	out=4	ext=react
+components/AudioPicker.tsx	in=1	out=4	ext=@capacitor/app react
+components/AzureSettings.tsx	in=1	out=6	ext=react
+components/CorrectionView.tsx	in=2	out=2	ext=
+components/FavoritesPicker.tsx	in=4	out=2	ext=
+components/Fraction.tsx	in=2	out=0	ext=react
+components/GeminiFix.tsx	in=2	out=3	ext=react
+components/GeminiTroubleSheet.tsx	in=1	out=5	ext=
+components/HelpPoint.tsx	in=2	out=1	ext=react
+components/InfiniteList.tsx	in=2	out=0	ext=react
+components/LookupCard.tsx	in=2	out=4	ext=react
+components/LookupSheet.tsx	in=1	out=5	ext=react
+components/MascotBubble.tsx	in=1	out=2	ext=react
+components/MascotPage.tsx	in=7	out=4	ext=react react-dom
+components/PhoneticsAlert.tsx	in=1	out=4	ext=
+components/PlanCard.tsx	in=1	out=4	ext=react
+components/PrepareScreen.tsx	in=3	out=2	ext=react
+components/ProfileForm.tsx	in=2	out=5	ext=react
+components/PronunciationView.tsx	in=1	out=2	ext=react
+components/ReportView.tsx	in=2	out=5	ext=
+components/ScoreRing.tsx	in=1	out=0	ext=
+components/SkillProgressCard.tsx	in=3	out=2	ext=react
+components/TalkButton.tsx	in=1	out=2	ext=@capacitor/haptics react
+components/TappableText.tsx	in=1	out=0	ext=
+components/TestSummaryView.tsx	in=1	out=5	ext=react
+components/TopicAskPage.tsx	in=1	out=9	ext=react
+components/TrendChart.tsx	in=1	out=0	ext=react
+lib/audioRoute.ts	in=2	out=0	ext=@capacitor/core
+lib/azureUsage.ts	in=2	out=0	ext=@capacitor/core
+lib/backup.ts	in=2	out=1	ext=@capacitor/core @capacitor/filesystem @capacitor/share
+lib/bank.ts	in=4	out=0	ext=
+lib/calibration.ts	in=2	out=7	ext=
+lib/changelog.ts	in=6	out=1	ext=
+lib/db.ts	in=32	out=3	ext=dexie
+lib/deviceAuth.ts	in=3	out=0	ext=@capacitor/core
+lib/dialogue.ts	in=1	out=0	ext=
+lib/dictation.ts	in=1	out=1	ext=
+lib/errors.ts	in=5	out=0	ext=
+lib/fluency.ts	in=2	out=3	ext=
+lib/gemini.ts	in=17	out=1	ext=@capacitor/core
+lib/geminiTrouble.ts	in=3	out=0	ext=
+lib/levels.ts	in=11	out=1	ext=
+lib/lifecycle.ts	in=2	out=2	ext=@capacitor/app
+lib/lookup.ts	in=4	out=2	ext=
+lib/mascotTips.ts	in=2	out=0	ext=
+lib/notices.ts	in=2	out=2	ext=
+lib/orientation.ts	in=3	out=0	ext=@capacitor/core
+lib/phonetics.ts	in=7	out=2	ext=
+lib/placement.ts	in=4	out=2	ext=
+lib/plan.ts	in=6	out=4	ext=
+lib/profile.ts	in=13	out=1	ext=
+lib/pronunciation.ts	in=4	out=1	ext=@capacitor/core
+lib/recorder.ts	in=6	out=0	ext=
+lib/reminders.ts	in=2	out=1	ext=@capacitor/core @capacitor/local-notifications
+lib/savedClass.ts	in=4	out=3	ext=@capacitor/preferences
+lib/scenarios.ts	in=5	out=1	ext=
+lib/settings.ts	in=21	out=4	ext=@capacitor/preferences
+lib/speech.ts	in=4	out=0	ext=
+lib/srs.ts	in=2	out=2	ext=ts-fsrs
+lib/stats.ts	in=4	out=1	ext=
+lib/teacher.ts	in=2	out=4	ext=
+lib/testDraft.ts	in=1	out=3	ext=
+lib/testSummary.ts	in=5	out=4	ext=@capacitor/core @capacitor/filesystem @capacitor/share
+lib/topics.ts	in=8	out=3	ext=
+lib/tts.ts	in=11	out=0	ext=@capacitor-community/text-to-speech
+lib/viewport.ts	in=1	out=0	ext=
+lib/wav.ts	in=2	out=0	ext=
+main.tsx	in=0	out=3	ext=react react-dom/client
+screens/AboutScreen.tsx	in=1	out=5	ext=@capacitor/share react
+screens/Calibration.tsx	in=1	out=23	ext=react
+screens/Conversation.tsx	in=1	out=34	ext=@capacitor/haptics react
+screens/FavoritesSetup.tsx	in=1	out=4	ext=react
+screens/Home.tsx	in=2	out=19	ext=react
+screens/NoticeGate.tsx	in=1	out=11	ext=react
+screens/Onboarding.tsx	in=1	out=8	ext=react
+screens/PlanScreen.tsx	in=1	out=5	ext=react
+screens/ProfileSetup.tsx	in=1	out=2	ext=
+screens/ProgressScreen.tsx	in=1	out=11	ext=react
+screens/ReviewScreen.tsx	in=1	out=12	ext=react ts-fsrs
+screens/SettingsScreen.tsx	in=1	out=22	ext=react @capacitor/share @capacitor/core
+screens/WelcomeScreen.tsx	in=1	out=6	ext=react
+screens/WordsScreen.tsx	in=1	out=8	ext=react
+ui/Background.tsx	in=2	out=1	ext=
+ui/Mascot.tsx	in=13	out=0	ext=react
+ui/Segmented.tsx	in=3	out=0	ext=
+ui/Switch.tsx	in=1	out=0	ext=
+ui/Wave.tsx	in=4	out=0	ext=
+ui/icon-paths.ts	in=1	out=0	ext=
+ui/icons.tsx	in=32	out=1	ext=
+ui/theme.ts	in=17	out=1	ext=
+
+== Aristas por capa ==
+{
+  'root -> lib': 19,
+  'root -> screens': 14,
+  'root -> components': 4,
+  'root -> ui': 3,
+  'components -> lib': 45,
+  'components -> ui': 27,
+  'components -> components': 10,
+  'lib -> lib': 55,
+  'lib -> ..': 1,
+  'lib -> ui': 4,
+  'root -> root': 1,
+  'screens -> lib': 99,
+  'screens -> ui': 36,
+  'screens -> components': 34,
+  'screens -> screens': 1,
+  'ui -> ui': 3
+}

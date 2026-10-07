@@ -1,0 +1,16 @@
+rev · LÍNEA BASE (código v5.8 = HEAD 0a1d6f8, árbol sin cambios de dev) · AUD-MIC-302 · navegador
+Origen aislado http://rev.localhost:5173, viewport 360x780, arnés docs/correccion/arnes-rev/rev-mic.js con gumDelay=1500 ms, red falsa (0 peticiones a la IA).
+Pasos: Inicio → «Tema libre» → 2 click() en «Dictar por voz» a 150 ms → 2,5 s → «Terminar de dictar» → «Atrás» (cierra la hoja) → segundo plano simulado (hidden=true + visibilitychange + pagehide) → vuelta.
+
+Eventos (ms performance.now):
+  47672 gUM req #0 · 47834 gUM req #1            ← dos aperturas en vuelo (open() no reentrante)
+  49384 gUM open #0 · 49395 gUM open #1
+  49791 rec new #0 sobre mic #1 · 50077 rec new #1 sobre mic #1   ← dos MediaRecorder
+  50336 rec stop #1 · 50351 track stop #1        ← «Terminar» solo cierra el último stream
+  53645 hidden=true (releaseAllMics)             ← mic #0 NO se cierra
+Línea de tiempo:
+  49458 live=[0,1] rec=[]   50164 live=[0,1] rec=[0,1]   50360 live=[0] rec=[]
+  53659 live=[0] hidden=true   54464 live=[0] hidden=false
+check() final: opened=2, live=[0] (huérfano), liveWhileHidden=[0], net=0.
+Nota: rec #0 pasó a 'inactive' sin stop() al pararse la pista #1 (mismo matiz que B8). Pila de ambas aperturas: Recorder.open ← Recorder.begin ← toggleMic (TopicAskPage).
+VEREDICTO LÍNEA BASE: FALLA (reproduce MIC-302: stream #0 vivo tras cerrar la hoja y en segundo plano).

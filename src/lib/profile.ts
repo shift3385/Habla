@@ -17,9 +17,36 @@ export const SEED_PROFILE: Profile = {
   startedAt: Date.now(),
 }
 
+/**
+ * AUD-RES-704: un perfil con forma inesperada (importado de una copia vieja o tocada) ya no rompe el arranque:
+ * los campos que la app lee sin comprobar se completan con los valores neutros. Solo en memoria: no se reescribe.
+ */
+export function repairProfile(p: Profile): Profile {
+  const text = (v: unknown, d: string) => (typeof v === 'string' ? v : d)
+  const list = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : undefined)
+  const lv = (p.levels ?? {}) as Partial<Profile['levels']>
+  const levels = {
+    overall: text(lv.overall, SEED_PROFILE.levels.overall),
+    grammar: text(lv.grammar, SEED_PROFILE.levels.grammar),
+    reading: text(lv.reading, SEED_PROFILE.levels.reading),
+    listening: text(lv.listening, SEED_PROFILE.levels.listening),
+    speaking: text(lv.speaking, SEED_PROFILE.levels.speaking),
+  }
+  return {
+    ...p,
+    levels,
+    about: text(p.about, ''),
+    weaknesses: list(p.weaknesses) ?? [],
+    goal: text(p.goal, ''),
+    name: typeof p.name === 'string' ? p.name : undefined,
+    purposes: list(p.purposes),
+    interests: list(p.interests),
+  }
+}
+
 export async function getProfile(): Promise<Profile> {
   const p = await db.profile.get('me')
-  if (p) return p
+  if (p) return repairProfile(p)
   const seed = { ...SEED_PROFILE, startedAt: Date.now() }
   await db.profile.put(seed)
   return seed

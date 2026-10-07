@@ -17,6 +17,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.8.1',
+    date: '2026-10-06',
+    title: 'Actualización de parches de seguridad y corrección de la v5.8',
+    fixed: [
+      'Tu micrófono, a salvo: si tocas el micro dos veces seguidas, ya no se queda abierto un segundo micrófono escuchando a escondidas',
+      'Si sales de la app justo mientras se abre el micro, ya no se vuelve a abrir solo, ni en segundo plano ni al volver',
+      'En el Debate y en Tema libre, si vuelves atrás o cierras mientras dictas, el dictado se cancela: se apaga el micro y no se envía nada',
+      'Si apoyas un segundo dedo en el botón de hablar, ya no empieza otra grabación escondida',
+      'En una habitación en silencio, el micro abre en un par de segundos (antes podía tardar más de 10) y no pierde la cancelación de eco, así la voz de tu profe no se cuela en tus respuestas',
+      'Con la app en segundo plano, Android no deja que Habla vuelva a abrir el micrófono',
+    ],
+  },
+  {
     v: '5.8',
     date: '2026-10-05',
     title: 'Tu pronunciación, con nota, y tu mascota te habla',

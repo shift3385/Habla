@@ -1,0 +1,12 @@
+# Reglas comunes para todos los bots (copia de ORQUESTADOR §3 + decisiones)
+
+1. **Solo lectura sobre el producto.** No modificar `src/`, `android/`, `scripts/`, configuración ni dependencias. No `git commit`, no `git push`, no `npm install` de paquetes nuevos. Solo se escribe en `docs/auditoria/resultados/` y en el scratchpad. Arneses (scripts CDP, mocks) en `docs/auditoria/resultados/<bot>/arnes/`.
+2. **Claves reales: jamás.** Nunca escribir, imprimir, copiar ni devolver la clave de Gemini, las de Azure ni el secreto del service principal. Si una evaluación CDP podría devolver `habla.settings`, devuelve solo un resumen (`hasKey`, longitud, prefijo de 4 caracteres como máximo). Si encuentras un secreto real, no lo copies: ruta, línea y 4 primeros caracteres.
+3. **Llamadas reales a Gemini/Azure:** el dueño autorizó **10 en total** para toda la auditoría. Reparto: B4 = 2, B6 = 6, B8 = 2. Fuera de ese cupo, mock de red. Cada llamada real se anota en `docs/auditoria/resultados/llamadas-reales.md`.
+4. **El teléfono tiene datos reales.** No desinstalar Habla, no `pm clear`, no borrar datos. El APK instalado ya es debuggable (v5.8 build 33): **no instalar ningún APK**. No regenerar nunca el keystore. Prohibido reactivar `loggingBehavior`. No usar `run-as` para leer `CapacitorStorage.xml` ni volcar las claves.
+5. **Un solo teléfono.** Antes de usarlo, comprueba que no existe `docs/auditoria/resultados/.telefono.lock`; créalo con tu nombre y la hora; bórralo al terminar. Si existe, espera (no lo uses).
+6. **Evidencia o no existe.** Cada hallazgo con archivo:línea, pasos y prueba. Sin prueba dinámica = `HIPÓTESIS`.
+7. No leer otras apps del teléfono, contactos, fotos ni archivos personales fuera de `Documents/Habla` y `Download/Habla*.apk`.
+8. Formato `docs/auditoria/plantillas/hallazgo.md`. IDs `AUD-<ÁREA>-<NNN>` (ARQ, FLU, MIC, FUG, SEG, E2E, RES). **Rango numérico por bot** para no chocar: B0 001–099, B1 100–199, B2 200–299, B3 300–399, B4 400–499, B5 500–599, B6 600–699, B7 700–799, B8 800–899 (el número indica el bot; el área, el tema).
+
+Entorno: `docs/auditoria/entorno.md`. Línea base: `docs/auditoria/resultados/B0/linea-base.md` (leer). Commit auditado `6874443`, v5.8 build 33. PATH desactualizado: rutas absolutas (`C:\Program Files\nodejs\node.exe`, adb en `%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe`). Nunca lanzar Vite con Bash: usar `preview_start` con `name: "habla-dev"`.

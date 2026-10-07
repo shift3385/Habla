@@ -6,13 +6,24 @@
 // - `isOpen` comprueba que la pista siga viva; si no, `begin()` lo reabre.
 // - `stop()` nunca se queda esperando: si el grabador no avisa, se resuelve a los 2 s con lo grabado.
 //
+// Micrófono seguro (v5.8.1, auditoría AUD-MIC-301/302/304/800):
+// - Una sola apertura en curso por grabadora: las llamadas simultáneas a `open()`/`begin()` comparten la misma
+//   promesa (antes, un doble toque abría dos streams y el primero quedaba huérfano, captando hasta matar la app).
+// - La grabadora entra en `recorders` ANTES del primer `await`, así `releaseAllMics()` (segundo plano) también
+//   cancela una apertura a medias. `close()` sube un contador de generación: cada paso de la apertura lo
+//   comprueba al volver de un `await` y, si cambió, para lo que acaba de abrir y sale sin grabar.
+// - `start()` con una grabación ya en marcha se ignora (antes el primer MediaRecorder quedaba huérfano).
+//
 // Auriculares Bluetooth: Android manda el micrófono "por defecto" a los auriculares, pero el canal de micrófono
 // del Bluetooth no se activa y llega SILENCIO ABSOLUTO (todas las muestras a 0). Medido en un POCO con
 // auriculares BT: por defecto → 0; "Bluetooth headset" → 0; "Speakerphone" (micro del teléfono) → funciona.
 // Por eso, al abrir, se espera hasta 2 s a la primera señal (un micro recién abierto tarda hasta ~1,3 s en dar
-// muestras); si solo llega silencio digital se prueban: 1) los micrófonos del teléfono (abren en <1 s) y 2) el
-// micro por defecto sin procesado (Android tarda 3–7 s en salir del "modo llamada"). La elección se recuerda
-// para toda la sesión y se olvida al conectar o desconectar auriculares.
+// muestras). AUD-MIC-800: el micro del teléfono con procesado de voz TAMBIÉN da ceros exactos en una habitación
+// en silencio, así que el silencio solo se toma por «micro mudo» si hay motivo (pista silenciada por el sistema,
+// un micro Bluetooth conectado o nombres de micros desconocidos). Entonces se prueba UNA sola alternativa: el
+// micro del teléfono con procesado (conserva la cancelación de eco) o, si no se encuentra, el micro por defecto
+// sin procesado solo para esa apertura (nunca se recuerda un micro sin cancelación de eco para la sesión).
+// La elección se recuerda para toda la sesión y se olvida al conectar o desconectar auriculares.
 //
 // Con auriculares, el usuario elige el modo (selector de audio, ver audioRoute.ts):
 //   headset → el plugin nativo pone los auriculares como dispositivo de comunicación; micro por defecto con
@@ -30,6 +41,7 @@ const AUDIO_BPS = 24_000
 
 const PROCESSING = { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
 const RAW = { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+const BLUETOOTH = /bluetooth|bt|sco/i
 
 export type MicMode = 'auto' | 'headset' | 'split' | 'phone'
 let micMode: MicMode = 'auto'
@@ -52,10 +64,12 @@ export function setMicMode(mode: MicMode) {
 
 // Micrófono elegido tras detectar silencio (p. ej. con auriculares Bluetooth). Es compartido por todas las
 // grabadoras (clase, test, repaso) y se olvida al conectar o desconectar un dispositivo de audio.
+// Solo se guarda uno CON cancelación de eco (AUD-MIC-800).
 let chosen: MediaTrackConstraints | null = null
 // El micrófono por defecto ya se comprobó y da señal: no hace falta volver a medirlo en cada clase.
 let defaultOk = false
-const recorders = new Set<Recorder>() // las que tienen el micrófono abierto
+// Las que tienen el micrófono abierto O ABRIÉNDOSE (AUD-MIC-301: así el segundo plano cancela la apertura).
+const recorders = new Set<Recorder>()
 navigator.mediaDevices?.addEventListener?.('devicechange', () => {
   chosen = null
   defaultOk = false
@@ -64,7 +78,8 @@ navigator.mediaDevices?.addEventListener?.('devicechange', () => {
 })
 
 /**
- * Cierra TODOS los micrófonos abiertos (también uno que esté grabando: esa grabación se descarta).
+ * Cierra TODOS los micrófonos abiertos (también uno que esté grabando: esa grabación se descarta) y cancela
+ * las aperturas en curso (AUD-MIC-301).
  * Se llama al pasar la app a segundo plano: un micrófono abierto mantiene despierto el audio del teléfono
  * toda la noche y vacía la batería (NC-14). Al volver, la próxima grabación lo reabre sola.
  */
@@ -72,8 +87,15 @@ export function releaseAllMics() {
   ;[...recorders].forEach((r) => r.close())
 }
 
-/** ¿Llega algo del micrófono? Un micro real siempre tiene ruido de fondo; uno "mudo" da ceros exactos. */
-async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
+function stopTracks(stream: MediaStream | null | undefined) {
+  stream?.getTracks().forEach((t) => t.stop())
+}
+
+/**
+ * ¿Llega algo del micrófono? Un micro real suele tener ruido de fondo; uno "mudo" da ceros exactos.
+ * `cancelled` corta la espera en cuanto se cierra la grabadora.
+ */
+async function hasSignal(stream: MediaStream, ms: number, cancelled: () => boolean): Promise<boolean> {
   let ctx: AudioContext | null = null
   try {
     ctx = new AudioContext()
@@ -85,6 +107,7 @@ async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
     const t0 = performance.now()
     while (performance.now() - t0 < ms) {
       await new Promise((r) => setTimeout(r, 30))
+      if (cancelled()) return false
       an.getFloatTimeDomainData(buf)
       if (buf.some((v) => v !== 0)) return true
     }
@@ -96,11 +119,37 @@ async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
   }
 }
 
+/**
+ * AUD-MIC-800 · segunda comprobación antes de dar un micro por mudo: ceros exactos también salen del micro del
+ * teléfono con procesado en una habitación en silencio. Solo es sospechoso si la pista está silenciada por el
+ * sistema, si hay un micro Bluetooth conectado o si no se pueden leer los nombres de los micros.
+ */
+async function looksMuted(stream: MediaStream): Promise<boolean> {
+  const track = stream.getAudioTracks()[0]
+  if (!track || track.readyState !== 'live' || track.muted) return true
+  try {
+    const inputs = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'audioinput')
+    if (!inputs.length || inputs.some((d) => !d.label)) return true
+    return inputs.some((d) => BLUETOOTH.test(d.label))
+  } catch {
+    return true
+  }
+}
+
 /** Micrófonos del propio teléfono (no Bluetooth), el altavoz/micro principal primero. */
 async function phoneMics(): Promise<MediaDeviceInfo[]> {
   const all = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'audioinput')
-  const ok = all.filter((d) => d.deviceId && d.deviceId !== 'default' && !/bluetooth|bt|sco/i.test(d.label))
+  const ok = all.filter((d) => d.deviceId && d.deviceId !== 'default' && !BLUETOOTH.test(d.label))
   return ok.sort((a, b) => Number(/speaker|built|phone|tel/i.test(b.label)) - Number(/speaker|built|phone|tel/i.test(a.label)))
+}
+
+function micError(e: unknown): MicError {
+  if (e instanceof MicError) return e
+  const name = (e as DOMException)?.name
+  if (name === 'NotAllowedError' || name === 'SecurityError') {
+    return new MicError('Sin permiso para el micrófono. Actívalo en Ajustes de Android → Apps → Habla → Permisos → Micrófono.')
+  }
+  return new MicError('No se pudo abrir el micrófono. Cierra otras apps que lo estén usando e inténtalo de nuevo.')
 }
 
 export class Recorder {
@@ -108,69 +157,135 @@ export class Recorder {
   private recorder: MediaRecorder | null = null
   private chunks: Blob[] = []
   private startedAt = 0
+  /** Sube con cada `close()`: una apertura que ve otro número sabe que la cancelaron (AUD-MIC-301). */
+  private gen = 0
+  /** Apertura en curso, compartida por las llamadas simultáneas (AUD-MIC-302). */
+  private opening: Promise<boolean> | null = null
+  /** `begin()` en curso, compartido por los toques repetidos (AUD-MIC-302). */
+  private beginning: Promise<boolean> | null = null
   /** Último micrófono usado, para diagnóstico. */
   label = ''
 
+  /** Cierra si no está grabando. Una apertura en curso se deja terminar (p. ej. `devicechange` al conceder el permiso). */
   releaseIfIdle() {
+    if (this.opening) return
     if (!this.recorder || this.recorder.state === 'inactive') this.close()
   }
 
-  async open(): Promise<void> {
-    if (this.isOpen) return
-    this.close() // descarta un stream muerto antes de pedir uno nuevo
+  /** ¿Se está abriendo el micrófono ahora mismo? */
+  get isOpening() {
+    return !!this.opening
+  }
+
+  /**
+   * Abre el micrófono (si no lo estaba). Devuelve `false` si la apertura se canceló con `close()` /
+   * `releaseAllMics()` mientras se abría: en ese caso no queda nada abierto.
+   */
+  open(): Promise<boolean> {
+    if (this.opening) return this.opening
+    if (this.isOpen) return Promise.resolve(true)
+    const p: Promise<boolean> = this.doOpen(this.gen).finally(() => {
+      if (this.opening === p) this.opening = null
+    })
+    this.opening = p
+    return p
+  }
+
+  private async doOpen(gen: number): Promise<boolean> {
+    const cancelled = () => this.gen !== gen
+    // Descarta un stream muerto antes de pedir uno nuevo (sin subir la generación: esta apertura sigue).
+    stopTracks(this.stream)
+    this.stream = null
     if (!navigator.mediaDevices?.getUserMedia) {
       throw new MicError('Este dispositivo no permite grabar audio.')
     }
+    // AUD-MIC-301: registrada ANTES de cualquier await, así releaseAllMics() también cancela esta apertura.
+    recorders.add(this)
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: micMode === 'split' ? RAW : (chosen ?? PROCESSING),
       })
-      this.label = this.stream.getAudioTracks()[0]?.label || 'default'
-      recorders.add(this)
+      if (cancelled()) {
+        stopTracks(stream) // se pidió cerrar mientras Android abría el micro: se cierra sin usarlo
+        return false
+      }
+      this.stream = stream
+      this.label = stream.getAudioTracks()[0]?.label || 'default'
       await afterOpen?.().catch(() => {})
-      if (micMode === 'headset') {
-        // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
-        if (!defaultOk) {
-          if (await hasSignal(this.stream, 5000)) defaultOk = true
-          else {
-            console.warn('[HABLA-MIC] el micrófono de los auriculares no da señal en 5 s; uso el del teléfono')
-            await this.fallback()
-          }
-        }
-      } else if (micMode !== 'split' && !chosen && !defaultOk) {
-        if (await hasSignal(this.stream)) defaultOk = true
-        else await this.fallback()
+      if (cancelled()) return false
+      const measure = micMode === 'headset' ? !defaultOk : micMode !== 'split' && !chosen && !defaultOk
+      if (!measure) return true
+      // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
+      const ok = await hasSignal(stream, micMode === 'headset' ? 5000 : 2000, cancelled)
+      if (cancelled()) return false
+      if (ok) {
+        defaultOk = true
+        return true
       }
+      const muted = await looksMuted(stream)
+      if (cancelled()) return false
+      if (!muted) {
+        // AUD-MIC-800: silencio en una habitación tranquila, no un micro mudo. Se queda el micro con procesado.
+        defaultOk = true
+        console.info('[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto')
+        return true
+      }
+      console.warn(`[HABLA-MIC] el micrófono por defecto no da señal (modo ${micMode}); pruebo otro`)
+      return await this.fallback(gen)
     } catch (e) {
-      if (e instanceof MicError) throw e
-      const name = (e as DOMException).name
-      if (name === 'NotAllowedError' || name === 'SecurityError') {
-        throw new MicError(
-          'Sin permiso para el micrófono. Actívalo en Ajustes de Android → Apps → Habla → Permisos → Micrófono.',
-        )
-      }
-      throw new MicError('No se pudo abrir el micrófono. Cierra otras apps que lo estén usando e inténtalo de nuevo.')
+      if (cancelled()) return false // cancelada: el error de una apertura abandonada no importa
+      this.release() // AUD-MIC-306: si algo falla, no queda nada abierto
+      throw micError(e)
     }
   }
 
-  /** El micrófono por defecto llega mudo (auriculares Bluetooth): se prueban alternativas hasta que haya señal. */
-  private async fallback() {
-    const options: { label: string; c: MediaTrackConstraints }[] = [
-      ...(await phoneMics()).map((d) => ({ label: d.label, c: { ...PROCESSING, deviceId: { exact: d.deviceId } } })),
-      { label: 'por defecto sin procesado', c: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } },
-    ]
-    for (const o of options) {
-      this.stream?.getTracks().forEach((t) => t.stop())
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: o.c })
-      if (await hasSignal(this.stream)) {
-        chosen = o.c
-        this.label = o.label
-        console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); usando "${o.label}"`)
-        return
+  /**
+   * El micrófono por defecto llega mudo (auriculares Bluetooth): se prueba UNA alternativa (AUD-MIC-800).
+   * El stream nuevo queda en `this.stream`, y la grabadora sigue en `recorders` (AUD-MIC-301).
+   */
+  private async fallback(gen: number): Promise<boolean> {
+    const cancelled = () => this.gen !== gen
+    const phone = (await phoneMics().catch(() => []))[0]
+    if (cancelled()) return false
+    const raw = { label: 'por defecto sin procesado', c: RAW as MediaTrackConstraints, remember: false }
+    // REV-T1-1: si el micro del teléfono no se puede abrir (p. ej. OverconstrainedError), se prueba el por defecto
+    // sin procesado, como en la v5.8. Sigue siendo UN solo reintento: como mucho una alternativa llega a abrirse.
+    const options = phone
+      ? [{ label: phone.label || 'micrófono del teléfono', c: { ...PROCESSING, deviceId: { exact: phone.deviceId } } as MediaTrackConstraints, remember: true }, raw]
+      : [raw]
+    stopTracks(this.stream)
+    this.stream = null
+    let option = options[0]
+    let next: MediaStream | null = null
+    for (let i = 0; i < options.length && !next; i++) {
+      option = options[i]
+      try {
+        next = await navigator.mediaDevices.getUserMedia({ audio: option.c })
+      } catch (e) {
+        if (cancelled() || i === options.length - 1) throw e // en doOpen: cancelada → false; si no, error en español
+        console.warn(`[HABLA-MIC] no se pudo abrir "${option.label}"; pruebo "${options[i + 1].label}"`)
       }
     }
-    // Ninguno da señal: se deja el último abierto (mejor grabar algo que nada).
-    console.warn('[HABLA-MIC] ningún micrófono da señal')
+    if (!next) return false
+    if (cancelled()) {
+      stopTracks(next)
+      return false
+    }
+    this.stream = next
+    recorders.add(this)
+    this.label = option.label
+    if (!option.remember) {
+      // Sin procesado no se recuerda nunca: no hace falta medirlo (2 s menos de espera al tocar el micro).
+      console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); uso "${option.label}" solo esta vez`)
+      return true
+    }
+    const ok = await hasSignal(next, 2000, cancelled)
+    if (cancelled()) return false
+    // Solo se recuerda para la sesión un micro con cancelación de eco y que haya dado señal.
+    if (ok) chosen = option.c
+    if (ok) console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); usando "${option.label}"`)
+    else console.warn(`[HABLA-MIC] "${option.label}" tampoco da señal; lo uso igualmente (sin más reintentos)`)
+    return true
   }
 
   /** true solo si el micrófono sigue realmente vivo. */
@@ -178,35 +293,64 @@ export class Recorder {
     return !!this.stream && this.stream.active && this.stream.getAudioTracks().some((t) => t.readyState === 'live')
   }
 
+  /** ¿Hay un MediaRecorder grabando? */
+  get isRecording() {
+    return !!this.recorder && this.recorder.state !== 'inactive'
+  }
+
   /** Stream del micrófono abierto (para dibujar la onda en vivo). */
   get mediaStream(): MediaStream | null {
     return this.stream
   }
 
-  start(): void {
+  /** Empieza a grabar. Devuelve `false` (y no hace nada) si ya había una grabación en marcha (AUD-MIC-304). */
+  start(): boolean {
+    if (this.isRecording) return false
     if (!this.isOpen) throw new MicError('El micrófono no está abierto.')
     const mimeType = MIME_CANDIDATES.find((m) => MediaRecorder.isTypeSupported(m))
-    this.chunks = []
+    // AUD-MIC-309: cada grabación tiene su propia lista de trozos; uno tardío de la anterior no se cuela.
+    const chunks: Blob[] = []
+    this.chunks = chunks
     // 24 kbps en Opus basta para la voz y sube ~5 veces menos datos que los 128 kbps por defecto de Android.
-    this.recorder = new MediaRecorder(this.stream!, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: AUDIO_BPS })
-    this.recorder.ondataavailable = (e) => {
-      if (e.data.size > 0) this.chunks.push(e.data)
+    const rec = new MediaRecorder(this.stream!, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: AUDIO_BPS })
+    rec.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data)
     }
-    this.recorder.start()
+    this.recorder = rec
+    rec.start()
     this.startedAt = performance.now()
+    return true
   }
 
-  /** Abre (o reabre) el micrófono y empieza a grabar; si falla, lo reintenta una vez con un stream nuevo. */
-  async begin(): Promise<void> {
+  /**
+   * Abre (o reabre) el micrófono y empieza a grabar; si falla, lo reintenta una vez con un stream nuevo.
+   * Devuelve `true` si hay una grabación en marcha gracias a esta llamada (o a la que comparte), `false` si se
+   * canceló durante la apertura (cerraste la pantalla, cambiaste de paso, segundo plano) o si ya se grababa.
+   */
+  begin(): Promise<boolean> {
+    if (this.beginning) return this.beginning
+    const p: Promise<boolean> = this.doBegin().finally(() => {
+      if (this.beginning === p) this.beginning = null
+    })
+    this.beginning = p
+    return p
+  }
+
+  private async doBegin(): Promise<boolean> {
+    const gen = this.gen
     try {
-      await this.open()
-      this.start()
+      if (!(await this.open())) return false
+      if (this.gen !== gen) return false
+      return this.start()
     } catch (e) {
+      if (this.gen !== gen) return false // se cerró mientras tanto: no se reintenta
       if (e instanceof MicError && /permiso/i.test(e.message)) throw e
       this.close()
-      await this.open()
+      const retry = this.gen
+      if (!(await this.open())) return false
+      if (this.gen !== retry) return false
       try {
-        this.start()
+        return this.start()
       } catch {
         this.close()
         throw new MicError('No se pudo grabar. Vuelve a intentarlo.')
@@ -217,9 +361,10 @@ export class Recorder {
   /** Detiene la grabación y devuelve el audio y su duración en segundos. Nunca se queda colgado. */
   stop(): Promise<{ blob: Blob; seconds: number }> {
     const rec = this.recorder
+    const chunks = this.chunks
     this.recorder = null
     if (!rec || rec.state === 'inactive') {
-      return Promise.resolve({ blob: new Blob(this.chunks), seconds: 0 })
+      return Promise.resolve({ blob: new Blob(chunks), seconds: 0 })
     }
     const seconds = (performance.now() - this.startedAt) / 1000
     return new Promise((resolve) => {
@@ -227,7 +372,7 @@ export class Recorder {
       const finish = () => {
         if (done) return
         done = true
-        resolve({ blob: new Blob(this.chunks, { type: rec.mimeType || 'audio/webm' }), seconds })
+        resolve({ blob: new Blob(chunks, { type: rec.mimeType || 'audio/webm' }), seconds })
       }
       rec.onstop = finish
       rec.onerror = finish
@@ -240,13 +385,22 @@ export class Recorder {
     })
   }
 
+  /** Para la grabación y el micrófono, y cancela cualquier apertura en curso (AUD-MIC-301). */
   close(): void {
+    this.gen++
+    this.opening = null
+    this.beginning = null
     try {
       if (this.recorder && this.recorder.state !== 'inactive') this.recorder.stop()
     } catch {
       // ya estaba detenido
     }
-    this.stream?.getTracks().forEach((t) => t.stop())
+    this.release()
+  }
+
+  /** Suelta el stream y sale del registro, sin cancelar (lo usa una apertura que falla). */
+  private release(): void {
+    stopTracks(this.stream)
     this.stream = null
     this.recorder = null
     recorders.delete(this)

@@ -1,0 +1,11 @@
+pid app=31147 render=13383 00:13:03
+Good morning. ¿De qué hablamos hoy? 0 Leo te esper
+css=false raf=false
+app=165% render=57%
+css=true raf=false
+app=133% render=40%
+css=false raf=true
+app=108% render=8%
+css=true raf=true
+app=0% render=2%
+fin 00:14:39

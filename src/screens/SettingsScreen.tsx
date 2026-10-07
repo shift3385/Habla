@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { exportBackup, importBackup } from '../lib/backup'
+import { applyBackup, exportBackup, readBackup } from '../lib/backup'
 import type { CalibrationRecord, Profile } from '../lib/db'
-import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, pickDefaultModel, pickFallbackModel, type NetLog } from '../lib/gemini'
+import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, type NetLog } from '../lib/gemini'
+import { verifyGeminiKey } from '../lib/geminiKey'
 import { Share } from '@capacitor/share'
 import { askNotificationPermission, notificationsGranted, testReminder } from '../lib/reminders'
 import { openAudioPicker } from '../lib/audioRoute'
@@ -688,22 +689,19 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
       const r = await confirmIdentity('Para cambiar tu clave de Gemini')
       if (!r.ok) return setStatus({ kind: 'error', text: 'No se confirmó tu identidad: la clave no se cambió.' })
     }
-    if (k !== settings.geminiKey) clearExhausted() // clave nueva: otras cuotas
-    update({ geminiKey: k })
+    // AUD-FLU-209: primero se comprueba con Google; solo si la acepta sustituye a la anterior.
     setChecking(true)
-    setStatus({ kind: 'info', text: 'Guardada. Comprobando…' })
+    setStatus({ kind: 'info', text: 'Comprobando con Google…' })
     try {
-      const list = await listModels(k)
-      // Si el modelo elegido no existe para esta clave, elijo uno bueno automáticamente.
-      const model = list.some((m) => m.id === settings.geminiModel) ? settings.geminiModel : pickDefaultModel(list)
-      const fallback =
-        list.some((m) => m.id === settings.geminiFallbackModel) && settings.geminiFallbackModel !== model
-          ? settings.geminiFallbackModel
-          : pickFallbackModel(list, model)
-      update({ geminiKey: k, geminiModel: model, geminiFallbackModel: fallback, modelList: list.map((m) => m.id) })
-      setStatus({ kind: 'ok', text: `Clave válida ✓ · modelo ${model}` })
-    } catch (e) {
-      setStatus({ kind: 'error', text: (e as Error).message })
+      const r = await verifyGeminiKey(k, settings)
+      if (!r.ok) {
+        const kept = saved && k !== saved ? ' No se cambió: sigues con tu clave anterior.' : ''
+        return setStatus({ kind: 'error', text: `${r.error}${kept}` })
+      }
+      if (k !== settings.geminiKey) clearExhausted() // clave nueva: otras cuotas
+      update(r.patch)
+      setKey('')
+      setStatus({ kind: 'ok', text: `Clave válida ✓ · modelo ${r.model}` })
     } finally {
       setChecking(false)
     }
@@ -819,9 +817,12 @@ function DataPage({ onImported }: { onImported: () => void }) {
 
   const doImport = async (file: File | undefined) => {
     if (!file) return
-    if (!confirm('Esto SUSTITUYE todo tu progreso actual por el del archivo. ¿Continuar?')) return
     try {
-      const r = await importBackup(file)
+      // AUD-SEG-501: primero se comprueba la copia entera; si está mal, se dice por qué y no se toca nada.
+      const ready = await readBackup(file)
+      const { sessions, mistakes } = ready.summary
+      if (!confirm(`La copia tiene ${sessions} sesiones y ${mistakes} errores. Esto SUSTITUYE todo tu progreso actual por el del archivo. ¿Continuar?`)) return
+      const r = await applyBackup(ready)
       setStatus({ kind: 'ok', text: `Importado: ${r.sessions} sesiones y ${r.mistakes} errores ✓` })
       onImported()
     } catch (e) {

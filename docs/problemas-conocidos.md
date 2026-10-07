@@ -6,9 +6,8 @@ La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/
 
 | Prioridad | Problema | Dónde |
 |---|---|---|
-| **P0 · Crítico** | **Micrófono huérfano:** dos aperturas seguidas (doble toque en «Dictar por voz», micro del test o del Repaso) dejan un stream y un `MediaRecorder` sueltos que siguen captando, incluso en segundo plano. Solo los mata forzar el cierre (AUD-MIC-302) | `src/lib/recorder.ts`, `TopicAskPage.tsx`, `Calibration.tsx`, `ReviewScreen.tsx` |
-| **P0 · Crítico** | **`open()` del micro no se puede cancelar:** si se pulsa Inicio justo mientras se abre (~0,5 s), `fallback()` lo reabre solo, fuera de control (AUD-MIC-301) | `recorder.ts` |
-| **Alto** | **Debate:** volver con «Atrás» del paso 2 al 1 mientras se dicta deja grabando, y ese audio puede enviarse a Gemini (AUD-MIC-303) | `TopicAskPage.tsx` |
+| ~~P0~~ **Corregido en 5.8.1 (pendiente de prueba en el teléfono)** | Micrófono huérfano por doble toque (AUD-MIC-302), `open()` no cancelable (AUD-MIC-301), Debate grabando tras «Atrás» (AUD-MIC-303), segundo dedo (AUD-MIC-304), `fallback()` en silencio sin cancelación de eco (AUD-MIC-800), red nativa (AUD-MIC-308). Detalle en `docs/correccion/NC-v5.8.1.md` | `recorder.ts`, `TopicAskPage.tsx`, `TalkButton.tsx`, `MainActivity.java`, `HablaChromeClient.java` |
+| Medio | **Micro ya abierto con el hilo JS bloqueado:** Android no tiene API para cortar desde Java una captura que el WebView ya abrió; la red nativa de la 5.8.1 solo deniega aperturas nuevas en segundo plano. Si el JS está bloqueado, la captura sigue hasta que se libera (Android la silencia a los ~5 s) (resto de AUD-MIC-308) | `MainActivity.java`, `lifecycle.ts` |
 | **Alto** | **APK depurable:** cualquier PC con la depuración USB autorizada lee las claves (Gemini, Azure, secreto de Monitor) sin huella. La huella solo protege la pantalla (AUD-SEG-001) | build *debug* |
 | Medio | **Micro abierto toda la clase** (punto verde, modo llamada) aunque no se hable (AUD-MIC-305). Es una decisión de diseño pendiente para la 5.9 | `Conversation.tsx` |
 | Medio | **Importar no valida:** una copia vacía borra el progreso diciendo «Importado ✓»; una mal formada deja la app en negro (AUD-SEG-501, AUD-RES-704) | `backup.ts`, arranque en `App.tsx` |
@@ -34,7 +33,9 @@ La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/
 
 ## 4. Partes frágiles del código
 
-- **`recorder.ts`**: es el origen de los P0. No toques el flujo de apertura y cierre sin leer la auditoría (B3, B8).
+- **`recorder.ts`**: fue el origen de los P0 de la 5.8. Desde la 5.8.1, `open()`/`begin()` comparten la apertura en curso, devuelven `false` si se cancelaron y `close()` sube una generación que cada `await` comprueba. Cualquier `await` nuevo dentro de la apertura **debe** comprobar `cancelled()` al volver y no tocar `this.stream` si cambió. Ejecuta `npm test` tras tocarlo.
+- **`lifecycle.ts` y el aviso `pause`:** desde la 5.8.1 el `pause` de Capacitor (Activity.onPause) no cierra micros (llega con el diálogo de permiso y cancelaría la apertura). El segundo plano real es `appStateChange`, `visibilitychange`, `pagehide` y `window.__hablaBackground()` desde `MainActivity.onStop`.
+- **`gradlew assembleDebug` copia el APK a `apk/`** con el nombre de la versión: compilar para probar pisa el APK entregado de esa versión. Para comprobar que el Java compila usa `:app:compileDebugJavaWithJavac --offline`.
 - **`Calibration.tsx` (~1300 líneas)** y **`Conversation.tsx`** son enormes, con mucho estado en `useState` y `useRef`. En `Conversation`, el `useCallback` de `askTeacher` tiene dependencias que faltan (`startPronunciation`, `persist`): funciona porque esas funciones leen refs (`settingsRef`), pero un cambio que dependa del estado capturado puede romperse en silencio.
 - **Retomar el test (`testDraft.ts`, clave `progress`):** solo se retoma en gramática, resúmenes y habla. Si la app se cierra a mitad de un texto de lectura o de un audio de escucha, se vuelve al último resumen y ese ítem se repite. `restore()` reconstruye la lista de preguntas vistas a partir de los datos guardados; si cambias cómo se llena `used.current`, revisa también `restore()`.
 - **Rescate de estado por CDP:** para rescatar el test de la madre se leyeron los hooks de React por su **posición** en la lista (índices 7, 8, 10, 11, 23, 24, 31…). Cualquier cambio en el orden de los `useState` y `useRef` de `Calibration.tsx` invalida esos índices. Es una técnica de emergencia, no una API.
@@ -47,7 +48,7 @@ La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/
 
 ## 5. Deuda técnica
 
-- **0 tests automatizados.** Los scripts de prueba usados durante el desarrollo (Vite `ssrLoadModule`) eran temporales y no están en el repo.
+- **Pocos tests automatizados.** Desde la 5.8.1 hay runner (`npm test`: `node:test` + Vite `ssrLoadModule`, en `tests/`) con 17 pruebas del Recorder y micro simulado. Faltan `levels`, `bank`, `placement`, `fluency` y `backup` (AUD-ARQ-113).
 - **Bundle único de ~1,3 MB** (el aviso de Vite «chunk larger than 500 kB» es esperado).
 - **Prettier no configurado.** Si se ejecuta sin opciones reformatea con comillas dobles y punto y coma. Usa `--no-semi --single-quote --print-width 150 --trailing-comma all`.
 - **Finales de línea mezclados (CRLF y LF).**

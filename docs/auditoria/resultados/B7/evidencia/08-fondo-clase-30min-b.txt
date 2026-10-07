@@ -1,0 +1,21 @@
+inicio 23:26:52
+min app_ticks_acum render_ticks_acum app_%cpu_ultimo_min render_%cpu_ultimo_min importancia wakelocks_habla modo_audio
+1 3 964 0 16 10410 0 - mode (internal) = NORMAL
+2 4 1050 0 1 10410 0 - mode (internal) = NORMAL
+3 4 1053 0 0 10410 0 - mode (internal) = NORMAL
+4 8 1053 0 0 10410 0 - mode (internal) = NORMAL
+5 14 1054 0 0 10410 0 - mode (internal) = NORMAL
+6 42 1072 0 0 10410 0 - mode (internal) = VIBRATE
+7 54 1073 0 0 10410 0 - mode (internal) = VIBRATE
+8 54 1074 0 0 10410 0 - mode (internal) = VIBRATE
+9 54 1074 0 0 10410 0 - mode (internal) = VIBRATE
+10 72 1075 0 0 10410 0 - mode (internal) = VIBRATE
+11 72 1075 0 0 10410 0 - mode (internal) = VIBRATE
+12 73 1075 0 0 10410 0 - mode (internal) = VIBRATE
+13 76 1077 0 0 10410 0 - mode (internal) = VIBRATE
+14 79 1077 0 0 10410 0 - mode (internal) = VIBRATE
+15 80 1077 0 0 10410 0 - mode (internal) = NORMAL
+16 10284 6091 170 83 10410 0 - mode (internal) = NORMAL
+17 20625 11653 172 92 10410 0 - mode (internal) = NORMAL
+18 31750 17467 185 96 10410 0 - mode (internal) = NORMAL
+19 42596 23123 180 94 10410 0 - mode (internal) = NORMAL

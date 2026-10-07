@@ -24,6 +24,48 @@ export interface Usage {
 const CACHE_KEY = 'habla.azureUsage'
 const CACHE_MS = 10 * 60_000
 
+// AUD-FUG-401: el Resource ID se valida antes de usarlo. Antes se pegaba tal cual detrás del host
+// («https://management.azure.com» + texto), y con «@otro.host/x» el token Bearer de Azure salía a otro servidor.
+const ARM_HOST = 'management.azure.com'
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const RESOURCE_ID = /^\/subscriptions\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/resourceGroups\/[\w().-]{0,89}[\w()-]\/providers\/Microsoft\.CognitiveServices\/accounts\/[A-Za-z0-9][A-Za-z0-9-]{0,63}$/i
+// Tenant: su GUID o su dominio (contoso.onmicrosoft.com).
+const TENANT = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+)$/i
+
+/** Resource ID normalizado (sin espacios ni barra final) o null si no tiene la forma de un recurso de Speech. */
+export function normalizeResourceId(raw: string): string | null {
+  const res = raw.trim().replace(/\/+$/, '')
+  return RESOURCE_ID.test(res) ? res : null
+}
+
+/** Qué está mal en el acceso a Azure Monitor (texto para el usuario), o null si todo tiene buena forma. */
+export function monitorProblem(c: Pick<MonitorCreds, 'tenantId' | 'clientId' | 'resourceId'>): string | null {
+  if (!TENANT.test(c.tenantId.trim())) return 'El Tenant ID no es válido: es un código como 00000000-0000-0000-0000-000000000000 (o tu dominio .onmicrosoft.com).'
+  if (!GUID.test(c.clientId.trim())) return 'El Client ID no es válido: es un código como 00000000-0000-0000-0000-000000000000.'
+  if (!normalizeResourceId(c.resourceId)) {
+    return 'El Resource ID no es válido. Cópialo de Azure (tu recurso de Speech → Propiedades): empieza por /subscriptions/… y termina en /providers/Microsoft.CognitiveServices/accounts/<nombre>.'
+  }
+  return null
+}
+
+/** URL de métricas: se construye con URL y se comprueba que el host sea el de Azure antes de mandar el token. */
+export function metricsUrl(resourceId: string, start: string, end: string): string {
+  const res = normalizeResourceId(resourceId)
+  if (!res) throw new Error('El Resource ID no es válido: revísalo en Ajustes → Modelos → Azure.')
+  const url = new URL(`${res}/providers/microsoft.insights/metrics`, `https://${ARM_HOST}`)
+  if (url.protocol !== 'https:' || url.host !== ARM_HOST || url.username || url.password) {
+    throw new Error('El Resource ID no es válido: revísalo en Ajustes → Modelos → Azure.')
+  }
+  url.search = new URLSearchParams({
+    'api-version': '2023-10-01',
+    metricnames: 'AudioSecondsTranscribed',
+    aggregation: 'Total',
+    interval: 'P1D',
+    timespan: `${start}/${end}`,
+  }).toString()
+  return url.toString()
+}
+
 export const hasMonitor = (c: Partial<MonitorCreds>) => !!(c.tenantId?.trim() && c.clientId?.trim() && c.clientSecret?.trim() && c.resourceId?.trim())
 
 /** Primer día del mes actual a las 00:00 UTC. */
@@ -70,11 +112,11 @@ export async function monthUsage(c: MonitorCreds, force = false): Promise<Usage>
       // sin caché
     }
   }
+  // AUD-FUG-401: se valida ANTES de pedir el token: con datos malos el secreto ni siquiera sale del teléfono.
+  const problem = monitorProblem(c)
+  if (problem) throw new Error(problem)
+  const url = metricsUrl(c.resourceId, monthStartUtc().toISOString(), new Date().toISOString())
   const t = await token(c)
-  const start = monthStartUtc().toISOString()
-  const end = new Date().toISOString()
-  const res = c.resourceId.trim().replace(/\/$/, '')
-  const url = `https://management.azure.com${res}/providers/microsoft.insights/metrics?api-version=2023-10-01&metricnames=AudioSecondsTranscribed&aggregation=Total&interval=P1D&timespan=${encodeURIComponent(`${start}/${end}`)}`
   const r = await request('GET', url, { Authorization: `Bearer ${t}` })
   if (r.status !== 200) {
     throw new Error(

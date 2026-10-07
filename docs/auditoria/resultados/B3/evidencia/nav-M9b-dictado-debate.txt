@@ -1,0 +1,11 @@
+B3 · M9b (AUD-MIC-303) · navegador 360x780, Vite dev, micro falso (oscilador modulado) + red falsa (instr.js). 2026-10-05
+Pasos: Prácticas → Debate → «Lo propongo yo» → «Dictar por voz» → 1,5 s → flecha «Atrás» de la página (paso 1 «¿Quién elige el tema?»)
+       → 15 s en el paso 1 → «Lo propongo yo» → botón «Te escucho… toca para terminar».
+Resultado (window.__b3.summary()):
+  paso 1 visible (botones «Que elija el profe» / «Lo propongo yo»), línea de tiempo: live=[0] rec=[0]  (micro abierto Y GRABANDO en el paso 1)
+  tras 15 s en el paso 1: live=[0] rec=[0]
+  rec #0: start 35558 → stop 52732  (17,2 s grabados, ~15 s de ellos fuera del paso del dictado)
+  net: POST …/gemini-3.5-flash-lite:generateContent  audio=true  70 KB  (interceptado por la red falsa; no salió)
+  textarea = «Mi viaje a Japón» (respuesta falsa)
+Primer intento (tono continuo, sin «voz»): grabó 27,5 s (69880→97380) también en el paso 1; analyzeSpeech lo descartó («No te he oído»), sin envío.
+Veredicto navegador: CONFIRMADO. El audio grabado mientras se veía otra pantalla se envía a Gemini al pulsar terminar.

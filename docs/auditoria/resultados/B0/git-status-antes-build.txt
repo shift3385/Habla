@@ -1,0 +1,2 @@
+?? docs/auditoria/
+?? docs/prueba-fonetica-A2.png

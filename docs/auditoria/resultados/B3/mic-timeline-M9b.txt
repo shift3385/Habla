@@ -1,0 +1,70 @@
+20:36:47.483 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+2h42m9s593ms ago;  duration=+3s544ms  |- Actual mode = MODE_NORMAL
+20:36:48.353 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+2h42m10s466ms ago;  duration=+3s544ms  |- Actual mode = MODE_NORMAL
+20:36:49.283 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+2h42m11s387ms ago;  duration=+3s544ms  |- Actual mode = MODE_NORMAL
+20:36:50.176 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+2h42m12s339ms ago;  duration=+3s544ms  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:51.743 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+1s337ms ago; rejectTime=+2d21h50m19s58ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:52.737 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+2s266ms ago; rejectTime=+2d21h50m19s987ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:53.621 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+3s132ms ago; rejectTime=+2d21h50m20s853ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:54.500 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+4s9ms ago; rejectTime=+2d21h50m21s730ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:55.379 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+4s857ms ago; rejectTime=+2d21h50m22s578ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:56.298 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+5s828ms ago; rejectTime=+2d21h50m23s549ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:57.315 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+6s830ms ago; rejectTime=+2d21h50m24s551ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:58.224 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+7s730ms ago; rejectTime=+2d21h50m25s451ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:36:59.147 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+8s635ms ago; rejectTime=+2d21h50m26s356ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:00.008 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+9s513ms ago; rejectTime=+2d21h50m27s234ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:00.858 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+10s414ms ago; rejectTime=+2d21h50m28s135ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:01.810 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+11s334ms ago; rejectTime=+2d21h50m29s55ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:02.672 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+12s200ms ago; rejectTime=+2d21h50m29s921ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:03.571 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+13s58ms ago; rejectTime=+2d21h50m30s779ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:04.443 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+13s926ms ago; rejectTime=+2d21h50m31s647ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:05.354 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+14s867ms ago; rejectTime=+2d21h50m32s588ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:06.225 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+15s714ms ago; rejectTime=+2d21h50m33s435ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:07.075 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+16s585ms ago; rejectTime=+2d21h50m34s306ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:08.022 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+17s517ms ago; rejectTime=+2d21h50m35s238ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:08.895 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+18s380ms ago; rejectTime=+2d21h50m36s101ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:09.733 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+19s223ms ago; rejectTime=+2d21h50m36s944ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:10.608 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+20s136ms ago; rejectTime=+2d21h50m37s857ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:11.513 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+21s12ms ago; rejectTime=+2d21h50m38s733ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:12.356 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+21s847ms ago; rejectTime=+2d21h50m39s568ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:13.214 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+22s686ms ago; rejectTime=+2d21h50m40s407ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:14.070 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+23s582ms ago; rejectTime=+2d21h50m41s303ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:14.966 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+24s460ms ago; rejectTime=+2d21h50m42s181ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:15.849 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+25s344ms ago; rejectTime=+2d21h50m43s65ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:16.716 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+26s224ms ago; rejectTime=+2d21h50m43s945ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:17.614 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+27s125ms ago; rejectTime=+2d21h50m44s846ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:18.508 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+27s984ms ago; rejectTime=+2d21h50m45s705ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:19.396 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+28s862ms ago; rejectTime=+2d21h50m46s583ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:20.253 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+29s750ms ago; rejectTime=+2d21h50m47s471ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:21.132 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+30s619ms ago; rejectTime=+2d21h50m48s340ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:21.990 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+31s488ms ago; rejectTime=+2d21h50m49s209ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:22.903 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+32s417ms ago; rejectTime=+2d21h50m50s138ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:23.834 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+33s356ms ago; rejectTime=+2d21h50m51s77ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:24.723 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+34s253ms ago; rejectTime=+2d21h50m51s974ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:25.631 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+35s155ms ago; rejectTime=+2d21h50m52s876ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:26.523 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+36s0ms ago; rejectTime=+2d21h50m53s721ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:27.386 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+36s894ms ago; rejectTime=+2d21h50m54s615ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:28.296 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+37s766ms ago; rejectTime=+2d21h50m55s487ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:29.159 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+38s650ms ago; rejectTime=+2d21h50m56s371ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:30.027 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+39s535ms ago; rejectTime=+2d21h50m57s256ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:30.913 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+40s430ms ago; rejectTime=+2d21h50m58s151ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:31.799 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+41s256ms ago; rejectTime=+2d21h50m58s977ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:32.618 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+42s107ms ago; rejectTime=+2d21h50m59s828ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:33.531 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+43s139ms ago; rejectTime=+2d21h51m0s860ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:34.561 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+44s43ms ago; rejectTime=+2d21h51m1s764ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:35.450 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+44s957ms ago; rejectTime=+2d21h51m2s678ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:36.343 | habla_top=1 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+45s882ms ago; rejectTime=+2d21h51m3s603ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+20:37:37.294 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+46s836ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:38.560 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+48s93ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:39.505 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+49s5ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:40.374 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+49s876ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:41.241 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+50s727ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:42.101 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+51s596ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:42.963 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+52s457ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:43.872 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+53s393ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:44.778 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+54s249ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:45.634 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+55s123ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:46.501 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+56s13ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:47.397 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+56s889ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:48.293 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+57s793ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:49.164 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+58s656ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL
+20:37:50.073 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+59s579ms ago;  duration=+46s141ms  |- Actual mode = MODE_NORMAL

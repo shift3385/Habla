@@ -1,0 +1,15 @@
+# logcat -d -b all ANTES de abrir la app (21:13:35) — solo recuentos
+lineas: 463307
+primera marca: 10-05 11:07:52.112
+AIza: 0
+x-goog-api-key: 0
+Ocp-Apim: 0
+client_secret: 0
+habla.settings: 0
+geminiKey: 0
+Capacitor/Console: 0
+HABLA-NET: 0
+HABLA-MIC: 0
+HablaAudio: 0
+com.shift.habla: 5676
+transcript: 1

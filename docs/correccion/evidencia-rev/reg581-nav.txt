@@ -1,0 +1,9 @@
+rev · regresión 5.8.1 tras corregir REV-T1-1 y REV-T2-1 · navegador rev.localhost:5173, arnés rev-mic.js, red falsa · npm test 26/26 (reg581-test.txt), tsc 0, lint 0 errores
+MIC-302 doble toque dictado (gumDelay 1500): opened=1, recording=[0]; tras terminar+cerrar+segundo plano: live=[] → PASA
+MIC-301 A (oculto durante gUM, dictado): stream tardío parado al llegar; vuelta sin aperturas; live=[] → PASA
+MIC-303 grabando→Atrás: live=[] rec=[] · Atrás durante la apertura (gUM 3 s): open #3 + track stop #3 mismo ms, sin rec start → PASA
+REV-T2-1 / MIC-304 dedo 2 DURANTE la apertura: 95102 down id1 · 95112 gUM req · 95617 down id2 · 95821 up id2 (ignorados) · 96641 rec start #2 · 98325 up id1 · 98327 rec stop #2 · 98372 1 envío 12 KB AUDIO → recs=1 → PASA (antes: corte a 0 s)
+MIC-304 dedo 2 con la grabación en marcha: recording=[0] tras down/up id2; up id1 → 1 envío 14 KB, recs=1 → PASA
+Un dedo con pointercancel: rec start → pointercancel → rec stop + envío (13 KB); el botón vuelve a «Mantener para hablar» (no se queda «grabando») → PASA
+MIC-800 BT mudo (1.ª en ceros): 2 aperturas con AEC, 2,9 s; siguiente: 1 apertura con el micro del teléfono con AEC (recordado) → PASA
+REV-T1-1 (micro del teléfono falla → sin procesado una vez, no recordado): cubierto por 2 tests nuevos (el arnés no puede hacer fallar solo un deviceId) → PASA

@@ -1,0 +1,10 @@
+---
+---
+   Current: 1 (earpiece): 8, 2 (speaker): 11, 4 (headset): 8, 10 (bt_sco): 8, 20 (bt_sco_hs): 11, 80 (bt_a2dp): 8, 40000000 (default): 8
+   Current: 1 (earpiece): 5, 2 (speaker): 15, 4 (headset): 5, 10 (bt_sco): 5, 80 (bt_a2dp): 5, 8000 (remote_submix): 5, 20000000 (ble_headset): 5, 40000000 (default): 5
+   Current: 1 (earpiece): 5, 2 (speaker): 15, 4 (headset): 5, 10 (bt_sco): 15, 80 (bt_a2dp): 5, 8000 (remote_submix): 5, 20000000 (ble_headset): 5, 40000000 (default): 5
+   Current: 1 (earpiece): 150, 2 (speaker): 150, 4 (headset): 100, 10 (bt_sco): 110, 80 (bt_a2dp): 91, 8000 (remote_submix): 100, 4000000 (usb_headset): 85, 20000000 (ble_headset): 100, 40000000 (default): 100
+   Current: 1 (earpiece): 12, 2 (speaker): 15, 10 (bt_sco): 12, 80 (bt_a2dp): 12, 40000000 (default): 12
+   Current: 1 (earpiece): 5, 2 (speaker): 15, 4 (headset): 5, 10 (bt_sco): 5, 80 (bt_a2dp): 5, 8000 (remote_submix): 5, 20000000 (ble_headset): 5, 40000000 (default): 5
+   Current: 1 (earpiece): 7, 2 (speaker): 7, 4 (headset): 7, 10 (bt_sco): 7, 80 (bt_a2dp): 7, 8000 (remote_submix): 7, 20000000 (ble_headset): 7, 40000000 (default): 7
+   Current: 1 (earpiece): 5, 2 (speaker): 15, 4 (headset): 5, 10 (bt_sco): 15, 20 (bt_sco_hs): 5, 80 (bt_a2dp): 5, 8000 (remote_submix): 5, 20000000 (ble_headset): 5, 40000000 (default): 5

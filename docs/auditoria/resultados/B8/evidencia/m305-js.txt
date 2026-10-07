@@ -1,0 +1,14 @@
+Ir al inicio,Continuar mi clase
+ENTRA 00:05:48
+ok Continuar mi clase
+60s 00:06:48
+{"now":73866,"tl":["6721 live=[] rec=[] hidden=false","12471 live=[0] rec=[] hidden=false","14722 live=[] rec=[] hidden=false","16722 live=[1] rec=[] hidden=false"],"ev":["11900 gUM req #0 hidden=false","12315 gUM open #0 hidden=false","14536 track stop #0","14538 gUM req #1 hidden=false","16499 gUM open #1 hidden=false"],"rec":[],"mic":["0:off","1:live"],"net":[]}
+X1 dos punteros 00:06:50
+pointerdown1,pointerdown2,pointerup2,pointerup1 {"now":84075,"tl":["16722 live=[1] rec=[] hidden=false","74475 live=[1] rec=[0] hidden=false","75973 live=[1] rec=[0,1] hidden=false","77971 live=[1] rec=[0] hidden=false"],"ev":["11900 gUM req #0 hidden=false","12315 gUM open #0 hidden=false","14536 track stop #0","14538 gUM req #1 hidden=false","16499 gUM open #1 hidden=false","74317 rec start #0","75835 rec start #1","77772 rec stop #1"],"rec":["0:recording","1:inactive"],"mic":["0:off","1:live"],"net":[]}
+X1+20s 00:07:14
+{"now":98406,"tl":["16722 live=[1] rec=[] hidden=false","74475 live=[1] rec=[0] hidden=false","75973 live=[1] rec=[0,1] hidden=false","77971 live=[1] rec=[0] hidden=false"],"ev":["11900 gUM req #0 hidden=false","12315 gUM open #0 hidden=false","14536 track stop #0","14538 gUM req #1 hidden=false","16499 gUM open #1 hidden=false","74317 rec start #0","75835 rec start #1","77772 rec stop #1"],"rec":["0:recording","1:inactive"],"mic":["0:off","1:live"],"net":[]}
+N2 dedo puesto + Inicio 00:07:14
+pointerdown3
+N2 VUELTA 00:07:30
+{"now":120638,"tl":["75973 live=[1] rec=[0,1] hidden=false","77971 live=[1] rec=[0] hidden=false","98971 live=[1] rec=[0,2] hidden=false","102222 live=[] rec=[] hidden=false"],"ev":["14538 gUM req #1 hidden=false","16499 gUM open #1 hidden=false","74317 rec start #0","75835 rec start #1","77772 rec stop #1","98856 rec start #2","102114 rec stop #2","102115 track stop #1"],"rec":["0:inactive","1:inactive","2:inactive"],"mic":["0:off","1:off"],"net":[]} | Mantener para hablar | 
+{"now":125929,"tl":["75973 live=[1] rec=[0,1] hidden=false","77971 live=[1] rec=[0] hidden=false","98971 live=[1] rec=[0,2] hidden=false","102222 live=[] rec=[] hidden=false"],"ev":["14538 gUM req #1 hidden=false","16499 gUM open #1 hidden=false","74317 rec start #0","75835 rec start #1","77772 rec stop #1","98856 rec start #2","102114 rec stop #2","102115 track stop #1"],"rec":["0:inactive","1:inactive","2:inactive"],"mic":["0:off","1:off"],"net":[]}

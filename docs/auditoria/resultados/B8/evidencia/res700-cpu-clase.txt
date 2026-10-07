@@ -1,0 +1,11 @@
+pid app=28593 render=28821 00:10:48
+Leo Tu profe de inglés Terminar 0.90× Modo oído IA
+css=false raf=false
+app=186% render=0%
+css=true raf=false
+app=142% render=0%
+css=false raf=true
+app=63% render=0%
+css=true raf=true
+app=0% render=0%
+fin 00:12:23

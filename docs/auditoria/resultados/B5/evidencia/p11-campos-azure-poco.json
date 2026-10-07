@@ -1,0 +1,1 @@
+{"campos_ajustes_modelos_poco":[{"type":"password","clave_gemini_len_en_DOM":0},{"type":"password","clave_azure_len_en_DOM":0},{"region_len":6},{"tenant_len":0},{"client_len":0},{"secret_len":0},{"resourceId_len":0}],"nota":"Sin service principal configurado en el POCO: AUD-SEG-500/FUG-401 sin exposición hoy en este teléfono"}

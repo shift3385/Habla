@@ -1,16 +1,15 @@
 import { Capacitor } from '@capacitor/core'
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
+import { BACKUP_FORMAT, BACKUP_VERSION, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
 import { db, TABLES } from './db'
 
 // Copia de seguridad en JSON de todo el progreso (IndexedDB).
 // Las claves API NO se incluyen: se quedan solo en Preferences del teléfono.
 
-const FORMAT = 'habla-backup'
-const VERSION = 1
-
+// Formato y validación de la copia: backupCheck.ts (AUD-SEG-501).
 interface Backup {
-  format: typeof FORMAT
+  format: typeof BACKUP_FORMAT
   version: number
   exportedAt: string
   tables: Record<string, unknown[]>
@@ -19,7 +18,7 @@ interface Backup {
 export async function buildBackup(): Promise<Backup> {
   const tables: Record<string, unknown[]> = {}
   for (const t of TABLES) tables[t] = await db.table(t).toArray()
-  return { format: FORMAT, version: VERSION, exportedAt: new Date().toISOString(), tables }
+  return { format: BACKUP_FORMAT, version: BACKUP_VERSION, exportedAt: new Date().toISOString(), tables }
 }
 
 export interface ExportResult {
@@ -76,31 +75,47 @@ export interface ImportSummary {
   mistakes: number
 }
 
-/** Sustituye TODO el progreso actual por el del archivo. */
-export async function importBackup(file: File): Promise<ImportSummary> {
-  let data: Backup
+/** Copia leída y comprobada, lista para importar (todavía no se ha tocado nada). */
+export interface ReadyBackup {
+  backup: CheckedBackup
+  summary: ImportSummary
+}
+
+/**
+ * Lee el archivo y lo comprueba entero (AUD-SEG-501). Si algo falla, lanza un error en español y NO toca los datos.
+ * Se separa de `applyBackup` para poder enseñar el resumen antes de sustituir nada.
+ */
+export async function readBackup(file: File): Promise<ReadyBackup> {
+  if (file.size > MAX_BACKUP_BYTES) throw new Error('El archivo es demasiado grande para ser una copia de Habla (máx. 20 MB); no se cambió nada.')
+  let text: string
   try {
-    data = JSON.parse(await file.text())
+    text = await file.text()
   } catch {
-    throw new Error('El archivo no es un JSON válido.')
+    throw new Error('No se pudo leer el archivo; no se cambió nada.')
   }
-  if (data?.format !== FORMAT || typeof data.tables !== 'object') {
-    throw new Error('Este archivo no es una copia de seguridad de Habla.')
-  }
-  if (data.version > VERSION) {
-    throw new Error('La copia es de una versión más nueva de Habla. Actualiza la app primero.')
-  }
+  const r = parseBackup(text)
+  if (!r.ok) throw new Error(r.error)
+  return { backup: r.backup, summary: { sessions: r.backup.tables.sessions.length, mistakes: r.backup.tables.mistakes.length } }
+}
 
-  await db.transaction('rw', TABLES.map((t) => db.table(t)), async () => {
-    for (const t of TABLES) {
-      await db.table(t).clear()
-      const rows = data.tables[t]
-      if (Array.isArray(rows) && rows.length) await db.table(t).bulkPut(rows)
-    }
-  })
-
-  return {
-    sessions: data.tables.sessions?.length ?? 0,
-    mistakes: data.tables.mistakes?.length ?? 0,
+/** Sustituye TODO el progreso actual por el de una copia ya comprobada. Todo o nada (una sola transacción). */
+export async function applyBackup(ready: ReadyBackup): Promise<ImportSummary> {
+  const { tables } = ready.backup
+  try {
+    await db.transaction('rw', TABLES.map((t) => db.table(t)), async () => {
+      for (const t of TABLES) {
+        await db.table(t).clear()
+        if (tables[t].length) await db.table(t).bulkPut(tables[t])
+      }
+    })
+  } catch {
+    // AUD-SEG-510: nada de mensajes internos de Dexie en inglés. La transacción deshace todo.
+    throw new Error('No se pudo importar la copia (la base de datos la rechazó). No se cambió nada.')
   }
+  return ready.summary
+}
+
+/** Comprueba la copia y, si es buena, sustituye todo el progreso por el suyo. */
+export async function importBackup(file: File): Promise<ImportSummary> {
+  return applyBackup(await readBackup(file))
 }

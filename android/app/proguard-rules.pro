@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# v5.8.2 (AUD-SEG-504): R8 activado en el release. Capacitor y sus plugins se cargan por reflexión
+# (capacitor.plugins.json, anotaciones, puente JS): se conservan enteros para no romper nada que no se pueda
+# probar sin el teléfono. R8 sigue quitando y ofuscando lo que no se usa de las bibliotecas AndroidX.
+-keep class com.getcapacitor.** { *; }
+-keep class com.capacitorjs.plugins.** { *; }
+-keep class com.getcapacitor.community.** { *; }
+-keep class com.shift.habla.** { *; }
+-keep class io.ionic.** { *; }
+-keepattributes *Annotation*, Signature, InnerClasses, EnclosingMethod
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}

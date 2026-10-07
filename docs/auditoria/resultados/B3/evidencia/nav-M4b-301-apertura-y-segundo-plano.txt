@@ -1,0 +1,15 @@
+B3 · M4b (AUD-MIC-301) · navegador 360x780, Vite dev, micro falso (instr.js) con la 1.ª apertura en silencio (simula los ~1,3 s que tarda
+un micro real en dar muestras; así hasSignal sigue midiendo cuando llega el segundo plano), red falsa. document.hidden simulado
+(Object.defineProperty + dispatch visibilitychange → lifecycle.goBackground/goForeground reales de la app).
+Recarga (defaultOk=false) → Prácticas → «Entrevista de trabajo»:
+  7639 gUM req #0 / 7657 gUM open #0 (hidden=false)
+  8183 setHidden(true) → releaseAllMics(): track stop #0
+  9667 gUM req #1 hidden=TRUE / 9670 gUM open #1 hidden=TRUE      ← fallback() reabre el micro CON LA APP EN SEGUNDO PLANO
+  9908 NET teacherTurn (la clase sigue preparándose oculta; red falsa)
+Línea de tiempo: 8335 live=[] hidden=true → 9838 live=[1] hidden=true
+Vuelta (13334 hidden=false) y 2.º segundo plano (14837 hidden=true): live=[1] → releaseAllMics NO cierra #1 (no está en `recorders`).
+Después, con la app «delante», pointerdown en «Mantener para hablar» (27214 rec #0 start) y segundo plano a 28839:
+  28839 live=[1] rec=[0] hidden=true → la grabación SIGUE en segundo plano 16 s; al soltar (44928) se enviaron 78 KB de audio
+  (red falsa) de los que ~16 s se grabaron con la app oculta.
+«Terminar» (close() de la pantalla) sí cierra #1 (56839 live=[]).
+Veredicto navegador: CONFIRMADO (los dos efectos: reapertura en segundo plano y stream inmune a releaseAllMics que deja grabar en segundo plano).

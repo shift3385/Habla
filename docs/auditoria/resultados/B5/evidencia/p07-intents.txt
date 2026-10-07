@@ -1,0 +1,24 @@
+== VIEW javascript:
+Starting: Intent { act=android.intent.action.VIEW dat=javascript: cmp=com.shift.habla/.MainActivity (has extras) }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+== VIEW https://evil.example/
+Starting: Intent { act=android.intent.action.VIEW dat=https://evil.example/... cmp=com.shift.habla/.MainActivity }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+== VIEW https://localhost/#settings
+Starting: Intent { act=android.intent.action.VIEW dat=https://localhost/... cmp=com.shift.habla/.MainActivity }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+== estado por CDP
+{
+ "href": "https://localhost/",
+ "sameScreen": true
+}
+== FileProvider (shell)
+Error while accessing provider:com.shift.habla.fileprovider
+java.lang.SecurityException: Permission Denial: opening provider androidx.core.content.FileProvider from (null) (pid=28489, uid=2000) that is not exported from UID 10410
+	at android.os.Parcel.createExceptionOrNull(Parcel.java:3361)
+Error while accessing provider:com.shift.habla.localnotifications.fileprovider
+java.lang.SecurityException: Permission Denial: opening provider com.capacitorjs.plugins.localnotifications.LocalNotificationsAssetProvider from (null) (pid=28505, uid=2000) that is not exported from UID 10410
+	at android.os.Parcel.createExceptionOrNull(Parcel.java:3361)
+== ProfileInstallReceiver
+Broadcasting: Intent { act=androidx.profileinstaller.action.SKIP_FILE flg=0x400000 cmp=com.shift.habla/androidx.profileinstaller.ProfileInstallReceiver }
+Broadcast completed: result=0

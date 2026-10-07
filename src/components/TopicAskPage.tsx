@@ -38,42 +38,74 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
   const [mic, setMic] = useState<'idle' | 'recording' | 'writing'>('idle')
   const [micHint, setMicHint] = useState<string | null>(null)
   const recorder = useRef<Recorder | null>(null)
-  useEffect(() => () => recorder.current?.close(), [])
+  // AUD-MIC-303: cada dictado pertenece a una «vuelta»; salir del paso, cerrar la hoja o desmontar la anula.
+  // Un dictado anulado no empieza a grabar (aunque el micro termine de abrirse después) ni se envía a Gemini.
+  const run = useRef(0)
+  const abandon = () => {
+    run.current++
+    recorder.current?.close() // cancela también una apertura en curso (T1)
+    setMic('idle')
+  }
+  useEffect(
+    () => () => {
+      run.current++
+      recorder.current?.close()
+    },
+    [],
+  )
+  const goStep = (n: number) => {
+    abandon()
+    setMicHint(null)
+    setStep(n)
+  }
+  const close = () => {
+    abandon()
+    onClose()
+  }
   const ready = text.trim().length >= 3 && mic === 'idle'
   const mood = cheer ? 'happy' : mic === 'recording' ? 'listening' : mic === 'writing' ? 'thinking' : text ? 'listening' : 'idle'
 
   const toggleMic = async () => {
     if (mic === 'writing') return
     setMicHint(null)
+    const mine = run.current
+    const alive = () => run.current === mine
     if (mic === 'idle') {
       try {
         recorder.current ??= new Recorder()
-        await recorder.current.begin()
+        // false = se canceló mientras se abría (cambiaste de paso o cerraste): no se graba nada.
+        if (!(await recorder.current.begin()) || !alive()) return
         setMic('recording')
       } catch (e) {
-        setMicHint(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
+        if (alive()) setMicHint(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
       }
       return
     }
     setMic('writing')
     try {
-      const { blob, seconds } = await recorder.current!.stop()
-      recorder.current!.close()
+      const rec = recorder.current!
+      const { blob, seconds } = await rec.stop()
+      rec.close()
+      if (!alive()) return
       const analysis = await analyzeSpeech(blob)
+      if (!alive()) return
       if (seconds < 0.7 || blob.size === 0 || (analysis && !analysis.hasSpeech)) {
         setMicHint('No te he oído. Toca el micrófono y dilo otra vez.')
         return
       }
+      const base64 = await blobToBase64(blob)
+      if (!alive()) return // AUD-MIC-303: el audio de un dictado abandonado no sale del teléfono
       const said = await dictate(settings.geminiKey, fastModels(settings), {
-        base64: await blobToBase64(blob),
+        base64,
         mimeType: blob.type.split(';')[0] || 'audio/webm',
       })
+      if (!alive()) return
       if (said) setText(said.slice(0, 160))
       else setMicHint('No te he entendido. Prueba otra vez, un poco más cerca.')
     } catch (e) {
-      if (!isAborted(e)) setMicHint((e as Error).message)
+      if (alive() && !isAborted(e)) setMicHint((e as Error).message)
     } finally {
-      setMic('idle')
+      if (alive()) setMic('idle')
     }
   }
 
@@ -98,9 +130,10 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
         step={{ i: 0, n: 2 }}
         title="¿Quién elige el tema del debate?"
         subtitle="Tú defiendes una postura y el profe defenderá la contraria."
-        onBack={onClose}
+        onBack={close}
       >
         <div className="flex flex-col gap-2.5">
+          {/* En el paso 0 no hay dictado posible: al volver aquí ya se anuló con goStep(0). */}
           {option('spark', 'Que elija el profe', 'Un tema actual y fácil de discutir', () => onStart())}
           {option('pencil', 'Lo propongo yo', 'Escribe el tema que quieres debatir', () => setStep(1))}
         </div>
@@ -117,11 +150,15 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
       step={debate ? { i: 1, n: 2 } : undefined}
       title={debate ? '¿Qué tema quieres debatir?' : '¿De qué quieres hablar?'}
       subtitle={debate ? 'Escríbelo como una pregunta o una idea. El profe tomará la postura contraria.' : 'Cualquier tema: el profe prepara la clase sobre lo que escribas.'}
-      onBack={debate ? () => setStep(0) : onClose}
+      onBack={debate ? () => goStep(0) : close}
       primary={{
         label: debate ? 'Empezar el debate' : 'Empezar a hablar',
         disabled: !ready,
-        onClick: () => ready && onStart(text.trim()),
+        onClick: () => {
+          if (!ready) return
+          abandon()
+          onStart(text.trim())
+        },
       }}
     >
       <textarea

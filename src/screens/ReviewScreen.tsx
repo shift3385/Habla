@@ -114,7 +114,8 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
     if (step === 'ask') {
       await stopSpeaking()
       try {
-        await recorder.current.begin()
+        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
+        if (!(await recorder.current.begin())) return
         recStart.current = performance.now()
         setElapsed(0)
         setStep('recording')
@@ -149,6 +150,8 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
   }
 
   const dontKnow = () => {
+    // AUD-MIC-302: «No lo sé» durante la apertura del micro la cancela; si no, al abrir pisaría el resultado.
+    if (recorder.current.isOpening) recorder.current.close()
     stopSpeaking()
     setResult('unknown')
     setStep('result')

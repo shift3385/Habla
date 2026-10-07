@@ -1,4 +1,6 @@
-# Estado actual (2026-10-06, v5.8 build 33)
+# Estado actual (2026-10-06, v5.8.1 build 34 en preparación)
+
+> **v5.8.1 «Micrófono seguro»:** código hecho y probado en PC (tipos, lint, `npm test` 17/17, Java compilado), **sin commit, sin APK y sin probar en el teléfono**. Seguimiento en `docs/correccion/ESTADO.md` y detalle en `docs/correccion/NC-v5.8.1.md`. Lo de abajo describe la v5.8 distribuida.
 
 Último commit funcional: `16e6240` (el test se retoma donde quedó y el paso de Habla tiene scroll en horizontal). APK distribuido: `apk/Habla-v5.8.apk`, instalado en el POCO del dueño y repartido a sus amistades. En el Galaxy A11 de la madre hay una compilación de la 5.8 de unos minutos antes de ese commit: solo le faltan dos líneas de texto en Novedades, por lo demás es igual.
 
@@ -51,7 +53,7 @@ Hay una **auditoría QA completa de la v5.8** en `docs/auditoria/resultados/INFO
 
 ## ⏳ Pendiente (por orden previsto)
 
-1. **v5.8.1 «Micrófono seguro» (P0, bloquea cualquier otra entrega):** recorder reentrante y cancelable (doble toque, Inicio durante la apertura), guarda en `start()`, cierre del dictado del Debate al volver, red de seguridad nativa en `onPause`/`onStop`, `fallback()` sin falsos «micro mudo», tests del Recorder. Detalle en `INFORME.md` §8.2.
+1. **v5.8.1 «Micrófono seguro» (P0):** implementada y en revisión (ver `docs/correccion/NC-v5.8.1.md`): recorder reentrante y cancelable, guarda del segundo dedo, dictado que se cancela al volver, red nativa en `onStop`, `fallback()` con 1 reintento y sin perder la cancelación de eco, primeros tests (`npm test`). Falta: revisión, prueba en el POCO (arneses B3/B8/ORQ), APK y commit.
 2. **v5.8.2 «Claves, datos y consumo» (P1):**
    - APK *release* no depurable;
    - validar el Resource ID de Azure y pedir la huella al cambiar tenant, client o resource;
@@ -66,7 +68,7 @@ Hay una **auditoría QA completa de la v5.8** en `docs/auditoria/resultados/INFO
    - salida del re-test y limpieza de borradores huérfanos;
    - permisos de notificación guiados;
    - importar con resumen y copia previa.
-4. **Backlog técnico:** CSP, `AbortController` en las peticiones, dividir el bundle de 1,3 MB, refactor de pantallas grandes (Calibration, Conversation, Settings), **suite de tests automatizados**.
+4. **Backlog técnico:** CSP, `AbortController` en las peticiones, dividir el bundle de 1,3 MB, refactor de pantallas grandes (Calibration, Conversation, Settings), **ampliar los tests** (ya hay runner y pruebas del Recorder desde la 5.8.1).
 5. **Ideas aprobadas o a debatir sin implementar** (ver `BACKLOG.md`):
    - voz del profe más humana (TTS en la nube con emociones);
    - shadowing de pronunciación;

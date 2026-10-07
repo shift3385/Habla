@@ -1,0 +1,4 @@
+List of devices attached
+60d0718c               device product:garnetp_global model:23122PCD1G device:garnet transport_id:8
+
+16

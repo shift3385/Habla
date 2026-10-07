@@ -1,0 +1,34 @@
+68744431ba1b6268cf5c9d20b9e312986ff08a64
+2026-10-05 18:36:53 -0400 v5.8: tutorial de la mascota en la primera instalación y aviso «¿Para qué es tu clave?» para quien ya usaba la app
+?? docs/auditoria/
+?? docs/prueba-fonetica-A2.png
+{
+  "version": "5.8",
+  "build": 33,
+  "date": "2026-10-05"
+}
+total 104672
+drwxr-xr-x 1 Shift 197121       0 Oct  5 11:52 .
+drwxr-xr-x 1 Shift 197121       0 Oct  5 18:13 ..
+-rw-r--r-- 1 Shift 197121 4671650 Sep 30 23:40 Habla-v3.0.apk
+-rw-r--r-- 1 Shift 197121 4672166 Oct  1 12:18 Habla-v3.1.apk
+-rw-r--r-- 1 Shift 197121 4680706 Oct  1 13:39 Habla-v4.0.apk
+-rw-r--r-- 1 Shift 197121 4680810 Oct  1 16:25 Habla-v4.1.apk
+-rw-r--r-- 1 Shift 197121 4722554 Oct  1 23:07 Habla-v4.10.apk
+-rw-r--r-- 1 Shift 197121 4685470 Oct  1 16:45 Habla-v4.2.apk
+-rw-r--r-- 1 Shift 197121 4685982 Oct  1 16:52 Habla-v4.3.apk
+-rw-r--r-- 1 Shift 197121 4686994 Oct  1 16:57 Habla-v4.4.apk
+-rw-r--r-- 1 Shift 197121 4688438 Oct  1 17:10 Habla-v4.5.apk
+-rw-r--r-- 1 Shift 197121 4696186 Oct  1 17:54 Habla-v4.6.apk
+-rw-r--r-- 1 Shift 197121 4708826 Oct  1 18:06 Habla-v4.7.apk
+-rw-r--r-- 1 Shift 197121 4716570 Oct  1 19:18 Habla-v4.8.apk
+-rw-r--r-- 1 Shift 197121 4923773 Oct  1 22:02 Habla-v4.9.apk
+-rw-r--r-- 1 Shift 197121 4777906 Oct  2 14:39 Habla-v5.0.apk
+-rw-r--r-- 1 Shift 197121 4790874 Oct  2 15:55 Habla-v5.1.apk
+-rw-r--r-- 1 Shift 197121 4788366 Oct  2 16:01 Habla-v5.2.apk
+-rw-r--r-- 1 Shift 197121 4795258 Oct  2 23:10 Habla-v5.3.apk
+-rw-r--r-- 1 Shift 197121 4798738 Oct  2 23:46 Habla-v5.4.apk
+-rw-r--r-- 1 Shift 197121 4800194 Oct  3 00:28 Habla-v5.5.apk
+-rw-r--r-- 1 Shift 197121 5442567 Oct  4 09:36 Habla-v5.6.apk
+-rw-r--r-- 1 Shift 197121 5463051 Oct  4 14:47 Habla-v5.7.apk
+-rw-r--r-- 1 Shift 197121 6253362 Oct  5 18:33 Habla-v5.8.apk

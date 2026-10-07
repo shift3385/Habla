@@ -1,0 +1,107 @@
+{
+ "format": "habla-backup",
+ "version": 1,
+ "exportedAt": "2026-10-02T00:20:30.919Z",
+ "topKeys": [
+  "format",
+  "version",
+  "exportedAt",
+  "tables"
+ ],
+ "tables": {
+  "sessions": {
+   "filas": 2,
+   "campos": [
+    "scenario",
+    "startedAt",
+    "topic",
+    "id",
+    "endedAt",
+    "metrics",
+    "report"
+   ]
+  },
+  "turns": {
+   "filas": 11,
+   "campos": [
+    "sessionId",
+    "role",
+    "text",
+    "translation",
+    "createdAt",
+    "id",
+    "audioSeconds",
+    "speechSeconds",
+    "pauses",
+    "correction"
+   ]
+  },
+  "mistakes": {
+   "filas": 4,
+   "campos": [
+    "original",
+    "corrected",
+    "explanationEs",
+    "category",
+    "spanish",
+    "sessionId",
+    "turnId",
+    "createdAt",
+    "id"
+   ]
+  },
+  "profile": {
+   "filas": 1,
+   "campos": [
+    "id",
+    "levels",
+    "about",
+    "weaknesses",
+    "goal",
+    "startedAt",
+    "name",
+    "interests",
+    "calibratedAt",
+    "tests",
+    "levelEvents"
+   ]
+  },
+  "lookups": {
+   "filas": 0,
+   "campos": []
+  },
+  "cards": {
+   "filas": 4,
+   "campos": [
+    "source",
+    "sourceId",
+    "promptEs",
+    "answerEn",
+    "hintEs",
+    "createdAt",
+    "due",
+    "fsrs",
+    "id"
+   ]
+  }
+ },
+ "recuentos": {
+  "AIza": 0,
+  "geminiKey": 0,
+  "azureKey": 0,
+  "clientSecret": 0,
+  "base64Audio": 0
+ },
+ "perfil_campos_con_valor": [
+  "id",
+  "levels",
+  "about",
+  "weaknesses",
+  "startedAt",
+  "name",
+  "interests",
+  "calibratedAt",
+  "tests",
+  "levelEvents"
+ ]
+}

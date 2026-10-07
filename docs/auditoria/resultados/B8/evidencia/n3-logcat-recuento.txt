@@ -1,0 +1,26 @@
+logcat -d (buffer completo) 00:15:56, pid Habla=31147, líneas totales 225178
+líneas del pid de Habla: 354
+AIza: total=0 pidHabla=0
+geminiKey: total=0 pidHabla=0
+azureKey: total=0 pidHabla=0
+habla.settings: total=0 pidHabla=0
+generativelanguage: total=0 pidHabla=0
+key=: total=848 pidHabla=0
+HABLA-NET: total=0 pidHabla=0
+HablaAudio: total=0 pidHabla=0
+inlineData: total=0 pidHabla=0
+transcript: total=1 pidHabla=0
+Liomar: total=0 pidHabla=0
+Etiquetas más frecuentes del pid de Habla:
+     49 W/libc    
+     45 D/CameraInjector
+     22 W/AudioCapabilities
+     22 D/VRI[MainActivity]
+     19 I/AdrenoVK-0
+     17 I/com.shift.habla
+     15 D/HWUI    
+     12 W/RenderInspector
+     11 I/AdrenoGLES-0
+      7 W/VideoCapabilities
+      7 V/GraphicsEnvironment
+      7 I/MiResource

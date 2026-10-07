@@ -1,0 +1,20 @@
+== base 22:55:34
+{"MODO":"base","held":0,"running":3}
+30 4083 1437 136 47
+Total frames rendered: 3640
+== css 22:56:06
+{"MODO":"css","held":0,"running":0}
+30 4047 1283 134 42
+Total frames rendered: 3618
+== raf 22:56:37
+{"MODO":"raf","held":1,"running":3}
+30 3158 304 105 10
+Total frames rendered: 3514
+== ambos 22:57:09
+{"MODO":"ambos","held":1,"running":0}
+30 7 1 0 0
+Total frames rendered: 0
+== base 22:57:40
+{"MODO":"base","held":0,"running":3}
+30 4045 1471 134 49
+Total frames rendered: 3636

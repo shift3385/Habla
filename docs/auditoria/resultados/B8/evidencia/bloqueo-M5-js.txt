@@ -1,0 +1,4 @@
+{"now":21469,"tl":["6638 live=[] rec=[] hidden=false","10389 live=[0] rec=[] hidden=false"],"ev":["9483 gUM req #0 hidden=false","10188 gUM open #0 hidden=false"],"rec":[],"mic":["0:live"],"net":[]}
+BLOQUEAR (aviso) 09:36:19
+DESBLOQUEADO (dueño) 09:38:00
+{"now":146248,"tl":["6638 live=[] rec=[] hidden=false","10389 live=[0] rec=[] hidden=false","38627 live=[] rec=[] hidden=false"],"ev":["9483 gUM req #0 hidden=false","10188 gUM open #0 hidden=false","38615 track stop #0"],"rec":[],"mic":["0:off"],"net":[]}

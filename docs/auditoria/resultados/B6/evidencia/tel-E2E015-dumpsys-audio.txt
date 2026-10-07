@@ -1,0 +1,1 @@
+E2E-015 · 22:39:51–22:40:06 · 6 muestras de 'adb -s 60d0718c shell dumpsys audio' (cada 2,5 s) con Habla en segundo plano tras el turno B6-3: ningún reproductor 'state:started' de com.shift.habla (el filtro no devolvió líneas). Coincide con el registro del arnés: sin TextToSpeech.speak mientras document.hidden=true.

@@ -1,0 +1,8 @@
+B3 · M9c (AUD-MIC-302) · navegador, micro falso con getUserMedia retrasado 1,5 s (simula la apertura lenta del teléfono), red falsa.
+Pasos: hoja de Debate, paso 2 → dos click() en «Dictar por voz» separados 200 ms → 2,5 s → tocar «Te escucho… toca para terminar» → cerrar la hoja (Atrás x2)
+  tras el doble toque: mic #1 live, mic #2 live; MediaRecorder #1 recording, #2 recording
+  tras «terminar»: mic #2 cerrado (close 75888), rec #2 inactive; mic #1 SIGUE live, rec #1 SIGUE recording
+  tras cerrar la hoja (desmontaje → recorder.close()): mic #1 live, rec #1 recording
+  tras simular segundo plano (dispatch visibilitychange con document.hidden=true + pagehide → releaseAllMics()): mic #1 live, rec #1 recording
+Veredicto navegador: CONFIRMADO. El stream huérfano (y su MediaRecorder grabando) no lo cierra ni el desmontaje ni el paso a segundo plano.
+Nota: en el navegador la pestaña estaba oculta (document.hidden=true) durante la prueba; la app abrió el micro igualmente (no hay guarda de visibilidad).

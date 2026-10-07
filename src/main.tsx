@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { ErrorBoundary } from './components/Recovery'
 import { installLifecycle } from './lib/lifecycle'
 import { installViewport } from './lib/viewport'
 
@@ -12,6 +13,9 @@ installViewport()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    {/* AUD-E2E-601: un error al pintar ya no deja la app en blanco */}
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 )

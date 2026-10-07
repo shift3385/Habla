@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+// Firma fija del proyecto (keystore/ en la raíz, fuera de git). Se define fuera de android {} porque también la
+// usa la comprobación de abajo (AUD-ARQ-106).
+// `-PhablaKeystoreProps=<ruta>` solo sirve para probar la comprobación sin tocar keystore/.
+def keystorePropsFile = rootProject.file(project.findProperty('hablaKeystoreProps') ?: '../keystore/keystore.properties')
+
 android {
     namespace = "com.shift.habla"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -20,7 +25,6 @@ android {
     }
     // Firma fija del proyecto (keystore/ en la raíz, fuera de git). Si la firma cambia,
     // Android no deja actualizar encima y habría que desinstalar (perdiendo los datos).
-    def keystorePropsFile = rootProject.file('../keystore/keystore.properties')
     signingConfigs {
         habla {
             if (keystorePropsFile.exists()) {
@@ -34,29 +38,52 @@ android {
         }
     }
     buildTypes {
+        // v5.8.2 (AUD-SEG-504): la depuración es OTRA app ("com.shift.habla.debug", «Habla debug» en el
+        // lanzador), firmada con la clave de depuración genérica de Android. No puede instalarse encima de la
+        // app de uso diario ni leer sus datos, y su WebView sí se puede inspeccionar (CDP) para las pruebas.
         debug {
-            if (keystorePropsFile.exists()) signingConfig signingConfigs.habla
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            // El nombre «Habla debug» sale de src/debug/res/values/strings.xml.
         }
+        // v5.8.2 (AUD-SEG-001): el APK que se reparte es el release: NO depurable (sin run-as ni CDP: Capacitor
+        // solo activa la depuración del WebView en builds depurables), con R8 y firmado con habla.jks, el mismo
+        // certificado que las versiones anteriores, así que se instala encima conservando los datos.
         release {
-            if (keystorePropsFile.exists()) signingConfig signingConfigs.habla
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.habla
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
-// Nombre del APK: Habla-v<versión>.apk, y una copia en <proyecto>/apk/ para encontrarlo fácil.
+// AUD-ARQ-106: sin keystore/keystore.properties, el release NO se compila (antes salía firmado con la clave
+// genérica y con el nombre de siempre: no se instala encima y empuja a desinstalar, perdiendo los datos).
+// Solo se comprueba al firmar o empaquetar el release: compilar el Java o el debug sigue funcionando.
+tasks.configureEach { task ->
+    if (task.name in ['packageRelease', 'validateSigningRelease', 'assembleRelease', 'bundleRelease', 'signReleaseBundle']) {
+        task.doFirst {
+            if (!keystorePropsFile.exists()) {
+                throw new GradleException("Falta keystore/keystore.properties: el APK de Habla debe firmarse con habla.jks. " +
+                    "No uses otra clave: los usuarios tendrían que desinstalar y perderían sus datos.")
+            }
+        }
+    }
+}
+
+// Nombre del APK: Habla-v<versión>.apk (release) o Habla-v<versión>-debug.apk (debug, otra app), y una copia en
+// <proyecto>/apk/ para encontrarlo fácil. Así compilar el debug ya no pisa el APK que se reparte.
 android.applicationVariants.all { variant ->
     variant.outputs.all {
         outputFileName = "Habla-v${variant.versionName}.apk"
     }
-    if (variant.buildType.name == 'debug') {
-        variant.assembleProvider.configure { assembleTask ->
-            assembleTask.doLast {
-                copy {
-                    from variant.outputs.first().outputFile
-                    into rootProject.file('../apk')
-                }
+    variant.assembleProvider.configure { assembleTask ->
+        assembleTask.doLast {
+            copy {
+                from variant.outputs.first().outputFile
+                into rootProject.file('../apk')
             }
         }
     }

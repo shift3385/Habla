@@ -1,0 +1,21 @@
+== arranque en frío 23:22:54
+Starting: Intent { cmp=com.shift.habla/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.shift.habla/.MainActivity
+TotalTime: 1359
+WaitTime: 1364
+Complete
+{"up":1802,"txt":"H | a | b | l | a | . | Tu espacio para hablar inglés","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":3172,"txt":"H | a | b | l | a | . | Tu espacio para hablar inglés","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":4521,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":5816,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":7173,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":8509,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":9841,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":11200,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":12528,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":13899,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":15273,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+{"up":16628,"txt":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aq","nav":802,"fcp":"first-paint:828 first-contentful-paint:1120"}
+11110

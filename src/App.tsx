@@ -7,7 +7,7 @@ import Calibration from './screens/Calibration'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
-import { importBackup } from './lib/backup'
+import { applyBackup, readBackup } from './lib/backup'
 import { db } from './lib/db'
 import { getScenario } from './lib/scenarios'
 import { loadDashboard } from './lib/stats'
@@ -30,6 +30,7 @@ import { loadSettings, mainModels, saveSettings, type Settings } from './lib/set
 import { setTeacherVoice } from './lib/tts'
 import { applyOrientation } from './lib/orientation'
 import { onPhoneticsQuota, startupCheck } from './lib/phonetics'
+import { RecoveryScreen } from './components/Recovery'
 import PhoneticsAlert from './components/PhoneticsAlert'
 import Background from './ui/Background'
 import AudioPicker from './components/AudioPicker'
@@ -53,6 +54,8 @@ interface Lesson {
 
 export default function App() {
   const [settings, setSettings] = useState<Settings | null>(null)
+  // AUD-RES-704: si falla la carga inicial, pantalla de recuperación en vez de negro para siempre.
+  const [bootError, setBootError] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('home')
   const [lesson, setLesson] = useState<Lesson | null>(null)
   // Test de calibración: obligatorio si el perfil no tiene nivel medido; también para el re-test.
@@ -149,6 +152,9 @@ export default function App() {
       setStreak(dash.streak)
       setHomework(dash.lastHomework)
       setSettings(s)
+    }).catch((e: unknown) => {
+      console.error('[HABLA] fallo al arrancar', e)
+      setBootError((e as Error)?.name || 'Error')
     })
   }, [refreshProfile, loadSaved])
 
@@ -173,14 +179,17 @@ export default function App() {
         )
       }
       setSplash(false)
-    })
+    }).catch((e: unknown) => setBootError((e as Error)?.name || 'Error'))
   }, [refreshProfile, streak, homework])
 
   // "Ya tengo mi perfil": importar una copia de seguridad desde la bienvenida.
   const importFromWelcome = useCallback(async (file: File) => {
-    await importBackup(file)
-    const p = await refreshProfile()
-    if (!isPersonalized(p)) throw new Error('La copia no tiene un perfil con nombre. Usa "Soy nuevo".')
+    // AUD-SEG-501: se comprueba la copia (y que traiga un perfil con nombre) ANTES de sustituir nada.
+    const ready = await readBackup(file)
+    const name = ready.backup.tables.profile[0]?.name
+    if (typeof name !== 'string' || !name.trim()) throw new Error('La copia no tiene un perfil con nombre. Usa "Soy nuevo".')
+    await applyBackup(ready)
+    await refreshProfile()
     setSettings((s) => (s ? { ...s, onboarded: true } : s))
     return true
   }, [refreshProfile])
@@ -258,6 +267,7 @@ export default function App() {
     })
   }, [reminderOn, reminderTime, plan, retestAt, reminderTheme])
 
+  if (bootError) return <RecoveryScreen detail={bootError} />
   if (!settings || !t || calibrated === null) return null
 
   // Selector de audio con auriculares: puede aparecer en cualquier pantalla.

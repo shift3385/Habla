@@ -1,0 +1,15 @@
+B3 · teléfono (APK v5.8 build 33), micro real, red falsa con respuesta «sin voz» (no se guarda nada).
+M9b (AUD-MIC-303) — mic-timeline-M9b.txt, captura tel-M9b-paso1-grabando.png (punto verde arriba a la derecha):
+  20:36:50 «Dictar por voz» (Debate → Lo propongo yo) · 20:36:53 flecha Atrás → paso 1 «¿Quién elige el tema del debate?»
+  CDP: gUM #0 open 138925, rec #0 start 139534 … en el paso 1 15 s después: mic 0 live, rec 0 recording
+  Android 20:37:14: habla_top=1 habla_in=1 appops (running) MODE_IN_COMMUNICATION
+  20:37:35 vuelta al paso 2 y «terminar»: rec #0 stop 184952 → 45,4 s grabados (≈42 s fuera del dictado); petición a Gemini con audio de
+  158 KB (interceptada; la red falsa contestó «no te he entendido»). Micro cerrado después (Inputs(0), MODE_NORMAL 20:37:47).
+  Veredicto: CONFIRMADO.
+M9c (AUD-MIC-302) — mic-timeline-M9c.txt, capturas tel-M9c-inicio-micro-huerfano.png y tel-M9c-vuelta-huerfano-capturando.png:
+  20:38:28 Tema libre → doble toque (150 ms) en «Dictar por voz»: gUM #1 y #2, rec #1 y #2 recording.
+  «terminar»: para #2 (envía 9 KB, red falsa); #1 sigue live+recording. Cerrar la hoja: #1 sigue live+recording en el Inicio de la app.
+  20:38:56 Inicio de Android: 20:39:15–20:39:28 habla_top=0 habla_in=1 (stream asignado; appops ya sin running: Android silencia).
+  20:39:47 volver: 20:40:11–15 habla_top=1 habla_in=1 appops (running): el huérfano vuelve a capturar en la pantalla de Inicio, sin pulsar nada.
+  Solo se liberó con am force-stop.  Veredicto: CONFIRMADO.
+Nota: la captura de pantalla de M9c en segundo plano se borró porque mostraba el escritorio del dueño (otras apps); el muestreo basta.

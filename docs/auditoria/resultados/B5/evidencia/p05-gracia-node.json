@@ -1,0 +1,62 @@
+[
+ {
+  "t_s": 0,
+  "why": "Para ver tu clave de Gemini (CANCELA)",
+  "dialogoMostrado": true,
+  "ok": false
+ },
+ {
+  "t_s": 1,
+  "why": "Para ver tu clave de Gemini (el plugin falla)",
+  "dialogoMostrado": true,
+  "ok": false
+ },
+ {
+  "t_s": 2,
+  "why": "Para ver tu clave de Gemini (CONFIRMA)",
+  "dialogoMostrado": true,
+  "ok": true
+ },
+ {
+  "t_s": 30,
+  "why": "Para ver tu clave de Azure Speech",
+  "dialogoMostrado": false,
+  "ok": true
+ },
+ {
+  "t_s": 40,
+  "why": "Para ver el secreto de Azure",
+  "dialogoMostrado": false,
+  "ok": true
+ },
+ {
+  "t_s": 50,
+  "why": "Para cambiar tu clave de Gemini",
+  "dialogoMostrado": false,
+  "ok": true
+ },
+ {
+  "t_s": 61.9,
+  "why": "Para cambiar el secreto de Azure",
+  "dialogoMostrado": false,
+  "ok": true
+ },
+ {
+  "t_s": 62.1,
+  "why": "Para ver tu clave de Gemini (tras 60 s)",
+  "dialogoMostrado": true,
+  "ok": false
+ },
+ {
+  "t_s": 200,
+  "why": "Sin bloqueo: Para ver tu clave de Azure Speech",
+  "dialogoMostrado": true,
+  "ok": true
+ },
+ {
+  "t_s": 210,
+  "why": "Sin bloqueo, 10 s después",
+  "dialogoMostrado": false,
+  "ok": true
+ }
+]

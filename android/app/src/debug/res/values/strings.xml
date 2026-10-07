@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- v5.8.2 (AUD-SEG-504): la build de depuración es otra app (com.shift.habla.debug) y se llama distinto en el
+     lanzador para no confundirla con la de uso diario. -->
+<resources>
+    <string name="app_name">Habla debug</string>
+    <string name="title_activity_main">Habla debug</string>
+</resources>

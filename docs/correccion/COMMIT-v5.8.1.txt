@@ -1,0 +1,15 @@
+v5.8.1: micrófono seguro (parche de la auditoría QA de la v5.8)
+
+- Recorder reentrante y cancelable: una sola apertura por toque, close() cancela
+  aperturas en curso y fallback() registra sus streams (AUD-MIC-301, 302, ARQ-100)
+- Botón de hablar: solo manda el primer dedo (AUD-MIC-304)
+- Debate y dictado: «Atrás», cerrar la hoja o salir cierran el micro y no envían
+  audio abandonado (AUD-MIC-303)
+- Micro en silencio: 2.ª comprobación, 1 reintento y sin perder la cancelación
+  de eco (AUD-MIC-800)
+- Red nativa: en segundo plano se deniega cualquier apertura nueva del micro y
+  onStop avisa al JS (AUD-MIC-308, mitigación parcial)
+- npm test: node:test + Vite, 26 pruebas del Recorder y del gesto (AUD-ARQ-113)
+- Versión 5.8.1 (build 34) y Novedades
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

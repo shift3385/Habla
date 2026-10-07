@@ -1,0 +1,6 @@
+{"now":21310,"tl":["6452 live=[] rec=[] hidden=false","9952 live=[0] rec=[] hidden=false"],"ev":["9325 gUM req #0 hidden=false","9722 gUM open #0 hidden=false"],"rec":[],"mic":["0:live"],"net":[]}
+pointerdown1
+BLOQUEAR (aviso) 09:51:48
+DESBLOQUEADO (dueño) 09:53:35
+{"now":152250,"tl":["6452 live=[] rec=[] hidden=false","9952 live=[0] rec=[] hidden=false","25198 live=[0] rec=[0] hidden=false","45201 live=[] rec=[] hidden=false"],"ev":["9325 gUM req #0 hidden=false","9722 gUM open #0 hidden=false","24990 rec start #0","45077 rec stop #0","45090 track stop #0"],"rec":["0:inactive"],"mic":["0:off"],"net":[]}
+{"now":156630,"tl":["6452 live=[] rec=[] hidden=false","9952 live=[0] rec=[] hidden=false","25198 live=[0] rec=[0] hidden=false","45201 live=[] rec=[] hidden=false"],"ev":["9325 gUM req #0 hidden=false","9722 gUM open #0 hidden=false","24990 rec start #0","45077 rec stop #0","45090 track stop #0"],"rec":["0:inactive"],"mic":["0:off"],"net":[]}

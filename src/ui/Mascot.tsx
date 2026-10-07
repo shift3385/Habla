@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, createElement as h, type ReactNode } from 'react'
 
-// Mascotas del tema (Claude Design V4 · Mascota.dc.html), portadas tal cual: SVG vectorial animado a 60 fps
-// con requestAnimationFrame. Cuerpo "slime" de 16 puntos, ojos que siguen el dedo, gestos propios en reposo,
+// Mascotas del tema (Claude Design V4 · Mascota.dc.html), portadas tal cual: SVG vectorial animado con
+// requestAnimationFrame (a ritmo completo solo cuando se mueve; ver el planificador, v5.8.2). Cuerpo "slime" de 16 puntos, ojos que siguen el dedo, gestos propios en reposo,
 // reacción al tocar y al estirar, y un secreto con 5 toques en 2,2 s.
 //   flame = Chispa (Ember) · aqua = Gota (Marea) · terra = Musgo (Lumi) · aero = Brisa (Nimbo)
 
@@ -122,13 +122,46 @@ function tongue(B: Pt, nx: number, ny: number, tx: number, ty: number, L: number
   return `M${f1(l[0])} ${f1(l[1])}Q${f1(cl[0])} ${f1(cl[1])} ${f1(tip[0])} ${f1(tip[1])}Q${f1(cr[0])} ${f1(cr[1])} ${f1(rr[0])} ${f1(rr[1])}Z`
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Consumo (v5.8.2, AUD-RES-701 / AUD-ARQ-110): antes cada mascota tenía su propio bucle a 60–120 fps aunque estuviera
+// quieta (≈1 núcleo en reposo; dos mascotas, dos bucles). Ahora hay UN solo planificador para todas: a ritmo
+// completo solo mientras hay movimiento (toque, salto, partículas, habla, ojos siguiendo el dedo); en reposo, unos
+// 15 fps (el balanceo es lento y se ve igual); 4 fps con «reducir movimiento» del sistema; nada si la mascota no
+// se ve (fuera de pantalla, tapada por desmontaje o app oculta). Y entre fotogramas lentos no se pide ningún rAF.
+const IDLE_MS = 66
+const REDUCED_MS = 250
+const HIDDEN_MS = 500
+const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+const live = new Set<Mascot>()
+let rafId = 0
+let timer = 0
+function schedule() {
+  if (rafId || !live.size) return
+  let next = Infinity
+  for (const m of live) next = Math.min(next, m.nextAt)
+  const wait = next - performance.now()
+  if (timer) clearTimeout(timer)
+  timer = 0
+  // Hasta el próximo fotograma lento no hace falta despertar al compositor.
+  if (wait > 20) timer = window.setTimeout(() => ((timer = 0), schedule()), wait - 12)
+  else rafId = requestAnimationFrame(loop)
+}
+function loop(t: number) {
+  rafId = 0
+  for (const m of [...live]) if (t >= m.nextAt - 8) m.frame(t)
+  schedule()
+}
+
 export default class Mascot extends Component<Props> {
+  /** Cuándo toca el próximo fotograma de esta mascota (planificador compartido). */
+  nextAt = 0
+  visible = true
+  io: IntersectionObserver | null = null
   uid = 'm' + Math.random().toString(36).slice(2, 8)
   r: Record<string, any> = {}
   _rf: Record<string, (el: any) => void> = {}
   P: any = null
   _el: MascotElement = 'flame'
-  raf = 0
 
   rf(n: string) {
     return this._rf[n] || (this._rf[n] = (el: any) => {
@@ -143,13 +176,28 @@ export default class Mascot extends Component<Props> {
     this.P = this.fresh()
     this._el = this.props.element || 'flame'
     window.addEventListener('pointermove', this.onWin)
-    this.raf = requestAnimationFrame(this.tick)
+    if (typeof IntersectionObserver === 'function' && this.r.svg) {
+      this.io = new IntersectionObserver((es) => {
+        this.visible = es.some((e) => e.isIntersecting)
+        if (this.visible) this.wake()
+      })
+      this.io.observe(this.r.svg)
+    }
+    live.add(this)
+    this.wake()
   }
   componentWillUnmount() {
-    cancelAnimationFrame(this.raf)
+    live.delete(this)
+    this.io?.disconnect()
     window.removeEventListener('pointermove', this.onWin)
   }
+  /** Vuelve al ritmo completo ya (toque, cambio de ánimo, dedo cerca). */
+  wake() {
+    this.nextAt = 0
+    if (rafId === 0) schedule()
+  }
   componentDidUpdate() {
+    this.wake()
     const el = this.props.element || 'flame'
     if (this._el !== el) {
       this._el = el
@@ -168,6 +216,7 @@ export default class Mascot extends Component<Props> {
     if (p && this.P) {
       this.P.ptr = p
       this.P.ptrT = performance.now()
+      this.wake()
     }
   }
   inter() {
@@ -302,6 +351,7 @@ export default class Mascot extends Component<Props> {
     if (el === 'aero') P.vlift -= 4
   }
   pDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    this.wake()
     if (!this.inter() || !this.P) return
     const p = this.loc(e)
     if (!p) return
@@ -453,12 +503,37 @@ export default class Mascot extends Component<Props> {
     }
   }
 
-  tick = () => {
-    this.raf = requestAnimationFrame(this.tick)
+  frame(now: number) {
     const P = this.P,
       r = this.r
-    if (!P || !r.body || !r.body.isConnected) return
+    // Sin cuerpo dibujado, fuera de la vista o con la app oculta: no se pinta; se vuelve a mirar en medio segundo.
+    if (!P || !r.body || !r.body.isConnected || !this.visible || document.hidden) {
+      this.nextAt = now + HIDDEN_MS
+      return
+    }
+    this.draw()
+    this.lastDraw = performance.now()
+    // En reposo, el próximo fotograma cae en una rejilla común: varias mascotas quietas comparten despertar.
+    const step = reducedMotion() ? REDUCED_MS : IDLE_MS
+    this.nextAt = this.busy() ? 0 : Math.ceil((now + step) / step) * step
+  }
+  /** ¿Hay movimiento que necesite el ritmo completo? */
+  busy(): boolean {
+    const P = this.P,
+      t = performance.now()
+    if (this.props.mood === 'speaking' || P.down || t - P.ptrT < 1500 || P.happy > 0 || P.secretUntil > t) return true
+    const moving = Math.abs(P.vsx) + Math.abs(P.vsy) + Math.abs(P.vhop) + Math.abs(P.vdx) + Math.abs(P.vdy) + Math.abs(P.vlift ?? 0) + Math.abs(P.spinV ?? 0)
+    // (La cara de sorpresa es fija: no necesita ritmo completo por sí sola.)
+    // Las partículas de ambiente (chispas, burbujas…) no obligan al ritmo completo: avanzan por tiempo (ver draw).
+    return moving > 0.05 || P.jig > 0.03 || P.burst > 0.03
+  }
+  /** Momento del último dibujo (para que las partículas no vayan a cámara lenta a ritmo reducido). */
+  lastDraw = 0
+  draw() {
+    const P = this.P,
+      r = this.r
     const t = performance.now(),
+      steps = this.lastDraw ? Math.min(6, Math.max(1, Math.round((t - this.lastDraw) / 16.7))) : 1,
       el = this.props.element || 'flame',
       mood = this.props.mood || 'idle',
       R = Math.random,
@@ -806,17 +881,20 @@ export default class Mascot extends Component<Props> {
         }
         continue
       }
-      q.vx *= q.drag
-      q.vy += q.g
-      q.x += q.vx + (q.sway ? Math.sin(t * 0.006 + q.ph) * 0.3 : 0)
-      q.y += q.vy
-      q.rot += q.vr
-      q.life--
-      if (q.ground && q.y > BASE + 4 && q.vy > 0) {
-        q.y = BASE + 4
-        q.vy = 0
-        q.vx *= 0.5
-        q.life = Math.min(q.life, 5)
+      // En reposo se pinta a ~15 fps: las partículas avanzan los pasos de 60 fps que tocan, para no ir a cámara lenta.
+      for (let st = 0; st < steps && q.life > 0; st++) {
+        q.vx *= q.drag
+        q.vy += q.g
+        q.x += q.vx + (q.sway ? Math.sin(t * 0.006 + q.ph) * 0.3 : 0)
+        q.y += q.vy
+        q.rot += q.vr
+        q.life--
+        if (q.ground && q.y > BASE + 4 && q.vy > 0) {
+          q.y = BASE + 4
+          q.vy = 0
+          q.vx *= 0.5
+          q.life = Math.min(q.life, 5)
+        }
       }
       if (e.__sid !== q.id) {
         e.setAttribute('d', SH[q.shape])

@@ -1,0 +1,9 @@
+B3 · X1 (AUD-MIC-304) · navegador, micro falso, red falsa. Clase «Entrevista de trabajo» con el micro ya abierto.
+  88437 pointerdown pointerId=1 en «Mantener para hablar» → MediaRecorder #1 start
+  89449 pointerdown pointerId=2 (segundo dedo)               → MediaRecorder #2 start (se sobrescribe this.recorder)
+  pointerup 2, pointerup 1 → stop() solo de #2 (90951) y se envía su audio (red falsa); #1 queda «recording»
+  8 s después: #1 recording. Pulsar «Terminar»/«Salir y guardar» (aria-label) → al cerrar el stream #1 pasa a inactive.
+Línea de tiempo: 89584 live=[2] rec=[1,2] → 91090 live=[2] rec=[1] (grabación huérfana hasta salir de la clase)
+Veredicto navegador: CONFIRMADO.
+M12 (navegador): en todo el recorrido Inicio → Prácticas → Temas → hoja Debate/Tema libre (sin tocar el micro), __b3.mic quedó vacío: ninguna
+apertura fuera de clase, test, repaso y dictado.

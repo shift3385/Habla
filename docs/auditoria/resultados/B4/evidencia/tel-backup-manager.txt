@@ -1,0 +1,23 @@
+# bmgr / dumpsys backup
+Backup Manager currently disabled
+    com.android.localtransport/.LocalTransport
+    com.google.android.gms/.backup.migrate.service.D2dTransport
+  * com.google.android.gms/.backup.BackupTransportService
+    com.google.android.apps.restore/.transport.BackupTransportService
+Backup Manager is disabled / setup complete / not pending init
+Transport whitelist:
+    com.android.encryptedlocaltransport/.EncryptedLocalTransportService
+    com.android.localtransport/.LocalTransportService
+    com.google.android.apps.restore/.transport.D2dTransportService
+    com.google.android.gms/.backup.component.D2dTransportService
+    com.google.android.gms/.backup.BackupTransportService
+    com.google.android.apps.restore/.transport.BackupTransportService
+Available transports:
+    com.android.localtransport/.LocalTransport
+    com.google.android.gms/.backup.migrate.service.D2dTransport
+  * com.google.android.gms/.backup.BackupTransportService
+    com.google.android.apps.restore/.transport.BackupTransportService
+Transport clients created: 5
+Current transport clients: 0
+Current:   0
+    1791239610936 : com.shift.habla

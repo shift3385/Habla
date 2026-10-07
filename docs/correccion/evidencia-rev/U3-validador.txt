@@ -1,0 +1,15 @@
+ACEPTA  · copia rica (todas las tablas, pronunciación Azure, FSRS, perfil calibrado)
+RECHAZA · copia v1–v4.1 (sin lookups ni cards: TABLES = 4) → El archivo de copia está dañado o no es de Habla; no se cambió nada. (falta la tabla de consultas de palabras)
+RECHAZA · copia v4.2–v4.6 (sin cards: TABLES = 5) → El archivo de copia está dañado o no es de Habla; no se cambió nada. (falta la tabla de tarjetas de repaso)
+ACEPTA  · estructura del teléfono (B4: goal sin valor, lookups vacía)
+ACEPTA  · campos y tablas de más (versión futura compatible)
+RECHAZA · tables:{} → El archivo de copia está dañado o no es de Habla; no se cambió nada. (falta la tabla de sesiones)
+RECHAZA · tablas vacías sin perfil → El archivo de copia está dañado o no es de Habla; no se cambió nada. (no tiene tu perfil)
+RECHAZA · turno con text numérico → El archivo de copia está dañado o no es de Habla; no se cambió nada. (mensajes, fila 1: el campo «text» falta o tiene un tipo incorrecto)
+RECHAZA · perfil con levels texto → El archivo de copia está dañado o no es de Habla; no se cambió nada. (perfil, fila 1: el campo «levels» falta o tiene un tipo incorrecto)
+RECHAZA · versión futura → La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada.
+RECHAZA · tarjeta repetida (source+sourceId) → El archivo de copia está dañado o no es de Habla; no se cambió nada. (hay tarjetas de repaso repetidas)
+RECHAZA · id repetido → El archivo de copia está dañado o no es de Habla; no se cambió nada. (sesiones: el registro 1 está repetido)
+RECHAZA · id texto → El archivo de copia está dañado o no es de Habla; no se cambió nada. (sesiones, fila 1: el campo «id» falta o tiene un tipo incorrecto)
+El archivo no es un JSON válido; no se cambió nada.
+MAX bytes 20971520

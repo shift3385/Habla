@@ -1,0 +1,27 @@
+{
+ "fibras": 275,
+ "componentesConClave": 3,
+ "porNombre": {
+  "Zd": 1,
+  "mu": 1,
+  "ql": 1
+ },
+ "longitudClave": 39,
+ "plugins": [
+  "App",
+  "AudioRoute",
+  "DeviceAuth",
+  "Orientation",
+  "TextToSpeech",
+  "SystemBars",
+  "LocalNotifications",
+  "Haptics",
+  "CapacitorCookies",
+  "WebView",
+  "Filesystem",
+  "Preferences",
+  "Share",
+  "CapacitorHttp"
+ ],
+ "plataforma": "android"
+}

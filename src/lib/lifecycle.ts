@@ -7,6 +7,13 @@ import { stopSpeaking } from './tts'
 // se cierran los micrófonos, se calla la voz y se avisa a las pantallas para que guarden lo que tengan abierto.
 // La parte nativa (MainActivity + AudioRoutePlugin) pausa los temporizadores del WebView y suelta el
 // "modo llamada"/Bluetooth aunque el JavaScript no llegara a ejecutarse.
+//
+// v5.8.1 (AUD-MIC-301/308): el aviso «pause» de Capacitor (Activity.onPause) YA NO cuenta como segundo plano.
+// onPause también llega con el diálogo de permiso del micrófono de Android y al perder el foco en pantalla
+// dividida, con la app a la vista; ahora que cerrar cancela la apertura en curso, cerrar ahí abortaría la misma
+// apertura que pidió el permiso. El segundo plano real llega con onStop: `appStateChange` (isActive=false),
+// `visibilitychange` (WebView.onPause en MainActivity.onStop) y además MainActivity.onStop llama directamente a
+// `window.__hablaBackground()`, sin pasar por los avisos de los plugins.
 
 type Listener = () => void
 const onBackground = new Set<Listener>()
@@ -49,7 +56,8 @@ export function installLifecycle() {
   if (installed) return
   installed = true
   CapApp.addListener('appStateChange', ({ isActive }) => (isActive ? goForeground() : goBackground())).catch(() => {})
-  CapApp.addListener('pause', goBackground).catch(() => {})
+  // Puerta directa para la red de seguridad nativa (MainActivity.onStop, AUD-MIC-308).
+  ;(window as unknown as { __hablaBackground?: () => void }).__hablaBackground = goBackground
   document.addEventListener('visibilitychange', () => (document.hidden ? goBackground() : goForeground()))
   window.addEventListener('pagehide', goBackground)
 }

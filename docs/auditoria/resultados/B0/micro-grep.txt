@@ -1,0 +1,44 @@
+src/components/TopicAskPage.tsx:41:  useEffect(() => () => recorder.current?.close(), [])
+src/components/TopicAskPage.tsx:50:        recorder.current ??= new Recorder()
+src/components/TopicAskPage.tsx:51:        await recorder.current.begin()
+src/components/TopicAskPage.tsx:61:      recorder.current!.close()
+src/lib/lifecycle.ts:2:import { releaseAllMics } from './recorder'
+src/lib/lifecycle.ts:31:  releaseAllMics()
+src/lib/recorder.ts:1:// Grabación con MediaRecorder (webm/opus en el WebView de Android).
+src/lib/recorder.ts:71:export function releaseAllMics() {
+src/lib/recorder.ts:72:  ;[...recorders].forEach((r) => r.close())
+src/lib/recorder.ts:95:    ctx?.close().catch(() => {})
+src/lib/recorder.ts:108:  private recorder: MediaRecorder | null = null
+src/lib/recorder.ts:115:    if (!this.recorder || this.recorder.state === 'inactive') this.close()
+src/lib/recorder.ts:120:    this.close() // descarta un stream muerto antes de pedir uno nuevo
+src/lib/recorder.ts:121:    if (!navigator.mediaDevices?.getUserMedia) {
+src/lib/recorder.ts:125:      this.stream = await navigator.mediaDevices.getUserMedia({
+src/lib/recorder.ts:164:      this.stream = await navigator.mediaDevices.getUserMedia({ audio: o.c })
+src/lib/recorder.ts:188:    const mimeType = MIME_CANDIDATES.find((m) => MediaRecorder.isTypeSupported(m))
+src/lib/recorder.ts:191:    this.recorder = new MediaRecorder(this.stream!, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: AUDIO_BPS })
+src/lib/recorder.ts:202:      await this.open()
+src/lib/recorder.ts:206:      this.close()
+src/lib/recorder.ts:207:      await this.open()
+src/lib/recorder.ts:211:        this.close()
+src/lib/speech.ts:23:    ctx.close().catch(() => {})
+src/lib/testDraft.ts:44:    db.close()
+src/lib/wav.ts:58:    ctx.close().catch(() => {})
+src/screens/Calibration.tsx:291:  const recorder = useRef(new Recorder())
+src/screens/Calibration.tsx:316:      rec.close()
+src/screens/Calibration.tsx:495:        await recorder.current.begin()
+src/screens/Calibration.tsx:531:      recorder.current.close()
+src/screens/Calibration.tsx:547:    recorder.current.close()
+src/screens/Conversation.tsx:109:  const recorder = useRef(new Recorder())
+src/screens/Conversation.tsx:311:        await rec.open()
+src/screens/Conversation.tsx:315:      if (gone()) return rec.close() // saliste mientras se abría el micrófono
+src/screens/Conversation.tsx:376:      rec.close()
+src/screens/Conversation.tsx:408:    recorder.current.close()
+src/screens/Conversation.tsx:434:        await recorder.current.begin()
+src/screens/Conversation.tsx:550:    recorder.current.close()
+src/screens/ReviewScreen.tsx:53:  const recorder = useRef(new Recorder())
+src/screens/ReviewScreen.tsx:63:      rec.close()
+src/screens/ReviewScreen.tsx:117:        await recorder.current.begin()
+android/app/src/main/java/com/shift/habla/AudioRoutePlugin.java:30: * voz + salida de voz). Sin eso, getUserMedia recibe un "Bluetooth headset" mudo (todo ceros).
+android/app/src/main/java/com/shift/habla/AudioRoutePlugin.java:220:                    boolean ok = am.setCommunicationDevice(pick);
+android/app/src/main/java/com/shift/habla/AudioRoutePlugin.java:222:                    Log.i("HablaAudio", "setCommunicationDevice(" + pick.getProductName() + " tipo " + pick.getType() + ") = " + ok
+android/app/src/main/java/com/shift/habla/AudioRoutePlugin.java:227:                    am.startBluetoothSco();

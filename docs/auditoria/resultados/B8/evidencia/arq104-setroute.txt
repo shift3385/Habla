@@ -1,0 +1,6 @@
+antes: - Actual mode = MODE_NORMAL
+reject: No hay auriculares con micrófono disponibles
+tras setRoute(headset) sin auriculares: - Actual mode = MODE_IN_COMMUNICATION
++5 s: - Actual mode = MODE_NORMAL
+true
+tras setRoute(phone): - Actual mode = MODE_NORMAL

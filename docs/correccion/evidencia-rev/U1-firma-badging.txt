@@ -1,0 +1,17 @@
+﻿=== android\app\build\outputs\apk\release\Habla-v5.8.1.apk
+Signer #1 certificate DN: CN=Habla, O=Personal, C=ES
+Signer #1 certificate SHA-256 digest: 95626710a1f3ccb2f304027c76d6fbdbe87b0487c7269b703ebacd00708aa597
+package: name='com.shift.habla' versionCode='34' versionName='5.8.1' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+application-label:'Habla'
+=== apk\Habla-v5.8.apk
+Signer #1 certificate DN: CN=Habla, O=Personal, C=ES
+Signer #1 certificate SHA-256 digest: 95626710a1f3ccb2f304027c76d6fbdbe87b0487c7269b703ebacd00708aa597
+package: name='com.shift.habla' versionCode='33' versionName='5.8' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+application-label:'Habla'
+application-debuggable
+=== android\app\build\outputs\apk\debug\Habla-v5.8.1-debug.apk
+Signer #1 certificate DN: C=US, O=Android, CN=Android Debug
+Signer #1 certificate SHA-256 digest: 7cfa0361d85978d16bdebe42a3e02807900b91eab093c2ee093bcb6058d547bd
+package: name='com.shift.habla.debug' versionCode='34' versionName='5.8.1-debug' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+application-label:'Habla debug'
+application-debuggable

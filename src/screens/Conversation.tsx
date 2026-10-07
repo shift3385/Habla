@@ -431,7 +431,11 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     starting.current = (async () => {
       await stopSpeaking()
       try {
-        await recorder.current.begin()
+        // AUD-MIC-301/304: false = se canceló la apertura (segundo plano, salir) o ya se estaba grabando.
+        if (!(await recorder.current.begin())) {
+          setPhase((p) => (p === 'recording' ? p : 'idle'))
+          return
+        }
         setRecordStart(performance.now())
         setElapsed(0)
         setPhase('recording')

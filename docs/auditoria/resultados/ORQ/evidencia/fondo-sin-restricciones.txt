@@ -1,0 +1,13 @@
+inicio 09:55:12 · app=9628 renderer=16299 · minutos=10 · Habla: ahorro de batería SIN RESTRICCIONES, notificaciones concedidas
+min app_ticks_acum render_ticks_acum app_%cpu_min render_%cpu_min top wakelocks habla_in appops modo_audio
+1 14 79 0 1 0 0 0 no - Actual mode = MODE_NORMAL
+2 20 161 0 1 0 0 0 no - Actual mode = MODE_NORMAL
+3 23 165 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+4 41 178 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+5 44 179 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+6 70 185 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+7 87 185 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+8 120 196 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+9 123 196 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+10 124 197 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+fin 10:05:18

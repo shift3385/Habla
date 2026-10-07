@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { confirmIdentity } from '../lib/deviceAuth'
 import { clearExhausted, mergeModels } from '../lib/gemini'
+import { verifyGeminiKey } from '../lib/geminiKey'
 import type { Settings } from '../lib/settings'
 
 /**
@@ -11,6 +12,9 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
   const [key, setKey] = useState('')
   const [keySaved, setKeySaved] = useState(false)
   const [denied, setDenied] = useState(false)
+  // AUD-FLU-209: la clave se comprueba con Google antes de sustituir a la anterior.
+  const [checking, setChecking] = useState(false)
+  const [keyError, setKeyError] = useState<string | null>(null)
   const models = mergeModels(settings.modelList).filter((m) => !/pro/.test(m) || m === settings.geminiModel)
   return (
     <div className="flex flex-col gap-3">
@@ -53,18 +57,23 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
               const r = await confirmIdentity('Para cambiar tu clave de Gemini')
               if (!r.ok) return setDenied(true)
             }
-            update({ geminiKey: key.trim() })
+            setDenied(false)
+            setKeyError(null)
+            setChecking(true)
+            const r = await verifyGeminiKey(key, settings).finally(() => setChecking(false))
+            if (!r.ok) return setKeyError(`${r.error} No se cambió: sigues con tu clave anterior.`)
+            update(r.patch)
             clearExhausted() // las cuotas agotadas eran de la clave anterior
             setKey('')
-            setDenied(false)
             setKeySaved(true)
           }}
-          disabled={key.trim().length < 20}
+          disabled={key.trim().length < 20 || checking}
           className="glass mt-2 h-10 w-full rounded-full text-[14px] disabled:opacity-45"
         >
-          {keySaved ? 'Clave cambiada ✓' : 'Usar esta clave'}
+          {checking ? 'Comprobando con Google…' : keySaved ? 'Clave cambiada ✓' : 'Usar esta clave'}
         </button>
         {denied && <div className="txt-sub mt-1.5 text-center text-[12.5px]">No se confirmó tu identidad: la clave no se cambió.</div>}
+        {keyError && <div className="mt-1.5 text-center text-[12.5px]" style={{ color: '#f87171' }}>{keyError}</div>}
       </div>
     </div>
   )

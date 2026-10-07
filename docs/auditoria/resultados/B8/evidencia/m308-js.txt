@@ -1,0 +1,6 @@
+{"now":18625,"tl":["12538 live=[] rec=[] hidden=false","13788 live=[1] rec=[] hidden=false","15788 live=[] rec=[] hidden=false","17288 live=[2] rec=[] hidden=false"],"ev":["9626 gUM req #0 hidden=false","10236 gUM open #0 hidden=false","12388 track stop #0","12390 gUM req #1 hidden=false","13778 gUM open #1 hidden=false","15784 track stop #1","15786 gUM req #2 hidden=false","17045 gUM open #2 hidden=false"],"rec":[],"mic":["0:off","1:off","2:live"],"net":[]}
+BUSY+HOME 00:09:15.250
+busy
+HOME 00:09:16.631
+VUELTA 00:09:36.765
+busy 22120-30120 {"now":47892,"tl":["19292 live=[] rec=[] hidden=false","20038 live=[3] rec=[] hidden=false","43608 live=[] rec=[] hidden=true","43788 live=[] rec=[] hidden=false"],"ev":["13778 gUM open #1 hidden=false","15784 track stop #1","15786 gUM req #2 hidden=false","17045 gUM open #2 hidden=false","19116 track stop #2","19117 gUM req #3 hidden=false","19824 gUM open #3 hidden=false","30145 track stop #3"],"rec":[],"mic":["0:off","1:off","2:off","3:off"],"net":[]}

@@ -1,0 +1,38 @@
+﻿
+> habla@0.0.0 test
+> node --test "tests/**/*.test.mjs"
+
+✔ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (121.9565ms)
+✔ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (62.0862ms)
+✔ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (10.3656ms)
+✔ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (163.0633ms)
+✔ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (10.4799ms)
+✔ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (51.4315ms)
+✔ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (62.0666ms)
+[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto
+✔ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (157.9253ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+✔ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (287.0941ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+✔ MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión (203.1244ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "por defecto sin procesado"
+✔ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (236.7744ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+✔ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (283.6502ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+✔ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (155.9006ms)
+✔ Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto (33.0274ms)
+✔ Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto (46.5076ms)
+✔ MIC-309: cada grabación tiene sus propios trozos (46.9124ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4191.921

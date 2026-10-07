@@ -2,6 +2,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from '../ui/icons'
 import Wave from '../ui/Wave'
+import { isOwnPointer, pointerDownAction } from './talkGesture'
 
 export type Phase = 'starting' | 'idle' | 'recording' | 'transcribing' | 'thinking' | 'speaking'
 
@@ -52,7 +53,8 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
   // El bloqueo solo vale mientras se graba; si la grabación acaba por otra vía (error, envío), deja de aplicar.
   const locked = lockedRaw && recording
   const [drag, setDrag] = useState({ x: 0, y: 0 })
-  const gesture = useRef({ active: false, x0: 0, y0: 0, done: false })
+  // `id` = pointerId del dedo que manda (AUD-MIC-304: los demás dedos se ignoran).
+  const gesture = useRef({ active: false, x0: 0, y0: 0, done: false, id: -1 })
 
   const reset = () => {
     gesture.current.active = false
@@ -78,10 +80,17 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
   const left = maxSeconds ? Math.max(0, maxSeconds - elapsed) : null
   const time = left !== null ? `quedan ${clock(left)}` : clock(elapsed)
 
+  // REV-T2-1: si el gesto se quedara «activo» (un pointerup perdido), al pasar a procesar o pensar se suelta, para que
+  // la guarda de otros dedos no bloquee el botón en el turno siguiente.
+  useEffect(() => {
+    if (busy) gesture.current.active = false
+  }, [busy])
+
   const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (busy) return
-    if (locked) {
-      // Grabación bloqueada: este toque envía.
+    // Reglas de los dedos en talkGesture.ts (AUD-MIC-304, REV-T2-1).
+    const action = pointerDownAction(gesture.current, e.pointerId, { busy, locked, recording })
+    if (action === 'ignore') return
+    if (action === 'send') {
       setLocked(false)
       onRelease()
       return
@@ -92,13 +101,13 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
       // Algunos WebView no lo permiten; soltar fuera del botón igual llega por pointercancel.
     }
     setLocked(false)
-    gesture.current = { active: true, x0: e.clientX, y0: e.clientY, done: false }
+    gesture.current = { active: true, x0: e.clientX, y0: e.clientY, done: false, id: e.pointerId }
     onPress()
   }
 
   const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
     const g = gesture.current
-    if (!g.active || g.done) return
+    if (!isOwnPointer(g, e.pointerId) || g.done) return
     const dy = Math.max(0, g.y0 - e.clientY)
     const dx = Math.max(0, g.x0 - e.clientX)
     setDrag({ x: dx, y: dy })
@@ -115,9 +124,9 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
     }
   }
 
-  const onPointerUp = () => {
+  const onPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
     const g = gesture.current
-    if (!g.active) return
+    if (!isOwnPointer(g, e.pointerId)) return
     reset()
     if (!g.done) onRelease()
   }
@@ -186,6 +195,7 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
+          onLostPointerCapture={onPointerUp}
           onContextMenu={(e) => e.preventDefault()}
           className="no-select grid h-[88px] w-[88px] place-items-center rounded-full disabled:opacity-60"
           style={{

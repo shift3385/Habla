@@ -1,0 +1,21 @@
+B3 · M4b (AUD-MIC-301) · POCO 23122PCD1G Android 16, APK v5.8 build 33 (debuggable). Instrumentación por CDP (arnes/instr.js, micro REAL,
+red falsa) + muestreo independiente de Android (arnes/sampler.sh → mic-timeline-M4b-*.txt; habla_in = entradas de audio_policy con uid 10410).
+Escenario: proceso nuevo (defaultOk=false) → Inicio de la app → «Entrevista de trabajo» → diálogo «Tienes una clase en progreso» →
+«Reanudar la anterior» (no se usa «Empezar nueva» para no borrar la clase guardada del dueño; la clase reanudada no llama a Gemini) →
+Inicio de Android (am start HOME) a X s → 15 s → volver → 8 s → Inicio otra vez → 12 s → volver.  Script: arnes/m4b.sh.
+
+Intento 2 (HOME a 0,9 s, mic-timeline-M4b-2.txt): gUM #0 abierto 204102, cerrado 204595 por releaseAllMics; NO hubo reapertura
+  (hasSignal ya había visto señal: el micro real da muestras en <0,5 s). Comportamiento correcto.
+Intento 3 (HOME a 0,45 s, mic-timeline-M4b-3.txt) — REPRODUCIDO:
+  CDP (performance.now): click 14889 · gUM req #0 14909 · open #0 15319 · track stop #0 15618 (segundo plano, durante hasSignal)
+           · al volver (timers del WebView reanudados): gUM req #1 31314 · open #1 32039  ← fallback() reabre el micro SIN PULSACIÓN
+  Tras el 2.º Inicio y vuelta: mic #1 sigue live (no está en `recorders`; releaseAllMics no lo cerró).
+  Android (independiente):
+   20:45:16.7  habla_top=0 Inputs(1) habla_in=1 (running) → 20:45:19.7 Inputs(0)   (1.er segundo plano: cerrado bien)
+   20:45:33.4  habla_top=1 habla_in=1 running MODE_IN_COMMUNICATION            (reapertura sola al volver)
+   20:45:39.5  HOME2 → 20:45:41.0–20:45:46.2 habla_top=0 habla_in=1 appops (running)  ← CAPTURA ACTIVA ~5 s CON LA APP EN SEGUNDO PLANO
+   20:45:47.0–20:45:52.8 habla_top=0 habla_in=1, appops ya no running (Android silencia la captura en segundo plano), stream sigue asignado
+   20:45:53.7  vuelta: habla_in=1 running sin que el usuario pulse nada.
+  Se cerró con am force-stop (no se llegó a «Salir y guardar», así no se reescribe la clase guardada).
+Veredicto: CONFIRMADO en teléfono real. Depende del momento (ventana ≈ apertura de getUserMedia + primeros cientos de ms de hasSignal);
+1 de 2 intentos. Android corta la captura en segundo plano a los pocos segundos, pero el stream queda asignado y vuelve a capturar al volver.

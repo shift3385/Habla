@@ -1,0 +1,2 @@
+package: name='com.shift.habla' versionCode='33' versionName='5.8' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+application-debuggable

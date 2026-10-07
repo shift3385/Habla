@@ -1,0 +1,27 @@
+rev · fase B · navegador (rev.localhost:5173, arnés rev-mic.js, red falsa) · árbol de dev 2026-10-06
+
+MIC-301 (dictado de Tema libre, con segundo plano simulado: document.hidden + visibilitychange)
+ A · oculto durante getUserMedia (gumDelay 1500):
+   20421 gUM req #0 · 20928 hidden=true · 22184 gUM open #0 (hidden) · 22185 track stop #0 (1 ms: el stream tardío se para)
+   vuelta: ninguna apertura nueva sin pulsar; botón en «Dictar por voz»; live=[] → PASA
+ B · oculto durante hasSignal (micro en ceros + auriculares BT falsos, para que v5.8 entrara en fallback):
+   25455 gUM req #1 · 25766 open #1 (ceros) · 26662 hidden=true + track stop #1 · sin fallback, sin gUM nuevo oculto ni al volver → PASA
+ Clase (Conversation): en dev, StrictMode desmonta y vuelve a montar: la limpieza llama a close() y ahora CANCELA la apertura inicial
+   (gUM open #0 + track stop #0 en el mismo ms). Solo en desarrollo; en el APK no hay StrictMode. El 1.er toque abre el micro.
+
+MIC-304 (clase, «Mantener para hablar», PointerEvent sintéticos)
+   28512 pointerdown id=1 · 28523 gUM req #1 (la clase no tenía micro abierto: ver StrictMode) · 30015 pointerdown id=2 (DURANTE la apertura)
+   30048 gUM open #1 · 30331 pointerup id=2 · 30589 rec new #0 / rec start #0 / rec stop #0 (mismo ms) · 31147 pointerup id=1 (ignorado)
+   → 1 solo MediaRecorder, nada huérfano, nada enviado (PASA en privacidad), PERO el dedo 2 se queda con el gesto durante la apertura:
+     su pointerup corta la grabación del dedo 1 a 0 s (REV-T2-1, BAJA).
+
+MIC-800 (dictado, gumDelay 300)
+ Silencio total, micros del teléfono con nombre, sin BT: 1 apertura, con echoCancellation:true, grabando a los 2,6 s; la 2.ª grabación
+   abre directa (0,35 s, sin volver a medir), con AEC → PASA (v5.8: hasta 4 aperturas, ~12 s, acababa sin AEC)
+ 1.ª apertura en ceros + auriculares BT: 2 aperturas (por defecto → micro del teléfono «mic-bottom» con procesado), grabando a los 3,2 s;
+   la siguiente grabación usa el micro del teléfono con AEC (recordado) → PASA
+
+Tests de dev contra el recorder.ts de v5.8 (scratchpad, misma batería): T6-tests-contra-v5.8.txt
+   sin adaptar: 2/15 pasan, 13 fallan · con un adaptador mínimo (open/begin/start devuelven true): 4 pasan (permiso denegado, micro ocupado,
+   MIC-309, «el micro del teléfono que da señal se recuerda») y 11 fallan, entre ellos TODOS los de MIC-301/302/304 y los de MIC-800
+   (3 aperturas en vez de 1–2, RAW recordado). Los tests prueban la causa raíz.

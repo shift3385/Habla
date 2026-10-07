@@ -1,0 +1,47 @@
+# logcat -d -b all desde la apertura de la app (epoch 1791249254) hasta después de la llamada real B4-1 — solo recuentos
+lineas: 39375
+AIza: 0
+x-goog-api-key: 0
+goog-api: 0
+Ocp-Apim: 0
+client_secret: 0
+habla.settings: 0
+habla.savedClass: 0
+geminiKey: 0
+azureKey: 0
+generativelanguage: 0
+Capacitor/Console: 0
+Capacitor/Plugin: 0
+Capacitor: 1
+HABLA-NET: 0
+HABLA-MIC: 0
+HablaAudio: 0
+chromium: 25
+CONSOLE: 0
+texto de la pantalla (frase 1, 4 palabras, no se copia): 0
+texto de la pantalla (frase 2, 4 palabras, no se copia): 0
+texto de la pantalla (frase 3, 4 palabras, no se copia): 0
+texto de la pantalla (frase 4, 4 palabras, no se copia): 0
+texto de la pantalla (frase 5, 4 palabras, no se copia): 0
+texto de la pantalla (frase 6, 4 palabras, no se copia): 0
+etiquetas del proceso de Habla (pid 1687):
+     48 libc
+     45 CameraInjector:
+     31 AudioRecordImpl:
+     27 com.shift.habla:
+     24 VRI[MainActivity]:
+     23 AudioStreamBuilder:
+     22 AudioCapabilities:
+     19 AdrenoVK-0:
+     16 HWUI
+     14 xlog_client:
+     14 AudioTrack:
+     12 AAudio
+     11 AdrenoGLES-0:
+     11 AAudioStream:
+      7 VideoCapabilities:
+      7 MiResource:
+      7 GraphicsEnvironment:
+      6 nativeloader:
+      6 cr_VAUtil:
+      6 cr_CombinedPProvider:

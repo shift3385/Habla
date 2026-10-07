@@ -1,0 +1,4 @@
+B3 · M10 · navegador: getUserMedia forzado a lanzar.
+  NotAllowedError → 1 llamada, mensaje «Sin permiso para el micrófono. Actívalo en Ajustes de Android → Apps → Habla → Permisos → Micrófono.»
+  NotReadableError (micro ocupado) → 2 llamadas (begin() reintenta una vez), mensaje «No se pudo abrir el micrófono. Cierra otras apps…»
+  Ningún stream parcial. Correcto.

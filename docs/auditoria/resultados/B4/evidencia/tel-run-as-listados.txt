@@ -1,0 +1,33 @@
+# run-as ls -la cache/ (solo nombres, tamaños, fechas)
+total 12
+drwxrws--x 4 u0_a410 u0_a410_cache 3452 2026-10-05 20:59 .
+drwx------ 9 u0_a410 u0_a410       3452 2026-10-02 22:09 ..
+drwx--S--- 3 u0_a410 u0_a410_cache 3452 2026-10-02 20:03 Crash Reports
+drwx--S--- 6 u0_a410 u0_a410_cache 3452 2026-10-02 20:03 WebView
+
+# run-as ls (raíz de datos, sin leer contenido)
+total 80
+drwx------   9 u0_a410 u0_a410        3452 2026-10-02 22:09 .
+drwxrwx--x 534 system  system        57344 2026-09-28 19:35 ..
+drwxrwx--x   2 u0_a410 u0_a410        3452 2026-10-02 20:03 app_textures
+drwx------   3 u0_a410 u0_a410        3452 2026-10-05 20:59 app_webview
+drwxrws--x   4 u0_a410 u0_a410_cache  3452 2026-10-05 20:59 cache
+drwxrws--x   2 u0_a410 u0_a410_cache  3452 2026-10-02 22:09 code_cache
+drwxrwx--x   2 u0_a410 u0_a410        3452 2026-10-05 18:35 files
+drwxrwx--x   3 u0_a410 u0_a410        3452 2026-10-02 20:03 no_backup
+drwxrwx--x   2 u0_a410 u0_a410        3452 2026-10-05 20:59 shared_prefs
+# shared_prefs (solo nombres)
+total 34
+drwxrwx--x 2 u0_a410 u0_a410  3452 2026-10-05 20:59 .
+drwx------ 9 u0_a410 u0_a410  3452 2026-10-02 22:09 ..
+-rw-rw---- 1 u0_a410 u0_a410   359 2026-10-05 12:07 AwOriginVisitLoggerPrefs.xml
+-rw-rw---- 1 u0_a410 u0_a410   221 2026-10-05 12:07 CapWebViewSettings.xml
+-rw-rw---- 1 u0_a410 u0_a410 14075 2026-10-05 20:53 CapacitorStorage.xml
+-rw-rw---- 1 u0_a410 u0_a410   409 2026-10-05 20:59 WebViewChromiumPrefs.xml
+# app_webview/Default (solo nombres)
+Cookies Cookies-journal IndexedDB Local Storage Network Persistent State PersistentOriginTrials Session Storage Shared Dictionary WebStorage blob_storage declarative_performance_observer.db declarative_performance_observer.db-journal shared_proto_db 
+# IndexedDB
+total 9
+drwx------  3 u0_a410 u0_a410 3452 2026-10-02 20:03 .
+drwx------ 10 u0_a410 u0_a410 3452 2026-10-05 20:59 ..
+drwx------  2 u0_a410 u0_a410 3452 2026-10-05 20:59 https_localhost_0.indexeddb.leveldb

@@ -1,0 +1,309 @@
+Activity Resolver Table:
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        12d5bb7 com.shift.habla/.MainActivity filter 8cbff24
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.LAUNCHER"
+
+Receiver Resolver Table:
+  Non-Data Actions:
+      android.intent.action.QUICKBOOT_POWERON:
+        70ca8d com.shift.habla/com.capacitorjs.plugins.localnotifications.LocalNotificationRestoreReceiver filter 3cb6442
+          Action: "android.intent.action.QUICKBOOT_POWERON"
+          Action: "android.intent.action.LOCKED_BOOT_COMPLETED"
+          Action: "android.intent.action.BOOT_COMPLETED"
+      androidx.profileinstaller.action.SAVE_PROFILE:
+        331fc53 com.shift.habla/androidx.profileinstaller.ProfileInstallReceiver filter 32f828e
+          Action: "androidx.profileinstaller.action.SAVE_PROFILE"
+      android.intent.action.LOCKED_BOOT_COMPLETED:
+        70ca8d com.shift.habla/com.capacitorjs.plugins.localnotifications.LocalNotificationRestoreReceiver filter 3cb6442
+          Action: "android.intent.action.QUICKBOOT_POWERON"
+          Action: "android.intent.action.LOCKED_BOOT_COMPLETED"
+          Action: "android.intent.action.BOOT_COMPLETED"
+      androidx.profileinstaller.action.INSTALL_PROFILE:
+        331fc53 com.shift.habla/androidx.profileinstaller.ProfileInstallReceiver filter 25be990
+          Action: "androidx.profileinstaller.action.INSTALL_PROFILE"
+      androidx.profileinstaller.action.SKIP_FILE:
+        331fc53 com.shift.habla/androidx.profileinstaller.ProfileInstallReceiver filter 7ac8289
+          Action: "androidx.profileinstaller.action.SKIP_FILE"
+      androidx.profileinstaller.action.BENCHMARK_OPERATION:
+        331fc53 com.shift.habla/androidx.profileinstaller.ProfileInstallReceiver filter cd60aaf
+          Action: "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+      android.intent.action.BOOT_COMPLETED:
+        70ca8d com.shift.habla/com.capacitorjs.plugins.localnotifications.LocalNotificationRestoreReceiver filter 3cb6442
+          Action: "android.intent.action.QUICKBOOT_POWERON"
+          Action: "android.intent.action.LOCKED_BOOT_COMPLETED"
+          Action: "android.intent.action.BOOT_COMPLETED"
+
+Domain verification status:
+
+Permissions:
+  Permission [com.shift.habla.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION] (1c541e6):
+    sourcePackage=com.shift.habla
+    uid=10410 gids=[] type=0 prot=signature
+    perm=PermissionInfo{52de612 com.shift.habla.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION}
+    flags=0x0
+
+Registered ContentProviders:
+  com.shift.habla/androidx.startup.InitializationProvider:
+    Provider{490a1e3 com.shift.habla/androidx.startup.InitializationProvider}
+  com.shift.habla/com.capacitorjs.plugins.localnotifications.LocalNotificationsAssetProvider:
+    Provider{b7a47e0 com.shift.habla/com.capacitorjs.plugins.localnotifications.LocalNotificationsAssetProvider}
+  com.shift.habla/androidx.core.content.FileProvider:
+    Provider{c370a99 com.shift.habla/androidx.core.content.FileProvider}
+
+ContentProvider Authorities:
+  [com.shift.habla.fileprovider]:
+    Provider{c370a99 com.shift.habla/androidx.core.content.FileProvider}
+      applicationInfo=ApplicationInfo{8f55327 com.shift.habla}
+  [com.shift.habla.localnotifications.fileprovider]:
+    Provider{b7a47e0 com.shift.habla/com.capacitorjs.plugins.localnotifications.LocalNotificationsAssetProvider}
+      applicationInfo=ApplicationInfo{6f479d4 com.shift.habla}
+  [com.shift.habla.androidx-startup]:
+    Provider{490a1e3 com.shift.habla/androidx.startup.InitializationProvider}
+      applicationInfo=ApplicationInfo{12ea77d com.shift.habla}
+
+Key Set Manager:
+  [com.shift.habla]
+      Signing KeySets: 312
+
+Packages:
+  Package [com.shift.habla] (b7acad):
+    appId=10410
+    pkg=Package{1e4b755 com.shift.habla}
+    codePath=/data/app/~~3DfBP8GYCoMObxGMXpT4VA==/com.shift.habla-cQ4Ga-0jpZ-FDde8_jJdIw==
+    resourcePath=/data/app/~~3DfBP8GYCoMObxGMXpT4VA==/com.shift.habla-cQ4Ga-0jpZ-FDde8_jJdIw==
+    legacyNativeLibraryDir=/data/app/~~3DfBP8GYCoMObxGMXpT4VA==/com.shift.habla-cQ4Ga-0jpZ-FDde8_jJdIw==/lib
+    extractNativeLibs=false
+    primaryCpuAbi=null
+    secondaryCpuAbi=null
+    cpuAbiOverride=null
+    versionCode=33 minSdk=24 targetSdk=36
+    minExtensionVersions=[]
+    versionName=5.8
+    hiddenApiEnforcementPolicy=2
+    usesNonSdkApi=false
+    isMiuiPreinstall=false
+    splits=[base]
+    apkSigningVersion=2
+    flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    privateFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PARTIALLY_DIRECT_BOOT_AWARE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    forceQueryable=false
+    pageSizeCompat=0
+    queriesIntents=[Intent { act=android.intent.action.TTS_SERVICE }]
+    scannedAsStoppedSystemApp=false
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2026-10-05 18:33:24
+    lastUpdateTime=2026-10-05 18:33:29
+    installerPackageName=null
+    installerPackageUid=-1
+    initiatingPackageName=com.android.shell
+    originatingPackageName=null
+    packageSource=1
+    appMetadataFilePath=null
+    appMetadataSource=0
+    signatures=PackageSignatures{8aa8ec6 version:2, signatures:[31db53d1], past signatures:[]}
+    installPermissionsFixed=false
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    privatePkgFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PARTIALLY_DIRECT_BOOT_AWARE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    apexModuleName=null
+    declared permissions:
+      com.shift.habla.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: prot=signature
+    requested permissions:
+      android.permission.POST_NOTIFICATIONS
+      android.permission.MODIFY_AUDIO_SETTINGS
+      android.permission.RECEIVE_BOOT_COMPLETED
+      android.permission.BLUETOOTH_CONNECT
+      android.permission.INTERNET
+      android.permission.USE_EXACT_ALARM
+      android.permission.SCHEDULE_EXACT_ALARM
+      android.permission.VIBRATE
+      android.permission.USE_BIOMETRIC
+      android.permission.RECORD_AUDIO
+      android.permission.WAKE_LOCK
+      com.shift.habla.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+    install permissions:
+      android.permission.MODIFY_AUDIO_SETTINGS: granted=true
+      android.permission.RECEIVE_BOOT_COMPLETED: granted=true
+      android.permission.INTERNET: granted=true
+      android.permission.USE_EXACT_ALARM: granted=true
+      android.permission.VIBRATE: granted=true
+      android.permission.USE_BIOMETRIC: granted=true
+      android.permission.WAKE_LOCK: granted=true
+      com.shift.habla.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: granted=true
+    User 0: ceDataInode=2008155 deDataInode=1986569 installed=true hidden=false suspended=false distractionFlags=0 stopped=true notLaunched=false enabled=0 instant=false virtual=false quarantined=false
+      installReason=4
+      dataDir=/data/user/0/com.shift.habla
+      firstInstallTime=2026-09-28 19:35:48
+      uninstallReason=0
+      overlay paths:
+        /product/overlay/GestureLineOverlay.apk
+        /data/resource-cache/com.android.systemui-neutral-3NfD.frro
+        /data/resource-cache/com.android.systemui-accent-DwD0.frro
+        /data/resource-cache/com.android.systemui-dynamic-xXjz.frro
+      legacy overlay paths:
+        /product/overlay/GestureLineOverlay.apk
+      gids=[3003]
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.BLUETOOTH_CONNECT: granted=true, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.RECORD_AUDIO: granted=true, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+    User 999: ceDataInode=0 deDataInode=0 installed=false hidden=false suspended=false distractionFlags=0 stopped=true notLaunched=true enabled=0 instant=false virtual=false quarantined=false
+      installReason=0
+      dataDir=null
+      firstInstallTime=1969-12-31 19:00:00
+      uninstallReason=0
+      gids=[3003]
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.BLUETOOTH_CONNECT: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.RECORD_AUDIO: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+
+Queries:
+  system apps queryable: false
+  queries via forceQueryable:
+  queries via package name:
+  queries via component:
+    [com.xiaomi.mtb,com.xiaomi.aiasst.vision,com.miui.bugreport,com.qualcomm.qti.xrvd.service,com.android.localtransport,com.miui.aod,com.android.DeviceAsWebcam,com.android.dynsystem,com.miui.face,com.miui.securitycore,com.xiaomi.misettings,com.android.server.telecom,com.miui.powerkeeper,com.xiaomi.mirror,com.miui.misightservice,miui.systemui.plugin,android,com.miui.screenrecorder,com.android.keychain,com.android.systemui,com.miui.cotaservice,com.xiaomi.barrage,com.bsp.catchlog,com.android.providers.settings,com.miui.qr,com.miui.notification,com.xiaomi.touchservice,com.qualcomm.qti.services.systemhelper,com.miui.cit,com.xiaomi.trustservice,com.miui.touchassistant,com.android.location.fused,com.xiaomi.mi_connect_service,com.android.settings,com.android.inputdevices,com.miui.securitycenter,com.miui.audiomonitor,com.android.provision,com.miui.daemon,vendor.qti.frameworks.utils,com.xiaomi.joyose]:
+      com.shift.habla
+    com.android.thememanager:
+      com.shift.habla
+    com.antutu.ABenchMark:
+      com.shift.habla
+    com.miui.gallery:
+      com.shift.habla
+    com.mi.globalbrowser:
+      com.shift.habla
+    com.miui.euicc:
+      com.shift.habla
+    com.miui.player:
+      com.shift.habla
+    com.xiaomi.calendar:
+      com.shift.habla
+    com.google.android.as.oss:
+      com.shift.habla
+    com.android.settings.intelligence:
+      com.shift.habla
+    com.mi.appfinder:
+      com.shift.habla
+    com.xiaomi.glgm:
+      com.shift.habla
+    com.miui.global.packageinstaller:
+      com.shift.habla
+    com.xiaomi.mipicks:
+      com.shift.habla
+    com.miui.msa.global:
+      com.shift.habla
+    com.xiaomi.account:
+      com.shift.habla
+    com.miui.videoplayer:
+      com.shift.habla
+    com.xiaomi.payment:
+      com.shift.habla
+    com.xiaomi.simactivate.service:
+      com.shift.habla
+    com.miui.weather2:
+      com.shift.habla
+    com.xiaomi.midrop:
+      com.shift.habla
+    com.miui.android.fashiongallery:
+      com.shift.habla
+    com.mi.global.pocobbs:
+      com.shift.habla
+    com.miui.notes:
+      com.shift.habla
+    com.mi.global.pocostore:
+      com.shift.habla
+    com.android.soundrecorder:
+      com.shift.habla
+    com.logame.eliminateintruder3d:
+      com.shift.habla
+    com.nf.snake:
+      com.shift.habla
+    com.whatsapp.w4b:
+      com.shift.habla
+    com.cleaner.booster.battery.security.master:
+      com.shift.habla
+    com.camerasideas.instashot:
+      com.shift.habla
+    com.snaptube.premium:
+      com.shift.habla
+    com.dewmobile.kuaiya.play:
+      com.shift.habla
+    com.wallet.crypto.trustapp:
+      com.shift.habla
+    com.facebook.orca:
+      com.shift.habla
+    cc.relive.reliveapp:
+      com.shift.habla
+    com.whatsapp:
+      com.shift.habla
+    com.xiaomi.smarthome:
+      com.shift.habla
+    cu.flutter_proyects.nauta_pro:
+      com.shift.habla
+    com.xiaomi.aicr:
+      com.shift.habla
+    com.mi.globalminusscreen:
+      com.shift.habla
+    com.pdfreader.free.viewer.documentreader:
+      com.shift.habla
+    com.instagram.android:
+      com.shift.habla
+    com.mi.global.shop:
+      com.shift.habla
+    com.style.sticker:
+      com.shift.habla
+    com.wifi.signal.wifisignalmeter.wifisignalbooster:
+      com.shift.habla
+    com.nordvpn.android:
+      com.shift.habla
+    com.facebook.katana:
+      com.shift.habla
+    autoclicker.clicker.autoclickerapp.autoclickerforgames:
+      com.shift.habla
+    com.xm.adorcam:
+      com.shift.habla
+    com.oceanwing.soundcore:
+      com.shift.habla
+    net.poweroak.bluetticloud:
+      com.shift.habla
+    ghost.shooting.sniper.real3d.action.free.android:
+      com.shift.habla
+    com.aigrind.skylore:
+      com.shift.habla
+    com.snowcorp.stickerly.android:
+      com.shift.habla
+    com.zhiliaoapp.musically:
+      com.shift.habla
+    video.like:
+      com.shift.habla
+    eu.faircode.netguard:
+      com.shift.habla
+  queryable via interaction:
+    User 0:
+      [com.xiaomi.mtb,com.xiaomi.aiasst.vision,com.miui.bugreport,com.qualcomm.qti.xrvd.service,com.android.localtransport,com.miui.aod,com.android.DeviceAsWebcam,com.android.dynsystem,com.miui.face,com.miui.securitycore,com.xiaomi.misettings,com.android.server.telecom,com.miui.powerkeeper,com.xiaomi.mirror,com.miui.misightservice,miui.systemui.plugin,android,com.miui.screenrecorder,com.android.keychain,com.android.systemui,com.miui.cotaservice,com.xiaomi.barrage,com.bsp.catchlog,com.android.providers.settings,com.miui.qr,com.miui.notification,com.xiaomi.touchservice,com.qualcomm.qti.services.systemhelper,com.miui.cit,com.xiaomi.trustservice,com.miui.touchassistant,com.android.location.fused,com.xiaomi.mi_connect_service,com.android.settings,com.android.inputdevices,com.miui.securitycenter,com.miui.audiomonitor,com.android.provision,com.miui.daemon,vendor.qti.frameworks.utils,com.xiaomi.joyose]:
+        com.shift.habla
+      [com.google.android.gms,com.google.android.gsf]:
+        com.shift.habla
+      com.android.camera:
+        com.shift.habla
+      com.google.android.inputmethod.latin:
+        com.shift.habla
+      com.google.android.webview:
+        com.shift.habla
+      com.shift.habla:
+        com.google.android.webview
+    User 999:
+  queryable via uses-library:
+
+Dexopt state:
+  [com.shift.habla]
+    path: /data/app/~~3DfBP8GYCoMObxGMXpT4VA==/com.shift.habla-cQ4Ga-0jpZ-FDde8_jJdIw==/base.apk
+      arm64: [status=run-from-apk] [reason=unknown] [primary-abi]
+        [location is error]
+    base APK odex file size: Oops,Some thing wrong when get dex file output paths!
+
+Compiler stats:
+  [com.shift.habla]
+     base.apk - 619

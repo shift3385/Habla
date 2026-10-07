@@ -1,0 +1,60 @@
+
+> habla@0.0.0 build
+> tsc -b && vite build
+
+[36mvite v8.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+Found 1 warning while optimizing generated CSS:
+
+[2m│   max-width: 640px;[22m
+[2m│ }[22m
+[2m│[22m html[data-landscape] .shell:not(:has(.mp-page)) > .relative.z-[2] {
+[2m┆[22m                                                                [33m[2m^--[22m No qualified name in attribute selector: Number { has_sign: false, value: 2.0, int_value: Some(2) }.[39m
+[2m┆[22m
+[2m│   margin-inline: auto;[22m
+[2m│   max-width: 640px;[22m
+
+✓ 155 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                             0.54 kB │ gzip:   0.33 kB
+dist/assets/outfit-latin-ext-500-normal-zeox_O30.woff2      6.24 kB
+dist/assets/outfit-latin-ext-400-normal-5tcqmc2S.woff2      6.38 kB
+dist/assets/outfit-latin-ext-300-normal-BYS6Dpvq.woff2      6.38 kB
+dist/assets/outfit-latin-ext-700-normal-CI4iH74K.woff2      6.48 kB
+dist/assets/outfit-latin-ext-600-normal-B85nYjL1.woff2      6.52 kB
+dist/assets/outfit-latin-ext-500-normal-DrCvqoFD.woff       8.49 kB
+dist/assets/outfit-latin-ext-300-normal-CMIMshEd.woff       8.54 kB
+dist/assets/outfit-latin-ext-400-normal-DHm7mdGe.woff       8.64 kB
+dist/assets/outfit-latin-ext-600-normal-CWJcPgd7.woff       8.75 kB
+dist/assets/outfit-latin-ext-700-normal-fjS8-Gm7.woff       8.78 kB
+dist/assets/outfit-latin-500-normal-DKnIMDSk.woff2         13.52 kB
+dist/assets/outfit-latin-300-normal-CRYTwY6m.woff2         13.95 kB
+dist/assets/outfit-latin-400-normal-BGsTXAXT.woff2         14.03 kB
+dist/assets/outfit-latin-700-normal-Cu9v6i1X.woff2         14.06 kB
+dist/assets/outfit-latin-600-normal-B7SfZ07L.woff2         14.14 kB
+dist/assets/outfit-latin-500-normal-ClnHRwRh.woff          17.68 kB
+dist/assets/outfit-latin-300-normal-AWLfuCom.woff          18.19 kB
+dist/assets/outfit-latin-400-normal-DMwTpYkH.woff          18.23 kB
+dist/assets/outfit-latin-700-normal-D4itBLBr.woff          18.34 kB
+dist/assets/outfit-latin-600-normal-BEfTtDA7.woff          18.41 kB
+dist/assets/index-BxyTAhnT.css                             42.44 kB │ gzip:   8.94 kB
+dist/assets/web-BYqtTNSW.js                                 0.36 kB │ gzip:   0.24 kB
+dist/assets/web-CrwmnUFH.js                                 0.84 kB │ gzip:   0.40 kB
+dist/assets/web-CnLRbnLd.js                                 0.89 kB │ gzip:   0.45 kB
+dist/assets/web-ByaX8gVK.js                                 1.19 kB │ gzip:   0.54 kB
+dist/assets/web-hBbP5Vmp.js                                 1.68 kB │ gzip:   0.69 kB
+dist/assets/web-DG3jD0lN.js                                 4.44 kB │ gzip:   1.28 kB
+dist/assets/web-D_vgIOva.js                                 8.43 kB │ gzip:   2.81 kB
+dist/assets/index-IwB203qI.js                           1,288.73 kB │ gzip: 396.83 kB
+
+[32m✓ built in 700ms[39m
+[33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+
+real	0m9.318s
+user	0m0.151s
+sys	0m0.138s

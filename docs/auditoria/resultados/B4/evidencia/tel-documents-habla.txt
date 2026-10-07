@@ -1,0 +1,2 @@
+total 20
+-rw-rw---- 1 u0_a253 media_rw 18273 2026-10-01 20:20 habla-backup-2026-10-02.json

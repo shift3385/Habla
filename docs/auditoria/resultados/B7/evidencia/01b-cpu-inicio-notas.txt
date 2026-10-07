@@ -1,0 +1,17 @@
+POCO 23122PCD1G · APK v5.8 build 33 (lastUpdateTime 2026-10-05 22:13:08, DEBUGGABLE) · app pid 10894, renderer WebView pid 20165 (u0_i9250, uid aislado de 10410)
+Pantalla: Inicio/bienvenida de vuelta («Welcome back… Continuar donde lo dejé»), quieta, sin tocar. Cargador conectado (AC), mStayOn=true.
+Método: /proc/<pid>/stat utime+stime (ticks de 10 ms) con arnes/cpu7.sh; 100 ticks/s = 100 % de un núcleo. Pantalla a 60 Hz (mActiveSfDisplayMode 60 Hz; modos 60/90/120).
+
+22:53 · 60 s en reposo: app 204 %/s, renderer 87 %/s; gfxinfo: 10 592 fotogramas en ~60 s, 50.º percentil 25 ms, 90.º 32 ms.
+top -H (instantáneo): RenderThread 48 %, Chrome_InProcGpu 34 %, VizWebView 34 %, hilo principal 17 %, IO 7 %; renderer: CrRendererMain 36 %, Compositor 21 %.
+anim7.js: 3 animaciones CSS infinitas (hb-drift en los 3 «blobs» de Background.tsx), requestAnimationFrame 60 llamadas/s (1 mascota).
+
+Atribución (01-cpu-atribucion-inicio.txt, 30 s por modo):
+  base            app 136 %  renderer 47 %  3640 fotogramas
+  css pausado     app 134 %  renderer 42 %  3618
+  rAF congelado   app 105 %  renderer 10 %  3514
+  ambos           app   0 %  renderer  0 %     0
+=> sin animaciones la app no gasta nada; la mascota sola mantiene ~1 núcleo+; las manchas desenfocadas solas, otro ~1 núcleo.
+
+22:59 · clase reanudada en reposo 30 s (02-cpu-clase.txt): app 191 %, renderer 100 %; 3174 fotogramas; 50.º percentil 44 ms, 90.º 53 ms;
+  anim7: 4 animaciones infinitas (3 hb-drift + card-glow), rAF 99 llamadas/s con 49,5 fps efectivos.

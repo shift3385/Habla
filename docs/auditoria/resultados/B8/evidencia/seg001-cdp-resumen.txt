@@ -1,0 +1,1 @@
+{"gemini":"len 39","azure":"len 84","spSecret":"vacía","lockOnOpen":[]}

@@ -1,0 +1,1529 @@
+diff --git a/CLAUDE.md b/CLAUDE.md
+index 3f7204b..e52e6f5 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -5,7 +5,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
+ - **Dueño:** un ingeniero de software hispanohablante (nivel B1, habla A2) que aprende inglés. **Responde siempre en español.**
+ - **Usuarios reales:** el dueño (teléfono POCO), su madre (Samsung Galaxy A11 con la pantalla dañada; usa horizontal forzado) y algunas amistades. Se distribuye **copiando el APK a mano**: no está en ninguna tienda.
+ - **Alcance actual:** cada persona usa **su propia clave** de Gemini (y opcionalmente de Azure), que se guarda solo en su teléfono. No hay backend ni cuentas.
+-- **Versión actual:** 5.8 (build 33). Repo privado: `https://github.com/shift3385/Habla`.
++- **Versión actual:** 5.8 (build 33) distribuida; 5.8.1 (build 34) «Micrófono seguro» hecha en código y en revisión (`docs/correccion/ESTADO.md`). Repo privado: `https://github.com/shift3385/Habla`.
+ 
+ ## Stack
+ 
+@@ -18,7 +18,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
+ | Repaso espaciado | `ts-fsrs` 5 |
+ | IA | Google Gemini (REST `generativelanguage.googleapis.com`) con la clave del usuario; Azure Speech REST (opcional); Azure Monitor (opcional) |
+ | Lint | `oxlint` (`.oxlintrc.json`). **No hay Prettier configurado** (ver Convenciones) |
+-| Tests | **No hay tests automatizados en el repo** (ver «Pruebas») |
++| Tests | `npm test`: `node:test` + Vite `ssrLoadModule` en `tests/` (desde la 5.8.1; de momento solo el Recorder). Ver «Pruebas» |
+ 
+ ## Estructura
+ 
+@@ -85,6 +85,8 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
+ | Tipos | `npx tsc -b` |
+ | Lint | `npm run lint` (debe quedar con **0 errores**; hay ~6 avisos antiguos en Calibration/Conversation/Settings) |
+ | Validar el banco del test | `node scripts/validate-bank.mjs` |
++| Tests | `npm test` (archivos `tests/**/*.test.mjs`) |
++| Comprobar que el Java compila | `cd android; .\gradlew.bat :app:compileDebugJavaWithJavac --offline -q` (no empaqueta: `assembleDebug` copia el APK a `apk/` y pisa el de la versión) |
+ | Compilar la web | `npm run build` |
+ | APK (forma fiable) | `npm run build; npx cap sync android; cd android; .\gradlew.bat assembleDebug --offline -q; cd ..` → `apk\Habla-v<versión>.apk` |
+ | Instalar en un teléfono | `adb -s <serie> install -r apk\Habla-v<versión>.apk` (`-r` conserva los datos) |
+@@ -93,9 +95,9 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
+ 
+ ### Pruebas
+ 
+-- No hay suite automatizada en el repo. Durante el desarrollo se usaron **scripts de prueba temporales** con este patrón: un `.mjs` que crea un servidor Vite en `middlewareMode` y carga el módulo con `server.ssrLoadModule('/src/lib/xxx.ts')` para probar funciones puras (`placement`, `pronunciation`, `phonetics`, `azureUsage`, `mascotTips`…). Se copiaban a la raíz como `.tmp-*.mjs`, se ejecutaban y se borraban. Esos scripts **ya no existen**: si hacen falta, recréalos (o, mejor, añade un runner de tests de verdad).
++- **`npm test`** (desde la 5.8.1): `node --test` sobre `tests/**/*.test.mjs`. `tests/helpers/vite.mjs` carga módulos de `src/` con un servidor Vite en `middlewareMode` (`loadFresh()` da estado de módulo limpio) y `tests/helpers/mic-mocks.mjs` simula `getUserMedia`, `MediaRecorder` y `AudioContext`. Hoy cubre el Recorder (AUD-MIC-301/302/304/800); añade aquí las pruebas de `levels`, `bank`, `placement`, `fluency`, `backup` (AUD-ARQ-113). Sin dependencias nuevas (nada de Vitest/Jest).
+ - Pruebas manuales en el **teléfono real** por USB: ver `docs/configuracion.md` (CDP, audio falso, varios dispositivos).
+-- Antes de compilar una entrega: `npx tsc -b`, `npm run lint`, `node scripts/validate-bank.mjs` y prueba local de lo cambiado.
++- Antes de compilar una entrega: `npx tsc -b`, `npm run lint`, `npm test`, `node scripts/validate-bank.mjs` y prueba local de lo cambiado.
+ 
+ ## Convenciones
+ 
+@@ -118,7 +120,7 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
+ 4. **Prueba antes de compilar** y solo compila un entregable cuando lo cambiado pase las revisiones. El dueño es muy exigente y quiere evidencias (capturas, medidas).
+ 5. **No pierdas datos de los usuarios:** instala siempre con `adb install -r`. Antes de cualquier cosa arriesgada en un teléfono ajeno (p. ej. el de su madre), haz copia del estado.
+ 6. **Política de niveles:** las lecciones solo **proponen**; solo el re-test cambia el nivel (70 % test + 30 % trayectoria). El primer test fija el nivel. Ver `docs/decisiones.md`.
+-7. **Siguiente trabajo previsto:** v5.8.1 «Micrófono seguro» (P0 de la auditoría). Lee `docs/auditoria/resultados/INFORME.md` §8 antes de empezar.
++7. **Siguiente trabajo previsto:** cerrar la v5.8.1 «Micrófono seguro» (revisión en PC, prueba en el POCO con `docs/correccion/REVISOR-MOVIL.md`, APK y commit aprobados por el dueño) y después la v5.8.2 «Claves, datos y consumo». Estado y reglas en `docs/correccion/ESTADO.md` y `REGLAS.md`; plan en `docs/auditoria/resultados/INFORME.md` §8.
+ 8. **Con varios teléfonos conectados**, usa siempre `adb -s <serie>` o `ANDROID_SERIAL`. No toques el teléfono de otra persona sin que el dueño lo pida.
+ 
+ ## Documentación relacionada
+diff --git a/android/app/src/main/java/com/shift/habla/MainActivity.java b/android/app/src/main/java/com/shift/habla/MainActivity.java
+index b52e253..f8fd230 100644
+--- a/android/app/src/main/java/com/shift/habla/MainActivity.java
++++ b/android/app/src/main/java/com/shift/habla/MainActivity.java
+@@ -6,6 +6,9 @@ import android.webkit.WebView;
+ import com.getcapacitor.BridgeActivity;
+ 
+ public class MainActivity extends BridgeActivity {
++    /** Cliente del WebView con la red de seguridad del micrófono (AUD-MIC-308). */
++    private HablaChromeClient chrome;
++
+     @Override
+     public void onCreate(Bundle savedInstanceState) {
+         // Plugin propio: elegir por dónde se escucha y se habla (auriculares o teléfono).
+@@ -15,19 +18,34 @@ public class MainActivity extends BridgeActivity {
+         // Plugin propio: orientación forzada (vertical u horizontal) elegida en Ajustes.
+         registerPlugin(OrientationPlugin.class);
+         super.onCreate(savedInstanceState);
++        // Sustituye al BridgeWebChromeClient de Capacitor por uno que hereda todo (permisos, selector de archivos…)
++        // y deniega el micrófono en segundo plano. Se crea aquí, antes de onStart, porque registra un
++        // ActivityResultLauncher para el diálogo de permisos.
++        WebView wv = bridge != null ? bridge.getWebView() : null;
++        if (wv != null) {
++            chrome = new HablaChromeClient(bridge);
++            wv.setWebChromeClient(chrome);
++        }
+     }
+ 
+     /**
+      * Batería (NC-14): con la app en segundo plano, el WebView queda inactivo. onPause() detiene animaciones
+      * (la mascota se dibuja en cada fotograma) y pauseTimers() congela los temporizadores de JavaScript.
+      * Se hace en onStop (la app ya no se ve), no en onPause, para no congelarla con un simple diálogo del sistema.
+-     * Antes de esto, el JavaScript ya recibió el aviso de "pausa" y cerró el micrófono y la voz.
++     *
++     * Micrófono (AUD-MIC-308): el aviso de Capacitor al JavaScript es asíncrono y puede no llegar a ejecutarse
++     * (hilo JS ocupado). Por eso, además: 1) desde aquí se deniega cualquier micrófono nuevo (HablaChromeClient);
++     * 2) se llama directamente a window.__hablaBackground() (lifecycle.ts: cierra micros y voz, guarda la clase),
++     * sin pasar por los avisos de los plugins. Cortar una captura ya abierta solo lo puede hacer el JavaScript:
++     * Android no tiene API para ello (WebView.onPause() no la detiene).
+      */
+     @Override
+     public void onStop() {
+         super.onStop();
++        if (chrome != null) chrome.setBackground(true);
+         WebView wv = bridge != null ? bridge.getWebView() : null;
+         if (wv != null) {
++            wv.evaluateJavascript("window.__hablaBackground && window.__hablaBackground()", null);
+             wv.onPause();
+             wv.pauseTimers();
+         }
+@@ -36,6 +54,7 @@ public class MainActivity extends BridgeActivity {
+     @Override
+     public void onStart() {
+         super.onStart();
++        if (chrome != null) chrome.setBackground(false);
+         WebView wv = bridge != null ? bridge.getWebView() : null;
+         if (wv != null) {
+             wv.resumeTimers();
+diff --git a/docs/estado-actual.md b/docs/estado-actual.md
+index 59398ee..3e35bd2 100644
+--- a/docs/estado-actual.md
++++ b/docs/estado-actual.md
+@@ -1,4 +1,6 @@
+-# Estado actual (2026-10-06, v5.8 build 33)
++# Estado actual (2026-10-06, v5.8.1 build 34 en preparación)
++
++> **v5.8.1 «Micrófono seguro»:** código hecho y probado en PC (tipos, lint, `npm test` 17/17, Java compilado), **sin commit, sin APK y sin probar en el teléfono**. Seguimiento en `docs/correccion/ESTADO.md` y detalle en `docs/correccion/NC-v5.8.1.md`. Lo de abajo describe la v5.8 distribuida.
+ 
+ Último commit funcional: `16e6240` (el test se retoma donde quedó y el paso de Habla tiene scroll en horizontal). APK distribuido: `apk/Habla-v5.8.apk`, instalado en el POCO del dueño y repartido a sus amistades. En el Galaxy A11 de la madre hay una compilación de la 5.8 de unos minutos antes de ese commit: solo le faltan dos líneas de texto en Novedades, por lo demás es igual.
+ 
+@@ -51,7 +53,7 @@ Hay una **auditoría QA completa de la v5.8** en `docs/auditoria/resultados/INFO
+ 
+ ## ⏳ Pendiente (por orden previsto)
+ 
+-1. **v5.8.1 «Micrófono seguro» (P0, bloquea cualquier otra entrega):** recorder reentrante y cancelable (doble toque, Inicio durante la apertura), guarda en `start()`, cierre del dictado del Debate al volver, red de seguridad nativa en `onPause`/`onStop`, `fallback()` sin falsos «micro mudo», tests del Recorder. Detalle en `INFORME.md` §8.2.
++1. **v5.8.1 «Micrófono seguro» (P0):** implementada y en revisión (ver `docs/correccion/NC-v5.8.1.md`): recorder reentrante y cancelable, guarda del segundo dedo, dictado que se cancela al volver, red nativa en `onStop`, `fallback()` con 1 reintento y sin perder la cancelación de eco, primeros tests (`npm test`). Falta: revisión, prueba en el POCO (arneses B3/B8/ORQ), APK y commit.
+ 2. **v5.8.2 «Claves, datos y consumo» (P1):**
+    - APK *release* no depurable;
+    - validar el Resource ID de Azure y pedir la huella al cambiar tenant, client o resource;
+@@ -66,7 +68,7 @@ Hay una **auditoría QA completa de la v5.8** en `docs/auditoria/resultados/INFO
+    - salida del re-test y limpieza de borradores huérfanos;
+    - permisos de notificación guiados;
+    - importar con resumen y copia previa.
+-4. **Backlog técnico:** CSP, `AbortController` en las peticiones, dividir el bundle de 1,3 MB, refactor de pantallas grandes (Calibration, Conversation, Settings), **suite de tests automatizados**.
++4. **Backlog técnico:** CSP, `AbortController` en las peticiones, dividir el bundle de 1,3 MB, refactor de pantallas grandes (Calibration, Conversation, Settings), **ampliar los tests** (ya hay runner y pruebas del Recorder desde la 5.8.1).
+ 5. **Ideas aprobadas o a debatir sin implementar** (ver `BACKLOG.md`):
+    - voz del profe más humana (TTS en la nube con emociones);
+    - shadowing de pronunciación;
+diff --git a/docs/problemas-conocidos.md b/docs/problemas-conocidos.md
+index 5cc6ea7..a97153c 100644
+--- a/docs/problemas-conocidos.md
++++ b/docs/problemas-conocidos.md
+@@ -6,9 +6,8 @@ La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/
+ 
+ | Prioridad | Problema | Dónde |
+ |---|---|---|
+-| **P0 · Crítico** | **Micrófono huérfano:** dos aperturas seguidas (doble toque en «Dictar por voz», micro del test o del Repaso) dejan un stream y un `MediaRecorder` sueltos que siguen captando, incluso en segundo plano. Solo los mata forzar el cierre (AUD-MIC-302) | `src/lib/recorder.ts`, `TopicAskPage.tsx`, `Calibration.tsx`, `ReviewScreen.tsx` |
+-| **P0 · Crítico** | **`open()` del micro no se puede cancelar:** si se pulsa Inicio justo mientras se abre (~0,5 s), `fallback()` lo reabre solo, fuera de control (AUD-MIC-301) | `recorder.ts` |
+-| **Alto** | **Debate:** volver con «Atrás» del paso 2 al 1 mientras se dicta deja grabando, y ese audio puede enviarse a Gemini (AUD-MIC-303) | `TopicAskPage.tsx` |
++| ~~P0~~ **Corregido en 5.8.1 (pendiente de prueba en el teléfono)** | Micrófono huérfano por doble toque (AUD-MIC-302), `open()` no cancelable (AUD-MIC-301), Debate grabando tras «Atrás» (AUD-MIC-303), segundo dedo (AUD-MIC-304), `fallback()` en silencio sin cancelación de eco (AUD-MIC-800), red nativa (AUD-MIC-308). Detalle en `docs/correccion/NC-v5.8.1.md` | `recorder.ts`, `TopicAskPage.tsx`, `TalkButton.tsx`, `MainActivity.java`, `HablaChromeClient.java` |
++| Medio | **Micro ya abierto con el hilo JS bloqueado:** Android no tiene API para cortar desde Java una captura que el WebView ya abrió; la red nativa de la 5.8.1 solo deniega aperturas nuevas en segundo plano. Si el JS está bloqueado, la captura sigue hasta que se libera (Android la silencia a los ~5 s) (resto de AUD-MIC-308) | `MainActivity.java`, `lifecycle.ts` |
+ | **Alto** | **APK depurable:** cualquier PC con la depuración USB autorizada lee las claves (Gemini, Azure, secreto de Monitor) sin huella. La huella solo protege la pantalla (AUD-SEG-001) | build *debug* |
+ | Medio | **Micro abierto toda la clase** (punto verde, modo llamada) aunque no se hable (AUD-MIC-305). Es una decisión de diseño pendiente para la 5.9 | `Conversation.tsx` |
+ | Medio | **Importar no valida:** una copia vacía borra el progreso diciendo «Importado ✓»; una mal formada deja la app en negro (AUD-SEG-501, AUD-RES-704) | `backup.ts`, arranque en `App.tsx` |
+@@ -34,7 +33,9 @@ La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/
+ 
+ ## 4. Partes frágiles del código
+ 
+-- **`recorder.ts`**: es el origen de los P0. No toques el flujo de apertura y cierre sin leer la auditoría (B3, B8).
++- **`recorder.ts`**: fue el origen de los P0 de la 5.8. Desde la 5.8.1, `open()`/`begin()` comparten la apertura en curso, devuelven `false` si se cancelaron y `close()` sube una generación que cada `await` comprueba. Cualquier `await` nuevo dentro de la apertura **debe** comprobar `cancelled()` al volver y no tocar `this.stream` si cambió. Ejecuta `npm test` tras tocarlo.
++- **`lifecycle.ts` y el aviso `pause`:** desde la 5.8.1 el `pause` de Capacitor (Activity.onPause) no cierra micros (llega con el diálogo de permiso y cancelaría la apertura). El segundo plano real es `appStateChange`, `visibilitychange`, `pagehide` y `window.__hablaBackground()` desde `MainActivity.onStop`.
++- **`gradlew assembleDebug` copia el APK a `apk/`** con el nombre de la versión: compilar para probar pisa el APK entregado de esa versión. Para comprobar que el Java compila usa `:app:compileDebugJavaWithJavac --offline`.
+ - **`Calibration.tsx` (~1300 líneas)** y **`Conversation.tsx`** son enormes, con mucho estado en `useState` y `useRef`. En `Conversation`, el `useCallback` de `askTeacher` tiene dependencias que faltan (`startPronunciation`, `persist`): funciona porque esas funciones leen refs (`settingsRef`), pero un cambio que dependa del estado capturado puede romperse en silencio.
+ - **Retomar el test (`testDraft.ts`, clave `progress`):** solo se retoma en gramática, resúmenes y habla. Si la app se cierra a mitad de un texto de lectura o de un audio de escucha, se vuelve al último resumen y ese ítem se repite. `restore()` reconstruye la lista de preguntas vistas a partir de los datos guardados; si cambias cómo se llena `used.current`, revisa también `restore()`.
+ - **Rescate de estado por CDP:** para rescatar el test de la madre se leyeron los hooks de React por su **posición** en la lista (índices 7, 8, 10, 11, 23, 24, 31…). Cualquier cambio en el orden de los `useState` y `useRef` de `Calibration.tsx` invalida esos índices. Es una técnica de emergencia, no una API.
+@@ -47,7 +48,7 @@ La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/
+ 
+ ## 5. Deuda técnica
+ 
+-- **0 tests automatizados.** Los scripts de prueba usados durante el desarrollo (Vite `ssrLoadModule`) eran temporales y no están en el repo.
++- **Pocos tests automatizados.** Desde la 5.8.1 hay runner (`npm test`: `node:test` + Vite `ssrLoadModule`, en `tests/`) con 17 pruebas del Recorder y micro simulado. Faltan `levels`, `bank`, `placement`, `fluency` y `backup` (AUD-ARQ-113).
+ - **Bundle único de ~1,3 MB** (el aviso de Vite «chunk larger than 500 kB» es esperado).
+ - **Prettier no configurado.** Si se ejecuta sin opciones reformatea con comillas dobles y punto y coma. Usa `--no-semi --single-quote --print-width 150 --trailing-comma all`.
+ - **Finales de línea mezclados (CRLF y LF).**
+diff --git a/package.json b/package.json
+index a89bdb0..3fed30a 100644
+--- a/package.json
++++ b/package.json
+@@ -8,6 +8,7 @@
+     "build": "tsc -b && vite build",
+     "lint": "oxlint",
+     "preview": "vite preview",
++    "test": "node --test \"tests/**/*.test.mjs\"",
+     "apk": "npm run build && cap sync android && cd android && gradlew.bat assembleDebug"
+   },
+   "dependencies": {
+diff --git a/src/components/TalkButton.tsx b/src/components/TalkButton.tsx
+index 36c07f6..bb231a8 100644
+--- a/src/components/TalkButton.tsx
++++ b/src/components/TalkButton.tsx
+@@ -2,6 +2,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics'
+ import { useEffect, useRef, useState, type ReactNode } from 'react'
+ import { Icon } from '../ui/icons'
+ import Wave from '../ui/Wave'
++import { isOwnPointer, pointerDownAction } from './talkGesture'
+ 
+ export type Phase = 'starting' | 'idle' | 'recording' | 'transcribing' | 'thinking' | 'speaking'
+ 
+@@ -52,7 +53,8 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
+   // El bloqueo solo vale mientras se graba; si la grabación acaba por otra vía (error, envío), deja de aplicar.
+   const locked = lockedRaw && recording
+   const [drag, setDrag] = useState({ x: 0, y: 0 })
+-  const gesture = useRef({ active: false, x0: 0, y0: 0, done: false })
++  // `id` = pointerId del dedo que manda (AUD-MIC-304: los demás dedos se ignoran).
++  const gesture = useRef({ active: false, x0: 0, y0: 0, done: false, id: -1 })
+ 
+   const reset = () => {
+     gesture.current.active = false
+@@ -78,10 +80,17 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
+   const left = maxSeconds ? Math.max(0, maxSeconds - elapsed) : null
+   const time = left !== null ? `quedan ${clock(left)}` : clock(elapsed)
+ 
++  // REV-T2-1: si el gesto se quedara «activo» (un pointerup perdido), al pasar a procesar o pensar se suelta, para que
++  // la guarda de otros dedos no bloquee el botón en el turno siguiente.
++  useEffect(() => {
++    if (busy) gesture.current.active = false
++  }, [busy])
++
+   const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+-    if (busy) return
+-    if (locked) {
+-      // Grabación bloqueada: este toque envía.
++    // Reglas de los dedos en talkGesture.ts (AUD-MIC-304, REV-T2-1).
++    const action = pointerDownAction(gesture.current, e.pointerId, { busy, locked, recording })
++    if (action === 'ignore') return
++    if (action === 'send') {
+       setLocked(false)
+       onRelease()
+       return
+@@ -92,13 +101,13 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
+       // Algunos WebView no lo permiten; soltar fuera del botón igual llega por pointercancel.
+     }
+     setLocked(false)
+-    gesture.current = { active: true, x0: e.clientX, y0: e.clientY, done: false }
++    gesture.current = { active: true, x0: e.clientX, y0: e.clientY, done: false, id: e.pointerId }
+     onPress()
+   }
+ 
+   const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+     const g = gesture.current
+-    if (!g.active || g.done) return
++    if (!isOwnPointer(g, e.pointerId) || g.done) return
+     const dy = Math.max(0, g.y0 - e.clientY)
+     const dx = Math.max(0, g.x0 - e.clientX)
+     setDrag({ x: dx, y: dy })
+@@ -115,9 +124,9 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
+     }
+   }
+ 
+-  const onPointerUp = () => {
++  const onPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+     const g = gesture.current
+-    if (!g.active) return
++    if (!isOwnPointer(g, e.pointerId)) return
+     reset()
+     if (!g.done) onRelease()
+   }
+@@ -186,6 +195,7 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
+           onPointerMove={onPointerMove}
+           onPointerUp={onPointerUp}
+           onPointerCancel={onPointerUp}
++          onLostPointerCapture={onPointerUp}
+           onContextMenu={(e) => e.preventDefault()}
+           className="no-select grid h-[88px] w-[88px] place-items-center rounded-full disabled:opacity-60"
+           style={{
+diff --git a/src/components/TopicAskPage.tsx b/src/components/TopicAskPage.tsx
+index 5566ce1..f55c9b3 100644
+--- a/src/components/TopicAskPage.tsx
++++ b/src/components/TopicAskPage.tsx
+@@ -38,42 +38,74 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
+   const [mic, setMic] = useState<'idle' | 'recording' | 'writing'>('idle')
+   const [micHint, setMicHint] = useState<string | null>(null)
+   const recorder = useRef<Recorder | null>(null)
+-  useEffect(() => () => recorder.current?.close(), [])
++  // AUD-MIC-303: cada dictado pertenece a una «vuelta»; salir del paso, cerrar la hoja o desmontar la anula.
++  // Un dictado anulado no empieza a grabar (aunque el micro termine de abrirse después) ni se envía a Gemini.
++  const run = useRef(0)
++  const abandon = () => {
++    run.current++
++    recorder.current?.close() // cancela también una apertura en curso (T1)
++    setMic('idle')
++  }
++  useEffect(
++    () => () => {
++      run.current++
++      recorder.current?.close()
++    },
++    [],
++  )
++  const goStep = (n: number) => {
++    abandon()
++    setMicHint(null)
++    setStep(n)
++  }
++  const close = () => {
++    abandon()
++    onClose()
++  }
+   const ready = text.trim().length >= 3 && mic === 'idle'
+   const mood = cheer ? 'happy' : mic === 'recording' ? 'listening' : mic === 'writing' ? 'thinking' : text ? 'listening' : 'idle'
+ 
+   const toggleMic = async () => {
+     if (mic === 'writing') return
+     setMicHint(null)
++    const mine = run.current
++    const alive = () => run.current === mine
+     if (mic === 'idle') {
+       try {
+         recorder.current ??= new Recorder()
+-        await recorder.current.begin()
++        // false = se canceló mientras se abría (cambiaste de paso o cerraste): no se graba nada.
++        if (!(await recorder.current.begin()) || !alive()) return
+         setMic('recording')
+       } catch (e) {
+-        setMicHint(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
++        if (alive()) setMicHint(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
+       }
+       return
+     }
+     setMic('writing')
+     try {
+-      const { blob, seconds } = await recorder.current!.stop()
+-      recorder.current!.close()
++      const rec = recorder.current!
++      const { blob, seconds } = await rec.stop()
++      rec.close()
++      if (!alive()) return
+       const analysis = await analyzeSpeech(blob)
++      if (!alive()) return
+       if (seconds < 0.7 || blob.size === 0 || (analysis && !analysis.hasSpeech)) {
+         setMicHint('No te he oído. Toca el micrófono y dilo otra vez.')
+         return
+       }
++      const base64 = await blobToBase64(blob)
++      if (!alive()) return // AUD-MIC-303: el audio de un dictado abandonado no sale del teléfono
+       const said = await dictate(settings.geminiKey, fastModels(settings), {
+-        base64: await blobToBase64(blob),
++        base64,
+         mimeType: blob.type.split(';')[0] || 'audio/webm',
+       })
++      if (!alive()) return
+       if (said) setText(said.slice(0, 160))
+       else setMicHint('No te he entendido. Prueba otra vez, un poco más cerca.')
+     } catch (e) {
+-      if (!isAborted(e)) setMicHint((e as Error).message)
++      if (alive() && !isAborted(e)) setMicHint((e as Error).message)
+     } finally {
+-      setMic('idle')
++      if (alive()) setMic('idle')
+     }
+   }
+ 
+@@ -98,9 +130,10 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
+         step={{ i: 0, n: 2 }}
+         title="¿Quién elige el tema del debate?"
+         subtitle="Tú defiendes una postura y el profe defenderá la contraria."
+-        onBack={onClose}
++        onBack={close}
+       >
+         <div className="flex flex-col gap-2.5">
++          {/* En el paso 0 no hay dictado posible: al volver aquí ya se anuló con goStep(0). */}
+           {option('spark', 'Que elija el profe', 'Un tema actual y fácil de discutir', () => onStart())}
+           {option('pencil', 'Lo propongo yo', 'Escribe el tema que quieres debatir', () => setStep(1))}
+         </div>
+@@ -117,11 +150,15 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
+       step={debate ? { i: 1, n: 2 } : undefined}
+       title={debate ? '¿Qué tema quieres debatir?' : '¿De qué quieres hablar?'}
+       subtitle={debate ? 'Escríbelo como una pregunta o una idea. El profe tomará la postura contraria.' : 'Cualquier tema: el profe prepara la clase sobre lo que escribas.'}
+-      onBack={debate ? () => setStep(0) : onClose}
++      onBack={debate ? () => goStep(0) : close}
+       primary={{
+         label: debate ? 'Empezar el debate' : 'Empezar a hablar',
+         disabled: !ready,
+-        onClick: () => ready && onStart(text.trim()),
++        onClick: () => {
++          if (!ready) return
++          abandon()
++          onStart(text.trim())
++        },
+       }}
+     >
+       <textarea
+diff --git a/src/lib/changelog.ts b/src/lib/changelog.ts
+index fe499f9..a564e98 100644
+--- a/src/lib/changelog.ts
++++ b/src/lib/changelog.ts
+@@ -16,6 +16,19 @@ export interface Release {
+ }
+ 
+ export const RELEASES: Release[] = [
++  {
++    v: '5.8.1',
++    date: '2026-10-06',
++    title: 'Actualización de parches de seguridad y corrección de la v5.8',
++    fixed: [
++      'Tu micrófono, a salvo: si tocas el micro dos veces seguidas, ya no se queda abierto un segundo micrófono escuchando a escondidas',
++      'Si sales de la app justo mientras se abre el micro, ya no se vuelve a abrir solo, ni en segundo plano ni al volver',
++      'En el Debate y en Tema libre, si vuelves atrás o cierras mientras dictas, el dictado se cancela: se apaga el micro y no se envía nada',
++      'Si apoyas un segundo dedo en el botón de hablar, ya no empieza otra grabación escondida',
++      'En una habitación en silencio, el micro abre en un par de segundos (antes podía tardar más de 10) y no pierde la cancelación de eco, así la voz de tu profe no se cuela en tus respuestas',
++      'Con la app en segundo plano, Android no deja que Habla vuelva a abrir el micrófono',
++    ],
++  },
+   {
+     v: '5.8',
+     date: '2026-10-05',
+diff --git a/src/lib/lifecycle.ts b/src/lib/lifecycle.ts
+index b159716..fd12e1d 100644
+--- a/src/lib/lifecycle.ts
++++ b/src/lib/lifecycle.ts
+@@ -7,6 +7,13 @@ import { stopSpeaking } from './tts'
+ // se cierran los micrófonos, se calla la voz y se avisa a las pantallas para que guarden lo que tengan abierto.
+ // La parte nativa (MainActivity + AudioRoutePlugin) pausa los temporizadores del WebView y suelta el
+ // "modo llamada"/Bluetooth aunque el JavaScript no llegara a ejecutarse.
++//
++// v5.8.1 (AUD-MIC-301/308): el aviso «pause» de Capacitor (Activity.onPause) YA NO cuenta como segundo plano.
++// onPause también llega con el diálogo de permiso del micrófono de Android y al perder el foco en pantalla
++// dividida, con la app a la vista; ahora que cerrar cancela la apertura en curso, cerrar ahí abortaría la misma
++// apertura que pidió el permiso. El segundo plano real llega con onStop: `appStateChange` (isActive=false),
++// `visibilitychange` (WebView.onPause en MainActivity.onStop) y además MainActivity.onStop llama directamente a
++// `window.__hablaBackground()`, sin pasar por los avisos de los plugins.
+ 
+ type Listener = () => void
+ const onBackground = new Set<Listener>()
+@@ -49,7 +56,8 @@ export function installLifecycle() {
+   if (installed) return
+   installed = true
+   CapApp.addListener('appStateChange', ({ isActive }) => (isActive ? goForeground() : goBackground())).catch(() => {})
+-  CapApp.addListener('pause', goBackground).catch(() => {})
++  // Puerta directa para la red de seguridad nativa (MainActivity.onStop, AUD-MIC-308).
++  ;(window as unknown as { __hablaBackground?: () => void }).__hablaBackground = goBackground
+   document.addEventListener('visibilitychange', () => (document.hidden ? goBackground() : goForeground()))
+   window.addEventListener('pagehide', goBackground)
+ }
+diff --git a/src/lib/recorder.ts b/src/lib/recorder.ts
+index 74f27f0..19a249e 100644
+--- a/src/lib/recorder.ts
++++ b/src/lib/recorder.ts
+@@ -6,13 +6,24 @@
+ // - `isOpen` comprueba que la pista siga viva; si no, `begin()` lo reabre.
+ // - `stop()` nunca se queda esperando: si el grabador no avisa, se resuelve a los 2 s con lo grabado.
+ //
++// Micrófono seguro (v5.8.1, auditoría AUD-MIC-301/302/304/800):
++// - Una sola apertura en curso por grabadora: las llamadas simultáneas a `open()`/`begin()` comparten la misma
++//   promesa (antes, un doble toque abría dos streams y el primero quedaba huérfano, captando hasta matar la app).
++// - La grabadora entra en `recorders` ANTES del primer `await`, así `releaseAllMics()` (segundo plano) también
++//   cancela una apertura a medias. `close()` sube un contador de generación: cada paso de la apertura lo
++//   comprueba al volver de un `await` y, si cambió, para lo que acaba de abrir y sale sin grabar.
++// - `start()` con una grabación ya en marcha se ignora (antes el primer MediaRecorder quedaba huérfano).
++//
+ // Auriculares Bluetooth: Android manda el micrófono "por defecto" a los auriculares, pero el canal de micrófono
+ // del Bluetooth no se activa y llega SILENCIO ABSOLUTO (todas las muestras a 0). Medido en un POCO con
+ // auriculares BT: por defecto → 0; "Bluetooth headset" → 0; "Speakerphone" (micro del teléfono) → funciona.
+ // Por eso, al abrir, se espera hasta 2 s a la primera señal (un micro recién abierto tarda hasta ~1,3 s en dar
+-// muestras); si solo llega silencio digital se prueban: 1) los micrófonos del teléfono (abren en <1 s) y 2) el
+-// micro por defecto sin procesado (Android tarda 3–7 s en salir del "modo llamada"). La elección se recuerda
+-// para toda la sesión y se olvida al conectar o desconectar auriculares.
++// muestras). AUD-MIC-800: el micro del teléfono con procesado de voz TAMBIÉN da ceros exactos en una habitación
++// en silencio, así que el silencio solo se toma por «micro mudo» si hay motivo (pista silenciada por el sistema,
++// un micro Bluetooth conectado o nombres de micros desconocidos). Entonces se prueba UNA sola alternativa: el
++// micro del teléfono con procesado (conserva la cancelación de eco) o, si no se encuentra, el micro por defecto
++// sin procesado solo para esa apertura (nunca se recuerda un micro sin cancelación de eco para la sesión).
++// La elección se recuerda para toda la sesión y se olvida al conectar o desconectar auriculares.
+ //
+ // Con auriculares, el usuario elige el modo (selector de audio, ver audioRoute.ts):
+ //   headset → el plugin nativo pone los auriculares como dispositivo de comunicación; micro por defecto con
+@@ -30,6 +41,7 @@ const AUDIO_BPS = 24_000
+ 
+ const PROCESSING = { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+ const RAW = { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
++const BLUETOOTH = /bluetooth|bt|sco/i
+ 
+ export type MicMode = 'auto' | 'headset' | 'split' | 'phone'
+ let micMode: MicMode = 'auto'
+@@ -52,10 +64,12 @@ export function setMicMode(mode: MicMode) {
+ 
+ // Micrófono elegido tras detectar silencio (p. ej. con auriculares Bluetooth). Es compartido por todas las
+ // grabadoras (clase, test, repaso) y se olvida al conectar o desconectar un dispositivo de audio.
++// Solo se guarda uno CON cancelación de eco (AUD-MIC-800).
+ let chosen: MediaTrackConstraints | null = null
+ // El micrófono por defecto ya se comprobó y da señal: no hace falta volver a medirlo en cada clase.
+ let defaultOk = false
+-const recorders = new Set<Recorder>() // las que tienen el micrófono abierto
++// Las que tienen el micrófono abierto O ABRIÉNDOSE (AUD-MIC-301: así el segundo plano cancela la apertura).
++const recorders = new Set<Recorder>()
+ navigator.mediaDevices?.addEventListener?.('devicechange', () => {
+   chosen = null
+   defaultOk = false
+@@ -64,7 +78,8 @@ navigator.mediaDevices?.addEventListener?.('devicechange', () => {
+ })
+ 
+ /**
+- * Cierra TODOS los micrófonos abiertos (también uno que esté grabando: esa grabación se descarta).
++ * Cierra TODOS los micrófonos abiertos (también uno que esté grabando: esa grabación se descarta) y cancela
++ * las aperturas en curso (AUD-MIC-301).
+  * Se llama al pasar la app a segundo plano: un micrófono abierto mantiene despierto el audio del teléfono
+  * toda la noche y vacía la batería (NC-14). Al volver, la próxima grabación lo reabre sola.
+  */
+@@ -72,8 +87,15 @@ export function releaseAllMics() {
+   ;[...recorders].forEach((r) => r.close())
+ }
+ 
+-/** ¿Llega algo del micrófono? Un micro real siempre tiene ruido de fondo; uno "mudo" da ceros exactos. */
+-async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
++function stopTracks(stream: MediaStream | null | undefined) {
++  stream?.getTracks().forEach((t) => t.stop())
++}
++
++/**
++ * ¿Llega algo del micrófono? Un micro real suele tener ruido de fondo; uno "mudo" da ceros exactos.
++ * `cancelled` corta la espera en cuanto se cierra la grabadora.
++ */
++async function hasSignal(stream: MediaStream, ms: number, cancelled: () => boolean): Promise<boolean> {
+   let ctx: AudioContext | null = null
+   try {
+     ctx = new AudioContext()
+@@ -85,6 +107,7 @@ async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
+     const t0 = performance.now()
+     while (performance.now() - t0 < ms) {
+       await new Promise((r) => setTimeout(r, 30))
++      if (cancelled()) return false
+       an.getFloatTimeDomainData(buf)
+       if (buf.some((v) => v !== 0)) return true
+     }
+@@ -96,81 +119,173 @@ async function hasSignal(stream: MediaStream, ms = 2000): Promise<boolean> {
+   }
+ }
+ 
++/**
++ * AUD-MIC-800 · segunda comprobación antes de dar un micro por mudo: ceros exactos también salen del micro del
++ * teléfono con procesado en una habitación en silencio. Solo es sospechoso si la pista está silenciada por el
++ * sistema, si hay un micro Bluetooth conectado o si no se pueden leer los nombres de los micros.
++ */
++async function looksMuted(stream: MediaStream): Promise<boolean> {
++  const track = stream.getAudioTracks()[0]
++  if (!track || track.readyState !== 'live' || track.muted) return true
++  try {
++    const inputs = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'audioinput')
++    if (!inputs.length || inputs.some((d) => !d.label)) return true
++    return inputs.some((d) => BLUETOOTH.test(d.label))
++  } catch {
++    return true
++  }
++}
++
+ /** Micrófonos del propio teléfono (no Bluetooth), el altavoz/micro principal primero. */
+ async function phoneMics(): Promise<MediaDeviceInfo[]> {
+   const all = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'audioinput')
+-  const ok = all.filter((d) => d.deviceId && d.deviceId !== 'default' && !/bluetooth|bt|sco/i.test(d.label))
++  const ok = all.filter((d) => d.deviceId && d.deviceId !== 'default' && !BLUETOOTH.test(d.label))
+   return ok.sort((a, b) => Number(/speaker|built|phone|tel/i.test(b.label)) - Number(/speaker|built|phone|tel/i.test(a.label)))
+ }
+ 
++function micError(e: unknown): MicError {
++  if (e instanceof MicError) return e
++  const name = (e as DOMException)?.name
++  if (name === 'NotAllowedError' || name === 'SecurityError') {
++    return new MicError('Sin permiso para el micrófono. Actívalo en Ajustes de Android → Apps → Habla → Permisos → Micrófono.')
++  }
++  return new MicError('No se pudo abrir el micrófono. Cierra otras apps que lo estén usando e inténtalo de nuevo.')
++}
++
+ export class Recorder {
+   private stream: MediaStream | null = null
+   private recorder: MediaRecorder | null = null
+   private chunks: Blob[] = []
+   private startedAt = 0
++  /** Sube con cada `close()`: una apertura que ve otro número sabe que la cancelaron (AUD-MIC-301). */
++  private gen = 0
++  /** Apertura en curso, compartida por las llamadas simultáneas (AUD-MIC-302). */
++  private opening: Promise<boolean> | null = null
++  /** `begin()` en curso, compartido por los toques repetidos (AUD-MIC-302). */
++  private beginning: Promise<boolean> | null = null
+   /** Último micrófono usado, para diagnóstico. */
+   label = ''
+ 
++  /** Cierra si no está grabando. Una apertura en curso se deja terminar (p. ej. `devicechange` al conceder el permiso). */
+   releaseIfIdle() {
++    if (this.opening) return
+     if (!this.recorder || this.recorder.state === 'inactive') this.close()
+   }
+ 
+-  async open(): Promise<void> {
+-    if (this.isOpen) return
+-    this.close() // descarta un stream muerto antes de pedir uno nuevo
++  /** ¿Se está abriendo el micrófono ahora mismo? */
++  get isOpening() {
++    return !!this.opening
++  }
++
++  /**
++   * Abre el micrófono (si no lo estaba). Devuelve `false` si la apertura se canceló con `close()` /
++   * `releaseAllMics()` mientras se abría: en ese caso no queda nada abierto.
++   */
++  open(): Promise<boolean> {
++    if (this.opening) return this.opening
++    if (this.isOpen) return Promise.resolve(true)
++    const p: Promise<boolean> = this.doOpen(this.gen).finally(() => {
++      if (this.opening === p) this.opening = null
++    })
++    this.opening = p
++    return p
++  }
++
++  private async doOpen(gen: number): Promise<boolean> {
++    const cancelled = () => this.gen !== gen
++    // Descarta un stream muerto antes de pedir uno nuevo (sin subir la generación: esta apertura sigue).
++    stopTracks(this.stream)
++    this.stream = null
+     if (!navigator.mediaDevices?.getUserMedia) {
+       throw new MicError('Este dispositivo no permite grabar audio.')
+     }
++    // AUD-MIC-301: registrada ANTES de cualquier await, así releaseAllMics() también cancela esta apertura.
++    recorders.add(this)
+     try {
+-      this.stream = await navigator.mediaDevices.getUserMedia({
++      const stream = await navigator.mediaDevices.getUserMedia({
+         audio: micMode === 'split' ? RAW : (chosen ?? PROCESSING),
+       })
+-      this.label = this.stream.getAudioTracks()[0]?.label || 'default'
+-      recorders.add(this)
++      if (cancelled()) {
++        stopTracks(stream) // se pidió cerrar mientras Android abría el micro: se cierra sin usarlo
++        return false
++      }
++      this.stream = stream
++      this.label = stream.getAudioTracks()[0]?.label || 'default'
+       await afterOpen?.().catch(() => {})
+-      if (micMode === 'headset') {
+-        // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
+-        if (!defaultOk) {
+-          if (await hasSignal(this.stream, 5000)) defaultOk = true
+-          else {
+-            console.warn('[HABLA-MIC] el micrófono de los auriculares no da señal en 5 s; uso el del teléfono')
+-            await this.fallback()
+-          }
+-        }
+-      } else if (micMode !== 'split' && !chosen && !defaultOk) {
+-        if (await hasSignal(this.stream)) defaultOk = true
+-        else await this.fallback()
++      if (cancelled()) return false
++      const measure = micMode === 'headset' ? !defaultOk : micMode !== 'split' && !chosen && !defaultOk
++      if (!measure) return true
++      // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
++      const ok = await hasSignal(stream, micMode === 'headset' ? 5000 : 2000, cancelled)
++      if (cancelled()) return false
++      if (ok) {
++        defaultOk = true
++        return true
+       }
+-    } catch (e) {
+-      if (e instanceof MicError) throw e
+-      const name = (e as DOMException).name
+-      if (name === 'NotAllowedError' || name === 'SecurityError') {
+-        throw new MicError(
+-          'Sin permiso para el micrófono. Actívalo en Ajustes de Android → Apps → Habla → Permisos → Micrófono.',
+-        )
++      const muted = await looksMuted(stream)
++      if (cancelled()) return false
++      if (!muted) {
++        // AUD-MIC-800: silencio en una habitación tranquila, no un micro mudo. Se queda el micro con procesado.
++        defaultOk = true
++        console.info('[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto')
++        return true
+       }
+-      throw new MicError('No se pudo abrir el micrófono. Cierra otras apps que lo estén usando e inténtalo de nuevo.')
++      console.warn(`[HABLA-MIC] el micrófono por defecto no da señal (modo ${micMode}); pruebo otro`)
++      return await this.fallback(gen)
++    } catch (e) {
++      if (cancelled()) return false // cancelada: el error de una apertura abandonada no importa
++      this.release() // AUD-MIC-306: si algo falla, no queda nada abierto
++      throw micError(e)
+     }
+   }
+ 
+-  /** El micrófono por defecto llega mudo (auriculares Bluetooth): se prueban alternativas hasta que haya señal. */
+-  private async fallback() {
+-    const options: { label: string; c: MediaTrackConstraints }[] = [
+-      ...(await phoneMics()).map((d) => ({ label: d.label, c: { ...PROCESSING, deviceId: { exact: d.deviceId } } })),
+-      { label: 'por defecto sin procesado', c: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } },
+-    ]
+-    for (const o of options) {
+-      this.stream?.getTracks().forEach((t) => t.stop())
+-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: o.c })
+-      if (await hasSignal(this.stream)) {
+-        chosen = o.c
+-        this.label = o.label
+-        console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); usando "${o.label}"`)
+-        return
++  /**
++   * El micrófono por defecto llega mudo (auriculares Bluetooth): se prueba UNA alternativa (AUD-MIC-800).
++   * El stream nuevo queda en `this.stream`, y la grabadora sigue en `recorders` (AUD-MIC-301).
++   */
++  private async fallback(gen: number): Promise<boolean> {
++    const cancelled = () => this.gen !== gen
++    const phone = (await phoneMics().catch(() => []))[0]
++    if (cancelled()) return false
++    const raw = { label: 'por defecto sin procesado', c: RAW as MediaTrackConstraints, remember: false }
++    // REV-T1-1: si el micro del teléfono no se puede abrir (p. ej. OverconstrainedError), se prueba el por defecto
++    // sin procesado, como en la v5.8. Sigue siendo UN solo reintento: como mucho una alternativa llega a abrirse.
++    const options = phone
++      ? [{ label: phone.label || 'micrófono del teléfono', c: { ...PROCESSING, deviceId: { exact: phone.deviceId } } as MediaTrackConstraints, remember: true }, raw]
++      : [raw]
++    stopTracks(this.stream)
++    this.stream = null
++    let option = options[0]
++    let next: MediaStream | null = null
++    for (let i = 0; i < options.length && !next; i++) {
++      option = options[i]
++      try {
++        next = await navigator.mediaDevices.getUserMedia({ audio: option.c })
++      } catch (e) {
++        if (cancelled() || i === options.length - 1) throw e // en doOpen: cancelada → false; si no, error en español
++        console.warn(`[HABLA-MIC] no se pudo abrir "${option.label}"; pruebo "${options[i + 1].label}"`)
+       }
+     }
+-    // Ninguno da señal: se deja el último abierto (mejor grabar algo que nada).
+-    console.warn('[HABLA-MIC] ningún micrófono da señal')
++    if (!next) return false
++    if (cancelled()) {
++      stopTracks(next)
++      return false
++    }
++    this.stream = next
++    recorders.add(this)
++    this.label = option.label
++    if (!option.remember) {
++      // Sin procesado no se recuerda nunca: no hace falta medirlo (2 s menos de espera al tocar el micro).
++      console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); uso "${option.label}" solo esta vez`)
++      return true
++    }
++    const ok = await hasSignal(next, 2000, cancelled)
++    if (cancelled()) return false
++    // Solo se recuerda para la sesión un micro con cancelación de eco y que haya dado señal.
++    if (ok) chosen = option.c
++    if (ok) console.info(`[HABLA-MIC] micrófono por defecto mudo (modo ${micMode}); usando "${option.label}"`)
++    else console.warn(`[HABLA-MIC] "${option.label}" tampoco da señal; lo uso igualmente (sin más reintentos)`)
++    return true
+   }
+ 
+   /** true solo si el micrófono sigue realmente vivo. */
+@@ -178,35 +293,64 @@ export class Recorder {
+     return !!this.stream && this.stream.active && this.stream.getAudioTracks().some((t) => t.readyState === 'live')
+   }
+ 
++  /** ¿Hay un MediaRecorder grabando? */
++  get isRecording() {
++    return !!this.recorder && this.recorder.state !== 'inactive'
++  }
++
+   /** Stream del micrófono abierto (para dibujar la onda en vivo). */
+   get mediaStream(): MediaStream | null {
+     return this.stream
+   }
+ 
+-  start(): void {
++  /** Empieza a grabar. Devuelve `false` (y no hace nada) si ya había una grabación en marcha (AUD-MIC-304). */
++  start(): boolean {
++    if (this.isRecording) return false
+     if (!this.isOpen) throw new MicError('El micrófono no está abierto.')
+     const mimeType = MIME_CANDIDATES.find((m) => MediaRecorder.isTypeSupported(m))
+-    this.chunks = []
++    // AUD-MIC-309: cada grabación tiene su propia lista de trozos; uno tardío de la anterior no se cuela.
++    const chunks: Blob[] = []
++    this.chunks = chunks
+     // 24 kbps en Opus basta para la voz y sube ~5 veces menos datos que los 128 kbps por defecto de Android.
+-    this.recorder = new MediaRecorder(this.stream!, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: AUDIO_BPS })
+-    this.recorder.ondataavailable = (e) => {
+-      if (e.data.size > 0) this.chunks.push(e.data)
++    const rec = new MediaRecorder(this.stream!, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: AUDIO_BPS })
++    rec.ondataavailable = (e) => {
++      if (e.data.size > 0) chunks.push(e.data)
+     }
+-    this.recorder.start()
++    this.recorder = rec
++    rec.start()
+     this.startedAt = performance.now()
++    return true
++  }
++
++  /**
++   * Abre (o reabre) el micrófono y empieza a grabar; si falla, lo reintenta una vez con un stream nuevo.
++   * Devuelve `true` si hay una grabación en marcha gracias a esta llamada (o a la que comparte), `false` si se
++   * canceló durante la apertura (cerraste la pantalla, cambiaste de paso, segundo plano) o si ya se grababa.
++   */
++  begin(): Promise<boolean> {
++    if (this.beginning) return this.beginning
++    const p: Promise<boolean> = this.doBegin().finally(() => {
++      if (this.beginning === p) this.beginning = null
++    })
++    this.beginning = p
++    return p
+   }
+ 
+-  /** Abre (o reabre) el micrófono y empieza a grabar; si falla, lo reintenta una vez con un stream nuevo. */
+-  async begin(): Promise<void> {
++  private async doBegin(): Promise<boolean> {
++    const gen = this.gen
+     try {
+-      await this.open()
+-      this.start()
++      if (!(await this.open())) return false
++      if (this.gen !== gen) return false
++      return this.start()
+     } catch (e) {
++      if (this.gen !== gen) return false // se cerró mientras tanto: no se reintenta
+       if (e instanceof MicError && /permiso/i.test(e.message)) throw e
+       this.close()
+-      await this.open()
++      const retry = this.gen
++      if (!(await this.open())) return false
++      if (this.gen !== retry) return false
+       try {
+-        this.start()
++        return this.start()
+       } catch {
+         this.close()
+         throw new MicError('No se pudo grabar. Vuelve a intentarlo.')
+@@ -217,9 +361,10 @@ export class Recorder {
+   /** Detiene la grabación y devuelve el audio y su duración en segundos. Nunca se queda colgado. */
+   stop(): Promise<{ blob: Blob; seconds: number }> {
+     const rec = this.recorder
++    const chunks = this.chunks
+     this.recorder = null
+     if (!rec || rec.state === 'inactive') {
+-      return Promise.resolve({ blob: new Blob(this.chunks), seconds: 0 })
++      return Promise.resolve({ blob: new Blob(chunks), seconds: 0 })
+     }
+     const seconds = (performance.now() - this.startedAt) / 1000
+     return new Promise((resolve) => {
+@@ -227,7 +372,7 @@ export class Recorder {
+       const finish = () => {
+         if (done) return
+         done = true
+-        resolve({ blob: new Blob(this.chunks, { type: rec.mimeType || 'audio/webm' }), seconds })
++        resolve({ blob: new Blob(chunks, { type: rec.mimeType || 'audio/webm' }), seconds })
+       }
+       rec.onstop = finish
+       rec.onerror = finish
+@@ -240,13 +385,22 @@ export class Recorder {
+     })
+   }
+ 
++  /** Para la grabación y el micrófono, y cancela cualquier apertura en curso (AUD-MIC-301). */
+   close(): void {
++    this.gen++
++    this.opening = null
++    this.beginning = null
+     try {
+       if (this.recorder && this.recorder.state !== 'inactive') this.recorder.stop()
+     } catch {
+       // ya estaba detenido
+     }
+-    this.stream?.getTracks().forEach((t) => t.stop())
++    this.release()
++  }
++
++  /** Suelta el stream y sale del registro, sin cancelar (lo usa una apertura que falla). */
++  private release(): void {
++    stopTracks(this.stream)
+     this.stream = null
+     this.recorder = null
+     recorders.delete(this)
+diff --git a/src/screens/Calibration.tsx b/src/screens/Calibration.tsx
+index dbbe666..048b01c 100644
+--- a/src/screens/Calibration.tsx
++++ b/src/screens/Calibration.tsx
+@@ -542,7 +542,8 @@ export default function Calibration({ settings, update, onDone, registerBack }:
+     if (recState === 'idle') {
+       await stopSpeaking()
+       try {
+-        await recorder.current.begin()
++        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste o segundo plano).
++        if (!(await recorder.current.begin())) return
+         recStart.current = performance.now()
+         setElapsed(0)
+         setHint(null)
+diff --git a/src/screens/Conversation.tsx b/src/screens/Conversation.tsx
+index de5e950..3760acd 100644
+--- a/src/screens/Conversation.tsx
++++ b/src/screens/Conversation.tsx
+@@ -431,7 +431,11 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
+     starting.current = (async () => {
+       await stopSpeaking()
+       try {
+-        await recorder.current.begin()
++        // AUD-MIC-301/304: false = se canceló la apertura (segundo plano, salir) o ya se estaba grabando.
++        if (!(await recorder.current.begin())) {
++          setPhase((p) => (p === 'recording' ? p : 'idle'))
++          return
++        }
+         setRecordStart(performance.now())
+         setElapsed(0)
+         setPhase('recording')
+diff --git a/src/screens/ReviewScreen.tsx b/src/screens/ReviewScreen.tsx
+index 05231cb..74f5a97 100644
+--- a/src/screens/ReviewScreen.tsx
++++ b/src/screens/ReviewScreen.tsx
+@@ -114,7 +114,8 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props)
+     if (step === 'ask') {
+       await stopSpeaking()
+       try {
+-        await recorder.current.begin()
++        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
++        if (!(await recorder.current.begin())) return
+         recStart.current = performance.now()
+         setElapsed(0)
+         setStep('recording')
+@@ -149,6 +150,8 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props)
+   }
+ 
+   const dontKnow = () => {
++    // AUD-MIC-302: «No lo sé» durante la apertura del micro la cancela; si no, al abrir pisaría el resultado.
++    if (recorder.current.isOpening) recorder.current.close()
+     stopSpeaking()
+     setResult('unknown')
+     setStep('result')
+diff --git a/version.json b/version.json
+index 69fde91..d0119e5 100644
+--- a/version.json
++++ b/version.json
+@@ -1,5 +1,5 @@
+ {
+-  "version": "5.8",
+-  "build": 33,
+-  "date": "2026-10-05"
++  "version": "5.8.1",
++  "build": 34,
++  "date": "2026-10-06"
+ }
+diff --git a/src/components/talkGesture.ts b/src/components/talkGesture.ts
+new file mode 100644
+index 0000000..c03e8bf
+--- /dev/null
++++ b/src/components/talkGesture.ts
+@@ -0,0 +1,29 @@
++// Reglas de los dedos del botón de hablar (TalkButton), separadas para poder probarlas sin navegador
++// (tests/talkGesture.test.mjs). AUD-MIC-304 y REV-T2-1.
++
++export interface Gesture {
++  active: boolean // hay un dedo que manda (desde su pointerdown hasta su pointerup)
++  id: number // pointerId de ese dedo
++  done: boolean // ya bloqueó o canceló: soltar no envía
++}
++
++export type DownAction = 'ignore' | 'send' | 'press'
++
++/** Qué hace un pointerdown: ignorarlo, enviar (grabación bloqueada) o empezar a grabar. */
++export function pointerDownAction(g: Gesture, pointerId: number, s: { busy: boolean; locked: boolean; recording: boolean }): DownAction {
++  if (s.busy) return 'ignore'
++  // REV-T2-1: mientras un dedo manda (también durante la apertura del micro, antes de «grabando»), otro dedo se
++  // ignora del todo; antes se quedaba con el gesto y al soltarlo cortaba la grabación a 0 s.
++  if (g.active && g.id !== pointerId) return 'ignore'
++  // Grabación bloqueada: este toque envía.
++  if (s.locked) return 'send'
++  // AUD-MIC-304: con una grabación en marcha (sin bloqueo), otro dedo o un toque justo tras soltar no empieza otra
++  // grabación (antes el primer MediaRecorder quedaba grabando huérfano el resto de la clase).
++  if (s.recording) return 'ignore'
++  return 'press'
++}
++
++/** Mover, soltar o cancelar solo cuentan para el dedo que manda. */
++export function isOwnPointer(g: Gesture, pointerId: number): boolean {
++  return g.active && g.id === pointerId
++}
+diff --git a/android/app/src/main/java/com/shift/habla/HablaChromeClient.java b/android/app/src/main/java/com/shift/habla/HablaChromeClient.java
+new file mode 100644
+index 0000000..2973279
+--- /dev/null
++++ b/android/app/src/main/java/com/shift/habla/HablaChromeClient.java
+@@ -0,0 +1,51 @@
++package com.shift.habla;
++
++import android.util.Log;
++import android.webkit.PermissionRequest;
++
++import com.getcapacitor.Bridge;
++import com.getcapacitor.BridgeWebChromeClient;
++
++import java.util.Arrays;
++
++/**
++ * Red de seguridad nativa del micrófono (v5.8.1, AUD-MIC-308).
++ *
++ * Capacitor concede el audio del WebView en BridgeWebChromeClient.onPermissionRequest: cada getUserMedia pide
++ * RESOURCE_AUDIO_CAPTURE y, si RECORD_AUDIO ya está concedido, se concede. Aquí se añade una regla que no
++ * depende del JavaScript: con la app en segundo plano (después de onStop) se DENIEGA cualquier petición nueva
++ * de micrófono. Así, una apertura retrasada (p. ej. código JS que se reanuda tras pauseTimers, como en
++ * AUD-MIC-301) no puede volver a abrir el micro con la app oculta.
++ *
++ * Lo que NO puede hacer: Android no ofrece ninguna API pública para cortar desde Java una captura que el
++ * WebView ya tiene abierta (PermissionRequest no se puede revocar una vez concedido y WebView.onPause() no la
++ * para, medido por B8). Esa parte la cierra el JavaScript (releaseAllMics), al que MainActivity.onStop avisa
++ * directamente; y Android silencia por su cuenta la captura en segundo plano a los ~5 s.
++ *
++ * No se deniegan peticiones pendientes al pasar a segundo plano: si el diálogo de permiso de Android sigue
++ * abierto, Capacitor llamaría después a grant() sobre una petición ya resuelta y la app fallaría.
++ */
++public class HablaChromeClient extends BridgeWebChromeClient {
++
++    private volatile boolean background = false;
++
++    public HablaChromeClient(Bridge bridge) {
++        super(bridge);
++    }
++
++    /** Lo llama MainActivity en onStop (true) y onStart (false). */
++    void setBackground(boolean value) {
++        background = value;
++    }
++
++    @Override
++    public void onPermissionRequest(final PermissionRequest request) {
++        boolean audio = Arrays.asList(request.getResources()).contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE);
++        if (audio && background) {
++            Log.w("HablaMic", "Petición de micrófono con la app en segundo plano: denegada");
++            request.deny();
++            return;
++        }
++        super.onPermissionRequest(request);
++    }
++}
+diff --git a/tests/helpers/vite.mjs b/tests/helpers/vite.mjs
+new file mode 100644
+index 0000000..5f1442c
+--- /dev/null
++++ b/tests/helpers/vite.mjs
+@@ -0,0 +1,32 @@
++// Carga módulos de src/ con Vite (ssrLoadModule) para probar la lógica sin navegador ni dependencias nuevas
++// (AUD-ARQ-113). Un único servidor Vite en middlewareMode para todas las pruebas de un archivo.
++import { fileURLToPath } from 'node:url'
++import { createServer } from 'vite'
++
++const root = fileURLToPath(new URL('../..', import.meta.url))
++let server = null
++
++async function getServer() {
++  server ??= await createServer({
++    root,
++    configFile: false, // sin los plugins de React/Tailwind: solo hace falta transformar TypeScript
++    logLevel: 'error',
++    appType: 'custom',
++    // Sin servidor WebSocket de HMR: node:test ejecuta varios archivos de test en paralelo y chocarían en el puerto.
++    server: { middlewareMode: true, hmr: false, ws: false, watch: null },
++    optimizeDeps: { noDiscovery: true, include: [] },
++  })
++  return server
++}
++
++/** Carga el módulo desde cero (estado de módulo limpio en cada llamada). */
++export async function loadFresh(path) {
++  const s = await getServer()
++  s.moduleGraph.invalidateAll()
++  return s.ssrLoadModule(path)
++}
++
++export async function closeServer() {
++  await server?.close()
++  server = null
++}
+diff --git a/tests/helpers/mic-mocks.mjs b/tests/helpers/mic-mocks.mjs
+new file mode 100644
+index 0000000..ec175c4
+--- /dev/null
++++ b/tests/helpers/mic-mocks.mjs
+@@ -0,0 +1,163 @@
++// Micrófono simulado para probar src/lib/recorder.ts en Node: getUserMedia, enumerateDevices, MediaStream,
++// MediaRecorder y AudioContext falsos. Cuenta aperturas, pistas vivas y grabadores para detectar huérfanos.
++
++/**
++ * Instala los simulacros en globalThis y devuelve el estado para inspeccionarlo.
++ * @param {object} [opts]
++ * @param {boolean} [opts.hold] getUserMedia no responde hasta `mic.resolveAll()` (para cortar a mitad de apertura)
++ * @param {(constraints: object, n: number) => boolean} [opts.signal] ¿da señal la apertura n.º n? (por defecto sí)
++ * @param {{ deviceId: string, label: string }[]} [opts.devices] micrófonos que lista enumerateDevices
++ * @param {(constraints: object, n: number) => Error | null} [opts.fail] error que lanza la apertura n.º n
++ */
++export function installMic(opts = {}) {
++  const mic = {
++    hold: !!opts.hold,
++    signal: opts.signal ?? (() => true),
++    fail: opts.fail ?? (() => null),
++    devices: opts.devices ?? [{ deviceId: 'default', label: 'Default' }],
++    gum: [], // constraints de cada getUserMedia
++    tracks: [],
++    recorders: [],
++    pending: [],
++    measuring: 0, // análisis de señal en curso
++    get liveTracks() {
++      return this.tracks.filter((t) => t.readyState === 'live').length
++    },
++    get activeRecorders() {
++      return this.recorders.filter((r) => r.state !== 'inactive').length
++    },
++    resolveAll() {
++      const p = this.pending.splice(0)
++      p.forEach((fn) => fn())
++    },
++  }
++
++  class FakeTrack {
++    constructor(label, hasSignal) {
++      this.kind = 'audio'
++      this.label = label
++      this.readyState = 'live'
++      this.muted = false
++      this.hasSignal = hasSignal
++    }
++    stop() {
++      this.readyState = 'ended'
++    }
++  }
++
++  class FakeStream {
++    constructor(track) {
++      this.tracks = [track]
++    }
++    get active() {
++      return this.tracks.some((t) => t.readyState === 'live')
++    }
++    getTracks() {
++      return [...this.tracks]
++    }
++    getAudioTracks() {
++      return [...this.tracks]
++    }
++  }
++
++  const getUserMedia = (constraints) => {
++    const n = mic.gum.length
++    mic.gum.push(constraints.audio)
++    const make = () => {
++      const err = mic.fail(constraints.audio, n)
++      if (err) throw err
++      const track = new FakeTrack(`mic #${n}`, mic.signal(constraints.audio, n))
++      mic.tracks.push(track)
++      return new FakeStream(track)
++    }
++    return new Promise((resolve, reject) => {
++      const go = () => {
++        try {
++          resolve(make())
++        } catch (e) {
++          reject(e)
++        }
++      }
++      if (mic.hold) mic.pending.push(go)
++      else setTimeout(go, 5)
++    })
++  }
++
++  class FakeMediaRecorder {
++    static isTypeSupported(m) {
++      return m === 'audio/webm;codecs=opus'
++    }
++    constructor(stream, options) {
++      this.stream = stream
++      this.mimeType = options?.mimeType ?? ''
++      this.state = 'inactive'
++      this.ondataavailable = null
++      this.onstop = null
++      this.onerror = null
++      mic.recorders.push(this)
++    }
++    start() {
++      this.state = 'recording'
++    }
++    stop() {
++      if (this.state === 'inactive') return
++      this.state = 'inactive'
++      queueMicrotask(() => {
++        this.ondataavailable?.({ data: new Blob(['x']) })
++        this.onstop?.()
++      })
++    }
++  }
++
++  class FakeAudioContext {
++    async resume() {}
++    createAnalyser() {
++      const an = {
++        fftSize: 2048,
++        stream: null,
++        getFloatTimeDomainData(buf) {
++          const track = an.stream?.getAudioTracks()[0]
++          buf.fill(track && track.readyState === 'live' && track.hasSignal ? 0.01 : 0)
++        },
++      }
++      return an
++    }
++    createMediaStreamSource(stream) {
++      mic.measuring++
++      return {
++        connect(an) {
++          an.stream = stream
++        },
++      }
++    }
++    async close() {
++      mic.measuring--
++    }
++  }
++
++  // El reloj avanza 400 ms en cada lectura: los 2 s de medición de silencio pasan en ~5 vueltas de 30 ms.
++  let now = 0
++  const fakePerformance = { now: () => (now += 400) }
++
++  const define = (name, value) => Object.defineProperty(globalThis, name, { value, configurable: true, writable: true })
++  define('navigator', {
++    mediaDevices: {
++      getUserMedia,
++      enumerateDevices: async () => mic.devices.map((d) => ({ ...d, kind: 'audioinput', groupId: '' })),
++      addEventListener: () => {},
++    },
++  })
++  define('MediaRecorder', FakeMediaRecorder)
++  define('AudioContext', FakeAudioContext)
++  define('performance', fakePerformance)
++  return mic
++}
++
++/** Espera a que se cumpla una condición (máx. 3 s). */
++export async function until(cond, label = 'condición') {
++  const t0 = Date.now()
++  while (!cond()) {
++    if (Date.now() - t0 > 3000) throw new Error(`Tiempo agotado esperando: ${label}`)
++    await new Promise((r) => setTimeout(r, 5))
++  }
++}
+diff --git a/tests/recorder.test.mjs b/tests/recorder.test.mjs
+new file mode 100644
+index 0000000..927f71d
+--- /dev/null
++++ b/tests/recorder.test.mjs
+@@ -0,0 +1,249 @@
++// Pruebas del Recorder (v5.8.1 «Micrófono seguro»): AUD-MIC-301, 302, 304, 800 y AUD-ARQ-100/113.
++// Se ejecutan con `npm test` (node:test + Vite ssrLoadModule, sin dependencias nuevas).
++import assert from 'node:assert/strict'
++import { after, test } from 'node:test'
++import { installMic, until } from './helpers/mic-mocks.mjs'
++import { closeServer, loadFresh } from './helpers/vite.mjs'
++
++after(closeServer)
++
++/** Simulacros nuevos + módulo recién cargado (estado `chosen`/`defaultOk` limpio). */
++async function setup(opts) {
++  const mic = installMic(opts)
++  const mod = await loadFresh('/src/lib/recorder.ts')
++  return { mic, mod, rec: new mod.Recorder() }
++}
++
++const BT_AND_PHONE = [
++  { deviceId: 'default', label: 'Default' },
++  { deviceId: 'bt1', label: 'Bluetooth headset' },
++  { deviceId: 'spk', label: 'Speakerphone' },
++]
++
++test('MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder', async () => {
++  const { mic, rec } = await setup({ hold: true })
++  const a = rec.begin()
++  const b = rec.begin()
++  await until(() => mic.pending.length === 1, 'primera apertura')
++  mic.resolveAll()
++  assert.deepEqual(await Promise.all([a, b]), [true, true])
++  assert.equal(mic.gum.length, 1, 'una sola llamada a getUserMedia')
++  assert.equal(mic.liveTracks, 1)
++  assert.equal(mic.recorders.length, 1)
++  rec.close()
++  assert.equal(mic.liveTracks, 0, 'close() lo cierra todo: no queda huérfano')
++  assert.equal(mic.activeRecorders, 0)
++})
++
++test('MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura', async () => {
++  const { mic, rec } = await setup({ hold: true })
++  const opening = rec.open()
++  const begun = rec.begin()
++  await until(() => mic.pending.length === 1, 'apertura')
++  mic.resolveAll()
++  assert.equal(await opening, true)
++  assert.equal(await begun, true)
++  assert.equal(mic.gum.length, 1)
++  assert.equal(mic.liveTracks, 1)
++  rec.close()
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba', async () => {
++  const { mic, rec } = await setup({ hold: true })
++  const p = rec.begin()
++  await until(() => mic.pending.length === 1, 'apertura')
++  rec.close()
++  mic.resolveAll()
++  assert.equal(await p, false, 'begin() informa de la cancelación')
++  assert.equal(mic.liveTracks, 0)
++  assert.equal(mic.recorders.length, 0, 'no se creó ningún MediaRecorder')
++  assert.equal(rec.isOpen, false)
++})
++
++test('MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback)', async () => {
++  const { mic, rec } = await setup({ signal: () => false, devices: BT_AND_PHONE })
++  const p = rec.begin()
++  await until(() => mic.measuring > 0, 'medición de señal')
++  rec.close()
++  assert.equal(await p, false)
++  await new Promise((r) => setTimeout(r, 100))
++  assert.equal(mic.gum.length, 1, 'ninguna reapertura tras el cierre')
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso', async () => {
++  const { mic, mod, rec } = await setup({ hold: true })
++  const p = rec.begin()
++  await until(() => mic.pending.length === 1, 'apertura')
++  mod.releaseAllMics()
++  mic.resolveAll()
++  assert.equal(await p, false)
++  assert.equal(mic.liveTracks, 0)
++  assert.equal(mic.recorders.length, 0)
++})
++
++test('MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad', async () => {
++  const { mic, rec } = await setup({ hold: true })
++  const p = rec.begin()
++  await until(() => mic.pending.length === 1, 'apertura')
++  rec.close()
++  mic.resolveAll()
++  assert.equal(await p, false)
++  mic.hold = false
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.liveTracks, 1)
++  assert.equal(mic.activeRecorders, 1)
++  rec.close()
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano)', async () => {
++  const { mic, rec } = await setup()
++  assert.equal(await rec.begin(), true)
++  assert.equal(rec.start(), false)
++  assert.equal(await rec.begin(), false, 'un begin() con la grabación en marcha tampoco crea otro grabador')
++  assert.equal(mic.recorders.length, 1)
++  const { blob } = await rec.stop()
++  assert.ok(blob.size > 0)
++  assert.equal(mic.activeRecorders, 0, 'al parar no queda ningún grabador activo')
++  assert.equal(rec.start(), true, 'después de parar se puede volver a grabar')
++  assert.equal(mic.recorders.length, 2)
++  rec.close()
++  assert.equal(mic.activeRecorders, 0)
++})
++
++test('MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos', async () => {
++  const { mic, rec } = await setup({ signal: () => false, devices: [{ deviceId: 'default', label: 'Default' }, { deviceId: 'spk', label: 'Speakerphone' }] })
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 1, 'ninguna reapertura')
++  assert.equal(mic.gum[0].echoCancellation, true, 'conserva la cancelación de eco')
++  rec.close()
++  // La siguiente apertura ya no mide (el micro por defecto quedó validado).
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 2)
++  assert.equal(mic.measuring, 0)
++  rec.close()
++})
++
++test('MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado', async () => {
++  const { mic, mod, rec } = await setup({ signal: () => false, devices: BT_AND_PHONE })
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 2, 'apertura + 1 solo reintento')
++  assert.deepEqual(mic.gum[1].deviceId, { exact: 'spk' })
++  assert.equal(mic.gum[1].echoCancellation, true)
++  assert.equal(mic.liveTracks, 1, 'el stream del primer intento se cerró')
++  mod.releaseAllMics()
++  assert.equal(mic.liveTracks, 0, 'el stream del reintento está en `recorders`: el segundo plano lo cierra')
++  assert.equal(mic.activeRecorders, 0)
++})
++
++test('MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión', async () => {
++  const { mic, rec } = await setup({ signal: (_c, n) => n > 0, devices: BT_AND_PHONE })
++  assert.equal(await rec.begin(), true)
++  rec.close()
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 3)
++  assert.deepEqual(mic.gum[2].deviceId, { exact: 'spk' }, 'la siguiente apertura usa directamente el micro elegido')
++  rec.close()
++})
++
++test('MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión', async () => {
++  // Sin micro del teléfono identificable: el reintento es el micro por defecto sin procesado.
++  const { mic, rec } = await setup({ signal: (_c, n) => n > 0, devices: [{ deviceId: 'default', label: 'Default' }, { deviceId: 'bt1', label: 'Bluetooth headset' }] })
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 2)
++  assert.equal(mic.gum[1].echoCancellation, false, 'el reintento es sin procesado')
++  rec.close()
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum[2].echoCancellation, true, 'la siguiente apertura vuelve al micro con procesado')
++  rec.close()
++})
++
++test('MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth', async () => {
++  const { mic, rec } = await setup({ hold: true, signal: () => false, devices: [{ deviceId: 'default', label: 'Default' }, { deviceId: 'spk', label: 'Speakerphone' }] })
++  const p = rec.begin()
++  await until(() => mic.pending.length === 1, 'apertura')
++  mic.resolveAll()
++  await until(() => mic.tracks.length === 1, 'pista')
++  mic.tracks[0].muted = true
++  await until(() => mic.pending.length === 1, 'reintento')
++  mic.resolveAll()
++  assert.equal(await p, true)
++  assert.equal(mic.gum.length, 2)
++  rec.close()
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas', async () => {
++  const { mic, rec } = await setup({ hold: true, signal: () => false, devices: BT_AND_PHONE })
++  const p = rec.begin()
++  await until(() => mic.pending.length === 1, 'apertura')
++  mic.resolveAll()
++  await until(() => mic.pending.length === 1, 'reintento')
++  rec.close()
++  mic.resolveAll()
++  assert.equal(await p, false)
++  assert.equal(mic.liveTracks, 0)
++  assert.equal(mic.recorders.length, 0)
++})
++
++test('Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto', async () => {
++  const denied = Object.assign(new Error('denied'), { name: 'NotAllowedError' })
++  const { mic, mod, rec } = await setup({ fail: () => denied })
++  await assert.rejects(rec.begin(), (e) => e instanceof mod.MicError && /permiso/i.test(e.message))
++  assert.equal(mic.gum.length, 1)
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto', async () => {
++  const busy = Object.assign(new Error('busy'), { name: 'NotReadableError' })
++  const { mic, mod, rec } = await setup({ fail: () => busy })
++  await assert.rejects(rec.begin(), (e) => e instanceof mod.MicError && /otras apps/i.test(e.message))
++  assert.equal(mic.gum.length, 2)
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('MIC-309: cada grabación tiene sus propios trozos', async () => {
++  const { rec } = await setup()
++  assert.equal(await rec.begin(), true)
++  const first = await rec.stop()
++  assert.equal(rec.start(), true)
++  const second = await rec.stop()
++  assert.equal(first.blob.size, 1)
++  assert.equal(second.blob.size, 1, 'la segunda no arrastra el trozo de la primera')
++  rec.close()
++})
++
++test('MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado)', async () => {
++  const { mic, mod, rec } = await setup({ signal: () => false, devices: BT_AND_PHONE })
++  mod.setMicMode('headset')
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 2, 'apertura + 1 reintento, nunca la cadena de 4 aperturas de la v5.8')
++  assert.equal(mic.gum[1].echoCancellation, true)
++  assert.equal(mic.liveTracks, 1)
++  rec.close()
++  assert.equal(mic.liveTracks, 0)
++})
++
++test('REV-T1-1: si el micro del teléfono no se puede abrir en el reintento, se prueba el por defecto sin procesado', async () => {
++  const over = Object.assign(new Error('over'), { name: 'OverconstrainedError' })
++  const { mic, mod, rec } = await setup({ signal: () => false, devices: BT_AND_PHONE, fail: (c) => (c.deviceId ? over : null) })
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum.length, 3, 'por defecto + teléfono (falla) + sin procesado')
++  assert.equal(mic.gum[2].echoCancellation, false)
++  assert.equal(mic.liveTracks, 1, 'una sola alternativa llegó a abrirse')
++  mod.releaseAllMics()
++  assert.equal(mic.liveTracks, 0, 'el stream sin procesado está en `recorders`')
++  // No se recuerda: la siguiente apertura vuelve al micro con procesado.
++  assert.equal(await rec.begin(), true)
++  assert.equal(mic.gum[3].echoCancellation, true)
++  rec.close()
++})
++
++test('REV-T1-1: si fallan también las alternativas, MicError en español y nada abierto', async () => {
++  const busy = Object.assign(new Error('busy'), { name: 'NotReadableError' })
++  const { mic, mod, rec } = await setup({ signal: () => false, devices: BT_AND_PHONE, fail: (_c, n) => (n > 0 ? busy : null) })
++  await assert.rejects(rec.begin(), (e) => e instanceof mod.MicError && /otras apps/i.test(e.message))
++  assert.equal(mic.liveTracks, 0)
++})
+diff --git a/tests/talkGesture.test.mjs b/tests/talkGesture.test.mjs
+new file mode 100644
+index 0000000..4a4b77b
+--- /dev/null
++++ b/tests/talkGesture.test.mjs
+@@ -0,0 +1,37 @@
++// Reglas de los dedos del botón de hablar (AUD-MIC-304, REV-T2-1). Lógica pura de src/components/talkGesture.ts.
++import assert from 'node:assert/strict'
++import { after, test } from 'node:test'
++import { closeServer, loadFresh } from './helpers/vite.mjs'
++
++after(closeServer)
++
++const idle = { busy: false, locked: false, recording: false }
++
++test('REV-T2-1: un segundo dedo DURANTE la apertura (aún no «grabando») se ignora y no se queda con el gesto', async () => {
++  const { pointerDownAction, isOwnPointer } = await loadFresh('/src/components/talkGesture.ts')
++  let g = { active: false, id: -1, done: false }
++  assert.equal(pointerDownAction(g, 1, idle), 'press')
++  g = { active: true, id: 1, done: false } // lo que guarda TalkButton al empezar
++  // El micro aún se abre: fase sin «recording».
++  assert.equal(pointerDownAction(g, 2, idle), 'ignore')
++  assert.equal(isOwnPointer(g, 2), false, 'soltar el dedo 2 no envía ni corta la grabación')
++  assert.equal(isOwnPointer(g, 1), true, 'el dedo 1 sigue mandando')
++})
++
++test('MIC-304: con la grabación en marcha, otro dedo o un toque nuevo no empieza otra grabación', async () => {
++  const { pointerDownAction } = await loadFresh('/src/components/talkGesture.ts')
++  const rec = { busy: false, locked: false, recording: true }
++  assert.equal(pointerDownAction({ active: true, id: 1, done: false }, 2, rec), 'ignore')
++  assert.equal(pointerDownAction({ active: false, id: 1, done: false }, 3, rec), 'ignore', 'justo tras soltar, sin dedo activo')
++})
++
++test('Grabación bloqueada: un toque envía; ocupado (pensando): se ignora', async () => {
++  const { pointerDownAction } = await loadFresh('/src/components/talkGesture.ts')
++  assert.equal(pointerDownAction({ active: false, id: 1, done: true }, 4, { busy: false, locked: true, recording: true }), 'send')
++  assert.equal(pointerDownAction({ active: false, id: -1, done: false }, 1, { busy: true, locked: false, recording: false }), 'ignore')
++})
++
++test('El mismo dedo puede volver a pulsar (p. ej. si se perdió su pointerup) y no queda el botón bloqueado', async () => {
++  const { pointerDownAction } = await loadFresh('/src/components/talkGesture.ts')
++  assert.equal(pointerDownAction({ active: true, id: 1, done: false }, 1, idle), 'press')
++})

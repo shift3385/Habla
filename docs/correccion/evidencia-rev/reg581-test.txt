@@ -1,0 +1,58 @@
+﻿
+> habla@0.0.0 test
+> node --test "tests/**/*.test.mjs"
+
+✔ FUG-401: Resource IDs maliciosos o mal formados se rechazan y NO sale ninguna petición (ni el token) (152.0127ms)
+✔ FUG-401: un Resource ID correcto va solo a login.microsoftonline.com y a management.azure.com (16.2064ms)
+✔ FUG-401: Tenant y Client ID con forma incorrecta se rechazan antes de pedir el token (13.8905ms)
+✔ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (189.0189ms)
+✔ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (61.1676ms)
+✔ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (22.63ms)
+✔ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (161.3893ms)
+✔ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (15.9715ms)
+✔ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (63.9333ms)
+✔ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (77.573ms)
+[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto
+✔ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (172.5415ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+✔ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (300.2541ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+✔ MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión (217.278ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+✔ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (219.167ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+✔ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (283.905ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+✔ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (171.4075ms)
+✔ Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto (30.991ms)
+✔ Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto (44.9292ms)
+✔ MIC-309: cada grabación tiene sus propios trozos (62.3006ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo headset); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+✔ MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado) (551.9825ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+✔ REV-T1-1: si el micro del teléfono no se puede abrir en el reintento, se prueba el por defecto sin procesado (362.4274ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+✔ REV-T1-1: si fallan también las alternativas, MicError en español y nada abierto (204.6904ms)
+✔ REV-T2-1: un segundo dedo DURANTE la apertura (aún no «grabando») se ignora y no se queda con el gesto (114.3526ms)
+✔ MIC-304: con la grabación en marcha, otro dedo o un toque nuevo no empieza otra grabación (15.2247ms)
+✔ Grabación bloqueada: un toque envía; ocupado (pensando): se ignora (6.9039ms)
+✔ El mismo dedo puede volver a pulsar (p. ej. si se perdió su pointerup) y no queda el botón bloqueado (7.3047ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4490.7034

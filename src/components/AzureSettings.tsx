@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fmtHours, F0_SECONDS, hasMonitor, monthUsage, type Usage } from '../lib/azureUsage'
+import { fmtHours, F0_SECONDS, hasMonitor, monitorProblem, monthUsage, normalizeResourceId, type Usage } from '../lib/azureUsage'
 import { confirmIdentity } from '../lib/deviceAuth'
 import { costEstimate, hasAzure, monitorCreds, monthKey, PLANS } from '../lib/phonetics'
 import { AzureError, checkAzureKey } from '../lib/pronunciation'
@@ -120,14 +120,28 @@ export default function AzureSettings({ settings, update }: { settings: Settings
   }
 
   const saveMonitor = async () => {
-    const secret = mon.clientSecret.trim() || settings.azureClientSecret
-    if (settings.azureClientSecret && secret !== settings.azureClientSecret) {
-      const ok = await confirmIdentity('Para cambiar el secreto de Azure')
+    const next = { tenantId: mon.tenantId.trim(), clientId: mon.clientId.trim(), resourceId: mon.resourceId.trim() }
+    // Vacío = quitar el acceso a Azure Monitor (no hay nada que validar). Si no, AUD-FUG-401: forma correcta antes de guardar.
+    const clearing = !next.tenantId && !next.clientId && !next.resourceId
+    // REV-U2-1: al quitar el acceso se borra también el secreto guardado (no tiene sentido guardarlo sin uso).
+    const secret = clearing ? '' : mon.clientSecret.trim() || settings.azureClientSecret
+    const problem = clearing ? null : monitorProblem(next)
+    if (problem) return setMonStatus({ kind: 'error', text: problem })
+    const resourceId = clearing ? '' : normalizeResourceId(next.resourceId)!
+    // AUD-FUG-401: cambiar el tenant, el cliente o el recurso decide a dónde va el token de Azure: pide el bloqueo
+    // igual que cambiar el secreto (antes solo se pedía para el secreto).
+    const changed =
+      (settings.azureClientSecret && secret !== settings.azureClientSecret) ||
+      (settings.azureTenantId && next.tenantId !== settings.azureTenantId) ||
+      (settings.azureClientId && next.clientId !== settings.azureClientId) ||
+      (settings.azureResourceId && resourceId !== settings.azureResourceId)
+    if (changed) {
+      const ok = await confirmIdentity('Para cambiar el acceso a Azure Monitor')
       if (!ok.ok) return setMonStatus({ kind: 'error', text: 'No se confirmó tu identidad: no se cambió.' })
     }
-    update({ azureTenantId: mon.tenantId.trim(), azureClientId: mon.clientId.trim(), azureClientSecret: secret, azureResourceId: mon.resourceId.trim() })
+    update({ azureTenantId: next.tenantId, azureClientId: next.clientId, azureClientSecret: secret, azureResourceId: resourceId })
     setMon((m) => ({ ...m, clientSecret: '' }))
-    setMonStatus({ kind: 'ok', text: 'Guardado. Consultando el consumo…' })
+    setMonStatus({ kind: 'ok', text: clearing ? 'Acceso a Azure Monitor quitado (también el secreto).' : 'Guardado. Consultando el consumo…' })
   }
 
   const toggle = () => {

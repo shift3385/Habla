@@ -542,7 +542,8 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     if (recState === 'idle') {
       await stopSpeaking()
       try {
-        await recorder.current.begin()
+        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste o segundo plano).
+        if (!(await recorder.current.begin())) return
         recStart.current = performance.now()
         setElapsed(0)
         setHint(null)

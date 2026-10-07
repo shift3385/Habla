@@ -5,7 +5,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
 - **Dueño:** un ingeniero de software hispanohablante (nivel B1, habla A2) que aprende inglés. **Responde siempre en español.**
 - **Usuarios reales:** el dueño (teléfono POCO), su madre (Samsung Galaxy A11 con la pantalla dañada; usa horizontal forzado) y algunas amistades. Se distribuye **copiando el APK a mano**: no está en ninguna tienda.
 - **Alcance actual:** cada persona usa **su propia clave** de Gemini (y opcionalmente de Azure), que se guarda solo en su teléfono. No hay backend ni cuentas.
-- **Versión actual:** 5.8 (build 33). Repo privado: `https://github.com/shift3385/Habla`.
+- **Versión actual:** 5.8 (build 33) distribuida; 5.8.1 (build 34) «Micrófono seguro» hecha en código y en revisión (`docs/correccion/ESTADO.md`). Repo privado: `https://github.com/shift3385/Habla`.
 
 ## Stack
 
@@ -18,7 +18,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
 | Repaso espaciado | `ts-fsrs` 5 |
 | IA | Google Gemini (REST `generativelanguage.googleapis.com`) con la clave del usuario; Azure Speech REST (opcional); Azure Monitor (opcional) |
 | Lint | `oxlint` (`.oxlintrc.json`). **No hay Prettier configurado** (ver Convenciones) |
-| Tests | **No hay tests automatizados en el repo** (ver «Pruebas») |
+| Tests | `npm test`: `node:test` + Vite `ssrLoadModule` en `tests/` (desde la 5.8.1; de momento solo el Recorder). Ver «Pruebas» |
 
 ## Estructura
 
@@ -85,6 +85,8 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
 | Tipos | `npx tsc -b` |
 | Lint | `npm run lint` (debe quedar con **0 errores**; hay ~6 avisos antiguos en Calibration/Conversation/Settings) |
 | Validar el banco del test | `node scripts/validate-bank.mjs` |
+| Tests | `npm test` (archivos `tests/**/*.test.mjs`) |
+| Comprobar que el Java compila | `cd android; .\gradlew.bat :app:compileDebugJavaWithJavac --offline -q` (no empaqueta: `assembleDebug` copia el APK a `apk/` y pisa el de la versión) |
 | Compilar la web | `npm run build` |
 | APK (forma fiable) | `npm run build; npx cap sync android; cd android; .\gradlew.bat assembleDebug --offline -q; cd ..` → `apk\Habla-v<versión>.apk` |
 | Instalar en un teléfono | `adb -s <serie> install -r apk\Habla-v<versión>.apk` (`-r` conserva los datos) |
@@ -93,9 +95,9 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
 
 ### Pruebas
 
-- No hay suite automatizada en el repo. Durante el desarrollo se usaron **scripts de prueba temporales** con este patrón: un `.mjs` que crea un servidor Vite en `middlewareMode` y carga el módulo con `server.ssrLoadModule('/src/lib/xxx.ts')` para probar funciones puras (`placement`, `pronunciation`, `phonetics`, `azureUsage`, `mascotTips`…). Se copiaban a la raíz como `.tmp-*.mjs`, se ejecutaban y se borraban. Esos scripts **ya no existen**: si hacen falta, recréalos (o, mejor, añade un runner de tests de verdad).
+- **`npm test`** (desde la 5.8.1): `node --test` sobre `tests/**/*.test.mjs`. `tests/helpers/vite.mjs` carga módulos de `src/` con un servidor Vite en `middlewareMode` (`loadFresh()` da estado de módulo limpio) y `tests/helpers/mic-mocks.mjs` simula `getUserMedia`, `MediaRecorder` y `AudioContext`. Hoy cubre el Recorder (AUD-MIC-301/302/304/800); añade aquí las pruebas de `levels`, `bank`, `placement`, `fluency`, `backup` (AUD-ARQ-113). Sin dependencias nuevas (nada de Vitest/Jest).
 - Pruebas manuales en el **teléfono real** por USB: ver `docs/configuracion.md` (CDP, audio falso, varios dispositivos).
-- Antes de compilar una entrega: `npx tsc -b`, `npm run lint`, `node scripts/validate-bank.mjs` y prueba local de lo cambiado.
+- Antes de compilar una entrega: `npx tsc -b`, `npm run lint`, `npm test`, `node scripts/validate-bank.mjs` y prueba local de lo cambiado.
 
 ## Convenciones
 
@@ -118,7 +120,7 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
 4. **Prueba antes de compilar** y solo compila un entregable cuando lo cambiado pase las revisiones. El dueño es muy exigente y quiere evidencias (capturas, medidas).
 5. **No pierdas datos de los usuarios:** instala siempre con `adb install -r`. Antes de cualquier cosa arriesgada en un teléfono ajeno (p. ej. el de su madre), haz copia del estado.
 6. **Política de niveles:** las lecciones solo **proponen**; solo el re-test cambia el nivel (70 % test + 30 % trayectoria). El primer test fija el nivel. Ver `docs/decisiones.md`.
-7. **Siguiente trabajo previsto:** v5.8.1 «Micrófono seguro» (P0 de la auditoría). Lee `docs/auditoria/resultados/INFORME.md` §8 antes de empezar.
+7. **Siguiente trabajo previsto:** cerrar la v5.8.1 «Micrófono seguro» (revisión en PC, prueba en el POCO con `docs/correccion/REVISOR-MOVIL.md`, APK y commit aprobados por el dueño) y después la v5.8.2 «Claves, datos y consumo». Estado y reglas en `docs/correccion/ESTADO.md` y `REGLAS.md`; plan en `docs/auditoria/resultados/INFORME.md` §8.
 8. **Con varios teléfonos conectados**, usa siempre `adb -s <serie>` o `ANDROID_SERIAL`. No toques el teléfono de otra persona sin que el dueño lo pida.
 
 ## Documentación relacionada

@@ -1,0 +1,211 @@
+✖ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (3246.9096ms)
+✖ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (3087.1623ms)
+✖ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (101.8766ms)
+[HABLA-MIC] ningún micrófono da señal
+✖ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (542.5668ms)
+✖ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (87.5858ms)
+✖ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (98.9798ms)
+✖ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (96.0546ms)
+[HABLA-MIC] ningún micrófono da señal
+✖ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (540.2408ms)
+[HABLA-MIC] ningún micrófono da señal
+✖ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (480.9282ms)
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+✔ MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión (308.0359ms)
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "por defecto sin procesado"
+✖ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (284.8042ms)
+✖ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (6012.8938ms)
+✖ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (6013.9848ms)
+✔ Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto (188.2891ms)
+✔ Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto (128.2504ms)
+✔ MIC-309: cada grabación tiene sus propios trozos (209.6565ms)
+[HABLA-MIC] el micrófono de los auriculares no da señal en 5 s; uso el del teléfono
+[HABLA-MIC] ningún micrófono da señal
+✖ MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado) (873.5057ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 4
+ℹ fail 11
+ℹ cancelled 2
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22841.3197
+
+✖ failing tests:
+
+test at tests\recorder.test.mjs:23:1
+✖ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (3246.9096ms)
+  Error: Tiempo agotado esperando: primera apertura
+      at until (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/helpers/mic-mocks.mjs:160:39)
+      at async TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:27:3)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tests\recorder.test.mjs:38:1
+✖ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (3087.1623ms)
+  Error: Tiempo agotado esperando: apertura
+      at until (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/helpers/mic-mocks.mjs:160:39)
+      at async TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:42:3)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tests\recorder.test.mjs:52:1
+✖ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (101.8766ms)
+  AssertionError [ERR_ASSERTION]: begin() informa de la cancelación
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:58:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:64:1
+✖ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (542.5668ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:69:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:75:1
+✖ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (87.5858ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:81:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:86:1
+✖ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (98.9798ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:92:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:101:1
+✖ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (96.0546ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:104:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:116:1
+✖ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (540.2408ms)
+  AssertionError [ERR_ASSERTION]: ninguna reapertura
+  
+  3 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:119:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:129:1
+✖ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (480.9282ms)
+  AssertionError [ERR_ASSERTION]: apertura + 1 solo reintento
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:132:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:151:1
+✖ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (284.8042ms)
+  AssertionError [ERR_ASSERTION]: la siguiente apertura vuelve al micro con procesado
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:159:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\recorder.test.mjs:163:1
+✖ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (6012.8938ms)
+  'test timed out after 6000ms'
+
+test at tests\recorder.test.mjs:178:1
+✖ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (6013.9848ms)
+  'test timed out after 6000ms'
+
+test at tests\recorder.test.mjs:218:1
+✖ MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado) (873.5057ms)
+  AssertionError [ERR_ASSERTION]: apertura + 1 reintento, nunca la cadena de 4 aperturas de la v5.8
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/29fad158-a1ea-46a3-a435-b2edfe4b309e/scratchpad/headrec/tests/recorder.test.mjs:222:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

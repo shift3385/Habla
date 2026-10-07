@@ -1,0 +1,25 @@
+== bienvenida de vuelta (splash) 30 s 23:23:40
+{"hidden":false,"anims":6,"running":3,"infinite":3,"infList":["hb-drift@DIV."],"rafCallsPerS":80.5,"framesPerS":80.5,"svgs":3,"screen":"Welcome back, | Liomar | 3 días | Nivel A2 | Lo dejaste aquí | Mi perf"}
+30 6200 0 206 0
+¡Hola de nuevo!
+Dejamos una clase a medias: «AI Supercompute
+== diálogo «¡Hola de nuevo!» (MascotPage superpuesta) 30 s 23:24:16
+{"hidden":false,"anims":4,"running":3,"infinite":3,"infList":["hb-drift@DIV."],"rafCallsPerS":105.5,"framesPerS":105.5,"svgs":1,"screen":"¡Hola de nuevo! | Dejamos una clase a medias: «AI Supercompute"}
+30 6018 0 200 0
+(corrección: el renderer de Habla tras el arranque en frío es pid 27176; arriba se midió por error otro proceso → columna renderer=0 no vale)
+== diálogo «¡Hola de nuevo!» con renderer correcto 30 s 23:25:07
+30 6027 3455 200 115
+Good evening.
+¿De qué hablamos hoy?
+3
+Leo te espera
+0/15 min hoy
+Clase en progre
+== Inicio real 30 s 23:25:41
+{"hidden":false,"anims":6,"running":3,"infinite":3,"infList":["hb-drift@DIV."],"rafCallsPerS":43,"framesPerS":43,"svgs":17,"screen":"Good evening. | ¿De qué hablamos hoy? | 3 | Leo te espera | 0/15 min"}
+30 5161 2073 172 69
+Total frames rendered: 2580
+50th percentile: 61ms
+90th percentile: 69ms
+mActiveSfDisplayMode=DisplayMode{id=1, width=1220, height=2712, xDpi=445.87, yDpi=445.856, peakRefreshRate=120.00001
+Failed to write while dumping service display: Broken pipe

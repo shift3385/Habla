@@ -1,0 +1,14 @@
+rev · fase B · navegador (rev.localhost:5173, 360x780, arnés rev-mic.js, red falsa: 0 peticiones a la IA) · código del árbol de trabajo de dev (2026-10-06 ~17:40)
+
+MIC-302 · doble toque en «Dictar por voz» (Tema libre), gumDelay 1500:
+  20719 gUM req #0 · 20720 tap 1/2 · 20884 tap 2/2 (sin 2.º gUM) · 22497 gUM open #0 · 23156 rec new #0 / start · 23395 rec stop #0 · 23424 track stop #0
+  tras doble toque: opened=1 live=[0] recording=[0] (UI «Te escucho»)
+  tras terminar: live=[] recording=[] · hoja cerrada: live=[] · segundo plano simulado: liveWhileHidden=[]
+  → PASA (línea base v5.8: FALLA, base-v5.8-MIC-302.txt)
+
+MIC-303 · Debate → «Lo propongo yo» → «Dictar por voz» → grabando → «Atrás» (paso 2→1):
+  22637 gUM req #0 · 24393 open #0 · 25497 rec start #0 · 28658 rec stop #0 · 28661 track stop #0 · 28748 click Atrás
+  en el paso 1 (¿Quién elige…?): live=[] recording=[] audioSent=[] → PASA
+  Variante «Atrás durante la apertura» (gumDelay 3000): 23733 gUM req #1 · 24242 Atrás · 26940 gUM open #1 + track stop #1 (mismo ms) · ningún rec start → PASA
+  Variante «cerrar la hoja durante la apertura» (Atrás x2): 29357 gUM req #2 · 29874/30189 Atrás · 32427 open #2 + track stop #2 · ningún rec start → PASA
+  Al volver al paso 2 el botón vuelve a «Dictar por voz» → PASA

@@ -1,0 +1,24 @@
+B3 · teléfono POCO (Android 16, APK v5.8 build 33), micro real, red falsa (Gemini y Azure interceptados en Capacitor.nativePromise; al audio
+se responde «no se oyó voz» para no guardar turnos). Clase usada: «Reanudar la anterior» (clase guardada del dueño; no se envió ningún turno).
+
+M1 (AUD-MIC-305) — mic-timeline-M1-M4.txt, captura tel-M1-clase-90s.png (punto verde con la clase en reposo):
+  20:47:45 entra en la clase · 20:47:47 habla_in=1 appops (running) MODE_IN_COMMUNICATION
+  → igual durante 3 min sin tocar nada (hasta 20:50:48). Micro capturando y teléfono en modo comunicación toda la clase.
+M4 — mismo archivo: 20:50:48 Inicio de Android → 20:50:49 habla_in=1 → 20:50:50 Inputs(0) MODE_NORMAL (cerrado en ≈1–2 s).
+  20:51:03 vuelta → habla_in=0 durante 15 s (NO se reabre solo). CDP: track stop #0 197370, sin gUM nuevo hasta pulsar.
+M2 — mic-timeline-M2-X1.txt: pointerdown 318242 → (micro cerrado por el segundo plano anterior: gUM #1 318312→318735) rec start 318736;
+  pointerup 321247 → rec stop 321249. Grabación solo entre pulsar y soltar. Envíos tras soltar: Gemini (audio 18 KB) 321405 y
+  Azure (WAV ~98 KB) 321472 en paralelo; Gemini (falso) contestó «no te he entendido», pero Azure ya había recibido el audio (AUD-MIC-310).
+X1 (AUD-MIC-304) — mismo archivo: pointerdown id1 324749 (rec #1) · pointerdown id2 326260 (rec #2) · pointerup 2 y 1 328972 →
+  stop solo de #2 (se envía); rec #1 sigue «recording» 14 s después (342973) con la clase en reposo. CONFIRMADO.
+M11 — mic-timeline-M11.txt: grabando (rec #0 recording) → 20:58:44 am force-stop → 20:58:47 Inputs(0), MODE_NORMAL. Estado limpio.
+M12 — mic-timeline-M12.txt: Inicio, Palabras, Progreso, Ajustes y Hablar, 15 s cada una (20:54:42–20:57:22): Inputs(0), sin appops running,
+  MODE_NORMAL; __b3.mic vacío. Ninguna apertura. CONFIRMADO (sin auriculares conectados).
+Repaso (H-B2-303 / AUD-MIC-305) — mic-timeline-Repaso.txt: 20:59:47 «Responder» → 20:59:50 «Parar» (rec 15974→17891, audio 9 KB a Gemini
+  falso) → el micro sigue abierto y capturando (habla_in=1, running, MODE_IN_COMMUNICATION) 49 s en la tarjeta hasta «Salir del repaso»
+  (21:00:39 Inputs(0)). CONFIRMADO.
+Datos del dueño: no se creó ni borró ninguna sesión; no se calificó ninguna tarjeta. Efecto lateral: al pulsar Inicio con la clase reanudada
+abierta (M1/M4), la app volvió a guardar la clase guardada (persist) con el mismo contenido y una fecha `savedAt` nueva.
+No probados en teléfono (y por qué): M7/AUD-MIC-307 (requiere que el dueño conecte los soundcore; preferencia guardada = «headset»),
+M5/M6 (llamada, giro: requieren acción física o cambiar ajustes del sistema), M8/M8b (el test de nivel es obligatorio y no se puede salir
+sin terminarlo: riesgo para el perfil real), M10 (revocar permisos = cambiar ajustes del sistema; se probó en navegador).

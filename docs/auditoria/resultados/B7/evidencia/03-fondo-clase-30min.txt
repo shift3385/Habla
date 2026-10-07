@@ -1,0 +1,7 @@
+inicio 23:00:06
+min app_ticks_acum render_ticks_acum app_%cpu_ultimo_min render_%cpu_ultimo_min importancia wakelocks_habla modo_audio
+1 7 988 0 16 10410 0 - mode (internal) = NORMAL
+2 18 1075 0 1 10410 0 - mode (internal) = NORMAL
+3 19 1079 0 0 10410 0 - mode (internal) = NORMAL
+4 20 1079 0 0 10410 0 - mode (internal) = NORMAL
+5 30 1091 0 0 10410 0 - mode (internal) = NORMAL
