@@ -168,3 +168,22 @@ Lo que queda por encima de 12 son los gestos espontáneos de reposo (cada 5–9 
 - **AUD-FUG-402 (fuera del código, lo hace el dueño):** borrar de `apk/` los APK v3.0–v5.7 (registraban en logcat los ajustes con las claves) y valorar rotar la clave de Gemini. No se tocó `apk/`.
 - La 5.8.1 no se compiló por separado: el commit `e5d9c1a` metió en `main` la 5.8.1 y parte de la 5.8.2 juntas. Se entregan como una sola 5.8.2 (las dos entradas siguen en Novedades).
 - No se compiló el APK: este trabajo se hizo en un entorno Linux sin Android SDK. Falta `npm run apk` en el PC del dueño.
+
+---
+
+## Revisión de código y pruebas en la app real (2026-10-07, segunda pasada)
+
+Revisión de código del PR (`/code-review`, otra mirada sobre `e5d9c1a..HEAD`): 8 hallazgos, todos verificados y corregidos.
+
+| # | Hallazgo | Arreglo |
+|---|---|---|
+| 1 | **Grave.** `PlanCard`: el error recordado podía volver cuando ya no aplicaba; «Reintentar» llamaba a `create()` y **sustituía un plan que ya funcionaba** | El fallo se guarda con su operación (`create` o `week:N`) y solo se muestra si esa misma operación sigue pendiente; «Reintentar» repite esa operación |
+| 2 | Cambiar de clave o modelo con la tarjeta montada no reintentaba | El error se deriva de la operación + clave + modelos: si cambian, desaparece y se reintenta solo |
+| 3 | El error recordado bloqueaba operaciones distintas (otra semana) | Igual que el 1 |
+| 4 | «Reducir movimiento» paraba también los indicadores de carga y grabación (la app parecía colgada) | Solo se paran los bucles decorativos (`hb-spin`, `ld-breathe`, `bw-bob`, `.anim-bob`); siguen los puntos, `animate-pulse` y las ondas del micro |
+| 5 | Brisa bajaba al ritmo lento en los extremos del vaivén (velocidad 0, posición lejos) | `busy()` mira la amplitud del muelle (posición y velocidad), umbral 2 px |
+| 6 | Clave bloqueada (403 con «API key» en el mensaje) → «no es válida, cópiala otra vez» | `keyCheckError` y `describeError` usan `permissionError()`; 403 va primero en la comprobación |
+| 7 | Refrescar la lista de modelos con 429 decía «no deja comprobar la clave» | Textos de 429/5xx neutros: «Google no responde ahora mismo… Tu clave puede estar bien» |
+| 8 | Una línea de 157 caracteres | Partida |
+
+Pruebas en la app real (Chromium + Vite, red simulada, 0 llamadas reales): ver `evidencia-rev/v582-navegador/LEEME.md`. Textos nuevos sin scroll en 320×640, 780×360 y 640×320; copia v4.1 importada; 429 en Ajustes con la clave anterior conservada; «reducir movimiento»; `PlanCard` en 3 escenarios. `npx tsc -b` OK, lint 0 errores, `npm test` 38/38.

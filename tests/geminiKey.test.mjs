@@ -64,10 +64,13 @@ test('REV-U4-1 / E2E-604: textos al comprobar la clave (sin «Revísala en Ajust
     assert.match(t, /AI Studio/)
     assert.doesNotMatch(t, /Ajustes/)
   }
+  // 429/5xx: valen también al refrescar la lista de modelos (no hablan de «comprobar» ni de cambiar de modelo).
   const quota = keyCheckError(429, null)
-  assert.match(quota, /Puede que sea buena/)
-  assert.doesNotMatch(quota, /modelo|Ajustes/)
-  assert.match(keyCheckError(503, null), /Puede que sea buena/)
-  // El resto de casos siguen con el texto general (p. ej. 403: permisos de la clave).
-  assert.match(keyCheckError(403, null), /permiso/)
+  assert.match(quota, /Tu clave puede estar bien/)
+  assert.doesNotMatch(quota, /modelo|Ajustes|comprobar/)
+  assert.match(keyCheckError(503, null), /Tu clave puede estar bien/)
+  // 403 con «API key» en el mensaje (clave bloqueada o con restricciones): permisos, no «cópiala otra vez».
+  const blocked = { error: { code: 403, message: 'Requests from this API key are blocked.' } }
+  assert.match(keyCheckError(403, blocked), /permiso/)
+  assert.doesNotMatch(keyCheckError(403, blocked), /no es válida/)
 })

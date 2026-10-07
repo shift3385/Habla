@@ -257,12 +257,16 @@ select {
   .ld-ring {
     display: none;
   }
-  /* v5.8.2 (AUD-RES-700): con «reducir movimiento», los bucles infinitos (puntos de «escribiendo», ondas del micro,
-     anillos que giran…) dan una sola vuelta y se paran. Casi todos van en estilo en línea; !important les gana. */
-  *,
-  *::before,
-  *::after {
-    animation-iteration-count: 1 !important;
+  /* v5.8.2 (AUD-RES-700): con «reducir movimiento», los bucles DECORATIVOS de movimiento (anillo que gira y respiración
+     de la preparación, saltitos de la bienvenida y del globo «¡Tócame!») se paran. Van en estilo en línea: se buscan
+     por el nombre de la animación y !important les gana. Los indicadores de que la app trabaja o graba (puntos de
+     «escribiendo», `animate-pulse`, ondas del micro) siguen: son solo opacidad o señal de grabación, y pararlos
+     haría parecer que la app se colgó. */
+  [style*='hb-spin'],
+  [style*='ld-breathe'],
+  [style*='bw-bob'],
+  .anim-bob {
+    animation: none !important;
   }
 }
 

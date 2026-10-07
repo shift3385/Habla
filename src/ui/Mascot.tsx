@@ -525,10 +525,12 @@ export default class Mascot extends Component<Props> {
     const moving = Math.abs(P.vsx) + Math.abs(P.vsy) + Math.abs(P.vhop) + Math.abs(P.vdx) + Math.abs(P.vdy) + Math.abs(P.spinV ?? 0)
     // (La cara de sorpresa es fija: no necesita ritmo completo por sí sola.)
     // Las partículas de ambiente (chispas, burbujas…) no obligan al ritmo completo: avanzan por tiempo (ver draw).
-    // Umbrales por lo que se ve, no por lo que queda (medido en Chromium, 20 s en reposo): el muelle de altura de
-    // Brisa (vlift) apenas se amortigua y por debajo de 0,3 solo mueve ~2 px; el temblor de Musgo (jig) por debajo
-    // de 0,1 deforma <1 %. Con 0,05 y 0,03 seguían a ritmo completo ~3 s y ~1 s tras cada gesto (29 y 20 dibujos/s).
-    return moving > 0.05 || Math.abs(P.vlift ?? 0) > 0.3 || P.jig > 0.1 || P.burst > 0.03
+    // Umbrales por lo que se ve, no por lo que queda (medido en Chromium, 30 s en reposo). El muelle de altura de Brisa
+    // (lift/vlift) apenas se amortigua: se mira su AMPLITUD (posición y velocidad juntas; ω ≈ 0,14 por fotograma), no
+    // solo la velocidad, que pasa por 0 en cada extremo del vaivén. Por debajo de 2 px no se nota. El temblor de Musgo
+    // (jig) por debajo de 0,1 deforma <1 %. Con 0,05 y 0,03 seguían a ritmo completo ~3 s y ~1 s tras cada gesto.
+    const liftAmp = Math.hypot(P.lift ?? 0, (P.vlift ?? 0) / 0.14)
+    return moving > 0.05 || liftAmp > 2 || P.jig > 0.1 || P.burst > 0.03
   }
   /** Momento del último dibujo (para que las partículas no vayan a cámara lenta a ritmo reducido). */
   lastDraw = 0
