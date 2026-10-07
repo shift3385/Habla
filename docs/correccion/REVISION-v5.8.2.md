@@ -10,11 +10,11 @@ Regla nueva (orquestador): **nunca `assembleDebug`/`assembleRelease`**, porque c
 |---|---|---|---|---|---|
 | U1 · Release no depurable, debug `.debug`, fallar sin `keystore.properties` | SEG-001, SEG-504, ARQ-106 | revisada | **APROBADA** | REV-U1-1 (MEDIA, a cerrar en U7) | `U1-package.txt`, `U1-firma-badging.txt`, `U1-sin-keystore.txt` |
 | U2 · Resource ID de Azure, host y huella | FUG-401 | revisada | **APROBADA** | — (REV-U2-1 cerrada, verificada) | `U2-fuzz.txt`, `T6-npm-test.txt` (3 pruebas de `azureUsage`) |
-| U3 · Copias y arranque | SEG-501, RES-704, E2E-601, SEG-510 | revisada | **NC** | REV-U3-1 (MEDIA) | `U3-validador.txt`, `U3U4-test.txt` |
-| U4 · Clave de Gemini | FLU-209 | revisada | **APROBADA** | REV-U4-1 (BAJA, no bloquea) | navegador (ver §3 U4), `U3U4-test.txt` |
-| U5 · Consumo en primer plano | RES-700, RES-701 | para revisar | — | — | NC-v5.8.2-05 (medida en Chromium) |
-| U6 · Textos y menores | FLU-206, FLU-211, E2E-604, RES-703 | para revisar | — | — | NC-v5.8.2-06 |
-| U7 · Entrega 5.8.2/35 | FUG-402 | para revisar | — | — | NC-v5.8.2-07 |
+| U3 · Copias y arranque | SEG-501, RES-704, E2E-601, SEG-510 | revisada | **APROBADA** (2026-10-07, regresión en navegador) | — (REV-U3-1 cerrada) | `U3-validador.txt`, `U3U4-test.txt` |
+| U4 · Clave de Gemini | FLU-209 | revisada | **APROBADA** | — (REV-U4-1 cerrada, 429 comprobado en navegador) | navegador (ver §3 U4), `U3U4-test.txt` |
+| U5 · Consumo en primer plano | RES-700, RES-701 | revisada (sesión en la nube) | **APROBADA en PC** (CPU real: móvil R12) | — | NC-v5.8.2-05 (medida en Chromium) |
+| U6 · Textos y menores | FLU-206, FLU-211, E2E-604, RES-703 | revisada (sesión en la nube) | **APROBADA** | — | NC-v5.8.2-06 |
+| U7 · Entrega 5.8.2/35 | FUG-402 | revisada (sesión en la nube) | **APROBADA** (REV-U1-1 cerrada) | — | NC-v5.8.2-07 |
 
 ## 2. No conformidades (NC)
 
