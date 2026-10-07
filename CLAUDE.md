@@ -5,7 +5,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
 - **Dueño:** un ingeniero de software hispanohablante (nivel B1, habla A2) que aprende inglés. **Responde siempre en español.**
 - **Usuarios reales:** el dueño (teléfono POCO), su madre (Samsung Galaxy A11 con la pantalla dañada; usa horizontal forzado) y algunas amistades. Se distribuye **copiando el APK a mano**: no está en ninguna tienda.
 - **Alcance actual:** cada persona usa **su propia clave** de Gemini (y opcionalmente de Azure), que se guarda solo en su teléfono. No hay backend ni cuentas.
-- **Versión actual:** 5.8 (build 33) distribuida. En código (en `main`): 5.8.1 «Micrófono seguro» y 5.8.2 «Claves, datos y consumo» (build 35), pendientes de revisión, prueba en el teléfono y APK (`docs/correccion/ESTADO.md`). Repo privado: `https://github.com/shift3385/Habla`.
+- **Versión actual:** 5.8 (build 33) distribuida. En código: 5.8.1 «Micrófono seguro», 5.8.2 «Claves, datos y consumo» y 5.9 «Transparencia y control» (build 36), pendientes de prueba en el teléfono y APK (`docs/correccion/ESTADO.md`). Se entregan juntas como 5.9. Repo privado: `https://github.com/shift3385/Habla`.
 
 ## Stack
 
@@ -35,14 +35,14 @@ src/
     recorder.ts        MediaRecorder (webm/opus) ⚠️ ver docs/problemas-conocidos.md
     wav.ts             webm → WAV 16 kHz mono (para Azure), máx. 60 s
     pronunciation.ts   Azure Pronunciation Assessment (REST), frase del coach, palabras a cuidar
-    phonetics.ts       política de la fonética: planes F0/S0, cuota agotada, estado de la tarjeta Modelos
+    phonetics.ts       política de la fonética: planes F0/S0, cuota agotada, estado de la tarjeta Modelos; `runPhonetics()` común a clase, repaso y test
     azureUsage.ts      consumo del mes vía Azure Monitor (service principal, opcional)
     fluency.ts         métricas de fluidez, nota 0–100, informe final
     placement.ts, calibration.ts, levels.ts, bank.ts   test de nivel (reglas, evaluación del habla, niveles, banco)
-    testDraft.ts       borradores del test: terminado sin evaluar (`calibration`) y a medias (`progress`)
+    testDraft.ts       borradores del test: terminado sin evaluar (`calibration`) y a medias (`progress`, con `pauseUsed`: una pausa por test)
     testSummary.ts     mini resumen y resumen completo de cada test
     plan.ts            plan de 12 semanas y lección del día
-    srs.ts             tarjetas de repaso (FSRS)
+    srs.ts             tarjetas de repaso (FSRS); «Ya me la sé» archiva (`archivedAt`) y se recupera en Palabras
     lookup.ts          consultas de palabras en contexto
     topics.ts, scenarios.ts   temas (con noticias reales vía Google Search) y prácticas guiadas
     mascotTips.ts      avisos y consejos de los globos de la mascota del Inicio
@@ -57,7 +57,7 @@ src/
     changelog.ts       versión (lee version.json) y Novedades de cada versión
     db.ts              esquema Dexie y tipos (Session, Turn, Mistake, Profile, Lookup, SrsCard)
   screens/           una pantalla por archivo (Home, Conversation, Calibration, SettingsScreen, ProgressScreen, WordsScreen, Onboarding, NoticeGate, …)
-  components/        piezas reutilizables (TalkButton, PronunciationView, MascotBubble, InfiniteList, MascotPage, AzureSettings, …)
+  components/        piezas reutilizables (TalkButton «toca para hablar» + talkGesture, PhoneticsToggle, PronunciationView, MascotBubble, InfiniteList, MascotPage, AzureSettings, …)
   ui/                sistema visual: theme.ts (4 temas × claro/oscuro, profes, mascotas), Mascot.tsx (mascota animada SVG), iconos
 android/             proyecto nativo. Plugins propios en app/src/main/java/com/shift/habla/:
                        AudioRoutePlugin (micro de auriculares Bluetooth), DeviceAuthPlugin (patrón/PIN/huella), OrientationPlugin (orientación forzada)
@@ -121,7 +121,7 @@ Desde la 5.8.2, `npm run apk` y `npm run apk:debug` usan `--offline` (con intern
 4. **Prueba antes de compilar** y solo compila un entregable cuando lo cambiado pase las revisiones. El dueño es muy exigente y quiere evidencias (capturas, medidas).
 5. **No pierdas datos de los usuarios:** instala siempre con `adb install -r`. Antes de cualquier cosa arriesgada en un teléfono ajeno (p. ej. el de su madre), haz copia del estado.
 6. **Política de niveles:** las lecciones solo **proponen**; solo el re-test cambia el nivel (70 % test + 30 % trayectoria). El primer test fija el nivel. Ver `docs/decisiones.md`.
-7. **Siguiente trabajo previsto:** cerrar la 5.8.1 + 5.8.2 (revisión en PC de U5–U7, prueba en el POCO con `docs/correccion/REVISOR-MOVIL.md`, APK release y aprobación del dueño). Después, la v5.9 «Transparencia y control». Estado y reglas en `docs/correccion/ESTADO.md` y `REGLAS.md`; plan en `docs/auditoria/resultados/INFORME.md` §8.
+7. **Siguiente trabajo previsto:** probar la 5.9 (que incluye 5.8.1 y 5.8.2) en el POCO con `docs/correccion/REVISOR-MOVIL.md` (R1–R24), compilar el APK release y que el dueño lo apruebe. Después, el backlog de la auditoría (INFORME §8.5). Estado y reglas en `docs/correccion/ESTADO.md` y `REGLAS.md`; plan en `docs/auditoria/resultados/INFORME.md` §8.
 8. **Con varios teléfonos conectados**, usa siempre `adb -s <serie>` o `ANDROID_SERIAL`. No toques el teléfono de otra persona sin que el dueño lo pida.
 
 ## Documentación relacionada

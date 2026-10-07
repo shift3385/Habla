@@ -63,12 +63,25 @@ Este archivo sigue siendo la fuente de verdad; si el tablero y este archivo disc
 - **Orden al reanudar:** dev → REV-U3-1, REV-U4-1, U5, U6, U7 (REV-U1-1 dentro). rev → regresión de REV-U3-1 y REV-U4-1, luego U5–U7. Mirar la línea de dev más abajo por si dejó algo a medias.
 - Aviso de rev: no cargar datos de Azure ficticios en `rev.localhost` antes de inyectar la red falsa (`startupCheck` pide token al arrancar).
 
+### v5.9 · «Transparencia y control» + notas del dueño (build 36) — incluye 5.8.1 y 5.8.2
+| ID | Tarea | Estado | Notas |
+|---|---|---|---|
+| V1 | Micro «toca para hablar/enviar», máx. 60 s, abierto solo al grabar (MIC-305, FLU-213) | hecha en PC | `NC-v5.9.md` §1; navegador OK |
+| V2 | Pausa única en test y re-test; restos >30 días (FLU-202, FLU-204) | hecha en PC | navegador OK (pregunta 3 → recarga → pregunta 3) |
+| V3 | «Terminar» desde el Inicio; minutos de la clase a medias (E2E-603) | hecha en PC | navegador OK |
+| V4 | Repaso: cuándo vuelve, «Ya me la sé», cuenta para la meta | hecha en PC | navegador OK |
+| V5 | Fonética de Azure en clase, repaso y test (informativa), interruptor y aviso | hecha en PC | navegador OK con Azure simulado |
+| V6 | Privacidad, recordatorios, copia previa al importar, FLU-200/207/219, E2E-602 | hecha en PC | navegador OK |
+| V7 | Entrega 5.9/36, Novedades, docs | hecha en PC | sin APK (sin Android SDK) |
+Revisión de código: 10 hallazgos corregidos (`9a43bcb`). **Falta:** teléfono (R17–R24 de `REVISOR-MOVIL.md`) y APK.
+
 ## ▶ REANUDADO (2026-10-07, sesión en la nube de Claude Code, Linux sin Android SDK ni teléfono)
 - Contexto: el dueño hizo el commit `e5d9c1a` («Commit manual de test de auditoria») con todo el árbol: 5.8.1 + la 5.8.2 a medias + `docs/auditoria/` y `docs/correccion/`. Las reglas de «nada de commits» quedan superadas por ese commit; los siguientes los aprueba el dueño igual.
 - Hecho por una sola sesión (dev, **sin agente rev independiente**): REV-U3-1 (tests ejecutados), REV-U4-1, U5, U6, U7. tsc OK, lint 0 errores, `npm test` 38/38, banco OK, `npm run build` OK.
 - **Falta:** (1) revisión de rev (regresión de REV-U1-1/U3-1/U4-1 y U5–U7); (2) en el PC del dueño: `npm run apk` y `npm run apk:debug`, comprobar firma y `versionCode 35`; (3) revisor móvil (`REVISOR-MOVIL.md`), sobre todo R11 (release encima de la 5.8) y la CPU en reposo; (4) FUG-402: el dueño borra los APK antiguos de `apk/`; (5) la decisión pendiente sobre MIC-308 (riesgo residual BAJA).
 
 ## Bitácora (lo último arriba)
+- 2026-10-07 — dev (sesión en la nube): v5.9 hecha en código (V1–V7) con las decisiones del dueño; pruebas en Chromium con el arnés rev (evidencia en `evidencia-rev/v59-navegador/`); revisión de código con 10 hallazgos corregidos. `npm test` 39/39, lint 0 errores. Falta teléfono y APK.
 - 2026-10-07 — dev (sesión en la nube): pruebas en la app real con Chromium (evidencia en `evidencia-rev/v582-navegador/`) y revisión de código del PR: 8 hallazgos corregidos, entre ellos uno grave en `PlanCard` («Reintentar» podía sustituir un plan bueno). `npm test` 38/38. Sigue faltando la revisión de rev y el teléfono.
 - 2026-10-07 — dev (sesión en la nube): REV-U3-1 verificada (`npm test` 37/37 con el ajuste pendiente); REV-U4-1 y E2E-604 con `keyCheckError`; U5 terminada (umbrales de Brisa/Musgo, «reducir movimiento» en CSS; medida en Chromium); U6 (FLU-206, FLU-211, RES-703 con prueba en Chromium); U7 (5.8.2/35, RELEASES, `npm run apk` release, docs). Todo en `para revisar`. `npm test` 38/38.
 - 2026-10-06 — dev: PAUSA del dueño. REV-U3-1: código hecho (`backupCheck.ts`: `lookups`/`cards` opcionales, 0–1 perfil) y tests añadidos en `tests/backupCheck.test.mjs` (último ajuste del caso «falta la tabla de sesiones» SIN volver a ejecutar `npm test`); falta ejecutar tests, rellenar «Corregido» en REVISION-v5.8.2.md y NC-v5.8.2.md. REV-U4-1: sin empezar (mensaje propio para 429 en `geminiKey.ts`).
