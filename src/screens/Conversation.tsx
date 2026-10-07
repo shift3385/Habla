@@ -308,11 +308,14 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     const rec = recorder.current
     ;(async () => {
       try {
+        // Al entrar se abre una vez para pedir el permiso y elegir el micro (auriculares…), y se cierra en seguida:
+        // v5.9 (AUD-MIC-305), el micro solo se abre cuando tocas para hablar.
         await rec.open()
       } catch (e) {
         setError(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
       }
-      if (gone()) return rec.close() // saliste mientras se abría el micrófono
+      rec.close()
+      if (gone()) return // saliste mientras se abría el micrófono
       if (resume) {
         const profile = await getProfile()
         setLevel(profile.levels.overall)
@@ -449,9 +452,10 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   const onRelease = async () => {
     await starting.current
     haptic(ImpactStyle.Light)
-    const { blob, seconds } = await recorder.current.stop()
+    // v5.9 (AUD-MIC-305): al enviar se suelta el micrófono; se vuelve a abrir en el siguiente toque.
+    const { blob, seconds } = await recorder.current.finish()
     if (seconds < MIN_SECONDS || blob.size === 0) {
-      setHint('Mantén el botón presionado mientras hablas y suéltalo al terminar.')
+      setHint('Toca el micro, habla y vuelve a tocarlo para enviar.')
       setPhase('idle')
       return
     }
@@ -482,7 +486,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   const onCancel = async () => {
     await starting.current
-    await recorder.current.stop() // se descarta el audio
+    await recorder.current.finish() // se descarta el audio y se suelta el micro
     setPhase('idle')
     setHint('Grabación descartada')
   }
@@ -646,6 +650,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           askTeacher()
         }}
         onBack={finish}
+        onCancel={finish}
       />
     )
   }
@@ -997,7 +1002,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         )}
         {inputMode === 'voice' ? (
           <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')}
-            maxSeconds={phoneticsActive(settings) ? MAX_SECONDS : undefined}
+            maxSeconds={MAX_SECONDS}
             companion={<Mascot element={mascotEl} mood={mood} size={84} />}
           />
         ) : (

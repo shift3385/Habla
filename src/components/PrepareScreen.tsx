@@ -43,9 +43,11 @@ interface Props {
   errorText?: string
   onRetry?: () => void
   onBack?: () => void
+  /** v5.9 (AUD-FLU-213): «Salir» mientras se prepara (antes no había salida hasta ~2,5 min si Google tardaba). */
+  onCancel?: () => void
 }
 
-export default function PrepareScreen({ kind, state, mascot, teacherName, title, errorText, onRetry, onBack }: Props) {
+export default function PrepareScreen({ kind, state, mascot, teacherName, title, errorText, onRetry, onBack, onCancel }: Props) {
   const [tick, setTick] = useState(0)
   const [msgI, setMsgI] = useState(0)
   const text = TEXT[kind]
@@ -143,6 +145,16 @@ export default function PrepareScreen({ kind, state, mascot, teacherName, title,
           </div>
         )}
       </div>
+
+      {onCancel && !error && !done && (
+        <button
+          onClick={onCancel}
+          className="glass absolute left-1/2 h-11 -translate-x-1/2 rounded-full px-6 text-[15px] font-medium"
+          style={{ bottom: 'calc(env(safe-area-inset-bottom) + 28px)' }}
+        >
+          Salir
+        </button>
+      )}
 
       {error && (
         <div

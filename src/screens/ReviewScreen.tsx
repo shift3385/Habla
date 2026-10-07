@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Grade } from 'ts-fsrs'
 import PrepareScreen from '../components/PrepareScreen'
+import { MAX_TALK_SECONDS } from '../components/TalkButton'
+import { MIN_SEND_MS } from '../components/talkGesture'
 import type { SrsCard } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import { MicError, Recorder } from '../lib/recorder'
@@ -76,6 +78,62 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
     return () => clearInterval(id)
   }, [step])
 
+  // v5.9: como en la clase, una respuesta dura como mucho 60 s; al llegar se envía sola.
+  const toggleRef = useRef<(() => void) | null>(null)
+  useEffect(() => {
+    if (step === 'recording' && elapsed >= MAX_TALK_SECONDS) toggleRef.current?.()
+  }, [step, elapsed])
+
+  const toggleRecord = async () => {
+    const card = queue?.[i]
+    if (!card) return
+    setError(null)
+    if (step === 'ask') {
+      await stopSpeaking()
+      try {
+        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
+        if (!(await recorder.current.begin())) return
+        recStart.current = performance.now()
+        setElapsed(0)
+        setStep('recording')
+      } catch (e) {
+        setError(e instanceof MicError ? e.message : 'No se pudo grabar.')
+      }
+      return
+    }
+    if (step !== 'recording') return
+    // Rebote de un doble toque justo al empezar: no se envía una grabación vacía (talkGesture.ts).
+    if (performance.now() - recStart.current < MIN_SEND_MS) return
+    setStep('checking')
+    // v5.9 (AUD-MIC-305): se suelta el micro; entre tarjetas ya no queda abierto.
+    const { blob, seconds } = await recorder.current.finish()
+    const analysis = await analyzeSpeech(blob)
+    if (seconds < 0.8 || (analysis && !analysis.hasSpeech)) {
+      setError('No te he oído. Inténtalo otra vez.')
+      setStep('ask')
+      return
+    }
+    try {
+      const r = await evaluateDrill(
+        settings.geminiKey,
+        mainModels(settings),
+        card,
+        { base64: await blobToBase64(blob), mimeType: blob.type.split(';')[0] || 'audio/webm' },
+      )
+      setResult(r)
+      setStep('result')
+      speak(card.answerEn, settings.ttsRate, settings.voiceIndex).catch(() => {})
+    } catch (e) {
+      setError(friendlyError(e))
+      setStep('ask')
+    }
+  }
+
+  // La referencia se actualiza después de cada pintado (no durante él) para el envío automático de los 60 s.
+  useEffect(() => {
+    toggleRef.current = toggleRecord
+  })
+
   const pad = 'relative z-[2] flex h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
 
   if (loadError) {
@@ -109,45 +167,6 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
   const intervals = previewIntervals(card)
   const suggested = result ? suggestedGrade(result === 'unknown' ? 'unknown' : result.verdict) : null
 
-  const toggleRecord = async () => {
-    setError(null)
-    if (step === 'ask') {
-      await stopSpeaking()
-      try {
-        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
-        if (!(await recorder.current.begin())) return
-        recStart.current = performance.now()
-        setElapsed(0)
-        setStep('recording')
-      } catch (e) {
-        setError(e instanceof MicError ? e.message : 'No se pudo grabar.')
-      }
-      return
-    }
-    if (step !== 'recording') return
-    setStep('checking')
-    const { blob, seconds } = await recorder.current.stop()
-    const analysis = await analyzeSpeech(blob)
-    if (seconds < 0.8 || (analysis && !analysis.hasSpeech)) {
-      setError('No te he oído. Inténtalo otra vez.')
-      setStep('ask')
-      return
-    }
-    try {
-      const r = await evaluateDrill(
-        settings.geminiKey,
-        mainModels(settings),
-        card,
-        { base64: await blobToBase64(blob), mimeType: blob.type.split(';')[0] || 'audio/webm' },
-      )
-      setResult(r)
-      setStep('result')
-      speak(card.answerEn, settings.ttsRate, settings.voiceIndex).catch(() => {})
-    } catch (e) {
-      setError(friendlyError(e))
-      setStep('ask')
-    }
-  }
 
   const dontKnow = () => {
     // AUD-MIC-302: «No lo sé» durante la apertura del micro la cancela; si no, al abrir pisaría el resultado.
@@ -268,7 +287,7 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
               <Wave on={step === 'recording'} />
             </div>
             <div className="txt-sub text-[13px] tabular-nums">
-              {step === 'recording' ? `${Math.floor(elapsed)} s · toca para terminar` : step === 'checking' ? `${teacher.name} está escuchando…` : 'Toca y di la frase en inglés'}
+              {step === 'recording' ? `${Math.floor(elapsed)} s de ${MAX_TALK_SECONDS} · toca para enviar` : step === 'checking' ? `${teacher.name} está escuchando…` : 'Toca y di la frase en inglés'}
             </div>
             {step === 'ask' && (
               <button onClick={dontKnow} className="txt-sub mt-1 h-10 rounded-[20px] px-4 text-[14px]" style={{ border: '1.5px dashed var(--sub)' }}>

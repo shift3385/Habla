@@ -556,7 +556,8 @@ export default function Calibration({ settings, update, onDone, registerBack }: 
     }
     setRecState('processing')
     try {
-      const { blob, seconds } = await recorder.current.stop()
+      // v5.9 (AUD-MIC-305): se suelta el micro; entre tareas ya no queda abierto.
+      const { blob, seconds } = await recorder.current.finish()
       const analysis = await analyzeSpeech(blob)
       if (seconds < 5 || blob.size === 0 || (analysis && !analysis.hasSpeech)) {
         setHint('Necesito oírte un poco más. Inténtalo otra vez y habla al menos 20 segundos.')
