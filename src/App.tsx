@@ -424,6 +424,7 @@ export default function App() {
         <ReviewScreen
           settings={settings}
           t={t}
+          update={update}
           registerBack={registerBack}
           onExit={() => {
             backHandler.current = null

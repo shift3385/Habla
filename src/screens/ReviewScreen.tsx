@@ -5,11 +5,14 @@ import { MAX_TALK_SECONDS } from '../components/TalkButton'
 import { MIN_SEND_MS } from '../components/talkGesture'
 import type { SrsCard } from '../lib/db'
 import { friendlyError } from '../lib/errors'
+import MascotPage from '../components/MascotPage'
+import { addPracticeSeconds } from '../lib/stats'
 import { MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import {
   evaluateDrill,
+  archiveCard,
   GRADES,
   previewIntervals,
   reviewCard,
@@ -26,9 +29,13 @@ import Wave from '../ui/Wave'
 
 type Step = 'ask' | 'recording' | 'checking' | 'result'
 
+/** Al aparecer los botones de elegir, se desplazan a la vista (en horizontal quedaban debajo). Estable: solo al montar. */
+const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest' })
+
 interface Props {
   settings: Settings
   t: ThemeVars
+  update: (p: Partial<Settings>) => void
   onExit: () => void
   registerBack: (h: (() => void) | null) => void
 }
@@ -41,7 +48,7 @@ const VERDICT = {
 }
 
 /** Repaso espaciado: frase en español → la dices en inglés → Gemini la evalúa → nota FSRS. */
-export default function ReviewScreen({ settings, onExit, registerBack }: Props) {
+export default function ReviewScreen({ settings, t, update, onExit, registerBack }: Props) {
   const teacher = TEACHERS[settings.teacher]
   const [queue, setQueue] = useState<SrsCard[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -108,6 +115,8 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
     // v5.9 (AUD-MIC-305): se suelta el micro; entre tarjetas ya no queda abierto.
     const { blob, seconds } = await recorder.current.finish()
     const analysis = await analyzeSpeech(blob)
+    // v5.9: lo hablado en el repaso cuenta para la meta diaria y la racha.
+    if (analysis?.hasSpeech !== false) addPracticeSeconds(analysis?.speechSeconds ?? seconds)
     if (seconds < 0.8 || (analysis && !analysis.hasSpeech)) {
       setError('No te he oído. Inténtalo otra vez.')
       setStep('ask')
@@ -190,7 +199,32 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
     setI((x) => x + 1)
   }
 
+  /** «Ya me la sé»: sale del repaso (se recupera en Palabras → Ya las sé) y se pasa a la siguiente. */
+  const known = async () => {
+    await archiveCard(card)
+    setStats((s) => ({ done: s.done + 1, correct: s.correct + (result !== 'unknown' && result?.verdict === 'correct' ? 1 : 0) }))
+    setResult(null)
+    setShowHint(false)
+    setError(null)
+    setStep('ask')
+    setI((x) => x + 1)
+  }
+
   const v = result ? VERDICT[result === 'unknown' ? 'unknown' : result.verdict] : null
+
+  // La primera vez que toca elegir, la mascota explica qué significa (antes había que intuirlo).
+  if (step === 'result' && !settings.reviewHelpSeen) {
+    return (
+      <MascotPage
+        overlay={{ t }}
+        element={THEME_INFO[settings.theme].mascot}
+        mood="speaking"
+        title="Tú decides cuándo vuelve"
+        subtitle="Después de cada frase eliges cuándo quieres volver a verla, según lo que te costó. Si no te salió, vuelve en unos minutos; si fue fácil, tardará días o semanas. Hace falta elegir para pasar a la siguiente. Y si ya te la sabes de memoria, toca «Ya me la sé» y no volverá (puedes recuperarla en Palabras)."
+        primary={{ label: 'Entendido', onClick: () => update({ reviewHelpSeen: true }) }}
+      />
+    )
+  }
 
   return (
     <div className={pad}>
@@ -210,7 +244,8 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
         <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${(i / queue.length) * 100}%`, background: 'var(--acc)' }} />
       </div>
 
-      <div key={i} className="anim-in mt-5 flex flex-1 flex-col">
+      {/* En horizontal (Galaxy A11) la tarjeta y los botones no caben: el contenido se desplaza (antes quedaban fuera). */}
+      <div key={i} className="anim-in no-scrollbar mt-5 flex min-h-0 flex-1 flex-col overflow-y-auto">
         <div className="txt-acc2 text-xs tracking-[1.2px] uppercase">¿Cómo se dice en inglés?</div>
         <div className="glass mt-2 rounded-[26px] p-5 text-[21px] leading-snug font-medium">{card.promptEs}</div>
         {card.hintEs && step !== 'result' && (
@@ -245,20 +280,27 @@ export default function ReviewScreen({ settings, onExit, registerBack }: Props) 
         <div className="flex-1" />
 
         {step === 'result' ? (
-          <div>
-            <div className="txt-sub mb-2 text-center text-[13px]">¿Qué tal te salió? Elige cuándo volver a verla</div>
+          <div ref={showOnMount}>
+            {/* v5.9 (nota del dueño): decides TÚ cuándo vuelve, según lo que te costó; hace falta elegir para seguir. */}
+            <div className="mb-2 text-center text-[14px] font-semibold">¿Cuándo quieres volver a verla?</div>
             <div className="grid grid-cols-4 gap-1.5">
               {GRADES.map(({ grade: g, label }) => (
                 <button
                   key={g}
                   onClick={() => grade(g)}
-                  className={`flex h-[62px] flex-col items-center justify-center rounded-[18px] ${g === suggested ? 'btn-acc' : 'glass'}`}
+                  className={`flex h-[62px] flex-col items-center justify-center rounded-[18px] px-1 ${g === suggested ? 'btn-acc' : 'glass'}`}
                 >
-                  <span className="text-[14px] font-semibold">{label}</span>
-                  <span className={`text-[11px] ${g === suggested ? 'opacity-80' : 'txt-sub'}`}>{intervals[g]}</span>
+                  <span className="text-[14px] leading-tight font-semibold">{intervals[g]}</span>
+                  <span className={`text-[11px] leading-tight ${g === suggested ? 'opacity-80' : 'txt-sub'}`}>{label}</span>
                 </button>
               ))}
             </div>
+            <div className="txt-sub mt-1.5 text-center text-[12px] leading-snug">
+              {suggested !== null ? 'Te marco una según cómo te salió, pero eliges tú. ' : ''}Elige una para pasar a la siguiente.
+            </div>
+            <button onClick={known} className="txt-sub mt-2 h-10 w-full rounded-[20px] text-[13.5px]" style={{ border: '1.5px dashed var(--sub)' }}>
+              Ya me la sé: no volver a repasarla
+            </button>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">

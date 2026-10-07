@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import LookupCard from '../components/LookupCard'
-import { db, type Lookup } from '../lib/db'
+import { db, type Lookup, type SrsCard } from '../lib/db'
+import { archivedCards, unarchiveCard } from '../lib/srs'
 import { lookupWord } from '../lib/lookup'
 import { getProfile } from '../lib/profile'
 import { fastModels, type Settings } from '../lib/settings'
@@ -22,10 +23,15 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   const [hint, setHint] = useState<string | null>(null)
   const [current, setCurrent] = useState<Lookup | null>(null)
   const [history, setHistory] = useState<Lookup[]>([])
-  const [seg, setSeg] = useState<'all' | 'saved'>('all')
+  const [seg, setSeg] = useState<'all' | 'saved' | 'known'>('all')
+  // v5.9: frases del repaso marcadas «Ya me la sé» (se pueden volver a repasar).
+  const [known, setKnown] = useState<SrsCard[]>([])
   const [level, setLevel] = useState('B1')
 
-  const reload = () => db.lookups.orderBy('createdAt').reverse().limit(60).toArray().then(setHistory)
+  const reload = () => {
+    db.lookups.orderBy('createdAt').reverse().limit(60).toArray().then(setHistory)
+    archivedCards().then(setKnown)
+  }
 
   useEffect(() => {
     reload()
@@ -117,7 +123,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
         </p>
       </div>
 
-      {history.length > 0 && (
+      {(history.length > 0 || known.length > 0) && (
         <>
           <Segmented
             value={seg}
@@ -125,9 +131,33 @@ export default function WordsScreen({ settings, registerBack }: Props) {
             options={[
               { value: 'all', label: 'Historial', count: history.length },
               { value: 'saved', label: 'Guardadas', count: history.filter((h) => h.saved).length },
+              ...(known.length ? [{ value: 'known' as const, label: 'Ya las sé', count: known.length }] : []),
             ]}
           />
-          {list.length === 0 ? (
+          {seg === 'known' ? (
+            <InfiniteList
+              key="known"
+              items={known}
+              render={(c) => (
+                <div key={c.id} className="glass flex items-center gap-3 rounded-[20px] px-4 py-3">
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[15px] leading-tight font-semibold break-words">{c.answerEn}</span>
+                    <span className="txt-sub mt-0.5 line-clamp-2 block text-[12.5px] leading-snug break-words">{c.promptEs}</span>
+                  </span>
+                  <button
+                    onClick={async () => {
+                      await unarchiveCard(c.id!)
+                      if (known.length === 1) setSeg('all') // era la última: vuelve al historial
+                      reload()
+                    }}
+                    className="field h-9 flex-none rounded-[18px] px-3 text-[12.5px]"
+                  >
+                    Repasar otra vez
+                  </button>
+                </div>
+              )}
+            />
+          ) : list.length === 0 ? (
             <div className="glass txt-sub rounded-[22px] p-5 text-center text-sm">
               Aún no has guardado palabras. Ábrelas desde el Historial y toca «Guardar».
             </div>

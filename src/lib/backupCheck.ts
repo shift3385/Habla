@@ -145,6 +145,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     createdAt: num,
     due: num,
     fsrs: shape({ due: num, stability: num, difficulty: num, reps: num, lapses: num, state: num }),
+    archivedAt: opt(num), // v5.9: «Ya me la sé»
   },
 }
 

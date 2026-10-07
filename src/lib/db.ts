@@ -212,6 +212,8 @@ export interface SrsCard {
   createdAt: number
   due: number // copia de fsrs.due para poder indexar
   fsrs: StoredFsrs
+  /** v5.9: «Ya me la sé»: no vuelve al repaso hasta que la recuperes en Palabras → Ya las sé. */
+  archivedAt?: number
 }
 
 export const db = new Dexie('habla') as Dexie & {
