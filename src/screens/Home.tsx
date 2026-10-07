@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
@@ -12,6 +13,7 @@ import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
+import { notificationsGranted } from '../lib/reminders'
 import AllTopicsView from '../components/AllTopicsView'
 import TopicAskPage, { type AskKind } from '../components/TopicAskPage'
 import { Icon } from '../ui/icons'
@@ -25,6 +27,8 @@ interface Props {
   update: (patch: Partial<Settings>) => void
   onStart: (scenarioId: string, categoryId?: string, customTopic?: string) => void
   onGoSettings: () => void
+  /** Ajustes → Meta diaria (permiso de notificaciones). */
+  onOpenGoal?: () => void
   onReview: () => void
   plan: StudyPlan | null
   calibrated: boolean
@@ -51,6 +55,7 @@ export default function Home({
   update,
   onStart,
   onGoSettings,
+  onOpenGoal,
   onReview,
   plan,
   calibrated,
@@ -155,6 +160,12 @@ export default function Home({
     }
   }, [])
   const azureOn = hasAzure(settings)
+  // AUD-FLU-900: recordatorio activado sin permiso de notificaciones → la mascota lo dice (antes fallaba en silencio).
+  const [remindersBlocked, setRemindersBlocked] = useState(false)
+  useEffect(() => {
+    if (!settings.reminderOn || !Capacitor.isNativePlatform()) return
+    notificationsGranted().then((ok) => setRemindersBlocked(!ok))
+  }, [settings.reminderOn])
   const tips = useMemo(() => {
     const notices = settings.mascotNotices
       ? buildTips({
@@ -167,14 +178,16 @@ export default function Home({
           lessonDone: plan ? doneToday(plan) : false,
           liveTopics: favCats.some((c) => c.live),
           retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
+          remindersBlocked,
         })
       : []
     const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn }), adviceCursor) : []
     return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor])
+  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked])
   const onTip = (tip: Tip) => {
-    if (tip.action === 'resume') onResumeClass?.()
+    if (tip.action === 'notif') onOpenGoal?.()
+    else if (tip.action === 'resume') onResumeClass?.()
     else if (tip.action === 'review') onReview()
     else if (tip.action === 'lesson' && today?.lesson) {
       if (keysReady) onStartLesson(today.lesson.id)

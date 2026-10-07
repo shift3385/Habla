@@ -3,7 +3,7 @@
 //  - Avisos: lo de hoy (clase a medias, lección, meta, repaso, racha, test). Lo que pide acción va primero.
 //  - Consejos: cómo sacarle partido a la app y qué significa cada nota. Siguen por donde se quedaron la vez anterior.
 
-export type TipAction = 'resume' | 'lesson' | 'review'
+export type TipAction = 'resume' | 'lesson' | 'review' | 'notif'
 
 export interface Tip {
   id: string
@@ -25,6 +25,8 @@ export interface TipInput {
   liveTopics: boolean
   /** Días hasta poder repetir el test (0 o menos: ya se puede); null si no hay test hecho. */
   retestDays: number | null
+  /** AUD-FLU-900: el recordatorio está activado, pero Android no deja enviar avisos. */
+  remindersBlocked?: boolean
 }
 
 const short = (s: string, max = 40) => (s.length > max ? s.slice(0, max - 2).trimEnd() + '…' : s)
@@ -33,6 +35,9 @@ const plural = (n: number, one: string, many: string) => (n === 1 ? one : many)
 /** Avisos de hoy, en orden de importancia. */
 export function buildTips(i: TipInput): Tip[] {
   const tips: Tip[] = []
+  if (i.remindersBlocked) {
+    tips.push({ id: 'notif', text: 'Tu recordatorio diario está activado, pero Android no me deja avisarte.', action: 'notif', cta: 'Ver cómo arreglarlo' })
+  }
   if (i.savedTitle) tips.push({ id: 'saved', text: `Tienes una clase a medias: «${short(i.savedTitle)}».`, action: 'resume', cta: 'Seguir la clase' })
   if (i.lessonTitle && !i.lessonDone) tips.push({ id: 'lesson', text: `Hoy te espera la lección «${short(i.lessonTitle)}».`, action: 'lesson', cta: 'Empezar la lección' })
 

@@ -504,7 +504,9 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
         {probe === 'sent' && <p className="txt-sub mt-2 text-center text-xs">Bloquea o sal de la app: tu mascota te avisará en unos segundos.</p>}
         {denied && (
           <p className="mt-3 text-sm" style={{ color: '#f87171' }}>
-            Android no dio permiso para notificaciones. Actívalo en Ajustes del teléfono → Apps → Habla → Notificaciones.
+            Android no dio permiso para notificaciones, así que no te llegará el aviso. Actívalo en los ajustes del teléfono:
+            Apps (en Xiaomi o POCO: Aplicaciones → Administrar aplicaciones) → Habla → Notificaciones. En Xiaomi o POCO, pon también
+            Ahorro de batería → Sin restricciones, para que Android no borre los avisos.
           </p>
         )}
       </Card>
@@ -821,9 +823,11 @@ function DataPage({ onImported }: { onImported: () => void }) {
       // AUD-SEG-501: primero se comprueba la copia entera; si está mal, se dice por qué y no se toca nada.
       const ready = await readBackup(file)
       const { sessions, mistakes } = ready.summary
-      if (!confirm(`La copia tiene ${sessions} sesiones y ${mistakes} errores. Esto SUSTITUYE todo tu progreso actual por el del archivo. ¿Continuar?`)) return
+      const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
+      const what = `${count(sessions, 'sesión', 'sesiones')} y ${count(mistakes, 'error', 'errores')}`
+      if (!confirm(`La copia tiene ${what}. Esto SUSTITUYE todo tu progreso actual por el del archivo (antes guardo una copia de lo que tienes ahora). ¿Continuar?`)) return
       const r = await applyBackup(ready)
-      setStatus({ kind: 'ok', text: `Importado: ${r.sessions} sesiones y ${r.mistakes} errores ✓` })
+      setStatus({ kind: 'ok', text: `Importado: ${what} ✓${r.safetyCopy ? ` · Lo que tenías antes quedó en ${r.safetyCopy}` : ''}` })
       onImported()
     } catch (e) {
       setStatus({ kind: 'error', text: (e as Error).message })
@@ -849,6 +853,13 @@ function DataPage({ onImported }: { onImported: () => void }) {
       </div>
       <input ref={fileInput} type="file" accept="application/json,.json" className="hidden" onChange={(e) => doImport(e.target.files?.[0])} />
       <StatusLine s={status} />
+      {/* AUD-FLU-210: qué se queda en el teléfono y qué sale. */}
+      <div className="txt-sub mt-4 text-[13px] leading-snug">
+        <b>Tu privacidad.</b> Tu progreso, tus errores, tus palabras y tus claves se guardan solo en este teléfono. Para que tu profe te
+        entienda, tu voz (o lo que escribes) se envía a Google (Gemini) en cada respuesta, en el test, el repaso y el dictado, junto con tu
+        nombre, tu nivel y tus intereses. Con la fonética de Azure activa, ese audio va también a Microsoft. Las copias que exportas no llevan
+        tus claves.
+      </div>
     </Card>
   )
 }

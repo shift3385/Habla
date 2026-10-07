@@ -4,10 +4,11 @@ import { THEME_INFO, type ThemeKey } from '../ui/theme'
 
 // Notificaciones locales (sin servidor): recordatorio diario de la lección y aviso del re-test.
 
-// Recordatorio diario = 7 avisos sueltos (uno por día, ids 10–16). El plugin no repite a una hora fija
-// combinando "at" y "every", y así además el texto lleva la lección que toca y se salta el día ya hecho.
-// Se reprograman cada vez que abres la app o terminas una lección.
-const DAILY_IDS = [10, 11, 12, 13, 14, 15, 16]
+// Recordatorio diario = avisos sueltos (uno por día). El plugin no repite a una hora fija combinando "at" y
+// "every", y así además el texto lleva la lección que toca y se salta el día ya hecho. Se reprograman cada vez que
+// abres la app o terminas una lección. AUD-FLU-217 (v5.9): 30 días (ids 10–39) en vez de 7: si no abres Habla en
+// una semana, los avisos ya no se acaban justo cuando más falta hacen.
+const DAILY_IDS = Array.from({ length: 30 }, (_, i) => 10 + i)
 const RETEST_ID = 2
 
 const native = () => Capacitor.isNativePlatform()

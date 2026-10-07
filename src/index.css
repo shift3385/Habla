@@ -419,6 +419,24 @@ html[data-landscape] .cv-list {
   grid-area: list;
   min-height: 0;
 }
+/* En horizontal el botón de hablar es algo más pequeño: así caben «¿Qué digo?» y el micro bajo la tarjeta del tema. */
+html[data-landscape] .cv-ctrl .no-select {
+  width: 72px;
+  height: 72px;
+}
+html[data-landscape] .cv-ctrl {
+  gap: 6px;
+  padding-top: 2px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 6px);
+}
+/* AUD-E2E-602: en horizontal, «¿Qué digo?» flota en la esquina inferior derecha del chat (bajo la tarjeta del tema
+   no cabía y quedaba tapado). */
+html[data-landscape] .cv-ideas-btn {
+  position: absolute;
+  right: calc(max(280px, 40%) + 12px);
+  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  z-index: 6;
+}
 /* v5.9: el aviso de la fonética flota sobre el chat (no ocupa una celda de la rejilla ni empuja el micro). */
 html[data-landscape] .cv-phon-tip {
   position: absolute;
@@ -429,7 +447,9 @@ html[data-landscape] .cv-phon-tip {
 }
 html[data-landscape] .cv-ctrl {
   grid-area: ctrl;
-  justify-content: flex-end;
+  /* AUD-E2E-602: «safe»: si los controles no caben, se alinean arriba y se desplazan (antes se salían hacia arriba,
+     por debajo de la tarjeta del tema, y «¿Qué digo?» o el propio micro no se podían tocar). */
+  justify-content: safe flex-end;
   overflow-y: auto;
   padding-top: 4px;
 }

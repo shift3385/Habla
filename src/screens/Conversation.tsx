@@ -99,6 +99,13 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   const [view, setView] = useState<'chat' | 'report'>('chat')
   // v5.9: «Terminar» desde el Inicio: en cuanto la clase guardada está cargada, se cierra con su informe.
   const [finishing, setFinishing] = useState(false)
+  // AUD-E2E-602: en horizontal la zona del micro puede no caber; se deja desplazada hasta abajo para que el micro
+  // siempre se vea (lo de arriba, «¿Qué digo?» o las ideas, se alcanza desplazando).
+  const ctrlRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ctrlRef.current
+    if (el && el.scrollHeight > el.clientHeight) el.scrollTop = el.scrollHeight
+  })
   // v5.9 (nota del dueño): con la fonética activa, al entrar la mascota recuerda que se puede apagar o encender.
   const [phonTip, setPhonTip] = useState(() => phoneticsActive(settings) && !finishNow)
   useEffect(() => {
@@ -998,7 +1005,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       </div>
 
       {/* Zona inferior: ideas, avisos y micrófono */}
-      <div className="cv-ctrl flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
+      <div ref={ctrlRef} className="cv-ctrl flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
         {ideas && (
           <div className="anim-up flex w-full flex-col gap-2">
             {ideas.map((i) => (
@@ -1024,7 +1031,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         )}
         {hint && !error && <div className="txt-sub text-center text-[13px]">{hint}</div>}
         {lastTeacher && (phase === 'idle' || phase === 'speaking') && (
-          <button onClick={toggleIdeas} className="glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px]">
+          <button onClick={toggleIdeas} className="cv-ideas-btn glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px]">
             <Icon name="bulb" size={15} stroke={1.8} color="var(--acc)" />
             {ideasLoading ? 'Pensando…' : ideas ? 'Ocultar ideas' : '¿Qué digo?'}
           </button>

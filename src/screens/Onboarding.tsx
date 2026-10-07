@@ -154,6 +154,11 @@ export default function Onboarding({ settings, update, onDone }: Props) {
             <Point icon="mic">Hablas en inglés como en un audio de WhatsApp.</Point>
             <Point icon="spark">Gemini entiende lo que dijiste, te corrige y tu profe te responde por voz.</Point>
             <Point icon="lock">Tu progreso, tus errores y tus palabras se guardan solo en este teléfono.</Point>
+            {/* AUD-FLU-210: decir con claridad qué sale del teléfono. */}
+            <Point icon="info">
+              Para entenderte, <b>tu voz se envía a Google (Gemini)</b> en cada respuesta, junto con tu nombre, tu nivel y tus intereses para
+              personalizar la clase.
+            </Point>
           </ul>
           <div className="flex-1" />
           <button onClick={() => setStep(2)} className="btn-acc mt-5 h-[58px] flex-none rounded-full text-[17px]">
@@ -230,6 +235,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
             <Point icon="ear">Bajo cada respuesta verás tu nota de pronunciación y las palabras o sonidos a cuidar.</Point>
             <Point icon="star">El plan F0 es gratis: 5 horas de audio al mes. Azure puede pedir una tarjeta solo para verificar tu cuenta.</Point>
             <Point icon="shield">Su clave también se guarda solo aquí, y verla o cambiarla pide tu bloqueo, igual que la de Gemini.</Point>
+            <Point icon="info">Con la fonética activa, el audio de cada respuesta va también a Microsoft (Azure) para puntuarlo.</Point>
           </ul>
           <p className="txt-sub mt-4 text-[13px] leading-snug">
             <b>No hace falta ahora.</b> Sin Azure todo funciona con Gemini. Cuando quieras, actívalo en <b>Ajustes → Modelos → Azure Speech</b>.
