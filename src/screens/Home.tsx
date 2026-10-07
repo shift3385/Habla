@@ -34,6 +34,8 @@ interface Props {
   registerBack: (h: (() => void) | null) => void
   savedClass?: SavedClass | null
   onResumeClass?: () => void
+  /** v5.9: terminar la clase guardada (con su evaluación) sin seguirla. */
+  onFinishClass?: () => void
 }
 
 function greeting() {
@@ -58,6 +60,7 @@ export default function Home({
   registerBack,
   savedClass,
   onResumeClass,
+  onFinishClass,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
@@ -314,16 +317,25 @@ export default function Home({
       </div>
 
       {savedClass && (
-        <button onClick={onResumeClass} className="glass mt-2 flex h-[48px] w-full items-center gap-2.5 rounded-[24px] pr-1.5 pl-2 text-left">
-          <span className="btn-acc grid h-8 w-8 flex-none place-items-center rounded-full">
-            <Icon name="mic" size={15} />
-          </span>
-          <span className="min-w-0 flex-1 leading-tight">
-            <b className="block truncate text-[14px] font-semibold">Clase en progreso</b>
-            <span className="txt-sub block truncate text-[12px]">{savedClass.title}</span>
-          </span>
-          <span className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 text-[13px]">Continuar</span>
-        </button>
+        <div className="glass mt-2 flex h-[48px] w-full items-center gap-2 rounded-[24px] pr-1.5 pl-2">
+          <button onClick={onResumeClass} className="flex min-w-0 flex-1 items-center gap-2.5 text-left">
+            <span className="btn-acc grid h-8 w-8 flex-none place-items-center rounded-full">
+              <Icon name="mic" size={15} />
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <b className="block truncate text-[14px] font-semibold">Clase en progreso</b>
+              <span className="txt-sub block truncate text-[12px]">{savedClass.title}</span>
+            </span>
+          </button>
+          {onFinishClass && (
+            <button onClick={onFinishClass} className="field flex h-9 flex-none items-center rounded-[18px] px-3 text-[13px]">
+              Terminar
+            </button>
+          )}
+          <button onClick={onResumeClass} className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 text-[13px]">
+            Continuar
+          </button>
+        </div>
       )}
 
       <PlanCard

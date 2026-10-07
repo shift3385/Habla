@@ -1,4 +1,5 @@
 import { db, type Session } from './db'
+import { sessionMetrics } from './fluency'
 
 export interface Dashboard {
   streak: number
@@ -14,12 +15,56 @@ function dayKey(ts: number): string {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
 
+// v5.9: lo que hablas FUERA de una clase (el repaso de frases) también cuenta para la meta diaria y la racha.
+// Segundos por día en localStorage (solo los últimos 60 días): es un contador, no un historial.
+const PRACTICE_KEY = 'habla.practiceSeconds'
+function practiceByDay(): Record<string, number> {
+  try {
+    const v = JSON.parse(localStorage.getItem(PRACTICE_KEY) || '{}')
+    return v && typeof v === 'object' ? v : {}
+  } catch {
+    return {}
+  }
+}
+/** Suma segundos hablados hoy fuera de una clase (repaso). */
+export function addPracticeSeconds(seconds: number) {
+  if (!(seconds > 0)) return
+  const all = practiceByDay()
+  const k = dayKey(Date.now())
+  all[k] = (all[k] ?? 0) + seconds
+  const keep = Date.now() - 60 * 864e5
+  for (const key of Object.keys(all)) {
+    const [y, m, d] = key.split('-').map(Number)
+    if (new Date(y, m - 1, d).getTime() < keep) delete all[key]
+  }
+  try {
+    localStorage.setItem(PRACTICE_KEY, JSON.stringify(all))
+  } catch {
+    // sin almacenamiento: solo se pierde el contador del repaso
+  }
+}
+
+/** AUD-E2E-603: lo hablado en una clase a medias (aún sin métricas) cuenta hoy, sin esperar a que se cierre. */
+async function openSessionSeconds(sessions: Session[], todayKey: string): Promise<number> {
+  let total = 0
+  for (const s of sessions) {
+    if (s.metrics || s.endedAt || !s.id || dayKey(s.startedAt) !== todayKey) continue
+    const m = sessionMetrics(await db.turns.where('sessionId').equals(s.id).toArray())
+    total += m?.speechSeconds ?? 0
+  }
+  return total
+}
+
 export async function loadDashboard(): Promise<Dashboard> {
   const sessions = await db.sessions.orderBy('startedAt').toArray()
   const done = sessions.filter((s) => s.metrics && s.metrics.turns > 0)
 
-  const days = new Set(done.map((s) => dayKey(s.startedAt)))
+  const practice = practiceByDay()
+  const days = new Set([...done.map((s) => dayKey(s.startedAt)), ...Object.keys(practice).filter((k) => practice[k] > 0)])
   const today = new Date()
+  const todayKey = dayKey(today.getTime())
+  const openToday = await openSessionSeconds(sessions, todayKey)
+  if (openToday > 0) days.add(todayKey)
   const practicedToday = days.has(dayKey(today.getTime()))
   // La racha cuenta hasta hoy, o hasta ayer si hoy aún no has practicado.
   const cursor = new Date(today)
@@ -30,10 +75,10 @@ export async function loadDashboard(): Promise<Dashboard> {
     cursor.setDate(cursor.getDate() - 1)
   }
 
-  const todayKey = dayKey(today.getTime())
-  const secondsToday = done
-    .filter((s) => dayKey(s.startedAt) === todayKey)
-    .reduce((a, s) => a + (s.metrics?.speechSeconds ?? 0), 0)
+  const secondsToday =
+    done.filter((s) => dayKey(s.startedAt) === todayKey).reduce((a, s) => a + (s.metrics?.speechSeconds ?? 0), 0) +
+    openToday +
+    (practice[todayKey] ?? 0)
 
   const withHomework = [...done].reverse().find((s) => s.report?.homeworkEs)
   return {
@@ -56,6 +101,11 @@ export async function weekMinutes(): Promise<number[]> {
     if (!s.metrics) continue
     const d = (new Date(s.startedAt).getDay() + 6) % 7
     days[d] += s.metrics.speechSeconds / 60
+  }
+  const practice = practiceByDay()
+  for (let d = 0; d < 7; d++) {
+    const day = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + d)
+    days[d] += (practice[dayKey(day.getTime())] ?? 0) / 60
   }
   return days.map((m) => Math.round(m * 10) / 10)
 }

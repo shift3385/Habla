@@ -51,6 +51,7 @@ interface Lesson {
   customTopic?: string // tema escrito por el alumno
   planLesson?: string // lección del plan de 12 semanas
   resume?: SavedClass // clase guardada que se retoma (NC-16)
+  finishNow?: boolean // v5.9: «Terminar» desde el Inicio: se abre la clase guardada y se cierra con su informe
 }
 
 export default function App() {
@@ -443,6 +444,7 @@ export default function App() {
           customTopic={lesson.customTopic}
           planLesson={lesson.planLesson}
           resume={lesson.resume}
+          finishNow={lesson.finishNow}
           settings={settings}
           t={t}
           update={update}
@@ -478,6 +480,23 @@ export default function App() {
     backHandler.current = null
     setPlanOpen(false)
     setLesson({ key: Date.now(), scenarioId: s.scenarioId, categoryId: s.categoryId, customTopic: s.customTopic, planLesson: s.planLesson, resume: s })
+  }
+  /** v5.9: terminar la clase guardada sin seguirla, con la misma evaluación que «Terminar» dentro de la clase. */
+  function finishSavedClass() {
+    const s = savedRef.current
+    if (!s) return
+    if (!confirm(`¿Terminar «${s.title}» y ver tu evaluación? Ya no podrás seguirla.`)) return
+    backHandler.current = null
+    setPlanOpen(false)
+    setLesson({
+      key: Date.now(),
+      scenarioId: s.scenarioId,
+      categoryId: s.categoryId,
+      customTopic: s.customTopic,
+      planLesson: s.planLesson,
+      resume: s,
+      finishNow: true,
+    })
   }
 
   // Preguntas de la mascota encima del Inicio.
@@ -580,6 +599,7 @@ export default function App() {
                 registerBack={registerBack}
                 savedClass={savedClass}
                 onResumeClass={resumeClass}
+                onFinishClass={finishSavedClass}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}

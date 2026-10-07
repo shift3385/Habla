@@ -53,6 +53,8 @@ interface Props {
   planLesson?: string // id de la lección del plan de 12 semanas
   /** Clase guardada que se retoma en el punto en que quedó (NC-16). */
   resume?: SavedClass
+  /** v5.9: con `resume`, la clase no se sigue: se cierra en cuanto carga, con su informe («Terminar» del Inicio). */
+  finishNow?: boolean
   settings: Settings
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
@@ -66,7 +68,7 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, settings, update, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, finishNow, settings, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
   const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -94,6 +96,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   // Informe final
   const [view, setView] = useState<'chat' | 'report'>('chat')
+  // v5.9: «Terminar» desde el Inicio: en cuanto la clase guardada está cargada, se cierra con su informe.
+  const [finishing, setFinishing] = useState(false)
   const [session, setSession] = useState<Session | null>(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState<string | null>(null)
@@ -309,8 +313,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     ;(async () => {
       try {
         // Al entrar se abre una vez para pedir el permiso y elegir el micro (auriculares…), y se cierra en seguida:
-        // v5.9 (AUD-MIC-305), el micro solo se abre cuando tocas para hablar.
-        await rec.open()
+        // v5.9 (AUD-MIC-305), el micro solo se abre cuando tocas para hablar. Para terminar la clase no hace falta.
+        if (!(resume && finishNow)) await rec.open()
       } catch (e) {
         setError(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
       }
@@ -335,6 +339,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         setStatus('')
         setPrep(null)
         setPhase('idle')
+        if (finishNow) setFinishing(true)
         return
       }
       const [profile, recent] = await Promise.all([
@@ -578,6 +583,14 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       .then(setLevelChange)
       .catch(() => {})
   }, [onExit, buildReport, planLesson])
+
+  useEffect(() => {
+    if (!finishing) return
+    // El cierre es asíncrono (guarda, calcula y pide el informe): el estado cambia dentro de finish(), no aquí.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFinishing(false)
+    finish()
+  }, [finishing, finish])
 
   // Botón "atrás" de Android: en el chat sale guardando la clase (Terminar, con informe, está en la cabecera);
   // en el informe vuelve al inicio.
