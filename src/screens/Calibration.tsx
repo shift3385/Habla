@@ -18,6 +18,10 @@ import MascotPage from '../components/MascotPage'
 import SkillProgressCard from '../components/SkillProgressCard'
 import Fraction from '../components/Fraction'
 import PrepareScreen, { type PrepareKind, type PrepareState } from '../components/PrepareScreen'
+import PhoneticsToggle from '../components/PhoneticsToggle'
+import PronunciationView from '../components/PronunciationView'
+import { runPhonetics } from '../lib/phonetics'
+import type { PronResult } from '../lib/pronunciation'
 import type { Profile, Skill } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import type { Models, RetryInfo } from '../lib/gemini'
@@ -268,6 +272,8 @@ export default function Calibration({ settings, update, onDone, onPause, registe
   const [pauseUsed, setPauseUsed] = useState(false)
   // Pantalla «Test en pausa» encima del paso actual (el paso no cambia: así el progreso guardado sigue apuntando a él).
   const [paused, setPaused] = useState(false)
+  // v5.9 (decisión del dueño): nota de Azure de cada tarea de habla, SOLO informativa (no entra en el nivel).
+  const [pron, setPron] = useState<(PronResult | string | 'pending' | null)[]>([])
   // Ajustes vivos: al reintentar tras cambiar de modelo o de clave se usan los nuevos.
   const live = useRef(settings)
   useEffect(() => {
@@ -598,6 +604,10 @@ export default function Calibration({ settings, update, onDone, onPause, registe
       }
       setSpeech((s) => s.map((x, j) => (j === i ? answer : x)))
       setHint(null)
+      // Fonética informativa: no se espera ni se guarda en el test; solo se enseña bajo la tarea.
+      const job = runPhonetics(live.current, update, blob, async () => '')
+      setPron((p) => Object.assign([...p], { [i]: job ? 'pending' : null }))
+      job?.then((r) => setPron((p) => Object.assign([...p], { [i]: r })))
       preDone.current[i] = undefined
       preEval.current[i] = assessSpeakingTask(settings.geminiKey, models(), tasks[i], answer)
         .catch(() => null)
@@ -1092,6 +1102,14 @@ export default function Calibration({ settings, update, onDone, onPause, registe
                         : 'Toca para empezar a hablar'}
             </div>
             {hint && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+            <PhoneticsToggle settings={settings} update={update} />
+            {pron[i] === 'pending' && <div className="txt-sub text-center text-[12.5px]">Azure está puntuando tu pronunciación…</div>}
+            {pron[i] && pron[i] !== 'pending' && typeof pron[i] !== 'string' && (
+              <div className="w-full">
+                <div className="txt-sub mb-1 text-center text-[12px]">Tu pronunciación (solo informativa: no cuenta para tu nivel)</div>
+                <PronunciationView r={pron[i] as PronResult} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} />
+              </div>
+            )}
             {micFailures > 0 && !done && recState === 'idle' && (
               <button onClick={() => skipTask(i)} className="txt-sub h-10 rounded-[20px] px-4 text-[13.5px]" style={{ border: '1.5px dashed var(--sub)' }}>
                 ¿Sigue sin funcionar? Saltar esta pregunta

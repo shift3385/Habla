@@ -1,5 +1,7 @@
 import { hasMonitor, monthUsage, type Usage } from './azureUsage'
+import { AzureError, assessPronunciation, type PronResult } from './pronunciation'
 import type { Settings } from './settings'
+import { toWav16k } from './wav'
 
 // Política del corrector fonético (Azure). Es opcional: sin credenciales o desactivado, todo va solo con Gemini.
 // El plan elegido en Ajustes solo REFLEJA el plan del recurso de Azure; cambiarlo se hace en el portal de Azure.
@@ -93,3 +95,27 @@ export function onPhoneticsQuota(fn: Listener): () => void {
   }
 }
 export const reportPhoneticsQuota = () => listeners.forEach((fn) => fn())
+
+/**
+ * v5.9 (nota del dueño): evaluación fonética común a todo lo que graba (clase, prácticas, temas, repaso y test).
+ * Devuelve la nota de Azure, el motivo (texto) por el que no hay nota, o null si la fonética está apagada.
+ * Con el F0 agotado apaga la fonética y avisa a la mascota, como hacía la clase.
+ */
+export function runPhonetics(
+  s: Settings,
+  update: (p: Partial<Settings>) => void,
+  blob: Blob,
+  reference: () => Promise<string>,
+): Promise<PronResult | string> | null {
+  if (!phoneticsActive(s)) return null
+  return (async () => (await assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(blob), reference)) ?? 'Azure no oyó habla clara en este audio')().catch(
+    (e) => {
+      if (e instanceof AzureError && e.kind === 'quota') {
+        // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
+        update(quotaExhaustedPatch())
+        reportPhoneticsQuota()
+      } else console.warn('[HABLA-NET] azure:', (e as Error).message)
+      return e instanceof AzureError ? e.message : 'No se pudo preparar el audio para Azure'
+    },
+  )
+}

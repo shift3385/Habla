@@ -6,6 +6,10 @@ import { MIN_SEND_MS } from '../components/talkGesture'
 import type { SrsCard } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import MascotPage from '../components/MascotPage'
+import PhoneticsToggle from '../components/PhoneticsToggle'
+import PronunciationView from '../components/PronunciationView'
+import { runPhonetics } from '../lib/phonetics'
+import type { PronResult } from '../lib/pronunciation'
 import { addPracticeSeconds } from '../lib/stats'
 import { MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
@@ -59,6 +63,8 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   const [error, setError] = useState<string | null>(null)
   const [elapsed, setElapsed] = useState(0)
   const [stats, setStats] = useState({ done: 0, correct: 0 })
+  // v5.9: nota de Azure de la frase (la referencia es la respuesta correcta). null = sin fonética.
+  const [pron, setPron] = useState<PronResult | string | 'pending' | null>(null)
   const recorder = useRef(new Recorder())
   const recStart = useRef(0)
 
@@ -117,6 +123,10 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     const analysis = await analyzeSpeech(blob)
     // v5.9: lo hablado en el repaso cuenta para la meta diaria y la racha.
     if (analysis?.hasSpeech !== false) addPracticeSeconds(analysis?.speechSeconds ?? seconds)
+    // v5.9: con la fonética activa, Azure puntúa la frase en paralelo (referencia: la respuesta correcta).
+    const job = seconds >= 0.8 && analysis?.hasSpeech !== false ? runPhonetics(settings, update, blob, async () => card.answerEn) : null
+    setPron(job ? 'pending' : null)
+    job?.then((r) => setPron(r))
     if (seconds < 0.8 || (analysis && !analysis.hasSpeech)) {
       setError('No te he oído. Inténtalo otra vez.')
       setStep('ask')
@@ -178,6 +188,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
 
   const dontKnow = () => {
+    setPron(null)
     // AUD-MIC-302: «No lo sé» durante la apertura del micro la cancela; si no, al abrir pisaría el resultado.
     if (recorder.current.isOpening) recorder.current.close()
     stopSpeaking()
@@ -187,6 +198,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }
 
   const grade = async (g: Grade) => {
+    setPron(null)
     await reviewCard(card, g)
     const ok = result !== 'unknown' && result?.verdict === 'correct'
     setStats((s) => ({ done: s.done + 1, correct: s.correct + (ok ? 1 : 0) }))
@@ -201,6 +213,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
   /** «Ya me la sé»: sale del repaso (se recupera en Palabras → Ya las sé) y se pasa a la siguiente. */
   const known = async () => {
+    setPron(null)
     await archiveCard(card)
     setStats((s) => ({ done: s.done + 1, correct: s.correct + (result !== 'unknown' && result?.verdict === 'correct' ? 1 : 0) }))
     setResult(null)
@@ -238,6 +251,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
             {Math.min(i + 1, queue.length)} de {queue.length} · {card.source === 'mistake' ? 'tu corrección' : 'palabra guardada'}
           </div>
         </div>
+        <PhoneticsToggle settings={settings} update={update} />
         <Mascot element={THEME_INFO[settings.theme].mascot} size={52} mood={step === 'checking' ? 'thinking' : 'idle'} />
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--gb)' }}>
@@ -274,6 +288,11 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
             </button>
             {result !== 'unknown' && result?.feedbackEs && <div className="text-[14px] leading-snug">{result.feedbackEs}</div>}
             {card.hintEs && <div className="txt-sub text-[13px] leading-snug">💡 {card.hintEs}</div>}
+            {pron === 'pending' && <div className="txt-sub text-[12.5px]">Azure está puntuando tu pronunciación…</div>}
+            {pron && pron !== 'pending' && typeof pron !== 'string' && (
+              <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} />
+            )}
+            {typeof pron === 'string' && pron !== 'pending' && <div className="txt-sub text-[12px]">Sin nota de pronunciación: {pron}</div>}
           </div>
         )}
 

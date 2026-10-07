@@ -23,10 +23,11 @@ import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
-import { AzureError, assessPronunciation, type PronResult } from '../lib/pronunciation'
-import { phoneticsActive, quotaExhaustedPatch, reportPhoneticsQuota } from '../lib/phonetics'
-import { MAX_SECONDS, toWav16k } from '../lib/wav'
+import type { PronResult } from '../lib/pronunciation'
+import { phoneticsActive, runPhonetics } from '../lib/phonetics'
+import { MAX_SECONDS } from '../lib/wav'
 import PronunciationView from '../components/PronunciationView'
+import PhoneticsToggle from '../components/PhoneticsToggle'
 import { whenBackground } from '../lib/lifecycle'
 import { clearSavedClass, saveClass, type SavedClass } from '../lib/savedClass'
 import MascotPage from '../components/MascotPage'
@@ -98,6 +99,13 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   const [view, setView] = useState<'chat' | 'report'>('chat')
   // v5.9: «Terminar» desde el Inicio: en cuanto la clase guardada está cargada, se cierra con su informe.
   const [finishing, setFinishing] = useState(false)
+  // v5.9 (nota del dueño): con la fonética activa, al entrar la mascota recuerda que se puede apagar o encender.
+  const [phonTip, setPhonTip] = useState(() => phoneticsActive(settings) && !finishNow)
+  useEffect(() => {
+    if (!phonTip) return
+    const id = setTimeout(() => setPhonTip(false), 9000)
+    return () => clearTimeout(id)
+  }, [phonTip])
   const [session, setSession] = useState<Session | null>(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState<string | null>(null)
@@ -172,18 +180,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   /** Lanza la evaluación fonética (si está activa): convierte el audio a WAV y lo manda a Azure. */
   /** Resultado de Azure, o el motivo (texto) por el que no hay nota de pronunciación en esa respuesta. */
-  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | string> | null => {
-    const s = settingsRef.current
-    if (!phoneticsActive(s)) return null
-    return (async () => (await assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(spoken.blob), () => reference)) ?? 'Azure no oyó habla clara en este audio')().catch((e) => {
-      if (e instanceof AzureError && e.kind === 'quota') {
-        // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
-        update(quotaExhaustedPatch())
-        reportPhoneticsQuota()
-      } else console.warn('[HABLA-NET] azure:', (e as Error).message)
-      return e instanceof AzureError ? e.message : 'No se pudo preparar el audio para Azure'
-    })
-  }
+  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | string> | null =>
+    runPhonetics(settingsRef.current, update, spoken.blob, () => reference)
 
   /** Une la pronunciación a tu respuesta cuando llega (un momento después que la del profe). */
   const attachPronunciation = (turnId: number, p: Promise<PronResult | string>) => {
@@ -756,7 +754,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
       {/* Velocidad + modo oído */}
       <div className="cv-speed flex items-center gap-2.5 px-[18px] pb-2.5">
-        <Icon name="speaker" size={18} color="var(--sub)" />
+        <Icon name="speaker" size={18} color="var(--sub)" className="flex-none" />
         <input
           type="range"
           min={0.5}
@@ -764,19 +762,37 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           step={0.05}
           value={settings.ttsRate}
           onChange={(e) => update({ ttsRate: Number(e.target.value) })}
-          className="flex-1"
+          // min-w-0: con el botón Fonética (v5.9) la fila no cabía en horizontal; el deslizador es lo que se encoge.
+          className="min-w-0 flex-1"
           style={{ accentColor: 'var(--acc)' }}
           aria-label="Velocidad de la voz"
         />
         <span className="txt-sub w-10 text-[13px] tabular-nums">{settings.ttsRate.toFixed(2)}×</span>
         <button
           onClick={toggleEar}
-          className={`flex h-[34px] items-center gap-1.5 rounded-[17px] px-3 text-[13px] ${settings.earMode ? 'btn-acc' : 'glass'}`}
+          className={`flex h-[34px] flex-none items-center gap-1.5 rounded-[17px] px-3 text-[13px] ${settings.earMode ? 'btn-acc' : 'glass'}`}
         >
           <Icon name="ear" size={15} stroke={1.8} />
           Modo oído
         </button>
+        <PhoneticsToggle
+          compact
+          settings={settings}
+          update={(p) => {
+            setPhonTip(false)
+            update(p)
+          }}
+        />
       </div>
+      {phonTip && (
+        <button onClick={() => setPhonTip(false)} className="cv-phon-tip mx-[18px] mb-2.5 flex items-start gap-2.5 text-left">
+          <Mascot element={mascotEl} mood="speaking" size={34} />
+          <span className="tip-bubble flex-1 rounded-[16px] px-3 py-2 text-[12.5px] leading-snug">
+            Tu <b>fonética de Azure</b> está activa: te pongo nota de pronunciación en cada respuesta. Puedes apagarla o encenderla cuando
+            quieras con el botón de la onda, junto a «Modo oído».
+          </span>
+        </button>
+      )}
 
       {/* Tarjeta del tema: se pliega sola al responder */}
       <div className="cv-card flex-none px-[18px] pb-2">
