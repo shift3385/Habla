@@ -385,6 +385,16 @@ export class Recorder {
     })
   }
 
+  /**
+   * v5.9 (AUD-MIC-305): termina la grabación y SUELTA el micrófono. El micro solo está abierto mientras grabas: antes
+   * se quedaba abierto (punto verde, modo llamada) toda la clase y entre tarjetas del repaso o tareas del test.
+   */
+  async finish(): Promise<{ blob: Blob; seconds: number }> {
+    const r = await this.stop()
+    this.close()
+    return r
+  }
+
   /** Para la grabación y el micrófono, y cancela cualquier apertura en curso (AUD-MIC-301). */
   close(): void {
     this.gen++

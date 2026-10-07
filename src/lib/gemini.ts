@@ -382,7 +382,7 @@ export async function listModels(apiKey: string): Promise<ModelInfo[]> {
     throw new ApiError('Sin conexión con Gemini. Revisa tu internet.', 0)
   }
   const data = parseData(res.data) as { models?: RawModel[] } | null
-  if (res.status !== 200) throw new ApiError(describeError(res.status, data), res.status)
+  if (res.status !== 200) throw new ApiError(keyCheckError(res.status, data), res.status)
   return (data?.models ?? [])
     .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
     .map((m) => ({ id: m.name.replace(/^models\//, ''), displayName: m.displayName ?? m.name }))
@@ -546,16 +546,19 @@ function isKeyError(data: GeminiResponse | null): boolean {
   return !!e && (e.details?.some((d) => d.reason === 'API_KEY_INVALID') || /api key/i.test(e.message ?? ''))
 }
 
+/** 403: la clave existe pero no puede usar esta API (bloqueada, con restricciones…). */
+function permissionError(msg?: string): string {
+  return (
+    'Tu clave de Gemini no tiene permiso para esta API. Crea una clave nueva en aistudio.google.com/apikey ' +
+    `o quita las restricciones de la clave en Google Cloud.${msg ? ` Detalle de Google: ${msg}` : ''}`
+  )
+}
+
 export function describeError(status: number, data: unknown, model?: string): string {
   const d = data as GeminiResponse | null
   const msg = d?.error?.message
   if (isKeyError(d) || status === 401) return 'La clave de Gemini no es válida. Revísala en Ajustes.'
-  if (status === 403) {
-    return (
-      'Tu clave de Gemini no tiene permiso para esta API. Crea una clave nueva en aistudio.google.com/apikey ' +
-      `o quita las restricciones de la clave en Google Cloud.${msg ? ` Detalle de Google: ${msg}` : ''}`
-    )
-  }
+  if (status === 403) return permissionError(msg)
   if (status === 404) return `El modelo "${model ?? ''}" no está disponible. Elige otro en Ajustes.`
   if (status === 429) return 'Tu clave de Gemini se quedó sin cuota en los modelos elegidos. Prueba otro modelo en Ajustes → Gemini o revisa tu plan en Google AI Studio.'
   if (status === 400 && /location|region|country/i.test(msg ?? '')) {
@@ -563,6 +566,24 @@ export function describeError(status: number, data: unknown, model?: string): st
   }
   if (status >= 500) return `Gemini tiene problemas ahora mismo (${status}). Inténtalo en un momento.`
   return `Gemini devolvió un error ${status}${msg ? `: ${msg}` : ''}`
+}
+
+/**
+ * Error al pedir la lista de modelos (al comprobar una clave en la bienvenida, en Ajustes → Modelos y en la hoja de
+ * problemas, o al refrescar la lista). AUD-E2E-604: el texto general manda a «Ajustes», que no existe aún en la
+ * bienvenida y es justo donde ya está el usuario en Ajustes. REV-U4-1: con 429 no se sabe si la clave es buena y el
+ * texto general invitaba a cambiar de modelo. Los textos de 429/5xx valen para los dos usos (comprobar y refrescar).
+ */
+export function keyCheckError(status: number, data: unknown): string {
+  // 403 primero: una clave bloqueada o con restricciones también dice «API key» y no se arregla copiándola otra vez.
+  const d = data as GeminiResponse | null
+  if (status === 403) return permissionError(d?.error?.message)
+  if (isKeyError(d) || status === 401) {
+    return 'Esa clave no es válida: cópiala otra vez desde Google AI Studio (aistudio.google.com/apikey). Empieza por «AIza».'
+  }
+  if (status === 429) return 'Google no responde ahora mismo (demasiadas peticiones). Tu clave puede estar bien: inténtalo de nuevo en un minuto.'
+  if (status >= 500) return `Google no responde ahora mismo (error ${status}). Tu clave puede estar bien: inténtalo en un momento.`
+  return describeError(status, data)
 }
 
 // ---------------------------------------------------------------------------

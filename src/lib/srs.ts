@@ -64,7 +64,7 @@ export interface DueSummary {
 
 export async function dueSummary(): Promise<DueSummary> {
   const now = Date.now()
-  const all = await db.cards.toArray()
+  const all = (await db.cards.toArray()).filter((c) => !c.archivedAt)
   const review = all.filter((c) => c.fsrs.state !== State.New && c.due <= now).length
   const fresh = Math.min(NEW_PER_SESSION, all.filter((c) => c.fsrs.state === State.New).length)
   return { review, fresh, total: review + fresh }
@@ -73,18 +73,38 @@ export async function dueSummary(): Promise<DueSummary> {
 /** Cola de la sesión: primero los repasos vencidos (los más atrasados antes), luego las nuevas. */
 export async function sessionQueue(): Promise<SrsCard[]> {
   const now = Date.now()
-  const all = await db.cards.orderBy('due').toArray()
+  const all = (await db.cards.orderBy('due').toArray()).filter((c) => !c.archivedAt)
   const due = all.filter((c) => c.fsrs.state !== State.New && c.due <= now)
   const fresh = all.filter((c) => c.fsrs.state === State.New).slice(0, NEW_PER_SESSION)
   return [...due, ...fresh]
 }
 
+// v5.9 (nota del dueño): los botones dicen cómo te salió, en palabras de alumno, y debajo cuándo vuelve la frase.
 export const GRADES: { grade: Grade; label: string }[] = [
-  { grade: Rating.Again, label: 'Otra vez' },
-  { grade: Rating.Hard, label: 'Difícil' },
+  { grade: Rating.Again, label: 'No me salió' },
+  { grade: Rating.Hard, label: 'Me costó' },
   { grade: Rating.Good, label: 'Bien' },
   { grade: Rating.Easy, label: 'Fácil' },
 ]
+
+/** «Ya me la sé»: la frase sale del repaso (se puede recuperar). */
+export async function archiveCard(card: SrsCard): Promise<void> {
+  if (card.id) await db.cards.update(card.id, { archivedAt: Date.now() })
+}
+
+/** Vuelve a repasar una frase archivada: entra en el repaso de hoy. */
+export async function unarchiveCard(id: number): Promise<void> {
+  const now = Date.now()
+  const c = await db.cards.get(id)
+  if (!c) return
+  await db.cards.put({ ...c, archivedAt: undefined, due: Math.min(c.due, now), fsrs: { ...c.fsrs, due: Math.min(c.fsrs.due, now) } })
+}
+
+export const archivedCards = () =>
+  db.cards
+    .filter((c) => !!c.archivedAt)
+    .toArray()
+    .then((l) => l.sort((a, b) => (b.archivedAt ?? 0) - (a.archivedAt ?? 0)))
 
 function humanize(ms: number): string {
   const min = Math.max(1, Math.round(ms / 60000))

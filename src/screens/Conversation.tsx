@@ -23,10 +23,11 @@ import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking } from '../lib/tts'
-import { AzureError, assessPronunciation, type PronResult } from '../lib/pronunciation'
-import { phoneticsActive, quotaExhaustedPatch, reportPhoneticsQuota } from '../lib/phonetics'
-import { MAX_SECONDS, toWav16k } from '../lib/wav'
+import type { PronResult } from '../lib/pronunciation'
+import { phoneticsActive, runPhonetics } from '../lib/phonetics'
+import { MAX_SECONDS } from '../lib/wav'
 import PronunciationView from '../components/PronunciationView'
+import PhoneticsToggle from '../components/PhoneticsToggle'
 import { whenBackground } from '../lib/lifecycle'
 import { clearSavedClass, saveClass, type SavedClass } from '../lib/savedClass'
 import MascotPage from '../components/MascotPage'
@@ -53,6 +54,8 @@ interface Props {
   planLesson?: string // id de la lección del plan de 12 semanas
   /** Clase guardada que se retoma en el punto en que quedó (NC-16). */
   resume?: SavedClass
+  /** v5.9: con `resume`, la clase no se sigue: se cierra en cuanto carga, con su informe («Terminar» del Inicio). */
+  finishNow?: boolean
   settings: Settings
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
@@ -66,7 +69,7 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, settings, update, onExit, registerBack }: Props) {
+export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, finishNow, settings, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
   const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -94,6 +97,23 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   // Informe final
   const [view, setView] = useState<'chat' | 'report'>('chat')
+  // v5.9: «Terminar» desde el Inicio: en cuanto la clase guardada está cargada, se cierra con su informe.
+  const [finishing, setFinishing] = useState(false)
+  // AUD-E2E-602: en horizontal la zona del micro puede no caber; se deja desplazada hasta abajo para que el micro
+  // siempre se vea (lo de arriba, «¿Qué digo?» o las ideas, se alcanza desplazando).
+  const ctrlRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ctrlRef.current
+    if (el && el.scrollHeight > el.clientHeight) el.scrollTop = el.scrollHeight
+    // Solo al cambiar de fase o de modo: así las ideas de «¿Qué digo?» no se esconden solas al abrirlas.
+  }, [phase, inputMode])
+  // v5.9 (nota del dueño): con la fonética activa, al entrar la mascota recuerda que se puede apagar o encender.
+  const [phonTip, setPhonTip] = useState(() => phoneticsActive(settings) && !finishNow)
+  useEffect(() => {
+    if (!phonTip) return
+    const id = setTimeout(() => setPhonTip(false), 9000)
+    return () => clearTimeout(id)
+  }, [phonTip])
   const [session, setSession] = useState<Session | null>(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState<string | null>(null)
@@ -168,18 +188,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   /** Lanza la evaluación fonética (si está activa): convierte el audio a WAV y lo manda a Azure. */
   /** Resultado de Azure, o el motivo (texto) por el que no hay nota de pronunciación en esa respuesta. */
-  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | string> | null => {
-    const s = settingsRef.current
-    if (!phoneticsActive(s)) return null
-    return (async () => (await assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(spoken.blob), () => reference)) ?? 'Azure no oyó habla clara en este audio')().catch((e) => {
-      if (e instanceof AzureError && e.kind === 'quota') {
-        // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
-        update(quotaExhaustedPatch())
-        reportPhoneticsQuota()
-      } else console.warn('[HABLA-NET] azure:', (e as Error).message)
-      return e instanceof AzureError ? e.message : 'No se pudo preparar el audio para Azure'
-    })
-  }
+  const startPronunciation = (spoken: SpokenAnswer, reference: Promise<string>): Promise<PronResult | string> | null =>
+    runPhonetics(settingsRef.current, update, spoken.blob, () => reference)
 
   /** Une la pronunciación a tu respuesta cuando llega (un momento después que la del profe). */
   const attachPronunciation = (turnId: number, p: Promise<PronResult | string>) => {
@@ -308,11 +318,14 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     const rec = recorder.current
     ;(async () => {
       try {
-        await rec.open()
+        // Al entrar se abre una vez para pedir el permiso y elegir el micro (auriculares…), y se cierra en seguida:
+        // v5.9 (AUD-MIC-305), el micro solo se abre cuando tocas para hablar. Para terminar la clase no hace falta.
+        if (!(resume && finishNow)) await rec.open()
       } catch (e) {
         setError(e instanceof MicError ? e.message : 'No se pudo abrir el micrófono.')
       }
-      if (gone()) return rec.close() // saliste mientras se abría el micrófono
+      rec.close()
+      if (gone()) return // saliste mientras se abría el micrófono
       if (resume) {
         const profile = await getProfile()
         setLevel(profile.levels.overall)
@@ -332,6 +345,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         setStatus('')
         setPrep(null)
         setPhase('idle')
+        if (finishNow) setFinishing(true)
         return
       }
       const [profile, recent] = await Promise.all([
@@ -446,12 +460,24 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     })()
   }
 
+  // v5.9: con «toca para enviar», un segundo toque mientras se cierra la grabación no vuelve a enviar.
+  const sending = useRef(false)
   const onRelease = async () => {
+    if (sending.current) return
+    sending.current = true
+    try {
+      await releaseOnce()
+    } finally {
+      sending.current = false
+    }
+  }
+  const releaseOnce = async () => {
     await starting.current
     haptic(ImpactStyle.Light)
-    const { blob, seconds } = await recorder.current.stop()
+    // v5.9 (AUD-MIC-305): al enviar se suelta el micrófono; se vuelve a abrir en el siguiente toque.
+    const { blob, seconds } = await recorder.current.finish()
     if (seconds < MIN_SECONDS || blob.size === 0) {
-      setHint('Mantén el botón presionado mientras hablas y suéltalo al terminar.')
+      setHint('Toca el micro, habla y vuelve a tocarlo para enviar.')
       setPhase('idle')
       return
     }
@@ -482,7 +508,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   const onCancel = async () => {
     await starting.current
-    await recorder.current.stop() // se descarta el audio
+    await recorder.current.finish() // se descarta el audio y se suelta el micro
     setPhase('idle')
     setHint('Grabación descartada')
   }
@@ -575,6 +601,14 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       .catch(() => {})
   }, [onExit, buildReport, planLesson])
 
+  useEffect(() => {
+    if (!finishing) return
+    // El cierre es asíncrono (guarda, calcula y pide el informe): el estado cambia dentro de finish(), no aquí.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFinishing(false)
+    finish()
+  }, [finishing, finish])
+
   // Botón "atrás" de Android: en el chat sale guardando la clase (Terminar, con informe, está en la cabecera);
   // en el informe vuelve al inicio.
   useEffect(() => {
@@ -646,6 +680,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           askTeacher()
         }}
         onBack={finish}
+        onCancel={finish}
       />
     )
   }
@@ -738,7 +773,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
       {/* Velocidad + modo oído */}
       <div className="cv-speed flex items-center gap-2.5 px-[18px] pb-2.5">
-        <Icon name="speaker" size={18} color="var(--sub)" />
+        <Icon name="speaker" size={18} color="var(--sub)" className="flex-none" />
         <input
           type="range"
           min={0.5}
@@ -746,19 +781,37 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           step={0.05}
           value={settings.ttsRate}
           onChange={(e) => update({ ttsRate: Number(e.target.value) })}
-          className="flex-1"
+          // min-w-0: con el botón Fonética (v5.9) la fila no cabía en horizontal; el deslizador es lo que se encoge.
+          className="min-w-0 flex-1"
           style={{ accentColor: 'var(--acc)' }}
           aria-label="Velocidad de la voz"
         />
         <span className="txt-sub w-10 text-[13px] tabular-nums">{settings.ttsRate.toFixed(2)}×</span>
         <button
           onClick={toggleEar}
-          className={`flex h-[34px] items-center gap-1.5 rounded-[17px] px-3 text-[13px] ${settings.earMode ? 'btn-acc' : 'glass'}`}
+          className={`flex h-[34px] flex-none items-center gap-1.5 rounded-[17px] px-3 text-[13px] ${settings.earMode ? 'btn-acc' : 'glass'}`}
         >
           <Icon name="ear" size={15} stroke={1.8} />
           Modo oído
         </button>
+        <PhoneticsToggle
+          compact
+          settings={settings}
+          update={(p) => {
+            setPhonTip(false)
+            update(p)
+          }}
+        />
       </div>
+      {phonTip && (
+        <button onClick={() => setPhonTip(false)} className="cv-phon-tip mx-[18px] mb-2.5 flex items-start gap-2.5 text-left">
+          <Mascot element={mascotEl} mood="speaking" size={34} />
+          <span className="tip-bubble flex-1 rounded-[16px] px-3 py-2 text-[12.5px] leading-snug">
+            Tu <b>fonética de Azure</b> está activa: te pongo nota de pronunciación en cada respuesta. Puedes apagarla o encenderla cuando
+            quieras con el botón de la onda, junto a «Modo oído».
+          </span>
+        </button>
+      )}
 
       {/* Tarjeta del tema: se pliega sola al responder */}
       <div className="cv-card flex-none px-[18px] pb-2">
@@ -964,7 +1017,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       </div>
 
       {/* Zona inferior: ideas, avisos y micrófono */}
-      <div className="cv-ctrl flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
+      <div ref={ctrlRef} className="cv-ctrl flex flex-col items-center gap-3 px-[18px] pt-3 pb-[calc(env(safe-area-inset-bottom)+22px)]">
         {ideas && (
           <div className="anim-up flex w-full flex-col gap-2">
             {ideas.map((i) => (
@@ -990,14 +1043,14 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         )}
         {hint && !error && <div className="txt-sub text-center text-[13px]">{hint}</div>}
         {lastTeacher && (phase === 'idle' || phase === 'speaking') && (
-          <button onClick={toggleIdeas} className="glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px]">
+          <button onClick={toggleIdeas} className="cv-ideas-btn glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px]">
             <Icon name="bulb" size={15} stroke={1.8} color="var(--acc)" />
             {ideasLoading ? 'Pensando…' : ideas ? 'Ocultar ideas' : '¿Qué digo?'}
           </button>
         )}
         {inputMode === 'voice' ? (
           <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')}
-            maxSeconds={phoneticsActive(settings) ? MAX_SECONDS : undefined}
+            maxSeconds={MAX_SECONDS}
             companion={<Mascot element={mascotEl} mood={mood} size={84} />}
           />
         ) : (

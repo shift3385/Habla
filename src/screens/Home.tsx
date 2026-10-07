@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
@@ -12,6 +13,7 @@ import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
+import { notificationsGranted } from '../lib/reminders'
 import AllTopicsView from '../components/AllTopicsView'
 import TopicAskPage, { type AskKind } from '../components/TopicAskPage'
 import { Icon } from '../ui/icons'
@@ -25,6 +27,8 @@ interface Props {
   update: (patch: Partial<Settings>) => void
   onStart: (scenarioId: string, categoryId?: string, customTopic?: string) => void
   onGoSettings: () => void
+  /** Ajustes → Meta diaria (permiso de notificaciones). */
+  onOpenGoal?: () => void
   onReview: () => void
   plan: StudyPlan | null
   calibrated: boolean
@@ -34,6 +38,8 @@ interface Props {
   registerBack: (h: (() => void) | null) => void
   savedClass?: SavedClass | null
   onResumeClass?: () => void
+  /** v5.9: terminar la clase guardada (con su evaluación) sin seguirla. */
+  onFinishClass?: () => void
 }
 
 function greeting() {
@@ -49,6 +55,7 @@ export default function Home({
   update,
   onStart,
   onGoSettings,
+  onOpenGoal,
   onReview,
   plan,
   calibrated,
@@ -58,6 +65,7 @@ export default function Home({
   registerBack,
   savedClass,
   onResumeClass,
+  onFinishClass,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
@@ -152,6 +160,18 @@ export default function Home({
     }
   }, [])
   const azureOn = hasAzure(settings)
+  // AUD-FLU-900: recordatorio activado sin permiso de notificaciones → la mascota lo dice (antes fallaba en silencio).
+  const [notifDenied, setNotifDenied] = useState(false)
+  useEffect(() => {
+    if (!settings.reminderOn || !Capacitor.isNativePlatform()) return
+    const check = () => notificationsGranted().then((ok) => setNotifDenied(!ok))
+    check()
+    // Al volver de los ajustes del teléfono (donde se concede el permiso), se mira otra vez.
+    const onVisible = () => document.visibilityState === 'visible' && check()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [settings.reminderOn])
+  const remindersBlocked = settings.reminderOn && notifDenied
   const tips = useMemo(() => {
     const notices = settings.mascotNotices
       ? buildTips({
@@ -164,14 +184,16 @@ export default function Home({
           lessonDone: plan ? doneToday(plan) : false,
           liveTopics: favCats.some((c) => c.live),
           retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
+          remindersBlocked,
         })
       : []
     const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn }), adviceCursor) : []
     return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor])
+  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked])
   const onTip = (tip: Tip) => {
-    if (tip.action === 'resume') onResumeClass?.()
+    if (tip.action === 'notif') onOpenGoal?.()
+    else if (tip.action === 'resume') onResumeClass?.()
     else if (tip.action === 'review') onReview()
     else if (tip.action === 'lesson' && today?.lesson) {
       if (keysReady) onStartLesson(today.lesson.id)
@@ -314,16 +336,25 @@ export default function Home({
       </div>
 
       {savedClass && (
-        <button onClick={onResumeClass} className="glass mt-2 flex h-[48px] w-full items-center gap-2.5 rounded-[24px] pr-1.5 pl-2 text-left">
-          <span className="btn-acc grid h-8 w-8 flex-none place-items-center rounded-full">
-            <Icon name="mic" size={15} />
-          </span>
-          <span className="min-w-0 flex-1 leading-tight">
-            <b className="block truncate text-[14px] font-semibold">Clase en progreso</b>
-            <span className="txt-sub block truncate text-[12px]">{savedClass.title}</span>
-          </span>
-          <span className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 text-[13px]">Continuar</span>
-        </button>
+        <div className="glass mt-2 flex h-[48px] w-full items-center gap-2 rounded-[24px] pr-1.5 pl-2">
+          <button onClick={onResumeClass} className="flex min-w-0 flex-1 items-center gap-2.5 text-left">
+            <span className="btn-acc grid h-8 w-8 flex-none place-items-center rounded-full">
+              <Icon name="mic" size={15} />
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <b className="block truncate text-[14px] font-semibold">Clase en progreso</b>
+              <span className="txt-sub block truncate text-[12px]">{savedClass.title}</span>
+            </span>
+          </button>
+          {onFinishClass && (
+            <button onClick={onFinishClass} className="field flex h-9 flex-none items-center rounded-[18px] px-3 text-[13px]">
+              Terminar
+            </button>
+          )}
+          <button onClick={onResumeClass} className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 text-[13px]">
+            Continuar
+          </button>
+        </div>
       )}
 
       <PlanCard

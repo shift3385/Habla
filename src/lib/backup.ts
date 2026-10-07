@@ -3,6 +3,9 @@ import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
 import { BACKUP_FORMAT, BACKUP_VERSION, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
 import { db, TABLES } from './db'
+import { clearSavedClass } from './savedClass'
+import { resetPracticeSeconds } from './stats'
+import { clearDraft, clearProgress } from './testDraft'
 
 // Copia de seguridad en JSON de todo el progreso (IndexedDB).
 // Las claves API NO se incluyen: se quedan solo en Preferences del teléfono.
@@ -73,6 +76,8 @@ export async function exportBackup(): Promise<ExportResult> {
 export interface ImportSummary {
   sessions: number
   mistakes: number
+  /** v5.9: dónde quedó la copia automática de lo que había antes de importar (solo en el teléfono). */
+  safetyCopy?: string
 }
 
 /** Copia leída y comprobada, lista para importar (todavía no se ha tocado nada). */
@@ -101,6 +106,26 @@ export async function readBackup(file: File): Promise<ReadyBackup> {
 /** Sustituye TODO el progreso actual por el de una copia ya comprobada. Todo o nada (una sola transacción). */
 export async function applyBackup(ready: ReadyBackup): Promise<ImportSummary> {
   const { tables } = ready.backup
+  // v5.9 (INFORME §8.4.5): antes de sustituir nada se guarda una copia de lo que hay, por si la copia importada era
+  // la equivocada. Si no se puede guardar, no se importa.
+  let safetyCopy: string | undefined
+  if (Capacitor.isNativePlatform()) {
+    // Con segundos y milisegundos: dos importaciones seguidas no pisan la copia de lo que había al principio.
+    const stamp = new Date().toISOString().slice(0, 23).replace(/[-:T.]/g, '')
+    const fileName = `habla-antes-de-importar-${stamp}.json`
+    try {
+      await Filesystem.writeFile({
+        path: `Habla/${fileName}`,
+        data: JSON.stringify(await buildBackup(), null, 1),
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+        recursive: true,
+      })
+      safetyCopy = `Documentos/Habla/${fileName}`
+    } catch {
+      throw new Error('No se pudo guardar una copia de tus datos actuales antes de importar, así que no se importó nada.')
+    }
+  }
   try {
     await db.transaction('rw', TABLES.map((t) => db.table(t)), async () => {
       for (const t of TABLES) {
@@ -112,7 +137,10 @@ export async function applyBackup(ready: ReadyBackup): Promise<ImportSummary> {
     // AUD-SEG-510: nada de mensajes internos de Dexie en inglés. La transacción deshace todo.
     throw new Error('No se pudo importar la copia (la base de datos la rechazó). No se cambió nada.')
   }
-  return ready.summary
+  // AUD-FLU-219: la clase guardada y los borradores del test apuntaban a sesiones de ANTES de importar: fuera.
+  await Promise.all([clearSavedClass().catch(() => {}), clearDraft(), clearProgress()])
+  resetPracticeSeconds() // los minutos del repaso eran de los datos de antes
+  return { ...ready.summary, safetyCopy }
 }
 
 /** Comprueba la copia y, si es buena, sustituye todo el progreso por el suyo. */

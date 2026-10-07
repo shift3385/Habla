@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MascotPage from '../components/MascotPage'
 import { APP_VERSION, RELEASES } from '../lib/changelog'
 import type { Notice } from '../lib/notices'
@@ -7,6 +7,7 @@ import type { Skill } from '../lib/db'
 import SkillProgressCard from '../components/SkillProgressCard'
 import HelpPoint from '../components/HelpPoint'
 import type { Settings } from '../lib/settings'
+import { loadProgress } from '../lib/testDraft'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import { THEME_INFO, THEME_KEYS } from '../ui/theme'
@@ -31,6 +32,12 @@ interface Props {
  */
 export default function NoticeGate({ settings, notices, homework, update, onRetest, onOpenThemes, onDone, savedClass, onResumeClass, levels }: Props) {
   const [i, setI] = useState(0)
+  // v5.9: re-test pausado («Pausar y seguir luego»): la mascota lo dice y ofrece seguirlo.
+  const [testPaused, setTestPaused] = useState(false)
+  useEffect(() => {
+    if (!notices.includes('retest')) return
+    loadProgress().then((p) => setTestPaused(!!p?.pauseUsed))
+  }, [notices])
   const element = THEME_INFO[settings.theme].mascot
   const notice = notices[i]
   const step = { i, n: notices.length }
@@ -114,7 +121,7 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
             Tu <b>clave de Gemini</b> es tu pase personal para usarla. Es <b>gratis</b>, con un límite de uso al día.
           </HelpPoint>
           <HelpPoint icon="shield">
-            Se guarda <b>solo en este teléfono</b>, protegida con tu patrón, PIN o huella. No va en la app ni en tus copias.
+            Se guarda <b>solo en este teléfono</b> y no va en tus copias. Para verla o cambiarla te pido tu patrón, PIN o huella.
           </HelpPoint>
           <HelpPoint icon="ear">
             <b>Opcional:</b> con una clave de <b>Azure Speech</b> (5 h gratis al mes) también te corrijo la pronunciación sonido a sonido. Se activa en Ajustes → Modelos.
@@ -157,13 +164,15 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
         element={element}
         mood="happy"
         step={step}
-        title={recal ? 'Ya puedes repetir tu test' : '¡Te toca el re-test!'}
+        title={recal ? 'Ya puedes repetir tu test' : testPaused ? 'Tu re-test está en pausa' : '¡Te toca el re-test!'}
         subtitle={
-          recal
-            ? 'Tu primer test se hizo antes de calibrar las preguntas y no era justo. El nuevo test (unos 25 minutos) lo sustituye por completo: tu nivel será lo que saques en él.'
-            : 'Han pasado 4 semanas desde tu último test. En unos 25 minutos verás cuánto has avanzado; tu nuevo nivel será 70 % el test y 30 % lo que propusieron tus clases.'
+          !recal && testPaused
+            ? 'Lo dejaste a medias y está guardado. Sigue justo donde lo dejaste; esta vez ya no se puede volver a pausar.'
+            : recal
+              ? 'Tu primer test se hizo antes de calibrar las preguntas y no era justo. El nuevo test (unos 25 minutos) lo sustituye por completo: tu nivel será lo que saques en él.'
+              : 'Han pasado 4 semanas desde tu último test. En unos 25 minutos verás cuánto has avanzado; tu nuevo nivel será 70 % el test y 30 % lo que propusieron tus clases.'
         }
-        primary={{ label: recal ? 'Hacer el test ahora' : 'Hacer el re-test ahora', onClick: onRetest }}
+        primary={{ label: recal ? 'Hacer el test ahora' : testPaused ? 'Seguir el re-test' : 'Hacer el re-test ahora', onClick: onRetest }}
         secondary={{
           // Sin aplazar días: mientras esté disponible, te lo recuerdo cada vez que entres.
           label: 'Más tarde (te lo recuerdo la próxima vez que entres)',

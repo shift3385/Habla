@@ -1,29 +1,19 @@
-// Reglas de los dedos del botón de hablar (TalkButton), separadas para poder probarlas sin navegador
-// (tests/talkGesture.test.mjs). AUD-MIC-304 y REV-T2-1.
+// Reglas de los toques del botón de hablar (TalkButton), separadas para poder probarlas sin navegador
+// (tests/talkGesture.test.mjs).
+// v5.9 (AUD-MIC-305, decisión del dueño): «toca para hablar, toca para enviar», máximo 60 s. Ya no hay que mantener
+// pulsado. Se conservan las protecciones de la 5.8.1: un doble toque no abre dos grabaciones (AUD-MIC-302/304) y
+// un segundo toque demasiado seguido no envía una grabación vacía.
 
-export interface Gesture {
-  active: boolean // hay un dedo que manda (desde su pointerdown hasta su pointerup)
-  id: number // pointerId de ese dedo
-  done: boolean // ya bloqueó o canceló: soltar no envía
-}
+/** Un toque que llega antes de este tiempo de grabación es el rebote de un doble toque, no «enviar». */
+export const MIN_SEND_MS = 600
 
-export type DownAction = 'ignore' | 'send' | 'press'
+export type TapAction = 'ignore' | 'send' | 'press'
 
-/** Qué hace un pointerdown: ignorarlo, enviar (grabación bloqueada) o empezar a grabar. */
-export function pointerDownAction(g: Gesture, pointerId: number, s: { busy: boolean; locked: boolean; recording: boolean }): DownAction {
+/** Qué hace un toque: ignorarlo, enviar la grabación en marcha o empezar a grabar. */
+export function tapAction(s: { busy: boolean; recording: boolean; recordingMs: number }): TapAction {
   if (s.busy) return 'ignore'
-  // REV-T2-1: mientras un dedo manda (también durante la apertura del micro, antes de «grabando»), otro dedo se
-  // ignora del todo; antes se quedaba con el gesto y al soltarlo cortaba la grabación a 0 s.
-  if (g.active && g.id !== pointerId) return 'ignore'
-  // Grabación bloqueada: este toque envía.
-  if (s.locked) return 'send'
-  // AUD-MIC-304: con una grabación en marcha (sin bloqueo), otro dedo o un toque justo tras soltar no empieza otra
-  // grabación (antes el primer MediaRecorder quedaba grabando huérfano el resto de la clase).
-  if (s.recording) return 'ignore'
+  if (s.recording) return s.recordingMs < MIN_SEND_MS ? 'ignore' : 'send'
+  // Durante la apertura del micro (aún no «grabando») otro toque vuelve a pedir lo mismo: Recorder.begin() comparte
+  // la apertura en curso, así que no se abre un segundo micrófono (AUD-MIC-302).
   return 'press'
-}
-
-/** Mover, soltar o cancelar solo cuentan para el dedo que manda. */
-export function isOwnPointer(g: Gesture, pointerId: number): boolean {
-  return g.active && g.id === pointerId
 }

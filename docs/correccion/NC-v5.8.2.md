@@ -12,11 +12,14 @@ Origen: `docs/auditoria/resultados/INFORME.md` §8.3. Reglas del orquestador par
 | NC-v5.8.2-02 (U2) | AUD-FUG-401 | Resource ID, Tenant y Client ID validados; URL con `new URL` y host comprobado; validación antes de pedir el token; huella al cambiar tenant, cliente o recurso | `src/lib/azureUsage.ts`, `src/components/AzureSettings.tsx`, `tests/azureUsage.test.mjs` (nuevo) |
 | NC-v5.8.2-03 (U3) | AUD-SEG-501, AUD-RES-704, AUD-E2E-601, AUD-SEG-510 | Copia comprobada entera antes de tocar nada (rechazo en español); importar en dos pasos con resumen; `ErrorBoundary` y pantalla de recuperación en el arranque; perfil reparado en memoria | `src/lib/backupCheck.ts` (nuevo), `src/lib/backup.ts`, `src/screens/SettingsScreen.tsx`, `src/App.tsx`, `src/main.tsx`, `src/components/Recovery.tsx` (nuevo), `src/lib/profile.ts`, `tests/backupCheck.test.mjs` (nuevo) |
 | NC-v5.8.2-04 (U4) | AUD-FLU-209 | La clave de Gemini se comprueba con Google antes de guardarla (Ajustes y hoja de problemas); si falla, se conserva la anterior | `src/lib/geminiKey.ts` (nuevo), `src/screens/SettingsScreen.tsx`, `src/components/GeminiFix.tsx`, `tests/geminiKey.test.mjs` (nuevo) |
+| NC-v5.8.2-05 (U5) | AUD-RES-700, AUD-RES-701, AUD-ARQ-110 | Fondo estático; un solo planificador para todas las mascotas (ritmo completo solo con movimiento; ~15 fps en reposo, 4 fps con «reducir movimiento», nada si no se ve); umbrales de reposo de Brisa y Musgo; bucles CSS de una sola vuelta con «reducir movimiento» | `src/ui/Background.tsx`, `src/ui/Mascot.tsx`, `src/index.css` |
+| NC-v5.8.2-06 (U6) | AUD-FLU-206, AUD-FLU-211, AUD-E2E-604, AUD-RES-703 | Textos de la clase a medias, de la protección de la clave y del error de clave; el plan no se relanza solo tras un fallo | `src/App.tsx`, `src/screens/Onboarding.tsx`, `src/screens/NoticeGate.tsx`, `src/lib/gemini.ts` (`keyCheckError`), `src/components/PlanCard.tsx`, `tests/geminiKey.test.mjs` |
+| NC-v5.8.2-07 (U7) | AUD-FUG-402, REV-U1-1 | 5.8.2/35, `RELEASES`, `npm run apk` → release `--offline` y `apk:debug`; recetas y docs | `version.json`, `src/lib/changelog.ts`, `package.json`, `CLAUDE.md`, `README.md`, `docs/configuracion.md`, `docs/problemas-conocidos.md`, `docs/estado-actual.md`, `docs/correccion/REVISOR-MOVIL.md` |
 
-## Pendiente para U7 (anotado a petición del orquestador)
-- `package.json`: el script `apk` debe pasar de `assembleDebug` a `assembleRelease --offline` (el entregable es el release).
-- `CLAUDE.md` (tabla de comandos, «APK (forma fiable)» → `assembleRelease`; «Comprobar que el Java compila»), `docs/configuracion.md` y `docs/correccion/REVISOR-MOVIL.md` / arneses: la app de pruebas por CDP pasa a ser `com.shift.habla.debug`.
-- `version.json` 5.8.2/35 y `RELEASES`.
+## Pendiente para U7 (anotado a petición del orquestador) — hecho el 2026-10-07 (NC-v5.8.2-07)
+- ~~`package.json`: el script `apk` debe pasar de `assembleDebug` a `assembleRelease --offline`.~~ Hecho, y `apk:debug` nuevo.
+- ~~`CLAUDE.md`, `docs/configuracion.md` y `docs/correccion/REVISOR-MOVIL.md`.~~ Hecho. Los arneses CDP los adapta el revisor móvil al paquete `com.shift.habla.debug` (copia en `docs/correccion/arnes-movil/`).
+- ~~`version.json` 5.8.2/35 y `RELEASES`.~~ Hecho.
 
 ---
 
@@ -111,4 +114,76 @@ Origen: `docs/auditoria/resultados/INFORME.md` §8.3. Reglas del orquestador par
 | NC | Qué se cambió | Archivos |
 |---|---|---|
 | REV-U2-1 (BAJA) | Quitar el acceso a Azure Monitor (Tenant, Client y Resource vacíos) borra también el secreto guardado del *service principal*; pide el bloqueo si había datos; aviso «Acceso a Azure Monitor quitado (también el secreto)». | `src/components/AzureSettings.tsx` |
-| REV-U1-1 (MEDIA) | Se cierra en U7 (script `apk` → `assembleRelease --offline`, recetas de `CLAUDE.md` y `docs/configuracion.md`; los arneses los adapta el revisor móvil). | — (U7) |
+| REV-U1-1 (MEDIA) | Cerrada en U7: `npm run apk` → `assembleRelease --offline`; `npm run apk:debug` nuevo; recetas de `CLAUDE.md`, `README.md`, `docs/configuracion.md`, `docs/problemas-conocidos.md` y `REVISOR-MOVIL.md` al día. Los arneses los adapta el revisor móvil. | `package.json` y docs (U7) |
+| REV-U3-1 (MEDIA) | `lookups` y `cards` opcionales (si faltan, se importan vacías); el perfil puede faltar (copias muy antiguas: la app crea uno neutro al abrir; desde la bienvenida se sigue exigiendo un perfil con nombre). Test «REV-U3-1: copias antiguas legítimas…» (v4.1 sin consultas ni tarjetas, v4.6 sin tarjetas, sin perfil). `npm test` 38/38 (2026-10-07). | `src/lib/backupCheck.ts`, `tests/backupCheck.test.mjs` |
+| REV-U4-1 (BAJA) | `listModels` (solo se usa al comprobar o refrescar la clave) usa `keyCheckError()`: con 429 dice «Google no deja comprobar la clave ahora mismo… Puede que sea buena: inténtalo de nuevo en un minuto» (sin «prueba otro modelo»); con 5xx, igual. Cubre también AUD-E2E-604 (ver NC-v5.8.2-06). Test nuevo en `tests/geminiKey.test.mjs`. | `src/lib/gemini.ts`, `tests/geminiKey.test.mjs` |
+
+---
+
+## NC-v5.8.2-05 (U5) · Consumo en primer plano
+
+**Hallazgos:** AUD-RES-700 (el fondo con 3 manchas `blur(70–80px)` animadas en bucle: ~1 núcleo en reposo), AUD-RES-701 / AUD-ARQ-110 (cada mascota con su propio `requestAnimationFrame` a 60–120 fps aunque esté quieta; dos montadas, dos bucles).
+
+**Qué se cambió:**
+- `src/ui/Background.tsx`: las manchas ya no se animan (sin `hb-drift` ni `willChange`). Quietas, el WebView las pinta una vez y las reutiliza.
+- `src/ui/Mascot.tsx`: **un solo planificador** para todas las mascotas. Va a ritmo completo solo mientras hay movimiento (toque, salto, partículas de un gesto, habla, dedo cerca durante 1,5 s); en reposo, una rejilla común de 66 ms (~15 fps, varias mascotas comparten el mismo despertar); 250 ms con `prefers-reduced-motion`; 500 ms (sin dibujar) si la mascota no se ve (`IntersectionObserver`, `document.hidden`, cuerpo desmontado). Entre fotogramas lentos no se pide ningún rAF (un `setTimeout`). Las partículas avanzan los pasos de 60 fps que tocan para no ir a cámara lenta.
+- `busy()`: umbrales por lo que se ve. El muelle de altura de Brisa (`vlift`) casi no se amortigua y con 0,05 seguía a ritmo completo ~3 s tras cada gesto; ahora 0,3 (~2 px). El temblor de Musgo (`jig`) pasa de 0,03 a 0,1 (<1 % de deformación).
+- `src/index.css`: con «reducir movimiento», todos los bucles CSS (`animation-iteration-count: 1 !important`, que gana a los estilos en línea) dan una vuelta y se paran: puntos de «escribiendo», ondas del micro, anillo de la preparación…
+- No se cambió: `MascotPage` sigue montando su propio `Background`, pero ahora es estático (un pintado, sin coste por fotograma).
+
+**Cómo se probó (PC, Chromium headless con Vite, 360×780, 30 s en reposo tras 2,5 s de arranque; se cuenta cada `draw()`):**
+
+| Mascota | v5.8 | U5 a medias (umbrales 0,05/0,03) | U5 final |
+|---|---|---|---|
+| flame (Chispa) | 60–120 | 12,6 | **12,3** dibujos/s |
+| aqua (Gota) | 60–120 | 12,2 | **12,4** |
+| terra (Musgo) | 60–120 | 19,9 | **16,9** |
+| aero (Brisa) | 60–120 | 28,8 | **19,4** |
+
+Lo que queda por encima de 12 son los gestos espontáneos de reposo (cada 5–9 s), que se ven a ritmo completo ~0,7–1,5 s. `npx tsc -b` OK, lint 0 errores, `npm test` 38/38.
+
+**Para el teléfono (revisor móvil):** repetir la medida de B7 (`B8/arnes/res700.sh`, `cpu8.sh`) en el Inicio, en la clase en reposo y en «¡Hola de nuevo!» con los 4 temas. Objetivo del INFORME: **<10 % de CPU en reposo** (antes 136–204 % la app + 47–87 % el renderer). Mirar a ojo que la mascota en reposo no parezca «a saltos» y que los gestos (tocar, estirar, girar a Brisa, 5 toques) sigan siendo fluidos.
+
+---
+
+## NC-v5.8.2-06 (U6) · Textos y menores
+
+| Hallazgo | Qué se cambió | Dónde |
+|---|---|---|
+| AUD-FLU-206 | «Si empiezas una nueva, se perderá» → «esa se cierra tal como está (lo que hablaste cuenta en tu progreso) y ya no podrás seguirla», que es lo que hace `discardSavedClass` (NC-16) | `src/App.tsx` (diálogo «Tienes una clase en progreso») |
+| AUD-FLU-211 | «protegida con tu patrón, PIN o huella» → «Para verla o cambiarla en la app te pediré tu patrón, PIN o huella» (la clave se guarda en Preferences sin cifrar; cifrarla con Keystore queda para otra versión) | `src/screens/Onboarding.tsx` (Gemini y Azure), `src/screens/NoticeGate.tsx` |
+| AUD-E2E-604 | El error de clave al comprobarla ya no manda a «Ajustes» (en la bienvenida no existe y en Ajustes ya estás): «Esa clave no es válida: cópiala otra vez desde Google AI Studio (aistudio.google.com/apikey). Empieza por «AIza».» Durante la clase, `describeError` sigue diciendo «Revísala en Ajustes», que ahí sí es correcto | `src/lib/gemini.ts` (`keyCheckError`, usada por `listModels`) |
+| AUD-RES-703 | El error del plan se recuerda fuera del componente (10 min, por clave y modelos): volver al Inicio ya no relanza la cadena de 5 peticiones; se reintenta con «Reintentar», al cambiar de clave o modelo, o pasado ese tiempo | `src/components/PlanCard.tsx` |
+
+**Cómo se probó:** `tests/geminiKey.test.mjs` (textos de `keyCheckError` con 400 `API_KEY_INVALID`, 401, 429, 503 y 403). RES-703 en Chromium con el `PlanCard` real y Google simulado con 503 (0 peticiones reales): 1.ª visita → 5 peticiones y «Reintentar»; 5 idas y vueltas de pestaña → **0 peticiones más** (la auditoría midió 10); pulsar «Reintentar» → 5 más. tsc OK, lint 0 errores, `npm test` 38/38.
+
+**Para el teléfono:** que el diálogo «Tienes una clase en progreso» y los textos de la bienvenida quepan sin scroll en 320×640 y en horizontal (Galaxy A11).
+
+---
+
+## NC-v5.8.2-07 (U7) · Entrega 5.8.2 (build 35)
+
+- `version.json` → 5.8.2 / 35 / 2026-10-07. `RELEASES` con la entrada 5.8.2 (lo que ve el usuario en Novedades).
+- REV-U1-1: `npm run apk` = `assembleRelease --offline` (el entregable); `npm run apk:debug` = `assembleDebug --offline` (otra app, solo pruebas). Recetas al día en `CLAUDE.md`, `README.md`, `docs/configuracion.md`, `docs/problemas-conocidos.md` y `REVISOR-MOVIL.md`.
+- **AUD-FUG-402 (fuera del código, lo hace el dueño):** borrar de `apk/` los APK v3.0–v5.7 (registraban en logcat los ajustes con las claves) y valorar rotar la clave de Gemini. No se tocó `apk/`.
+- La 5.8.1 no se compiló por separado: el commit `e5d9c1a` metió en `main` la 5.8.1 y parte de la 5.8.2 juntas. Se entregan como una sola 5.8.2 (las dos entradas siguen en Novedades).
+- No se compiló el APK: este trabajo se hizo en un entorno Linux sin Android SDK. Falta `npm run apk` en el PC del dueño.
+
+---
+
+## Revisión de código y pruebas en la app real (2026-10-07, segunda pasada)
+
+Revisión de código del PR (`/code-review`, otra mirada sobre `e5d9c1a..HEAD`): 8 hallazgos, todos verificados y corregidos.
+
+| # | Hallazgo | Arreglo |
+|---|---|---|
+| 1 | **Grave.** `PlanCard`: el error recordado podía volver cuando ya no aplicaba; «Reintentar» llamaba a `create()` y **sustituía un plan que ya funcionaba** | El fallo se guarda con su operación (`create` o `week:N`) y solo se muestra si esa misma operación sigue pendiente; «Reintentar» repite esa operación |
+| 2 | Cambiar de clave o modelo con la tarjeta montada no reintentaba | El error se deriva de la operación + clave + modelos: si cambian, desaparece y se reintenta solo |
+| 3 | El error recordado bloqueaba operaciones distintas (otra semana) | Igual que el 1 |
+| 4 | «Reducir movimiento» paraba también los indicadores de carga y grabación (la app parecía colgada) | Solo se paran los bucles decorativos (`hb-spin`, `ld-breathe`, `bw-bob`, `.anim-bob`); siguen los puntos, `animate-pulse` y las ondas del micro |
+| 5 | Brisa bajaba al ritmo lento en los extremos del vaivén (velocidad 0, posición lejos) | `busy()` mira la amplitud del muelle (posición y velocidad), umbral 2 px |
+| 6 | Clave bloqueada (403 con «API key» en el mensaje) → «no es válida, cópiala otra vez» | `keyCheckError` y `describeError` usan `permissionError()`; 403 va primero en la comprobación |
+| 7 | Refrescar la lista de modelos con 429 decía «no deja comprobar la clave» | Textos de 429/5xx neutros: «Google no responde ahora mismo… Tu clave puede estar bien» |
+| 8 | Una línea de 157 caracteres | Partida |
+
+Pruebas en la app real (Chromium + Vite, red simulada, 0 llamadas reales): ver `evidencia-rev/v582-navegador/LEEME.md`. Textos nuevos sin scroll en 320×640, 780×360 y 640×320; copia v4.1 importada; 429 en Ajustes con la clave anterior conservada; «reducir movimiento»; `PlanCard` en 3 escenarios. `npx tsc -b` OK, lint 0 errores, `npm test` 38/38.

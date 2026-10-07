@@ -17,6 +17,51 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.9',
+    date: '2026-10-07',
+    title: 'Toca para hablar, tú decides el repaso y tu fonética en todas partes',
+    added: [
+      'Toca el micro para hablar y tócalo otra vez para enviar: ya no hay que mantenerlo pulsado. Cada respuesta dura como mucho 60 s y la papelera la descarta',
+      'El micrófono solo se abre mientras grabas: el punto verde ya no se queda encendido toda la clase, ni entre frases del repaso o tareas del test',
+      'Tu clase a medias se puede terminar desde el Inicio, con su informe, como dentro de la clase',
+      'Test y re-test: «Pausar y seguir luego», una vez por test. Si pausas el re-test, tu mascota te recuerda que lo tienes a medias',
+      'Repaso: tú decides cuándo vuelve cada frase, con botones que dicen cuándo («10 min», «9 días») y una explicación de tu mascota. Hay que elegir para pasar a la siguiente',
+      'Repaso: «Ya me la sé» para que una frase no vuelva. La recuperas en Palabras → Ya las sé',
+      'Fonética de Azure también en el repaso y en el test (en el test solo informativa: no cuenta para tu nivel), con un interruptor en cada pantalla. Al entrar a clase, tu mascota te recuerda que puedes encenderla o apagarla',
+    ],
+    improved: [
+      'Lo que hablas en el repaso y en una clase a medias cuenta para tu meta de hoy y tu racha',
+      'Antes de importar una copia se guarda sola una copia de lo que tenías, en Documentos/Habla',
+      'Recordatorio diario: si Android no deja avisarte, tu mascota te lo dice y te explica cómo arreglarlo. Los avisos duran 30 días aunque no abras la app',
+      'Tu privacidad, clara: en la bienvenida y en Ajustes → Mis datos se explica qué se queda en el teléfono y qué se envía a Google o a Microsoft',
+      'En horizontal, el micrófono y «¿Qué digo?» siempre se pueden tocar, y el repaso deja ver los botones para elegir',
+      '«Salir» mientras se prepara la clase',
+    ],
+    fixed: [
+      'Si se agota el plan gratis de Azure en mitad de una clase, el aviso ya no te saca de ella',
+      'Al importar una copia desde la bienvenida ya no te saltas el paso de la clave ni vuelve a salir el tutorial',
+      'Tras importar una copia, la clase guardada y los tests a medias de antes ya no se mezclan con los datos nuevos',
+    ],
+  },
+  {
+    v: '5.8.2',
+    date: '2026-10-07',
+    title: 'Tus claves y tus datos, más seguros, y menos batería',
+    fixed: [
+      'La app ya no deja leer tus claves desde un ordenador conectado por cable: ahora se instala la versión final, no la de pruebas',
+      'Si pegas una clave de Gemini mal copiada, primero se comprueba con Google: si no vale, sigues con la anterior y la app no se queda sin profe',
+      'Al restaurar una copia, se comprueba entera antes de tocar nada: si está dañada o no es de Habla, te lo explica y tus datos siguen como estaban. Antes de sustituir te dice cuántas sesiones y errores trae',
+      'Si algo falla al abrir la app, ya no se queda la pantalla en negro: te ofrece volver a intentar o exportar tus datos',
+      'Si Google falla al preparar tu plan, ya no lo vuelve a pedir cada vez que vuelves al Inicio: lo intentas tú con «Reintentar», así no gastas tu cuota',
+      'En el acceso a Azure Monitor se comprueban los datos que pegas, y cambiarlos pide tu patrón, PIN o huella',
+    ],
+    improved: [
+      'Menos batería y menos calor: el fondo ya no se mueve y tu mascota solo se anima a tope cuando hace algo; quieta, se dibuja a un ritmo mucho más bajo',
+      'Si tienes activado «Reducir movimiento» en Android, las animaciones que se repiten se paran',
+      'Textos más claros: qué pasa con tu clase a medias si empiezas otra, qué protege tu patrón o PIN, y qué hacer si una clave no es válida',
+    ],
+  },
+  {
     v: '5.8.1',
     date: '2026-10-06',
     title: 'Actualización de parches de seguridad y corrección de la v5.8',

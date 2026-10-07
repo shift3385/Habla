@@ -1,5 +1,15 @@
 # Corrección de la auditoría v5.8 — estado para reanudar
 
+## ▶▶ CÓMO CONTINUAR AHORA (2026-10-07) — solo queda el teléfono
+- **Todo el código está hecho y revisado en PC:** 5.8.1 + 5.8.2 + 5.9, entregadas juntas como **5.9 (build 36)**.
+- **Dónde está:** rama `claude/peaceful-fermi-ua55yq`, PR https://github.com/shift3385/Habla/pull/1 (**aún sin fusionar en `main`**). En el PC: `git fetch origin` y `git checkout claude/peaceful-fermi-ua55yq` (o fusiona antes el PR).
+- **Comprobado en PC:** `npx tsc -b` OK, `npm run lint` 0 errores, `npm test` 39/39, banco OK, `npm run build` OK. Pruebas en la app real con Chromium y red simulada (`evidencia-rev/v582-navegador/`, `evidencia-rev/v59-navegador/`) y revisión de código (8 + 10 hallazgos, todos corregidos). Lo hizo una sesión en la nube, sin agente `rev` aparte: se da por cerrada la revisión en PC.
+- **Lo único pendiente:**
+  1. Compilar en el PC: `npm run apk` (release) y `npm run apk:debug`. Comprobar la firma (mismo certificado que la 5.8) y `versionCode 36`.
+  2. **Pruebas en el teléfono:** R1–R24 de `REVISOR-MOVIL.md`. R21 (fonética real) gasta segundos del F0: pedir permiso al dueño.
+  3. Decisiones del dueño: aceptar MIC-308 como riesgo residual BAJA; borrar los APK antiguos de `apk/` (FUG-402).
+- Prompt para la sesión del PC: `Lee docs/correccion/ESTADO.md y docs/correccion/REVISOR-MOVIL.md, compila la 5.9 y haz la revisión móvil en el POCO (serie 60d0718c).`
+
 > **Si se corta la sesión** (límite de consumo, cierre): abre Claude Code en `D:\My Apps\HABLA` y escribe
 > `Lee docs/correccion/ESTADO.md y continúa la orquestación de la corrección (desarrollo + revisión).`
 > Este archivo es la ÚNICA fuente de verdad del avance. Los agentes lo actualizan al terminar cada tarea.
@@ -37,11 +47,11 @@ Estados: `pendiente` → `en desarrollo` → `para revisar` → `en revisión` �
 |---|---|---|---|---|
 | U1 | Build release no debuggable firmado con `habla.jks`; debug con `.debug`; fallar sin `keystore.properties` | SEG-001, SEG-504, ARQ-106 | aprobada | rev: APROBADA; NC MEDIA REV-U1-1 (recetas `npm run apk`/CLAUDE.md/arneses aún con `assembleDebug` → cerrar en U7). NC-v5.8.2-01. `build.gradle`, `proguard-rules.pro`, `src/debug/res/values/strings.xml`. Verificado con `packageRelease` (no copia a `apk/`): no depurable, mismo certificado que la 5.8. Script `apk` → U7 |
 | U2 | Validar Resource ID de Azure y host; huella para tenant/client/resource | FUG-401 | aprobada | rev: APROBADA (fuzz de 23 Resource ID: ninguno sale de management.azure.com); REV-U2-1 cerrada (regresión OK). NC-v5.8.2-02. `azureUsage.ts`, `AzureSettings.tsx`, `tests/azureUsage.test.mjs` |
-| U3 | Validar copia al importar (rechazar sin tocar datos); `ErrorBoundary` + `catch` en el arranque | SEG-501, RES-704, E2E-601, SEG-510 | NC abiertas | rev: NC REV-U3-1 (MEDIA): rechaza copias legítimas de la v1–v4.6 (sin `lookups`/`cards`). El resto (rechazos, ErrorBoundary, arranque) OK. NC-v5.8.2-03. `backupCheck.ts` (nuevo), `backup.ts`, `SettingsScreen.tsx`, `App.tsx`, `main.tsx`, `Recovery.tsx` (nuevo), `profile.ts`, `tests/backupCheck.test.mjs` |
-| U4 | Clave de Gemini: comprobar antes de guardar | FLU-209 | aprobada | rev: APROBADA; NC BAJA REV-U4-1 (el texto de 429 sugiere cambiar el modelo). NC-v5.8.2-04. `geminiKey.ts` (nuevo), `SettingsScreen.tsx`, `GeminiFix.tsx`, `tests/geminiKey.test.mjs` |
-| U5 | Consumo en primer plano (<10 % CPU en reposo) | RES-700, RES-701 | pendiente | |
-| U6 | Textos y menores | FLU-206, FLU-211, E2E-604, RES-703 | pendiente | |
-| U7 | Entrega: 5.8.2/35, `RELEASES`, docs; anotar FUG-402 (borrar APK antiguos: lo hace el dueño) | FUG-402 | pendiente | |
+| U3 | Validar copia al importar (rechazar sin tocar datos); `ErrorBoundary` + `catch` en el arranque | SEG-501, RES-704, E2E-601, SEG-510 | aprobada en PC | REV-U3-1 corregida (2026-10-07: `lookups`/`cards` opcionales, 0–1 perfil) y verificada en navegador (copia v4.1 importada). Antes: NC REV-U3-1 (MEDIA): rechaza copias legítimas de la v1–v4.6 (sin `lookups`/`cards`). El resto (rechazos, ErrorBoundary, arranque) OK. NC-v5.8.2-03. `backupCheck.ts` (nuevo), `backup.ts`, `SettingsScreen.tsx`, `App.tsx`, `main.tsx`, `Recovery.tsx` (nuevo), `profile.ts`, `tests/backupCheck.test.mjs` |
+| U4 | Clave de Gemini: comprobar antes de guardar | FLU-209 | aprobada | rev: APROBADA; NC BAJA REV-U4-1 corregida (2026-10-07, `keyCheckError`) → regresión de rev. NC-v5.8.2-04. `geminiKey.ts` (nuevo), `SettingsScreen.tsx`, `GeminiFix.tsx`, `tests/geminiKey.test.mjs` |
+| U5 | Consumo en primer plano (<10 % CPU en reposo) | RES-700, RES-701 | aprobada en PC (falta CPU real en el POCO: R12) | NC-v5.8.2-05. `Background.tsx`, `Mascot.tsx`, `index.css`. Chromium, 30 s en reposo: 12,3 / 12,4 / 16,9 / 19,4 dibujos/s (flame/aqua/terra/aero; v5.8: 60–120). La CPU real (<10 %) solo se mide en el POCO |
+| U6 | Textos y menores | FLU-206, FLU-211, E2E-604, RES-703 | aprobada en PC | NC-v5.8.2-06. `App.tsx`, `Onboarding.tsx`, `NoticeGate.tsx`, `gemini.ts` (`keyCheckError`), `PlanCard.tsx`. RES-703 en Chromium: 0 peticiones al volver al Inicio tras el error (antes 10) |
+| U7 | Entrega: 5.8.2/35, `RELEASES`, docs; anotar FUG-402 (borrar APK antiguos: lo hace el dueño) | FUG-402 | aprobada en PC (la entrega final es la 5.9/36) | NC-v5.8.2-07. REV-U1-1 cerrada aquí (`npm run apk` = release `--offline`, `apk:debug`). Sin APK (entorno sin Android SDK) |
 
 ## Tablero en vivo
 https://claude.ai/artifact/Xx1iRSCeYq6cSJteBT5qBn — lo actualiza el orquestador con `ArtifactData` (colecciones `tareas` y `bitacora`, docs `e###`).
@@ -63,7 +73,27 @@ Este archivo sigue siendo la fuente de verdad; si el tablero y este archivo disc
 - **Orden al reanudar:** dev → REV-U3-1, REV-U4-1, U5, U6, U7 (REV-U1-1 dentro). rev → regresión de REV-U3-1 y REV-U4-1, luego U5–U7. Mirar la línea de dev más abajo por si dejó algo a medias.
 - Aviso de rev: no cargar datos de Azure ficticios en `rev.localhost` antes de inyectar la red falsa (`startupCheck` pide token al arrancar).
 
+### v5.9 · «Transparencia y control» + notas del dueño (build 36) — incluye 5.8.1 y 5.8.2
+| ID | Tarea | Estado | Notas |
+|---|---|---|---|
+| V1 | Micro «toca para hablar/enviar», máx. 60 s, abierto solo al grabar (MIC-305, FLU-213) | hecha en PC | `NC-v5.9.md` §1; navegador OK |
+| V2 | Pausa única en test y re-test; restos >30 días (FLU-202, FLU-204) | hecha en PC | navegador OK (pregunta 3 → recarga → pregunta 3) |
+| V3 | «Terminar» desde el Inicio; minutos de la clase a medias (E2E-603) | hecha en PC | navegador OK |
+| V4 | Repaso: cuándo vuelve, «Ya me la sé», cuenta para la meta | hecha en PC | navegador OK |
+| V5 | Fonética de Azure en clase, repaso y test (informativa), interruptor y aviso | hecha en PC | navegador OK con Azure simulado |
+| V6 | Privacidad, recordatorios, copia previa al importar, FLU-200/207/219, E2E-602 | hecha en PC | navegador OK |
+| V7 | Entrega 5.9/36, Novedades, docs | hecha en PC | sin APK (sin Android SDK) |
+Revisión de código: 10 hallazgos corregidos (`9a43bcb`). **Falta:** teléfono (R17–R24 de `REVISOR-MOVIL.md`) y APK.
+
+## ▶ REANUDADO (2026-10-07, sesión en la nube de Claude Code, Linux sin Android SDK ni teléfono)
+- Contexto: el dueño hizo el commit `e5d9c1a` («Commit manual de test de auditoria») con todo el árbol: 5.8.1 + la 5.8.2 a medias + `docs/auditoria/` y `docs/correccion/`. Las reglas de «nada de commits» quedan superadas por ese commit; los siguientes los aprueba el dueño igual.
+- Hecho por una sola sesión (dev, **sin agente rev independiente**): REV-U3-1 (tests ejecutados), REV-U4-1, U5, U6, U7. tsc OK, lint 0 errores, `npm test` 38/38, banco OK, `npm run build` OK.
+- ~~Falta: (1) revisión de rev~~ (cerrada en PC el 2026-10-07: navegador + revisión de código; ver «CÓMO CONTINUAR» arriba). Sigue pendiente: (2) en el PC del dueño: `npm run apk` y `npm run apk:debug`, comprobar firma y `versionCode 36`; (3) revisor móvil (`REVISOR-MOVIL.md`), sobre todo R11 (release encima de la 5.8) y la CPU en reposo; (4) FUG-402: el dueño borra los APK antiguos de `apk/`; (5) la decisión pendiente sobre MIC-308 (riesgo residual BAJA).
+
 ## Bitácora (lo último arriba)
+- 2026-10-07 — dev (sesión en la nube): v5.9 hecha en código (V1–V7) con las decisiones del dueño; pruebas en Chromium con el arnés rev (evidencia en `evidencia-rev/v59-navegador/`); revisión de código con 10 hallazgos corregidos. `npm test` 39/39, lint 0 errores. Falta teléfono y APK.
+- 2026-10-07 — dev (sesión en la nube): pruebas en la app real con Chromium (evidencia en `evidencia-rev/v582-navegador/`) y revisión de código del PR: 8 hallazgos corregidos, entre ellos uno grave en `PlanCard` («Reintentar» podía sustituir un plan bueno). `npm test` 38/38. Sigue faltando la revisión de rev y el teléfono.
+- 2026-10-07 — dev (sesión en la nube): REV-U3-1 verificada (`npm test` 37/37 con el ajuste pendiente); REV-U4-1 y E2E-604 con `keyCheckError`; U5 terminada (umbrales de Brisa/Musgo, «reducir movimiento» en CSS; medida en Chromium); U6 (FLU-206, FLU-211, RES-703 con prueba en Chromium); U7 (5.8.2/35, RELEASES, `npm run apk` release, docs). Todo en `para revisar`. `npm test` 38/38.
 - 2026-10-06 — dev: PAUSA del dueño. REV-U3-1: código hecho (`backupCheck.ts`: `lookups`/`cards` opcionales, 0–1 perfil) y tests añadidos en `tests/backupCheck.test.mjs` (último ajuste del caso «falta la tabla de sesiones» SIN volver a ejecutar `npm test`); falta ejecutar tests, rellenar «Corregido» en REVISION-v5.8.2.md y NC-v5.8.2.md. REV-U4-1: sin empezar (mensaje propio para 429 en `geminiKey.ts`).
 - 2026-10-06 — dev: U5 a medias: `src/ui/Background.tsx` (fondo estático) y `src/ui/Mascot.tsx` (planificador único, ~15 fps en reposo, partículas por tiempo) compilan (tsc OK, lint 0); medido en navegador oculto con rAF simulado: flame 8,7 · aqua 9,7 · terra 19 · aero 31 fotogramas/s en reposo (aero y terra siguen «moviéndose»: revisar umbral/lift). Falta: ajustar aero/terra, `prefers-reduced-motion` del CSS, NC-v5.8.2-05 y fila U5. U6 y U7 sin empezar.
 - 2026-10-06 — rev: REV-U2-1 cerrada. U3 → NC REV-U3-1 (MEDIA). U4 aprobada (REV-U4-1 BAJA). `npm test` 36/36.

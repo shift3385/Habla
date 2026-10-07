@@ -8,6 +8,7 @@ import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
 import { applyBackup, readBackup } from './lib/backup'
+import { expireRetestLeftovers } from './lib/testDraft'
 import { db } from './lib/db'
 import { getScenario } from './lib/scenarios'
 import { loadDashboard } from './lib/stats'
@@ -20,7 +21,7 @@ import WordsScreen from './screens/WordsScreen'
 import { getProfile, isPersonalized } from './lib/profile'
 import { needsRecalibration, nextRetestAt } from './lib/levels'
 import { adaptPlanAfterTest, doneToday, findLesson, todayLesson, type StudyPlan } from './lib/plan'
-import { syncReminders } from './lib/reminders'
+import { askNotificationPermission, syncReminders } from './lib/reminders'
 import PlanScreen from './screens/PlanScreen'
 import FavoritesSetup from './screens/FavoritesSetup'
 import NoticeGate from './screens/NoticeGate'
@@ -50,6 +51,7 @@ interface Lesson {
   customTopic?: string // tema escrito por el alumno
   planLesson?: string // lección del plan de 12 semanas
   resume?: SavedClass // clase guardada que se retoma (NC-16)
+  finishNow?: boolean // v5.9: «Terminar» desde el Inicio: se abre la clase guardada y se cierra con su informe
 }
 
 export default function App() {
@@ -76,6 +78,7 @@ export default function App() {
   // Exactamente 3 temas favoritos (5.4): a quien venga de una versión anterior con otro número se le piden.
   const [needsFavs, setNeedsFavs] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
+  const notifAsked = useRef(false)
   const tabRef = useRef(tab)
   useEffect(() => {
     tabRef.current = tab
@@ -149,6 +152,8 @@ export default function App() {
             : null,
         })
       }
+      // Restos de un re-test abandonado hace más de un mes (audios incluidos): fuera (AUD-FLU-204).
+      if (p.calibratedAt) expireRetestLeftovers().catch(() => {})
       setStreak(dash.streak)
       setHomework(dash.lastHomework)
       setSettings(s)
@@ -190,7 +195,14 @@ export default function App() {
     if (typeof name !== 'string' || !name.trim()) throw new Error('La copia no tiene un perfil con nombre. Usa "Soy nuevo".')
     await applyBackup(ready)
     await refreshProfile()
-    setSettings((s) => (s ? { ...s, onboarded: true } : s))
+    // AUD-FLU-200: la copia no trae la clave de Gemini. Con clave ya puesta se salta el tutorial (y se GUARDA, antes
+    // se perdía al reiniciar); sin clave, el tutorial sigue y pasa por el paso de la clave.
+    setSettings((s) => {
+      if (!s || !s.geminiKey.trim()) return s
+      const next = { ...s, onboarded: true }
+      saveSettings(next)
+      return next
+    })
     return true
   }, [refreshProfile])
 
@@ -257,14 +269,18 @@ export default function App() {
   const reminderTheme = settings?.theme ?? 'lumi'
   useEffect(() => {
     const today = plan ? todayLesson(plan) : null
-    syncReminders({
+    // AUD-FLU-900: con el recordatorio activado, al arrancar se pide el permiso si Android aún no lo ha decidido
+    // (antes solo se pedía al activar el interruptor, y sin permiso no se programaba nada sin avisar).
+    const ask = reminderOn && !notifAsked.current
+    if (ask) notifAsked.current = true // una vez por sesión: no saltar el diálogo tras cada lección
+    ;(ask ? askNotificationPermission() : Promise.resolve(false)).then(() => syncReminders({
       enabled: reminderOn,
       time: reminderTime,
       lessonTitle: today?.lesson?.titleEs,
       doneToday: plan ? doneToday(plan) : false,
       retestAt,
       theme: reminderTheme,
-    })
+    }))
   }, [reminderOn, reminderTime, plan, retestAt, reminderTheme])
 
   if (bootError) return <RecoveryScreen detail={bootError} />
@@ -282,6 +298,9 @@ export default function App() {
           onClose={() => setPhonAlert(false)}
           onOpenModels={() => {
             setPhonAlert(false)
+            // AUD-FLU-207: en mitad de una clase no se corta (antes se desmontaba sin guardar). La fonética ya está
+            // apagada: la clase sigue solo con Gemini y Ajustes → Modelos se puede abrir al terminar.
+            if (lesson) return
             setLesson(null)
             setSettingsPage('gemini')
             setTab('settings')
@@ -352,6 +371,16 @@ export default function App() {
           t={t}
           update={update}
           registerBack={registerBack}
+          onPause={
+            calibrated
+              ? () => {
+                  // v5.9: re-test en pausa → al Inicio. Se retoma al volver a entrar al re-test (el progreso está guardado).
+                  backHandler.current = null
+                  setRetest(false)
+                  setTab('home')
+                }
+              : undefined
+          }
           onDone={() => {
             backHandler.current = null
             const wasRetest = retest
@@ -410,6 +439,7 @@ export default function App() {
         <ReviewScreen
           settings={settings}
           t={t}
+          update={update}
           registerBack={registerBack}
           onExit={() => {
             backHandler.current = null
@@ -430,6 +460,7 @@ export default function App() {
           customTopic={lesson.customTopic}
           planLesson={lesson.planLesson}
           resume={lesson.resume}
+          finishNow={lesson.finishNow}
           settings={settings}
           t={t}
           update={update}
@@ -466,6 +497,23 @@ export default function App() {
     setPlanOpen(false)
     setLesson({ key: Date.now(), scenarioId: s.scenarioId, categoryId: s.categoryId, customTopic: s.customTopic, planLesson: s.planLesson, resume: s })
   }
+  /** v5.9: terminar la clase guardada sin seguirla, con la misma evaluación que «Terminar» dentro de la clase. */
+  function finishSavedClass() {
+    const s = savedRef.current
+    if (!s) return
+    if (!confirm(`¿Terminar «${s.title}» y ver tu evaluación? Ya no podrás seguirla.`)) return
+    backHandler.current = null
+    setPlanOpen(false)
+    setLesson({
+      key: Date.now(),
+      scenarioId: s.scenarioId,
+      categoryId: s.categoryId,
+      customTopic: s.customTopic,
+      planLesson: s.planLesson,
+      resume: s,
+      finishNow: true,
+    })
+  }
 
   // Preguntas de la mascota encima del Inicio.
   const mascotEl = THEME_INFO[settings.theme].mascot
@@ -477,7 +525,7 @@ export default function App() {
           element={mascotEl}
           mood="thinking"
           title="Tienes una clase en progreso"
-          subtitle={`«${savedClass?.title ?? 'Tu clase'}» quedó a medias. Si empiezas una nueva, se perderá. ¿Continuar?`}
+          subtitle={`«${savedClass?.title ?? 'Tu clase'}» quedó a medias. Si empiezas una nueva, esa se cierra tal como está (lo que hablaste cuenta en tu progreso) y ya no podrás seguirla. ¿Continuar?`}
           primary={{
             label: 'Reanudar la anterior',
             onClick: () => {
@@ -558,6 +606,10 @@ export default function App() {
                 update={update}
                 onStart={start}
                 onGoSettings={() => setTab('settings')}
+                onOpenGoal={() => {
+                  setSettingsPage('goal')
+                  setTab('settings')
+                }}
                 onReview={() => setReview(true)}
                 plan={plan}
                 calibrated={!!calibrated}
@@ -567,6 +619,7 @@ export default function App() {
                 registerBack={registerBack}
                 savedClass={savedClass}
                 onResumeClass={resumeClass}
+                onFinishClass={finishSavedClass}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
@@ -580,6 +633,10 @@ export default function App() {
                 onRetest={() => setRetest(true)}
                 onOpenAbout={() => openAbout('main')}
                 initialPage={settingsPage}
+                onDataReplaced={() => {
+                  loadSaved()
+                  refreshProfile()
+                }}
               />
             )}
           </>

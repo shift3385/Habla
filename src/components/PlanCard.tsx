@@ -23,38 +23,65 @@ interface Props {
   onOpenPlan: () => void
 }
 
+// AUD-RES-703 (v5.8.2): el error se recuerda fuera del componente. Antes vivía en su estado y se perdía al cambiar de
+// pestaña: cada vuelta al Inicio relanzaba la cadena entera de reintentos (5 peticiones) sin que el usuario lo pidiera.
+// Ahora, tras un fallo, solo se vuelve a intentar con «Reintentar», al cambiar de clave o de modelo, o pasado un rato.
+// El fallo se guarda con la operación que falló («create» o «week:N»): si esa operación ya no hace falta (el plan se
+// creó o la semana se preparó desde «Mi plan», o empezó otra semana), el error no vuelve. Y «Reintentar» repite esa
+// misma operación: nunca crea un plan nuevo encima de uno que ya funciona.
+const FAIL_MEMORY_MS = 10 * 60_000
+type Fail = { op: string; sig: string; error: string }
+let lastFail: Fail | null = null
+let forgetTimer = 0
+
 /**
  * "Lección de hoy" en el Inicio (fase 4). Si aún no hay plan lo crea, y si la semana que toca no tiene
  * lecciones las prepara: todo automático, con un estado de carga y un botón de reintentar si falla.
  */
 export default function PlanCard({ settings, plan, calibrated, onPlanChange, onStartLesson, onOpenPlan }: Props) {
   const [busy, setBusy] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [failed, setFailed] = useState<Fail | null>(null)
+  const sig = `${settings.geminiKey}|${settings.geminiModel}|${settings.geminiFallbackModel}`
   const today = plan ? todayLesson(plan) : null
   const needsLessons = !!today && !today.lesson
   const keyReady = !!settings.geminiKey.trim()
+  // Lo que toca hacer ahora mismo; el error solo se enseña si es de esto mismo y con la misma clave y modelos.
+  const op = !plan ? 'create' : needsLessons ? `week:${today!.week.n}` : null
+  const matches = (f: Fail | null) => !!f && f.op === op && f.sig === sig
+  const error = matches(failed)
+    ? failed!.error
+    : matches(lastFail)
+      ? lastFail!.error
+      : null
 
   const run = useCallback(
-    async (label: string, work: () => Promise<StudyPlan>) => {
+    async (label: string, failOp: string, work: () => Promise<StudyPlan>) => {
       setBusy(label)
-      setError(null)
+      setFailed(null)
       try {
         onPlanChange(await work())
+        if (lastFail?.op === failOp) lastFail = null
       } catch (e) {
-        setError(friendlyError(e))
+        const f = { op: failOp, sig, error: friendlyError(e) }
+        lastFail = f
+        // Pasado un rato se olvida y se vuelve a intentar solo al volver al Inicio.
+        clearTimeout(forgetTimer)
+        forgetTimer = window.setTimeout(() => lastFail === f && (lastFail = null), FAIL_MEMORY_MS)
+        setFailed(f)
       } finally {
         setBusy(null)
       }
     },
-    [onPlanChange],
+    [onPlanChange, sig],
   )
 
   const create = useCallback(
-    () => run('Creando tu plan de 12 semanas…', () => createPlan(settings.geminiKey, mainModels(settings))),
+    () => run('Creando tu plan de 12 semanas…', 'create', () => createPlan(settings.geminiKey, mainModels(settings))),
     [run, settings],
   )
   const prepareWeek = useCallback(
-    (n: number) => run(`Preparando las lecciones de la semana ${n}…`, () => ensureWeekLessons(settings.geminiKey, mainModels(settings), n)),
+    (n: number) =>
+      run(`Preparando las lecciones de la semana ${n}…`, `week:${n}`, () => ensureWeekLessons(settings.geminiKey, mainModels(settings), n)),
     [run, settings],
   )
 
@@ -93,7 +120,7 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
           {error}
         </div>
         <button
-          onClick={() => (plan && needsLessons ? prepareWeek(today!.week.n) : create())}
+          onClick={() => (op === 'create' ? create() : prepareWeek(today!.week.n))}
           className="btn-acc mt-2.5 h-10 w-full rounded-[20px] text-sm"
         >
           Reintentar

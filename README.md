@@ -49,7 +49,7 @@ D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 ## 💾 Copias de seguridad (exportar e importar)
 
 - **Exportar:** *Ajustes → Mi perfil y datos → ⬆️ Exportar*. Guarda `habla-backup-AAAA-MM-DD.json` en `Documentos/Habla` (si Android lo permite) y abre "Compartir" para que lo mandes a Drive, a tu correo o al PC.
-- **Importar:** *Ajustes → Mi perfil y datos → ⬇️ Importar* → elige el JSON. **Sustituye** todo el progreso actual por el del archivo.
+- **Importar:** *Ajustes → Mi perfil y datos → ⬇️ Importar* → elige el JSON. Primero se comprueba la copia entera (si está dañada, no se toca nada) y te dice cuántas sesiones y errores trae. **Sustituye** todo el progreso actual por el del archivo, pero antes **guarda sola una copia de lo que tenías** en `Documentos/Habla/habla-antes-de-importar-….json` (desde la 5.9).
 - Las copias **no incluyen tus claves** (ni la de Gemini ni las de Azure). Tampoco entran en las copias automáticas de Android. Después de reinstalar tendrás que pegarlas de nuevo.
 
 Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o reinstalar.
@@ -87,6 +87,8 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 - Antes de la lectura, la escucha y el habla aparece una **pantalla de instrucciones** con lo que hay que hacer. Recomienda **auriculares** para la escucha y **auriculares con micrófono** para el habla, porque mejoran mucho el reconocimiento de voz.
 - Todas las preguntas tienen una opción **«No lo sé»**, con otro estilo: es mejor ser sincero que adivinar. Cuenta como no acertada, pero el profe recibe esos puntos como lagunas reconocidas y les da prioridad en el curso.
 - Al final de cada parte ves un **resumen** con tus respuestas y las correctas. En la audición se muestra la duración del audio y, al revisar, la transcripción por personas.
+- **Pausar y seguir luego** (desde la 5.9): en gramática, en los resúmenes y en el habla hay un botón **⏸ Pausar**. Se guarda todo y puedes cerrar Habla; al volver sigues justo ahí. **Solo se puede pausar una vez por test** (también en el re-test). Si se cierra la app sin pausar, el test también se retoma.
+- En el habla, con la fonética de Azure activa, ves tu **nota de pronunciación** bajo cada tarea, **solo informativa**: no cuenta para tu nivel.
 - Si Gemini falla durante el test, **nada se pierde**: el test queda guardado y la mascota te propone reintentar, **cambiar de modelo** o **cambiar de clave**.
 - El resultado (un nivel por habilidad, el nivel global y tus puntos débiles) adapta al profe: su vocabulario, la velocidad de la voz y lo que te hace practicar.
 - **El nivel no se puede cambiar a mano.** Las lecciones solo **proponen** un cambio; el nivel lo fija el **re-test**, que pesa un **70 % el test y un 30 % tu trayectoria** en las clases. *Ajustes → Mi nivel* muestra la fórmula con tus números, «Nuevo test disponible el …» y un botón para **revalidar el nivel** cuando toca.
@@ -112,10 +114,8 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ### En la clase
 1. Arriba ves la **tarjeta del tema**. Empieza **plegada y brillando** hasta que la abres por primera vez; tócala para ver el objetivo, el resumen y el vocabulario. Las frases largas de la lección van cada una en su caja (inglés y español). Toca las palabras para oírlas.
-2. El botón de hablar funciona como en WhatsApp. Mientras grabas, las ondas se mueven y ves un cronómetro.
-   - **Mantener y soltar:** habla con el dedo en el micrófono; al soltar se envía.
-   - **Deslizar ↑ hasta el candado:** la grabación queda bloqueada, así que puedes soltar el dedo y hablar tranquilo. Toca **➤** para enviar, o la papelera para descartar.
-   - **Deslizar ←:** cancela la grabación sin enviarla.
+2. **Toca para hablar, toca para enviar** (desde la 5.9). Toca el micrófono una vez, habla y vuelve a tocarlo (ahora con **➤**) para enviar. La **papelera** de la izquierda descarta la grabación. Cada respuesta dura como mucho **60 s**: verás «quedan m:ss» (en naranja los últimos 10 s) y al llegar se envía sola.
+   - **El micrófono solo está abierto mientras grabas.** Al entrar a la clase se abre un instante para pedir el permiso y elegir el micro, y se cierra. El punto verde de Android ya no se queda encendido toda la clase.
    - **⌨️ Teclado** (a la derecha del micrófono): cambia a escribir tu respuesta. El icono del micrófono te devuelve a hablar. Las respuestas escritas también se corrigen, pero no cuentan para la velocidad ni las pausas, ni para tu nivel al hablar.
 3. Debajo de tu frase aparecen tus métricas de ese turno: palabras por minuto, número de palabras y pausas de más de 1 s.
 4. Si cometiste errores, debajo de tu frase aparecen **todas las correcciones**: tu frase tachada → la correcta, con una explicación corta. Con la **fonética** activa, ahí mismo ves también tu **nota de pronunciación** (ver abajo).
@@ -127,7 +127,9 @@ Otros controles:
 - **Barra de velocidad**: la velocidad de la voz del profe.
 - **👂 Modo oído**: el texto del profe queda oculto hasta que lo tocas, para entrenar la comprensión auditiva.
 - **🔊 Repetir**: vuelve a escuchar una frase del profe.
-- **Salir a medias:** la clase **queda guardada** y la mascota se despide; al volver (o al abrir la app) te ofrece **continuarla** donde quedó o empezar una nueva. Antes de cerrar la app, la mascota te pregunta.
+- **Salir a medias:** la clase **queda guardada** y la mascota se despide; al volver (o al abrir la app) te ofrece **continuarla** donde quedó o empezar una nueva. Antes de cerrar la app, la mascota te pregunta. En el Inicio, la tarjeta **Clase en progreso** tiene **Continuar** y **Terminar**: Terminar la cierra con su informe, igual que dentro de la clase (5.9). Lo que hablaste en una clase a medias **ya cuenta** para tus minutos de hoy.
+- **Fonética** (botón de la onda, junto a *Modo oído*; solo si tienes clave de Azure): la enciende o la apaga. Al entrar con la fonética activa, la mascota te lo recuerda.
+- **En horizontal**, *¿Qué digo?* flota en la esquina del chat y el micrófono queda siempre a la vista.
 - **Batería:** en segundo plano la app se queda quieta: micrófono, voz y animaciones apagados.
 - **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta. Al salir se cancela lo que el profe estuviera preparando: no hay más reintentos ni respuesta ni voz (una petición que ya salió hacia Google puede contarse igualmente, pero no se reintenta).
 
@@ -144,7 +146,9 @@ Gemini corrige **qué** dices; Azure Speech mide **cómo** lo pronuncias. Las do
 3. Marca el **plan** que tiene tu recurso: F0 (gratis), S0 Batch (≈ $0.18/h) o S0 Pago por uso (≈ $1.30/h). La app **no cambia el plan**: eso se hace en el portal de Azure.
 4. Activa **Usar corrector fonético**. Con el plan F0, al abrir la app se activa sola mientras queden horas.
 
-**Límite de 60 s:** el servicio de Azure solo evalúa audios de hasta 60 s. Con la fonética activa, el botón de hablar muestra **«quedan m:ss»** (en naranja los últimos 10 s) y envía solo al llegar al límite. La grabación se convierte en el teléfono a WAV 16 kHz (unos milisegundos).
+**Dónde funciona** (desde la 5.9): en la clase, las prácticas y los temas, en el **repaso** (comparando con la frase correcta) y en el **test** (solo informativa). En todos esos sitios hay un interruptor **Fonética** para encenderla o apagarla; es el mismo ajuste que aquí.
+
+**Límite de 60 s:** el servicio de Azure solo evalúa audios de hasta 60 s. Desde la 5.9, toda respuesta dura como mucho 60 s (con o sin fonética). La grabación se convierte en el teléfono a WAV 16 kHz (unos milisegundos).
 
 **Plan gratis agotado:** si Azure responde *cuota excedida*, la fonética se apaga hasta el mes siguiente (1 del mes, UTC), sigues con Gemini y la mascota te avisa una vez con lo que costaría un plan de pago. Un simple «demasiadas peticiones» solo se reintenta.
 
@@ -171,8 +175,10 @@ Se recuerda para cada par de auriculares y se cambia en *Ajustes → Profe y voz
 - **Cómo funciona:**
   1. Ves la frase en **español** y la **dices en inglés**. Toca el micrófono para empezar y otra vez para terminar.
   2. El profe te escucha y te dice si está **correcto**, **casi** o **aún no**, con una explicación. Acepta otras formas correctas de decirlo.
-  3. Oyes la respuesta correcta y eliges cuándo volver a verla: **Otra vez / Difícil / Bien / Fácil**. La nota sugerida viene marcada y cada botón muestra el intervalo.
-- El algoritmo **FSRS** programa cada frase justo antes de que la olvides. Como máximo hay 10 frases nuevas por sesión; las de **Otra vez** vuelven al final de la misma sesión.
+  3. Oyes la respuesta correcta y **decides tú cuándo volver a verla**, según lo que te costó: cada botón muestra **cuándo vuelve** (p. ej. «10 min», «9 días») y debajo cómo te salió (**No me salió / Me costó / Bien / Fácil**). Te marco uno según tu respuesta, pero eliges tú; **hace falta elegir para pasar a la siguiente**. La primera vez, la mascota te lo explica.
+  4. **Ya me la sé:** si ya te la sabes de memoria, tócalo y no vuelve al repaso. La encuentras en *Palabras → Ya las sé*, con **Repasar otra vez** si quieres recuperarla.
+- Lo que hablas en el repaso **cuenta para tu meta diaria** y tu racha (5.9).
+- El algoritmo **FSRS** programa cada frase justo antes de que la olvides. Como máximo hay 10 frases nuevas por sesión; las de **No me salió** vuelven al final de la misma sesión.
 
 ### Tu plan de 12 semanas
 Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu nivel, tus puntos débiles, para qué quieres el inglés y tus temas favoritos):
@@ -180,11 +186,12 @@ Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu
 - Cada semana tiene **5 lecciones** que suben de dificultad: descubrir, practicar en situaciones, *role-play* y un reto libre. Cada lección trae una situación, 3 frases útiles (tócalas para oírlas) y una **misión** concreta.
 - Las lecciones de cada semana se preparan cuando esa semana empieza, así se adaptan a cómo vas.
 - **Lección de hoy** en el Inicio: la siguiente sin hacer. Cuenta como hecha cuando respondes al menos 3 veces. Puedes adelantar la semana siguiente o repetir cualquier lección desde **Mi plan**.
-- **Recordatorio diario** (Ajustes → Meta diaria): **tu mascota** te avisa (con su nombre y su imagen) a la hora que elijas, con la lección que toca; si ya la hiciste ese día, no avisa. **Probar el aviso** manda uno de prueba en 5 s. Si Android quitó el permiso de notificaciones, la app te lo dice. En Xiaomi/POCO, activa también *Inicio automático* para Habla, para que el aviso sobreviva a un reinicio.
+- **Recordatorio diario** (Ajustes → Meta diaria): **tu mascota** te avisa (con su nombre y su imagen) a la hora que elijas, con la lección que toca; si ya la hiciste ese día, no avisa. **Probar el aviso** manda uno de prueba en 5 s. Con el recordatorio activado, al abrir la app se pide el permiso de notificaciones si Android aún no lo ha decidido; si lo bloqueó, **tu mascota te avisa en el Inicio** y te lleva a cómo arreglarlo (en Xiaomi/POCO: *Aplicaciones → Administrar aplicaciones → Habla → Notificaciones*, y *Ahorro de batería → Sin restricciones*). Activa también *Inicio automático* para Habla, para que el aviso sobreviva a un reinicio. Los avisos quedan programados para **30 días** aunque no abras la app.
 
 ### Re-test cada 4 semanas
 - Las semanas 4, 8 y 12 son de **repaso** y terminan con el **re-test** de nivel.
 - Cuando toca, aparece un aviso en el Inicio (y una notificación si activaste el recordatorio).
+- Lo puedes **pausar una vez** y seguirlo luego (⏸ Pausar → *Ir al Inicio*); la mascota te recuerda que lo tienes en pausa.
 - El resultado compara **antes → después** en cada habilidad, y tu plan se **adapta**: las semanas que faltan se rehacen con tu nuevo nivel y tus nuevos puntos débiles.
 - El historial de tus tests está en *Ajustes → Mi perfil*.
 
@@ -231,7 +238,7 @@ Abre la versión web en http://localhost:5173 para probar la interfaz. El micró
 ```bash
 npm run apk
 ```
-Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleDebug`. El APK se llama `Habla-v<versión>.apk` (la versión sale de `versionName`) y se copia a la carpeta `apk\` del proyecto, donde se van acumulando las versiones.
+Esto compila la web, la sincroniza con Android (`cap sync`) y ejecuta `gradlew assembleRelease --offline`. El APK se llama `Habla-v<versión>.apk` (la versión sale de `versionName`), va firmado con `keystore/habla.jks` (si falta `keystore/keystore.properties`, el build falla a propósito) y se copia a la carpeta `apk\` del proyecto, donde se van acumulando las versiones. `npm run apk:debug` genera `Habla-v<versión>-debug.apk`: otra app («Habla debug») solo para pruebas, que nunca se reparte.
 
 Antes de cada actualización, sube `version` y `build` en **`version.json`**, en la raíz. Es la única fuente de la versión: la usan el APK (`versionName`/`versionCode`) y la pantalla *Acerca de*. Añade también la entrada de la versión en `src/lib/changelog.ts`, que es lo que se ve en **Novedades**.
 
