@@ -27,6 +27,22 @@ Chromium con la app real (Vite), datos ficticios y red simulada (0 llamadas real
 
 **Fuera de alcance (a propósito):** el dictado del tema del Debate y de Tema libre (`TopicAskPage`) no lleva fonética: es para escribir el tema, no para hablar con el profe. Ya cerraba el micro al terminar.
 
+## Duración de las respuestas del test de nivel (análisis del 2026-10-07)
+Pregunta del dueño: ¿hace falta alargar la grabación en el test para C1/C2, como piden IELTS y Cambridge?
+**Conclusión: no hace falta cambiar nada.** El test nunca tuvo tope de duración y la 5.9 no se lo puso.
+
+| Tarea del banco (`src/bank/speaking/`) | Niveles | Duración recomendada | Modelo de examen |
+|---|---|---|---|
+| 1 · preguntas personales | A1–B1 | 2 × 30 s (60 s) | IELTS Part 1 / Cambridge B1 Part 1 |
+| 2 · tarjeta | B1–B2 | 90 s | IELTS Part 2 / Cambridge B2 First Part 2 |
+| 3 · opinión sencilla | A2–B1 | 60 s | Cambridge A2 Key / B1 Preliminary |
+| 3 · opinión exigente | B2–C2 | 90 s | IELTS Part 3 / Cambridge C1 Advanced Part 4 |
+
+- **Qué piden los exámenes:** IELTS Part 2, de 1 a 2 min (el examinador corta a los 2); IELTS Part 3, discusión de 4–5 min sin tiempo fijo por respuesta; Cambridge C1 Advanced, turno largo de 1 min; Cambridge C2 Proficiency, turno largo de 2 min. Lo máximo que exigen son **2 min seguidos**.
+- **Cómo está la app:** el test graba con su propio botón (`Calibration.tsx`, `toggleRecord`), con un **mínimo de 5 s y sin máximo**. El límite de 60 s de la 5.9 (`MAX_TALK_SECONDS`) solo se aplica a la clase y al repaso. La duración del banco es una recomendación («unos 90 s»), no un corte.
+- **Único límite real:** la nota de pronunciación de Azure en el test analiza solo los primeros 60 s (límite del propio servicio, `wav.ts`). Es informativa y no entra en el nivel.
+- **Si algún día se quisiera ajustar:** subir a 120 s la duración recomendada de la tarea 3 de B2–C2, como el turno largo de C2 Proficiency, sería solo cambiar el texto orientativo del banco. No es obligatorio.
+
 ## Cómo se probó (PC)
 - `npx tsc -b` OK · `npm run lint` 0 errores · `npm test` **39/39** · `node scripts/validate-bank.mjs` OK · `npm run build` OK.
 - **Navegador** (Chromium headless + Vite, origen aislado `rev.localhost`, arnés `docs/correccion/arnes-rev/rev-mic.js` con micro falso y red falsa; Azure simulado con una respuesta válida de Pronunciation Assessment). Capturas en `evidencia-rev/v59-navegador/`.
