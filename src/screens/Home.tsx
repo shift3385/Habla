@@ -161,11 +161,17 @@ export default function Home({
   }, [])
   const azureOn = hasAzure(settings)
   // AUD-FLU-900: recordatorio activado sin permiso de notificaciones → la mascota lo dice (antes fallaba en silencio).
-  const [remindersBlocked, setRemindersBlocked] = useState(false)
+  const [notifDenied, setNotifDenied] = useState(false)
   useEffect(() => {
     if (!settings.reminderOn || !Capacitor.isNativePlatform()) return
-    notificationsGranted().then((ok) => setRemindersBlocked(!ok))
+    const check = () => notificationsGranted().then((ok) => setNotifDenied(!ok))
+    check()
+    // Al volver de los ajustes del teléfono (donde se concede el permiso), se mira otra vez.
+    const onVisible = () => document.visibilityState === 'visible' && check()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [settings.reminderOn])
+  const remindersBlocked = settings.reminderOn && notifDenied
   const tips = useMemo(() => {
     const notices = settings.mascotNotices
       ? buildTips({

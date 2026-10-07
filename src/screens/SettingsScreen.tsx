@@ -50,9 +50,11 @@ interface Props {
   onRetest: () => void
   onOpenAbout: () => void
   initialPage?: SettingsPage | null // p. ej. 'look' desde la tarjeta "…quieren conocerte"
+  /** v5.9: tras importar una copia, App recarga lo que tiene en memoria (clase guardada, perfil, plan). */
+  onDataReplaced?: () => void
 }
 
-export default function SettingsScreen({ settings, update, registerBack, onRetest, onOpenAbout, initialPage }: Props) {
+export default function SettingsScreen({ settings, update, registerBack, onRetest, onOpenAbout, initialPage, onDataReplaced }: Props) {
   const [page, setPage] = useState<Page | null>(initialPage ?? null)
   const [profile, setProfile] = useState<Profile | null>(null)
 
@@ -86,7 +88,12 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
               <ProfileForm submitLabel="Guardar mi perfil" onSaved={(p) => setProfile(p)} />
             </Card>
             <div className="txt-sub mt-1 px-1 text-sm">Mis datos</div>
-            <DataPage onImported={() => getProfile().then(setProfile)} />
+            <DataPage
+              onImported={() => {
+                getProfile().then(setProfile)
+                onDataReplaced?.()
+              }}
+            />
             <button onClick={() => update({ onboarded: false })} className="txt-sub h-10 text-sm underline underline-offset-[3px]">
               Ver la bienvenida otra vez
             </button>
@@ -110,7 +117,12 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
           </>
         )}
         {page === 'diag' && <DiagPage />}
-        {page === 'data' && <DataPage onImported={() => getProfile().then(setProfile)} />}
+        {page === 'data' && <DataPage
+              onImported={() => {
+                getProfile().then(setProfile)
+                onDataReplaced?.()
+              }}
+            />}
       </div>
     )
   }

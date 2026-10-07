@@ -78,7 +78,7 @@ export default function App() {
   // Exactamente 3 temas favoritos (5.4): a quien venga de una versión anterior con otro número se le piden.
   const [needsFavs, setNeedsFavs] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
-  const openModelsAfterLesson = useRef(false)
+  const notifAsked = useRef(false)
   const tabRef = useRef(tab)
   useEffect(() => {
     tabRef.current = tab
@@ -271,7 +271,9 @@ export default function App() {
     const today = plan ? todayLesson(plan) : null
     // AUD-FLU-900: con el recordatorio activado, al arrancar se pide el permiso si Android aún no lo ha decidido
     // (antes solo se pedía al activar el interruptor, y sin permiso no se programaba nada sin avisar).
-    ;(reminderOn ? askNotificationPermission() : Promise.resolve(false)).then(() => syncReminders({
+    const ask = reminderOn && !notifAsked.current
+    if (ask) notifAsked.current = true // una vez por sesión: no saltar el diálogo tras cada lección
+    ;(ask ? askNotificationPermission() : Promise.resolve(false)).then(() => syncReminders({
       enabled: reminderOn,
       time: reminderTime,
       lessonTitle: today?.lesson?.titleEs,
@@ -296,13 +298,9 @@ export default function App() {
           onClose={() => setPhonAlert(false)}
           onOpenModels={() => {
             setPhonAlert(false)
-            // AUD-FLU-207: en mitad de una clase no se corta sin más: se sale como con «atrás» (la clase queda
-            // guardada, con su despedida) y, al salir, se abre Ajustes → Modelos.
-            if (lesson && backHandler.current) {
-              openModelsAfterLesson.current = true
-              backHandler.current()
-              return
-            }
+            // AUD-FLU-207: en mitad de una clase no se corta (antes se desmontaba sin guardar). La fonética ya está
+            // apagada: la clase sigue solo con Gemini y Ajustes → Modelos se puede abrir al terminar.
+            if (lesson) return
             setLesson(null)
             setSettingsPage('gemini')
             setTab('settings')
@@ -470,11 +468,6 @@ export default function App() {
             backHandler.current = null
             setLesson(null)
             setTab('home')
-            if (openModelsAfterLesson.current) {
-              openModelsAfterLesson.current = false
-              setSettingsPage('gemini')
-              setTab('settings')
-            }
             refreshProfile() // lección del plan hecha, nivel por la práctica…
             loadSaved() // ¿quedó guardada para continuar?
           }}
@@ -640,6 +633,10 @@ export default function App() {
                 onRetest={() => setRetest(true)}
                 onOpenAbout={() => openAbout('main')}
                 initialPage={settingsPage}
+                onDataReplaced={() => {
+                  loadSaved()
+                  refreshProfile()
+                }}
               />
             )}
           </>

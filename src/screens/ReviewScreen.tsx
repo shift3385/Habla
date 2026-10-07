@@ -65,6 +65,8 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   const [stats, setStats] = useState({ done: 0, correct: 0 })
   // v5.9: nota de Azure de la frase (la referencia es la respuesta correcta). null = sin fonética.
   const [pron, setPron] = useState<PronResult | string | 'pending' | null>(null)
+  // Cada intento tiene su número: una nota de Azure que llega tarde (de la frase anterior) no se pinta en esta.
+  const pronTry = useRef(0)
   const recorder = useRef(new Recorder())
   const recStart = useRef(0)
 
@@ -125,8 +127,9 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     if (analysis?.hasSpeech !== false) addPracticeSeconds(analysis?.speechSeconds ?? seconds)
     // v5.9: con la fonética activa, Azure puntúa la frase en paralelo (referencia: la respuesta correcta).
     const job = seconds >= 0.8 && analysis?.hasSpeech !== false ? runPhonetics(settings, update, blob, async () => card.answerEn) : null
+    const mine = ++pronTry.current
     setPron(job ? 'pending' : null)
-    job?.then((r) => setPron(r))
+    job?.then((r) => pronTry.current === mine && setPron(r))
     if (seconds < 0.8 || (analysis && !analysis.hasSpeech)) {
       setError('No te he oído. Inténtalo otra vez.')
       setStep('ask')
@@ -188,6 +191,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
 
   const dontKnow = () => {
+    pronTry.current++
     setPron(null)
     // AUD-MIC-302: «No lo sé» durante la apertura del micro la cancela; si no, al abrir pisaría el resultado.
     if (recorder.current.isOpening) recorder.current.close()
@@ -198,6 +202,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }
 
   const grade = async (g: Grade) => {
+    pronTry.current++
     setPron(null)
     await reviewCard(card, g)
     const ok = result !== 'unknown' && result?.verdict === 'correct'
@@ -213,6 +218,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
   /** «Ya me la sé»: sale del repaso (se recupera en Palabras → Ya las sé) y se pasa a la siguiente. */
   const known = async () => {
+    pronTry.current++
     setPron(null)
     await archiveCard(card)
     setStats((s) => ({ done: s.done + 1, correct: s.correct + (result !== 'unknown' && result?.verdict === 'correct' ? 1 : 0) }))

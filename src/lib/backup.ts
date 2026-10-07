@@ -4,6 +4,7 @@ import { Share } from '@capacitor/share'
 import { BACKUP_FORMAT, BACKUP_VERSION, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
 import { db, TABLES } from './db'
 import { clearSavedClass } from './savedClass'
+import { resetPracticeSeconds } from './stats'
 import { clearDraft, clearProgress } from './testDraft'
 
 // Copia de seguridad en JSON de todo el progreso (IndexedDB).
@@ -109,7 +110,8 @@ export async function applyBackup(ready: ReadyBackup): Promise<ImportSummary> {
   // la equivocada. Si no se puede guardar, no se importa.
   let safetyCopy: string | undefined
   if (Capacitor.isNativePlatform()) {
-    const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')
+    // Con segundos y milisegundos: dos importaciones seguidas no pisan la copia de lo que había al principio.
+    const stamp = new Date().toISOString().slice(0, 23).replace(/[-:T.]/g, '')
     const fileName = `habla-antes-de-importar-${stamp}.json`
     try {
       await Filesystem.writeFile({
@@ -137,6 +139,7 @@ export async function applyBackup(ready: ReadyBackup): Promise<ImportSummary> {
   }
   // AUD-FLU-219: la clase guardada y los borradores del test apuntaban a sesiones de ANTES de importar: fuera.
   await Promise.all([clearSavedClass().catch(() => {}), clearDraft(), clearProgress()])
+  resetPracticeSeconds() // los minutos del repaso eran de los datos de antes
   return { ...ready.summary, safetyCopy }
 }
 

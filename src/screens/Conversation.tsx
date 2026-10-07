@@ -105,7 +105,8 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   useEffect(() => {
     const el = ctrlRef.current
     if (el && el.scrollHeight > el.clientHeight) el.scrollTop = el.scrollHeight
-  })
+    // Solo al cambiar de fase o de modo: así las ideas de «¿Qué digo?» no se esconden solas al abrirlas.
+  }, [phase, inputMode])
   // v5.9 (nota del dueño): con la fonética activa, al entrar la mascota recuerda que se puede apagar o encender.
   const [phonTip, setPhonTip] = useState(() => phoneticsActive(settings) && !finishNow)
   useEffect(() => {
@@ -459,7 +460,18 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     })()
   }
 
+  // v5.9: con «toca para enviar», un segundo toque mientras se cierra la grabación no vuelve a enviar.
+  const sending = useRef(false)
   const onRelease = async () => {
+    if (sending.current) return
+    sending.current = true
+    try {
+      await releaseOnce()
+    } finally {
+      sending.current = false
+    }
+  }
+  const releaseOnce = async () => {
     await starting.current
     haptic(ImpactStyle.Light)
     // v5.9 (AUD-MIC-305): al enviar se suelta el micrófono; se vuelve a abrir en el siguiente toque.
