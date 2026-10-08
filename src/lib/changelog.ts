@@ -22,6 +22,7 @@ export const RELEASES: Release[] = [
     title: 'Toca para hablar, tú decides el repaso y tu fonética en todas partes',
     added: [
       'Toca el micro para hablar y tócalo otra vez para enviar: ya no hay que mantenerlo pulsado. Cada respuesta dura como mucho 60 s y la papelera la descarta',
+      'Icono nuevo: «la H que habla», una H cuyo puente es una onda de voz (también en los iconos temáticos de Android 13+)',
       'Un anillo alrededor del micro cuenta tus 60 s: se vacía como un reloj y se pone naranja en los últimos 10 s y rojo en los últimos 5',
       'Mientras hablas, las barras junto al micro siguen tu voz de verdad: suben cuando hablas y se quedan quietas en silencio',
       'Tu profe es tu mascota: Gota, Chispa, Musgo o Brisa te dan la clase. Emma y Leo pasan a ser las voces (americana y británica)',
