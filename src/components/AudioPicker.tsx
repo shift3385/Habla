@@ -1,6 +1,6 @@
 import { App as CapApp } from '@capacitor/app'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { applyAudioMode, audioState, AUDIO_MODES, onAudioDevicesChanged, type AudioMode, type AudioState } from '../lib/audioRoute'
+import { applyAudioMode, audioState, AUDIO_MODES, forgetHeadsetCheck, onAudioDevicesChanged, type AudioMode, type AudioState } from '../lib/audioRoute'
 import { onMicOpened, setMicMode } from '../lib/recorder'
 import type { Settings } from '../lib/settings'
 import { Icon } from '../ui/icons'
@@ -33,6 +33,7 @@ export default function AudioPicker({ settings, update }: Props) {
     // El selector se monta de nuevo al cambiar de pantalla: no se reaplica lo mismo cada vez.
     if (!force && mode === lastApplied) return true
     lastApplied = mode
+    forgetHeadsetCheck() // otros auriculares, o vuelta del segundo plano: se comprueba otra vez en la próxima clase
     if (mode === 'none') {
       onMicOpened(null)
       setMicMode('auto')

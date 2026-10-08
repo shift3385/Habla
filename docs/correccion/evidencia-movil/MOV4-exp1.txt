@@ -1,0 +1,27 @@
+0 inicio: 23122PCD1G/1 modo=0
+52 reposo: 23122PCD1G/1 modo=0
+1063 setRoute headset → ok=false
+1076 A ruta: 23122PCD1G/1 modo=3
+1367 A ruta: soundcore Liberty 4 Pro/7 modo=3
+6293 B gUM defecto: abierto en 134 ms · "" · ruta soundcore Liberty 4 Pro/7 modo=3
+6301 B gUM defecto: primera señal -1 ms · pico 0.0000 · ruta soundcore Liberty 4 Pro/7 modo=3
+11351 B gUM defecto: cerrado
+11361 B gUM defecto tras cerrar: soundcore Liberty 4 Pro/7 modo=3
+11779 B gUM defecto tras cerrar: soundcore Liberty 4 Pro/7 modo=0
+11893 B gUM defecto tras cerrar: 23122PCD1G/1 modo=0
+14003 entradas: =defaul | Speakerphone=16b68e | Headset earpiece=a24c5a | Bluetooth headset=1168ee
+14016 D reposo: 23122PCD1G/1 modo=0
+15076 D gUM deviceId BT (sin plugin): abierto en 230 ms · "Bluetooth headset" · ruta 23122PCD1G/1 modo=3
+15163 D gUM deviceId BT (sin plugin): primera señal -1 ms · pico 0.0000 · ruta soundcore Liberty 4 Pro/7 modo=3
+20219 D gUM deviceId BT (sin plugin): cerrado
+20233 D gUM deviceId BT (sin plugin) tras cerrar: soundcore Liberty 4 Pro/7 modo=3
+21650 D gUM deviceId BT (sin plugin) tras cerrar: soundcore Liberty 4 Pro/7 modo=0
+21763 D gUM deviceId BT (sin plugin) tras cerrar: soundcore Liberty 4 Pro/7 modo=3
+22843 setRoute headset → ok=true
+22853 E ruta: soundcore Liberty 4 Pro/7 modo=3
+26811 E ruta: 23122PCD1G/1 modo=0
+27160 E gUM deviceId BT (con plugin): abierto en 248 ms · "Bluetooth headset" · ruta 23122PCD1G/1 modo=3
+27224 E gUM deviceId BT (con plugin): primera señal -1 ms · pico 0.0000 · ruta soundcore Liberty 4 Pro/7 modo=3
+32251 E gUM deviceId BT (con plugin): cerrado
+32261 E gUM deviceId BT (con plugin) tras cerrar: soundcore Liberty 4 Pro/7 modo=3
+36009 fin: soundcore Liberty 4 Pro/7 modo=0

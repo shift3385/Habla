@@ -1,0 +1,4 @@
+3 ms: ¡Hola de nuevo! | Dejamos una clase a medias: «Music» (1 respuesta, jueves, 09:50). ¿La segu
+153 ms: Conectando tus auriculares… | Un momento: compruebo que te oigo bien por su micrófono. | Salir
+2873 ms: Tus auriculares no me envían tu voz | Su micrófono no le da sonido a Habla. Me sigues oyendo
+botones: Salir de la clase | Hablar al teléfono

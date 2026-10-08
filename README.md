@@ -158,6 +158,8 @@ Al conectar unos auriculares (o al abrir Habla con ellos puestos) aparece un sel
 - **Escucho por los auriculares, hablo al teléfono**: la voz del profe suena con mejor calidad; habla cerca del teléfono.
 - **Todo por el teléfono**: altavoz y micrófono del teléfono.
 
+- **Comprobación al entrar en clase** (desde la 5.9): con *Todo por los auriculares*, tu mascota muestra «Conectando tus auriculares…» (solo deja salir) y comprueba en 1–3 s que su micrófono le envía audio. Si no llega nada (hay auriculares cuyo micrófono no funciona con algunos teléfonos), te avisa: sigues oyendo al profe por los auriculares y hablas al teléfono. Lo vuelve a comprobar al reconectarlos o al volver a abrir Habla.
+
 Se recuerda para cada par de auriculares y se cambia en *Ajustes → Profe y voz → Audio con auriculares*. Al salir de la app, el audio del teléfono vuelve a la normalidad.
 
 ### Palabras (consultas en contexto)

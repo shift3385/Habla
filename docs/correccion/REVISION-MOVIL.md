@@ -60,11 +60,12 @@ Sesión del PC, 2026-10-07. Revisor: sesión principal (sin subagente `movil`). 
 - **Obtenido:** release en clase en reposo, 145 % de un núcleo (app) + 37 % (renderer). Con el brillo y la mascota parados: 1 %.
 - **Arreglo:** (1) el brillo de la tarjeta del tema es una capa aparte que solo cambia de opacidad, titila 4 veces y se queda fijo (antes `box-shadow` infinito sobre un elemento con `backdrop-filter`); (2) la clase tiene una sola mascota (petición del dueño); (3) mascota en reposo a 8 fps y, tras 10 s sin nada, modo descanso a 2 fps (`Mascot.tsx`: `IDLE_MS`, `REST_AFTER_MS`, `REST_MS`).
 
-### MOV-4 · ALTA · Con «Todo por los auriculares», el micro Bluetooth graba silencio y la clase tarda ~9 s en grabar — ABIERTA
+### MOV-4 · ALTA · Con «Todo por los auriculares», el micro Bluetooth graba silencio y la clase tarda ~9 s en grabar — CORREGIDA (falta probar cable y otra marca BT)
 - **Pasos:** auriculares soundcore Liberty 4 Pro conectados (A2DP), Ajustes → Profe y voz → Audio con auriculares → «Todo por los auriculares» (permiso Dispositivos cercanos concedido) → entrar en clase → tocar para hablar.
 - **Obtenido:** al entrar en clase, la apertura de cortesía del micro (pedir permiso y elegirlo) dura ~14 s: el micro BT da silencio, `looksMuted` espera ~6 s y `fallback()` abre el del teléfono («Speakerphone»). Al tocar para hablar: ~9 s hasta `rec start`, y graba con el micro del teléfono; un segundo toque en esos segundos no envía (aún no graba). `HablaAudio`: `setCommunicationDevice(soundcore…) = true · ahora: 23122PCD1G tipo 1` (la ruta no se queda en el BT).
 - **Esperado:** grabar con el micro de los auriculares al momento; la apertura de cortesía cerrada en < 1 s.
 - **Propuesta del dueño:** mientras se conectan los auriculares, una pantalla de la mascota («Conectando tus auriculares…») que solo deje salir de la clase. Más el arreglo de fondo de la ruta SCO (`AudioRoutePlugin`).
+- **Diagnóstico y solución (2026-10-08):** ver [MOV-4-auriculares.md](MOV-4-auriculares.md). El micro de los soundcore no entrega audio a este teléfono ni en nativo (0 muestras); Habla lo detecta ahora en ~2,7 s con la pantalla «Conectando tus auriculares…», avisa y pasa a hablar al teléfono; grabar tarda 0,3 s (antes ~9 s).
 
 ### MOV-5 · MEDIA · La racha se rompe si ese día solo hubo una clase a medias — CORREGIDA
 - **Obtenido:** release, 2026-10-08: «0 días» tras hablar el 7 en una clase que quedó a medias (R21). `loadDashboard` solo contaba días con clases terminadas o minutos de repaso, aunque la 5.9 ya suma a los minutos de hoy lo hablado en una clase a medias (AUD-E2E-603).

@@ -48,6 +48,7 @@ export const RELEASES: Release[] = [
       'Si sales de la app mientras grabas, al volver ya no parece que sigues grabando: tu mascota te dice que la grabación se cortó',
       'Tu racha ya no se rompe si ese día hablaste en una clase que dejaste a medias',
       'Test: la audición dice «duración 1 min 20 s»',
+      'Con «Todo por los auriculares», al entrar en clase tu mascota comprueba en 1–3 s que su micrófono te envía la voz. Si no llega nada, te lo dice y hablas al teléfono mientras sigues oyendo por los auriculares; antes tardaba unos 9 s en empezar a grabar en cada toque',
     ],
   },
   {

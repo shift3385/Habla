@@ -1,0 +1,17 @@
+1765 abierto: "" · {"autoGainControl":false,"channelCount":1,"deviceId":"default","echoCancellation":false,"groupId":"c1a0c387c26dea594396177d37f2e933c7b2ca8733e52180ec76c3eccba3ee0d","latency":0.04,"noiseSuppression":false,"sampleRate":48000,"sampleSize":16,"voiceIsolation":false}
+2318 pico 0.0000
+2830 pico 0.0000
+3353 pico 0.0001
+3879 pico 0.0002
+4382 pico 0.0002
+4884 pico 0.0000
+5386 pico 0.0002
+5887 pico 0.0000
+6413 pico 0.0006
+6933 pico 0.0039
+7448 pico 0.0021
+7965 pico 0.0081
+8482 pico 0.0023
+8995 pico 0.0019
+9520 pico 0.0032
+10041 pico 0.0004

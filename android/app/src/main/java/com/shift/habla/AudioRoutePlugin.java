@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
+import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -195,6 +198,23 @@ public class AudioRoutePlugin extends Plugin {
         call.resolve(r);
     }
 
+    /** Pide `target` como dispositivo de comunicación y espera hasta `ms` a que Android lo haga efectivo. */
+    private boolean waitRoute(AudioDeviceInfo target, long ms) {
+        if (Build.VERSION.SDK_INT < 31) return false;
+        try {
+            am.setCommunicationDevice(target);
+            long end = System.currentTimeMillis() + ms;
+            while (System.currentTimeMillis() < end) {
+                AudioDeviceInfo now = am.getCommunicationDevice();
+                if (now != null && now.getId() == target.getId()) return true;
+                Thread.sleep(50);
+            }
+        } catch (Exception e) {
+            Log.w("HablaAudio", "waitRoute: " + e.getMessage());
+        }
+        return false;
+    }
+
     /** route: "headset" (hablar y escuchar por los auriculares) o "phone" (todo por el teléfono / normal). */
     @PluginMethod
     public void setRoute(PluginCall call) {
@@ -217,12 +237,24 @@ public class AudioRoutePlugin extends Plugin {
                         call.reject("No hay auriculares con micrófono disponibles");
                         return;
                     }
-                    boolean ok = am.setCommunicationDevice(pick);
-                    AudioDeviceInfo now = am.getCommunicationDevice();
-                    Log.i("HablaAudio", "setCommunicationDevice(" + pick.getProductName() + " tipo " + pick.getType() + ") = " + ok
-                        + " · ahora: " + (now == null ? "ninguno" : now.getProductName() + " tipo " + now.getType()) + " · modo " + am.getMode());
-                    r.put("ok", ok && now != null && now.getId() == pick.getId());
-                    r.put("device", dev(pick));
+                    // MOV-4: setCommunicationDevice es ASÍNCRONO (antes se comprobaba al instante y daba «falló» aunque
+                    // la ruta llegaba ~0,3 s después). Se espera a que sea efectiva, como el WebRTC de Google
+                    // (AppRTCBluetoothManager: 4 s y 2 intentos). Fuera del hilo de los plugins para no bloquearlos.
+                    final AudioDeviceInfo target = pick;
+                    new Thread(() -> {
+                        long t0 = System.currentTimeMillis();
+                        boolean ok = waitRoute(target, 2000) || waitRoute(target, 2000);
+                        AudioDeviceInfo now = am.getCommunicationDevice();
+                        Log.i("HablaAudio", "ruta auriculares " + (ok ? "lista" : "NO lista") + " en " + (System.currentTimeMillis() - t0) + " ms · "
+                            + target.getProductName() + " tipo " + target.getType() + " · ahora: "
+                            + (now == null ? "ninguno" : now.getProductName() + " tipo " + now.getType()) + " · modo " + am.getMode());
+                        r.put("ok", ok);
+                        r.put("ms", System.currentTimeMillis() - t0);
+                        r.put("device", dev(target));
+                        r.put("state", describe());
+                        call.resolve(r);
+                    }).start();
+                    return;
                 } else {
                     am.startBluetoothSco();
                     am.setBluetoothScoOn(true);
@@ -243,5 +275,77 @@ public class AudioRoutePlugin extends Plugin {
         } catch (Exception e) {
             call.reject("No se pudo cambiar el audio: " + e.getMessage());
         }
+    }
+
+    /**
+     * MOV-4 · ¿llega audio del micro de los auriculares? Lee `ms` milisegundos con AudioRecord (VOICE_COMMUNICATION,
+     * 16 kHz, como una app de llamadas) desde el micro pedido ("bt" o "phone") SIN bloquear, y cuenta las muestras
+     * que entrega Android. Un micro vivo entrega ~16 000 muestras por segundo aunque sea silencio (los auriculares con
+     * cancelación de ruido mandan ceros exactos si no hablas: por eso no basta con mirar el volumen). Un micro
+     * Bluetooth muerto no entrega NADA (medido con unos soundcore Liberty 4 Pro en el POCO, 2026-10-08).
+     * Solo cuenta muestras y picos: el audio no se guarda ni sale de aquí.
+     */
+    @PluginMethod
+    public void checkMic(PluginCall call) {
+        final String which = call.getString("device", "bt");
+        final int ms = Math.max(500, Math.min(15000, call.getInt("ms", 1200)));
+        new Thread(() -> {
+            AudioRecord rec = null;
+            try {
+                int rate = 16000;
+                int min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+                rec = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, rate, AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT, Math.max(min, rate));
+                AudioDeviceInfo want = null;
+                for (AudioDeviceInfo d : am.getDevices(AudioManager.GET_DEVICES_INPUTS)) {
+                    boolean bt = d.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
+                        || (Build.VERSION.SDK_INT >= 31 && d.getType() == AudioDeviceInfo.TYPE_BLE_HEADSET);
+                    if ("bt".equals(which) ? bt : d.getType() == AudioDeviceInfo.TYPE_BUILTIN_MIC) { want = d; break; }
+                }
+                if (want != null) rec.setPreferredDevice(want);
+                rec.startRecording();
+                short[] buf = new short[rate / 20];
+                JSArray peaks = new JSArray();
+                long t0 = System.currentTimeMillis();
+                long end = t0 + ms;
+                long slot = t0 + 500;
+                int peak = 0;
+                int maxPeak = 0;
+                long frames = 0;
+                while (System.currentTimeMillis() < end) {
+                    int n = rec.read(buf, 0, buf.length, AudioRecord.READ_NON_BLOCKING);
+                    if (n > 0) {
+                        frames += n;
+                        for (int i = 0; i < n; i++) peak = Math.max(peak, Math.abs((int) buf[i]));
+                    } else Thread.sleep(20);
+                    if (System.currentTimeMillis() >= slot) {
+                        peaks.put(Math.round(peak / 32.768) / 1000.0);
+                        maxPeak = Math.max(maxPeak, peak);
+                        peak = 0;
+                        slot += 500;
+                    }
+                }
+                maxPeak = Math.max(maxPeak, peak);
+                long expected = (long) rate * (System.currentTimeMillis() - t0) / 1000;
+                AudioDeviceInfo routed = rec.getRoutedDevice();
+                JSObject r = new JSObject();
+                r.put("frames", frames);
+                r.put("expected", expected);
+                // Vivo: entrega al menos un tercio de lo esperado (el micro tarda unos cientos de ms en arrancar) o da voz.
+                r.put("alive", frames * 3 >= expected || maxPeak > 0);
+                r.put("peak", Math.round(maxPeak / 32.768) / 1000.0);
+                r.put("asked", want == null ? "ninguno" : want.getProductName() + " tipo " + want.getType());
+                r.put("routed", routed == null ? "ninguno" : routed.getProductName() + " tipo " + routed.getType());
+                r.put("peaks", peaks);
+                call.resolve(r);
+            } catch (Exception e) {
+                call.reject("checkMic: " + e.getMessage());
+            } finally {
+                if (rec != null) {
+                    try { rec.stop(); } catch (Exception ignored) { }
+                    rec.release();
+                }
+            }
+        }).start();
     }
 }

@@ -53,6 +53,17 @@ export function onMicOpened(fn: (() => Promise<void>) | null) {
   afterOpen = fn
 }
 
+export const getMicMode = () => micMode
+
+/**
+ * MOV-4: la comprobación nativa (audioRoute.verifyHeadsetMic) confirmó que el micro de los auriculares entrega audio.
+ * Ya no se mide la señal al abrir: los auriculares con cancelación de ruido mandan ceros exactos mientras no hablas,
+ * y esos ceros se tomaban por «micro mudo» (6 s de espera y cambio al micro del teléfono).
+ */
+export function trustDefaultMic() {
+  defaultOk = true
+}
+
 /** Cambia cómo se abre el micrófono (lo llama el selector de audio). Se aplica en la próxima grabación. */
 export function setMicMode(mode: MicMode) {
   if (mode === micMode) return
@@ -215,7 +226,9 @@ export class Recorder {
       this.label = stream.getAudioTracks()[0]?.label || 'default'
       await afterOpen?.().catch(() => {})
       if (cancelled()) return false
-      const measure = micMode === 'headset' ? !defaultOk : micMode !== 'split' && !chosen && !defaultOk
+      // MOV-4: en modo auriculares, si ya se eligió otro micro (`chosen`) tampoco se vuelve a medir: antes cada toque
+      // repetía la espera de 5 s y otra alternativa (~9 s hasta grabar).
+      const measure = micMode === 'headset' ? !defaultOk && !chosen : micMode !== 'split' && !chosen && !defaultOk
       if (!measure) return true
       // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
       const ok = await hasSignal(stream, micMode === 'headset' ? 5000 : 2000, cancelled)

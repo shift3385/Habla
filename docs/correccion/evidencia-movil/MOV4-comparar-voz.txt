@@ -1,0 +1,4 @@
+1 nativo BT (pedido soundcore Liberty 4 Pro tipo 7 · usado soundcore Liberty 4 Pro tipo 7): 0.000
+3 WebView BT (""): 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+2 nativo teléfono (pedido 23122PCD1G tipo 15 · usado 23122PCD1G tipo 15): 0.000 0.000 0.000 0.004 0.000 0.000 0.000 0.003 0.000 0.000 0.010 0.001
+4 WebView teléfono ("Speakerphone"): 0.007 0.013 0.020 0.014 0.000 0.020 0.021 0.010 0.003 0.000 0.000 0.016

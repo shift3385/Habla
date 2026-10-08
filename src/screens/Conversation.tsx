@@ -14,7 +14,8 @@ import { levelIdx, updateTrajectoryFromPractice, type TrajectoryChange } from '.
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
 import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
-import { MicError, Recorder } from '../lib/recorder'
+import { getMicMode, MicError, onMicOpened, Recorder, setMicMode, trustDefaultMic } from '../lib/recorder'
+import { applyAudioMode, verifyHeadsetMic } from '../lib/audioRoute'
 import { getScenario } from '../lib/scenarios'
 import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
 import { fastModels, mainModels, type Settings } from '../lib/settings'
@@ -73,6 +74,9 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
   const scenario = getScenario(scenarioId)
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
+  // MOV-4: con «Todo por los auriculares», al entrar se comprueba que su micro entregue audio (propuesta del dueño:
+  // pantalla de la mascota que solo deja salir mientras se conectan). 'dead' → aviso y micro del teléfono.
+  const [audioCheck, setAudioCheck] = useState<'checking' | 'dead' | null>(null)
   const [turns, setTurns] = useState<Turn[]>([])
   const [topic, setTopic] = useState<Topic | undefined>()
   // La tarjeta del objetivo empieza plegada y brilla hasta que la abres por primera vez.
@@ -317,6 +321,20 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     const rec = recorder.current
     ;(async () => {
       try {
+        if (!(resume && finishNow) && getMicMode() === 'headset') {
+          setAudioCheck('checking')
+          const result = await verifyHeadsetMic()
+          if (gone()) return
+          if (result === 'ok') trustDefaultMic()
+          if (result === 'dead') {
+            // Como Twilio AudioSwitch cuando el Bluetooth falla: se vuelve a una ruta que funciona. Sigues oyendo al
+            // profe por los auriculares (sin «modo llamada», con mejor calidad) y hablas al micro del teléfono.
+            onMicOpened(null)
+            setMicMode('split')
+            await applyAudioMode('none')
+          }
+          setAudioCheck(result === 'dead' ? 'dead' : null)
+        }
         // Al entrar se abre una vez para pedir el permiso y elegir el micro (auriculares…), y se cierra en seguida:
         // v5.9 (AUD-MIC-305), el micro solo se abre cuando tocas para hablar. Para terminar la clase no hace falta.
         if (!(resume && finishNow)) await rec.open()
@@ -662,6 +680,47 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   // Vocabulario del tema o frases de la lección del plan (tócalas para oírlas).
   const chips = topic?.vocab ?? planInfo?.lesson.phrases ?? []
+
+  if (audioCheck === 'checking' && !bye) {
+    return (
+      <MascotPage
+        element={mascotEl}
+        mood="listening"
+        title="Conectando tus auriculares…"
+        subtitle="Un momento: compruebo que te oigo bien por su micrófono."
+        secondary={{ label: 'Salir de la clase', onClick: () => leave() }}
+      >
+        <div className="flex flex-col items-center gap-4 pt-2">
+          <span className="btn-acc grid h-16 w-16 place-items-center rounded-full" style={{ animation: 'hb-pulse 1.6s ease-in-out infinite' }}>
+            <Icon name="headphones" size={28} />
+          </span>
+          <div className="flex gap-1.5" aria-hidden>
+            {[0, 0.2, 0.4].map((d) => (
+              <span key={d} className="h-[7px] w-[7px] rounded-full" style={{ background: 'var(--tx)', animation: `hb-dot 1.2s ${d}s infinite` }} />
+            ))}
+          </div>
+        </div>
+      </MascotPage>
+    )
+  }
+
+  if (audioCheck === 'dead' && !bye) {
+    return (
+      <MascotPage
+        element={mascotEl}
+        mood="thinking"
+        title="Tus auriculares no me envían tu voz"
+        subtitle="Su micrófono no le da sonido a Habla. Me sigues oyendo por los auriculares; tú háblale al teléfono, cerca de la boca."
+        primary={{ label: 'Hablar al teléfono', onClick: () => setAudioCheck(null) }}
+        secondary={{ label: 'Salir de la clase', onClick: () => leave() }}
+      >
+        <div className="tip-bubble mx-auto max-w-sm rounded-2xl px-4 py-3 text-[13.5px]">
+          Si quieres usar su micrófono, prueba a quitártelos y ponértelos, o a reconectarlos desde el Bluetooth del teléfono.
+          Lo volveré a comprobar cuando los reconectes o vuelvas a abrir Habla.
+        </div>
+      </MascotPage>
+    )
+  }
 
   if (bye) {
     return (
