@@ -9,6 +9,18 @@ Eres director creativo y desarrollador de motion graphics con Remotion. Vas a pr
 
 Antes de escribir código usa `/remotion-best-practices`. Para dudas de la API, `/remotion-docs`.
 
+### Inventario de `public/` (todo ya está en `D:\My Apps\habla-promo\public\`)
+| Archivo | Qué es |
+|---|---|
+| `logo-habla.svg` | Logo «La H que habla» en vector (piezas con id para animar) |
+| `icono-habla.png`, `icono-habla-redondo.png` | Icono de la app tal como se ve en el teléfono (192 px) |
+| `mascotas/mascot_{gota,chispa,musgo,brisa}.png` | Las 4 mascotas |
+| `voz-liomar-1-es.mp3` (7,3 s) | Voz de Liomar: «Yo también entendía inglés… pero me quedaba callado. Por eso creé Habla.» |
+| `voz-liomar-2-en.mp3` (3,1 s) | Voz de Liomar: «Now it's your turn. Say your first sentence.» |
+| `referencias/*.png` | Capturas reales de la app (solo como guía visual: Inicio, clase, informe, repaso, prueba de sonido, anillo y barras del micro) |
+
+Falta (si no está, deja `// TODO` y que el vídeo funcione sin ello): `musica.mp3` y los efectos de sonido.
+
 ## 1. La gran idea: «La onda que faltaba»
 Todo el vídeo gira alrededor de **una forma de onda de voz** (como la de un audio de WhatsApp):
 
@@ -91,7 +103,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 
 - **Estilo:** tarjetas de cristal (fondo translúcido con borde suave), globos de consejo teñidos del color del tema, brillo suave en la tarjeta destacada, botones redondeados tipo píldora.
 - **Mascotas:**
-  - PNG en `D:\My Apps\HABLA\android\app\src\main\res\drawable-nodpi\mascot_{gota,chispa,musgo,brisa}.png` → cópialos a `public/`.
+  - PNG ya copiados en `public/mascotas/mascot_{gota,chispa,musgo,brisa}.png`.
   - La mascota animada de la app (`src/ui/Mascot.tsx`) es un SVG tipo *slime* de 16 puntos: ojos que siguen el dedo, se estira y tiene un secreto a los 5 toques. Si la portas, **hazla determinista con `useCurrentFrame()`**: nada de `requestAnimationFrame` ni `Math.random()` sin semilla (usa `random('semilla')` de Remotion).
   - Estados de ánimo: idle, listening, thinking, speaking y happy.
 - **Logo / icono de la app: «La H que habla»** (elegido por el dueño, 5.9):
