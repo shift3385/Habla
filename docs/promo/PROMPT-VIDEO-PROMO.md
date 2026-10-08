@@ -21,6 +21,43 @@ La onda es el hilo conductor visual: aparece en cada escena, en transiciones (wi
 
 **Tono:** cálido, valiente, con humor ligero. Nada de «aprende inglés en 7 días». La promesa honesta es: *«Por fin, a hablar.»*
 
+## 1 bis. El arco emocional (lo más importante de todo)
+La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y luego **se ve capaz**. Diseña cada segundo para recorrer este arco:
+
+1. **Herida (0–6 s), reconocerse:**
+   - Antes del primer texto, tres flashes de 1 s, en silencio total y en planos ilustrados, cálidos y sin caras concretas:
+     - una entrevista de trabajo en la que alguien abre la boca… y no sale nada;
+     - un turista que pregunta una dirección y la persona sonríe con vergüenza y señala con la mano;
+     - una videollamada con la cámara apagada y el micro en mute.
+   - Sobre cada flash, la onda plana. El espectador debe pensar *«ese soy yo»*.
+2. **Esperanza (6–14 s), alguien a tu lado:**
+   - Entra Gota. La música empieza con **un solo piano** (pocas notas, en tono mayor y lento).
+   - La mascota no es una profesora que juzga: es **una amiga que no se cansa**.
+   - Frase: «Aquí puedes equivocarte. Nadie te mira.»
+3. **Camino (14–61 s), te ves avanzar:**
+   - Entra el ritmo (104 BPM) con el primer «go → went».
+   - Cada escena suma una capa al sonido (bajo, percusión, coros) igual que la onda suma amplitud: **la música crece contigo**.
+4. **Triunfo (61–70 s), te ves capaz:**
+   - Los mismos tres momentos del principio se repiten, **ahora resueltos**:
+     - en la entrevista, la persona responde y el entrevistador asiente;
+     - el turista sonríe: «Thank you so much!»;
+     - en la videollamada se enciende la cámara y el micro, y la persona saluda.
+   - La onda está llena en los tres. Es el pico emocional: música en su punto más alto y la escalera llegando a C1.
+5. **Verdad (70–80 s), la firma del creador:**
+   - Todo se calma. Silencio, una nota de piano y fondo oscuro del tema.
+   - Texto que aparece palabra a palabra, despacio:
+     > «Yo también entendía inglés… y me quedaba callado.
+     > Por eso creé Habla.»
+     > — **Liomar**, creador de Habla
+   - Después, la nota de voz del principio se envía (*whoosh*): «Hoy, tu primera frase.» y el icono.
+   - (Si el dueño lo graba, esta frase puede ir **con su propia voz**: es lo más potente del vídeo. Hueco `// TODO voz-liomar.mp3`.)
+
+**Reglas para que emocione de verdad:**
+- **El silencio también suena:** deja 0,5–1 s de silencio real antes del primer latido y antes de la firma. Los contrastes son los que ponen la piel de gallina.
+- **Ritmo de lectura:** las frases emotivas, como mucho 7 palabras por pantalla y al menos 1,8 s visibles.
+- **Nada de dramatizar de más:** cálido y luminoso, nunca triste ni lastimero. El mensaje es *«no te pasa nada malo, solo te falta practicar en un sitio seguro»*.
+- Amplía `PromoVertical` y `PromoHorizontal` a **~80 s** (2400 frames) para que quepa la firma sin prisas. El `Teaser15` usa: un flash de herida → el latido → el triunfo → «Hoy, tu primera frase.» → la firma corta «Creada por Liomar».
+
 ## 2. Formatos (tres composiciones, mismo código)
 | id | Tamaño | fps | Duración | Uso |
 |---|---|---|---|---|
