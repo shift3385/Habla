@@ -58,12 +58,10 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ### Bienvenida, profe y apariencia
 - **Tutorial de la mascota (primera vez):** antes de pedir nada, tu mascota explica cómo funciona Habla (tu profe es una IA: Gemini), para qué es la clave de Gemini, cómo conseguirla gratis paso a paso (con botón a Google AI Studio) y que Azure Speech es opcional para la pronunciación. Quien ya tenía la app ve una vez el aviso «¿Para qué es tu clave?».
-- La primera vez verás una **bienvenida en 3 pasos**: el saludo, la elección de profe y tu nivel con la meta diaria. Puedes repetirla desde *Ajustes → Ver la bienvenida otra vez*.
-- **Profes:**
-  - **Emma**: acento americano; paciente, clara y muy positiva.
-  - **Leo**: acento británico; directo, curioso y con humor.
-  
-  Cada profe tiene su propia voz. Te acompaña la **mascota** de tu tema (ver abajo).
+- La primera vez verás una **bienvenida en 3 pasos**: el saludo, la voz de tu profe y tu nivel con la meta diaria. Puedes repetirla desde *Ajustes → Ver la bienvenida otra vez*.
+- **Tu profe es tu mascota** (desde la 5.9): la clase te la da la mascota de tu tema (Gota, Chispa, Musgo o Brisa), con su nombre. Lo que eliges es su **voz**:
+  - **Emma**: voz americana; paciente, clara y muy positiva.
+  - **Leo**: voz británica; directo, curioso y con humor.
 - **Tema y mascota (tu compañero):** cada tema trae su mascota animada, que sustituye a la antigua burbuja. Se elige en la bienvenida, justo después del nombre, y se cambia en *Ajustes → Tema y mascota*:
   - **Chispa** · tema **Ember** (fuego, naranja y turquesa)
   - **Musgo** · tema **Lumi** (tierra, verde)
@@ -87,7 +85,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 - Antes de la lectura, la escucha y el habla aparece una **pantalla de instrucciones** con lo que hay que hacer. Recomienda **auriculares** para la escucha y **auriculares con micrófono** para el habla, porque mejoran mucho el reconocimiento de voz.
 - Todas las preguntas tienen una opción **«No lo sé»**, con otro estilo: es mejor ser sincero que adivinar. Cuenta como no acertada, pero el profe recibe esos puntos como lagunas reconocidas y les da prioridad en el curso.
 - Al final de cada parte ves un **resumen** con tus respuestas y las correctas. En la audición se muestra la duración del audio y, al revisar, la transcripción por personas.
-- **Pausar y seguir luego** (desde la 5.9): en gramática, en los resúmenes y en el habla hay un botón **⏸ Pausar**. Se guarda todo y puedes cerrar Habla; al volver sigues justo ahí. **Solo se puede pausar una vez por test** (también en el re-test). Si se cierra la app sin pausar, el test también se retoma.
+- **Posponer** (desde la 5.9): en gramática, en los resúmenes y en el habla hay un botón **⏸ Posponer**. Antes de nada, tu mascota te pregunta si estás seguro, porque **solo se puede posponer una vez por test** (también en el re-test). Si dices que sí, se guarda todo y puedes cerrar Habla; al volver sigues justo ahí. Si se cierra la app sin posponer, el test también se retoma.
 - En el habla, con la fonética de Azure activa, ves tu **nota de pronunciación** bajo cada tarea, **solo informativa**: no cuenta para tu nivel.
 - Si Gemini falla durante el test, **nada se pierde**: el test queda guardado y la mascota te propone reintentar, **cambiar de modelo** o **cambiar de clave**.
 - El resultado (un nivel por habilidad, el nivel global y tus puntos débiles) adapta al profe: su vocabulario, la velocidad de la voz y lo que te hace practicar.
@@ -114,7 +112,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 
 ### En la clase
 1. Arriba ves la **tarjeta del tema**. Empieza **plegada y brillando** hasta que la abres por primera vez; tócala para ver el objetivo, el resumen y el vocabulario. Las frases largas de la lección van cada una en su caja (inglés y español). Toca las palabras para oírlas.
-2. **Toca para hablar, toca para enviar** (desde la 5.9). Toca el micrófono una vez, habla y vuelve a tocarlo (ahora con **➤**) para enviar. La **papelera** de la izquierda descarta la grabación. Cada respuesta dura como mucho **60 s**: verás «quedan m:ss» (en naranja los últimos 10 s) y al llegar se envía sola.
+2. **Toca para hablar, toca para enviar** (desde la 5.9). Toca el micrófono una vez, habla y vuelve a tocarlo (ahora con **➤**) para enviar. La **papelera** de la izquierda descarta la grabación. Cada respuesta dura como mucho **60 s**: un **anillo alrededor del micro** se vacía como un reloj (naranja los últimos 10 s, rojo los últimos 5) y al llegar se envía sola. Mientras hablas, las **barras de la derecha siguen tu voz** (suben al hablar, quietas en silencio). Si sales de la app grabando, la grabación se corta y al volver tu mascota te lo dice.
    - **El micrófono solo está abierto mientras grabas.** Al entrar a la clase se abre un instante para pedir el permiso y elegir el micro, y se cierra. El punto verde de Android ya no se queda encendido toda la clase.
    - **⌨️ Teclado** (a la derecha del micrófono): cambia a escribir tu respuesta. El icono del micrófono te devuelve a hablar. Las respuestas escritas también se corrigen, pero no cuentan para la velocidad ni las pausas, ni para tu nivel al hablar.
 3. Debajo de tu frase aparecen tus métricas de ese turno: palabras por minuto, número de palabras y pausas de más de 1 s.
@@ -191,7 +189,7 @@ Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu
 ### Re-test cada 4 semanas
 - Las semanas 4, 8 y 12 son de **repaso** y terminan con el **re-test** de nivel.
 - Cuando toca, aparece un aviso en el Inicio (y una notificación si activaste el recordatorio).
-- Lo puedes **pausar una vez** y seguirlo luego (⏸ Pausar → *Ir al Inicio*); la mascota te recuerda que lo tienes en pausa.
+- Lo puedes **posponer una vez** y seguirlo luego (⏸ Posponer → *Sí, posponer* → *Ir al Inicio*); la mascota te recuerda que lo tienes pospuesto.
 - El resultado compara **antes → después** en cada habilidad, y tu plan se **adapta**: las semanas que faltan se rehacen con tu nuevo nivel y tus nuevos puntos débiles.
 - El historial de tus tests está en *Ajustes → Mi perfil*.
 

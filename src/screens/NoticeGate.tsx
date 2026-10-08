@@ -32,7 +32,7 @@ interface Props {
  */
 export default function NoticeGate({ settings, notices, homework, update, onRetest, onOpenThemes, onDone, savedClass, onResumeClass, levels }: Props) {
   const [i, setI] = useState(0)
-  // v5.9: re-test pausado («Pausar y seguir luego»): la mascota lo dice y ofrece seguirlo.
+  // v5.9: re-test pospuesto («Posponer»): la mascota lo dice y ofrece seguirlo.
   const [testPaused, setTestPaused] = useState(false)
   useEffect(() => {
     if (!notices.includes('retest')) return
@@ -164,10 +164,10 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
         element={element}
         mood="happy"
         step={step}
-        title={recal ? 'Ya puedes repetir tu test' : testPaused ? 'Tu re-test está en pausa' : '¡Te toca el re-test!'}
+        title={recal ? 'Ya puedes repetir tu test' : testPaused ? 'Tu re-test está pospuesto' : '¡Te toca el re-test!'}
         subtitle={
           !recal && testPaused
-            ? 'Lo dejaste a medias y está guardado. Sigue justo donde lo dejaste; esta vez ya no se puede volver a pausar.'
+            ? 'Lo pospusiste y está guardado. Sigue justo donde lo dejaste; esta vez ya no se puede volver a posponer.'
             : recal
               ? 'Tu primer test se hizo antes de calibrar las preguntas y no era justo. El nuevo test (unos 25 minutos) lo sustituye por completo: tu nivel será lo que saques en él.'
               : 'Han pasado 4 semanas desde tu último test. En unos 25 minutos verás cuánto has avanzado; tu nuevo nivel será 70 % el test y 30 % lo que propusieron tus clases.'

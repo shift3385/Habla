@@ -19,7 +19,7 @@ import TopicAskPage, { type AskKind } from '../components/TopicAskPage'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import Segmented from '../ui/Segmented'
-import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
+import { THEME_INFO, type ThemeVars, teacherName } from '../ui/theme'
 
 interface Props {
   settings: Settings
@@ -90,7 +90,6 @@ export default function Home({
     return () => registerBack(null)
   }, [ask, allOpen, registerBack])
   const keysReady = settings.geminiKey.trim().length > 0
-  const teacher = TEACHERS[settings.teacher]
   const info = THEME_INFO[settings.theme]
   // La mascota habla en globos flotantes (MascotBubble); tocarla pasa al siguiente.
   const mainRef = useRef<HTMLDivElement>(null)
@@ -288,7 +287,7 @@ export default function Home({
               <div className="truncate text-[15px] font-semibold">
                 Hoy {minsLabel}/{goal} min
               </div>
-              <div className="txt-sub truncate text-[13px]">con {teacher.name}</div>
+              <div className="txt-sub truncate text-[13px]">con {teacherName(settings.theme)}</div>
             </div>
             <button ref={surpriseRef} onClick={surprise} className="btn-acc flex h-[46px] flex-none items-center gap-1.5 rounded-[23px] px-3.5 text-[14px]">
               <Icon name="spark" size={16} stroke={1.8} />
@@ -320,7 +319,7 @@ export default function Home({
           <div className="glass flex items-center gap-2.5 rounded-[30px] py-1.5 pr-3 pl-1.5">
             {mascot(80)}
             <div className="min-w-0 flex-1">
-              <div className="text-base font-semibold">{teacher.name} te espera</div>
+              <div className="text-base font-semibold">{teacherName(settings.theme)} te espera</div>
               <div className="mt-2 h-1.5 overflow-hidden rounded-[3px]" style={{ background: 'var(--gb)' }}>
                 <div className="h-full rounded-[3px] transition-[width] duration-500" style={{ width: `${pct * 100}%`, background: 'var(--acc)' }} />
               </div>

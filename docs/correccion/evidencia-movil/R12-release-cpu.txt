@@ -1,0 +1,16 @@
+app=13312 renderer_candidato=5859
+  proc 5859 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 7293 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 12952 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 16950 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 17207 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 19483 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 20759 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+  proc 31669 com.google.android.webview:sandboxed_process0:org.chromium.content.app.Sandboxed
+app: 8706 ticks en 60 s = 145% de un núcleo
+16799  0.0 webview_zygote
+ 7586  0.0 com.shift.habla.debug
+13312  133 com.shift.habla
+16950  0.0 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:1
+ 5859 36.6 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+12952  0.0 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0

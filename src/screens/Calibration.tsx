@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { whenBackground } from '../lib/lifecycle'
 import { BANK, BANK_VERSION, scriptSeconds, type BankItem, type BankQuestion, type BankUsage, type GrammarItem, type ListeningItem, type Speaker } from '../lib/bank'
 import {
   assessSpeakingTask,
@@ -58,7 +59,7 @@ import { analyzeSpeech, blobToBase64 } from '../lib/speech'
 import { englishVoices, speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotElement } from '../ui/Mascot'
-import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
+import { THEME_INFO, type ThemeVars } from '../ui/theme'
 import Wave from '../ui/Wave'
 
 type Kind = 'reading' | 'listening'
@@ -140,8 +141,8 @@ function Header({ section, onPause }: { section: number; onPause?: () => void })
         <div className="flex items-center gap-2">
           <div className="txt-sub text-sm">{section >= 0 ? `${section + 1}/4 · ${SECTIONS[section]}` : ''}</div>
           {onPause && (
-            <button onClick={onPause} className="glass flex h-8 items-center gap-1 rounded-full px-3 text-[13px] font-medium" aria-label="Pausar el test">
-              <span aria-hidden>⏸</span> Pausar
+            <button onClick={onPause} className="glass flex h-8 items-center gap-1 rounded-full px-3 text-[13px] font-medium" aria-label="Posponer el test">
+              <span aria-hidden>⏸</span> Posponer
             </button>
           )}
         </div>
@@ -260,7 +261,6 @@ interface Props {
 }
 
 export default function Calibration({ settings, update, onDone, onPause, registerBack }: Props) {
-  const teacher = TEACHERS[settings.teacher]
   const mascot = THEME_INFO[settings.theme].mascot
   const mascotName = THEME_INFO[settings.theme].mascotName
   const [step, setStep] = useState<Step>({ k: 'loading' })
@@ -268,10 +268,12 @@ export default function Calibration({ settings, update, onDone, onPause, registe
   const usage = useRef<BankUsage>({ seen: [], uses: {} })
   const used = useRef<BankItem[]>([])
   const [hint, setHint] = useState<string | null>(null)
-  // v5.9 (AUD-FLU-202, decisión del dueño): «Pausar y seguir luego» una sola vez por test (también el re-test).
+  // v5.9 (AUD-FLU-202, decisión del dueño): «Posponer» (antes «Pausar y seguir luego») una sola vez por test (también el re-test).
   const [pauseUsed, setPauseUsed] = useState(false)
-  // Pantalla «Test en pausa» encima del paso actual (el paso no cambia: así el progreso guardado sigue apuntando a él).
+  // Pantalla «Test pospuesto» encima del paso actual (el paso no cambia: así el progreso guardado sigue apuntando a él).
   const [paused, setPaused] = useState(false)
+  // Antes de posponer, la mascota pregunta: solo se puede una vez por test (petición del dueño, 2026-10-07).
+  const [askPostpone, setAskPostpone] = useState(false)
   // v5.9 (decisión del dueño): nota de Azure de cada tarea de habla, SOLO informativa (no entra en el nivel).
   const [pron, setPron] = useState<(PronResult | string | 'pending' | null)[]>([])
   // Ajustes vivos: al reintentar tras cambiar de modelo o de clave se usan los nuevos.
@@ -412,8 +414,9 @@ export default function Calibration({ settings, update, onDone, onPause, registe
 
   const exclude = () => new Set(used.current.map((i) => i.id))
 
-  /** «Pausar»: se guarda (con la pausa ya gastada) y se puede cerrar la app; al volver, sigue en este paso. */
+  /** «Posponer»: se guarda (con el aplazamiento ya gastado) y se puede cerrar la app; al volver, sigue en este paso. */
   const pause = () => {
+    setAskPostpone(false)
     playToken.current++
     stopSpeaking()
     recorder.current.close()
@@ -621,6 +624,15 @@ export default function Calibration({ settings, update, onDone, onPause, registe
     }
   }
 
+  // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); la tarea no debe seguir mostrando «grabando».
+  useEffect(() => {
+    if (recState !== 'recording') return
+    return whenBackground(() => {
+      setRecState('idle')
+      setHint('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
+    })
+  }, [recState])
+
   const skipTask = (i: number) => {
     setSpeech((s) => s.map((x, j) => (j === i ? 'skipped' : x)))
     setHint(null)
@@ -721,13 +733,26 @@ export default function Calibration({ settings, update, onDone, onPause, registe
 
   if (step.k === 'loading' || !profile) return null
 
+  if (askPostpone) {
+    return (
+      <MascotPage
+        element={mascot}
+        mood="thinking"
+        title={retest ? '¿Posponer el re-test?' : '¿Posponer el test?'}
+        subtitle={`Ojo: solo lo puedes posponer una vez. Si lo pospones ahora, guardo todo lo que llevas y podrás cerrar Habla, pero la próxima vez tendrás que terminarlo de una vez. ¿Seguro que quieres posponerlo, o prefieres seguir y terminarlo ahora?`}
+        primary={{ label: 'No, sigo y lo termino ahora', onClick: () => setAskPostpone(false) }}
+        secondary={{ label: 'Sí, posponer', onClick: pause }}
+      />
+    )
+  }
+
   if (paused) {
     return (
       <MascotPage
         element={mascot}
         mood="happy"
-        title={retest ? 'Re-test en pausa' : 'Test en pausa'}
-        subtitle="He guardado todo lo que llevas. Puedes cerrar Habla: cuando vuelvas, seguirás justo aquí. La pausa solo se puede usar una vez por test, así que la próxima vez tendrás que terminarlo."
+        title={retest ? 'Re-test pospuesto' : 'Test pospuesto'}
+        subtitle="He guardado todo lo que llevas. Puedes cerrar Habla: cuando vuelvas, seguirás justo aquí. Ya lo has pospuesto una vez, así que la próxima vez tendrás que terminarlo."
         primary={{
           label: 'Seguir ahora',
           onClick: () => {
@@ -740,16 +765,17 @@ export default function Calibration({ settings, update, onDone, onPause, registe
     )
   }
 
-  // Se puede pausar una vez, en los pasos que se retoman tal cual (no a mitad de una lectura o un audio, ni grabando).
-  const pauseBtn = !pauseUsed && recState === 'idle' ? pause : undefined
+  // Se puede posponer una vez, en los pasos que se retoman tal cual (no a mitad de una lectura o un audio, ni grabando).
+  // Primero pregunta la mascota (askPostpone); «Sí, posponer» llama a pause().
+  const pauseBtn = !pauseUsed && recState === 'idle' ? () => setAskPostpone(true) : undefined
 
   // Explicaciones de la mascota antes de empezar (primer test: cómo se evalúa; re-test: la ponderación).
   if (step.k === 'explain') {
     const pages = needsRecalibration(profile)
-      ? [recalPage(profile, mascotName), ...firstPages(teacher.name, mascotName).slice(1)]
+      ? [recalPage(profile, mascotName), ...firstPages(mascotName).slice(1)]
       : retest
         ? retestPages(profile, mascotName)
-        : firstPages(teacher.name, mascotName)
+        : firstPages(mascotName)
     const page = pages[step.i]
     const last = step.i === pages.length - 1
     return (
@@ -819,7 +845,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
   }
 
   if (step.k === 'prep') {
-    return <PrepareScreen kind={step.kind} state={step.state} mascot={mascot} teacherName={teacher.name} title={step.title} errorText={step.error} onRetry={step.retry} />
+    return <PrepareScreen kind={step.kind} state={step.state} mascot={mascot} teacherName={mascotName} title={step.title} errorText={step.error} onRetry={step.retry} />
   }
 
   if (step.k === 'deciding') {
@@ -895,7 +921,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
           <Header section={2} />
           <div key={`l${n}`} className="anim-in no-scrollbar -mx-1 flex min-h-0 flex-1 flex-col overflow-y-auto px-1">
             <div className="txt-sub text-sm">
-              Audio {n + 1} de 2 · {item.speakers.length > 1 ? `${item.speakers.length} voces` : 'una voz'} · dura unos {fmtDuration(audioSeconds(item))}
+              Audio {n + 1} de 2 · {item.speakers.length > 1 ? `${item.speakers.length} voces` : 'una voz'} · duración {fmtDuration(audioSeconds(item))}
             </div>
             <div className="glass mt-3 rounded-[24px] p-4">
               {inPreview ? (
@@ -1135,7 +1161,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
     )
   }
 
-  if (step.k === 'result') return <Result r={step.r} mascot={mascot} mascotName={mascotName} teacherName={teacher.name} onDone={onDone} />
+  if (step.k === 'result') return <Result r={step.r} mascot={mascot} mascotName={mascotName} onDone={onDone} />
 
   return null
 }
@@ -1269,11 +1295,11 @@ function recalPage(p: Profile, mascotName: string): Page {
   }
 }
 
-function firstPages(teacherName: string, mascotName: string): Page[] {
+function firstPages(mascotName: string): Page[] {
   return [
     {
       title: 'Vamos a conocer tu inglés',
-      subtitle: `Soy ${mascotName}. Te acompaño en el test para que ${teacherName} sepa desde dónde empezar. Son unos 25–30 minutos.`,
+      subtitle: `Soy ${mascotName}, tu profe. Con este test sabré desde dónde empezar contigo. Son unos 25–30 minutos.`,
       body: (
         <div className="grid grid-cols-2 gap-2">
           {[
@@ -1324,7 +1350,7 @@ function firstPages(teacherName: string, mascotName: string): Page[] {
       body: (
         <div className="flex flex-col gap-2">
           <Card>
-            Si no sabes una respuesta, marca <b>«No lo sé»</b>. No resta, y así {teacherName} sabrá exactamente qué enseñarte.
+            Si no sabes una respuesta, marca <b>«No lo sé»</b>. No resta, y así sabré exactamente qué enseñarte.
           </Card>
           <Card>Junto a cada destreza verás la confianza del resultado (alta, media o baja), según cuánta evidencia hubo.</Card>
           <Card>
@@ -1403,7 +1429,7 @@ function retestPages(p: Profile, mascotName: string): Page[] {
 // ---------------------------------------------------------------------------
 // Resultado: la mascota explica el nivel y la fórmula con tus números.
 
-function Result({ r, mascot, mascotName, teacherName, onDone }: { r: CalibrationResult; mascot: MascotElement; mascotName: string; teacherName: string; onDone: () => void }) {
+function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; mascot: MascotElement; mascotName: string; onDone: () => void }) {
   const b = overallBreakdown(r.levels)
   const skills = ['grammar', 'reading', 'listening', 'speaking'] as const
   const fmt = (n: number) => n.toFixed(2).replace(/\.?0+$/, '').replace('.', ',')
@@ -1529,7 +1555,7 @@ function Result({ r, mascot, mascotName, teacherName, onDone }: { r: Calibration
           </div>
         )}
         <div className="glass rounded-[24px] p-4 text-[15px]">
-          <div className="mb-1.5 font-semibold">En qué te ayudará {teacherName}</div>
+          <div className="mb-1.5 font-semibold">En qué te voy a ayudar</div>
           <ul className="list-disc space-y-1 pl-5">
             {r.speaking.weaknessesEs.map((s, i) => (
               <li key={i}>{s}</li>

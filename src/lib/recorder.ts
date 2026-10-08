@@ -165,6 +165,8 @@ export class Recorder {
   private beginning: Promise<boolean> | null = null
   /** Último micrófono usado, para diagnóstico. */
   label = ''
+  /** Medidor de volumen (v5.9, petición del dueño): las barras junto al micro siguen tu voz de verdad. Solo mientras se graba. */
+  private meter: { ctx: AudioContext; an: AnalyserNode; buf: Uint8Array<ArrayBuffer>; stream: MediaStream } | null = null
 
   /** Cierra si no está grabando. Una apertura en curso se deja terminar (p. ej. `devicechange` al conceder el permiso). */
   releaseIfIdle() {
@@ -408,8 +410,44 @@ export class Recorder {
     this.release()
   }
 
+  /**
+   * Volumen de la voz ahora mismo (0–1); 0 si no se está grabando. El analizador se crea con la primera lectura de
+   * cada grabación y se cierra al soltar el micro (no queda ningún AudioContext abierto).
+   */
+  level(): number {
+    const s = this.stream
+    if (!s || !this.recorder || this.recorder.state !== 'recording') return 0
+    try {
+      if (!this.meter || this.meter.stream !== s) {
+        this.closeMeter()
+        const ctx = new AudioContext()
+        const an = ctx.createAnalyser()
+        an.fftSize = 512
+        ctx.createMediaStreamSource(s).connect(an)
+        this.meter = { ctx, an, buf: new Uint8Array(new ArrayBuffer(an.fftSize)), stream: s }
+      }
+      const { an, buf } = this.meter
+      an.getByteTimeDomainData(buf)
+      let sum = 0
+      for (let i = 0; i < buf.length; i++) {
+        const x = (buf[i] - 128) / 128
+        sum += x * x
+      }
+      // RMS de la voz al hablar ≈ 0,05–0,25: se amplía para que una voz normal llene las barras.
+      return Math.min(1, Math.sqrt(sum / buf.length) * 5)
+    } catch {
+      return 0
+    }
+  }
+
+  private closeMeter() {
+    this.meter?.ctx.close().catch(() => {})
+    this.meter = null
+  }
+
   /** Suelta el stream y sale del registro, sin cancelar (lo usa una apertura que falla). */
   private release(): void {
+    this.closeMeter()
     stopTracks(this.stream)
     this.stream = null
     this.recorder = null

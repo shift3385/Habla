@@ -1,0 +1,9 @@
+inicio 21:42:29 · app=13748 renderer=? · minutos=10
+min app_ticks_acum render_ticks_acum app_%cpu_min render_%cpu_min top wakelocks habla_in appops modo_audio
+Failed to write while dumping service audio: Broken pipe
+1 10 0 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+2 13 0 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+3 17 0 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+4 18 0 0 0 0 0 0 no - Actual mode = MODE_NORMAL
+fin 21:47:20

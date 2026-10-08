@@ -1,0 +1,5 @@
+ok Grabar
+0s rec=0 live=0 Pausar el test,Grabar
+3s rec=1 live=1 Parar
+GRABANDO a los 4.0 s
+ok Parar | live=0 rec=0 | Grabado ✓ · toca para repetir la grabación

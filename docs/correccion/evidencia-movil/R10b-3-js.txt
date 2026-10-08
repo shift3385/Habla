@@ -1,0 +1,4 @@
+no Grabar
+HOME 21:09:20.130
+VUELTA 21:09:35.409
+aperturas=0 live=0 rec=0 [Parar] 811608 track stop #1 ; 848388 gUM req #2 hidden=false ; 848621 gUM open #2 hidden=false ; 848622 rec start #2 ; 849770 rec stop #2 ; 849777 track stop #2

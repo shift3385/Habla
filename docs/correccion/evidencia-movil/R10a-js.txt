@@ -1,0 +1,1 @@
+toque1=ok Grabar toque2=ok Grabar/no Parar | aperturas=1 recorders=1 | grabando: live=1 rec=1 [Parar] | parar=ok Parar → live=0

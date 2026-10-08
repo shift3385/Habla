@@ -1,0 +1,32 @@
+21:08:19.404 | habla_top=1 | Inputs(1): habla_in=0 AUDIO_INPUT_FLAG_HW_HOTWORD, | appops: RECORD_AUDIO: allow; time=+39s812ms ago; duration=+4s78ms  |- Actual mode = MODE_NORMAL
+21:08:20.201 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+40s608ms ago; duration=+4s78ms  |- Actual mode = MODE_NORMAL
+21:08:21.035 | habla_top=0 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+501ms ago (running)  |- Actual mode = MODE_IN_COMMUNICATION
+21:08:21.999 | habla_top=0 | Inputs(1): habla_in=1 AUDIO_INPUT_FLAG_VOIP_TX, | appops: RECORD_AUDIO: allow; time=+1s430ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:23.084 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+2s431ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:23.858 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+3s238ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:24.694 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+4s66ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:25.495 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+4s884ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:26.319 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+5s700ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:27.137 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+6s497ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:27.921 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+7s280ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:28.709 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+8s66ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:29.511 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+8s893ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:30.322 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+9s679ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:31.113 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+10s482ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:31.910 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+11s290ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:32.734 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+12s104ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:33.530 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+12s903ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:34.334 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+13s715ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:35.145 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+14s513ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:35.941 | habla_top=0 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+15s261ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:36.666 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+16s210ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:37.688 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+17s35ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:38.424 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+17s752ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:39.137 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+18s480ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:39.885 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+19s255ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:40.699 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+20s81ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:41.513 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+20s878ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:42.305 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+21s659ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:43.091 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+22s476ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:43.892 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+23s250ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL
+21:08:44.670 | habla_top=1 | Inputs(0): habla_in=0  | appops: RECORD_AUDIO: allow; time=+24s36ms ago; duration=+1s330ms  |- Actual mode = MODE_NORMAL

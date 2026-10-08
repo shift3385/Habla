@@ -120,25 +120,34 @@ export interface TeacherInfo {
   persona: string // para el prompt
 }
 
+/**
+ * El profe se llama como la mascota del tema (Gota, Chispa, Musgo, Brisa): decisión del dueño, 2026-10-07.
+ * Emma y Leo (y las que vengan) son solo VOCES: acento y estilo de habla, no el nombre de quien te da la clase.
+ */
+export const teacherName = (theme: ThemeKey) => THEME_INFO[theme].mascotName
+
+/** Personalidad para el prompt: nombre de la mascota + acento y estilo de la voz elegida. */
+export const teacherPersona = (theme: ThemeKey, voice: TeacherKey) => `Your name is ${teacherName(theme)}. ${TEACHERS[voice].persona}`
+
 export const TEACHERS: Record<TeacherKey, TeacherInfo> = {
   emma: {
     key: 'emma',
     name: 'Emma',
-    role: 'Profesora',
+    role: 'Voz americana',
     desc: 'Acento americano. Paciente, clara y muy positiva.',
     lang: 'en-US',
     gender: 'female',
     persona:
-      'Your name is Emma. You speak American English. You are patient, clear and very positive, and you celebrate every effort.',
+      'You speak American English. You are patient, clear and very positive, and you celebrate every effort.',
   },
   leo: {
     key: 'leo',
     name: 'Leo',
-    role: 'Profesor',
+    role: 'Voz británica',
     desc: 'Acento británico. Directo, curioso y con humor.',
     lang: 'en-GB',
     gender: 'male',
     persona:
-      'Your name is Leo. You speak British English (British vocabulary and spelling, e.g. "flat", "holiday", "brilliant"). You are direct, curious and have a dry sense of humour.',
+      'You speak British English (British vocabulary and spelling, e.g. "flat", "holiday", "brilliant"). You are direct, curious and have a dry sense of humour.',
   },
 }

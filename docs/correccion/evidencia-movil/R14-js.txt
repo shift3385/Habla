@@ -1,0 +1,2 @@
+mensaje:  | peticiones con la clave mala: 0 | clave guardada ahora: empieza=AIzaTEST- largo=36
+ok Guardar y comprobar → mensaje: Esa clave no es válida: cópiala otra vez desde Google AI Studio (aistudio.google.com/apikey). Empieza por «AIza». No se cambió: sigues con tu clave anterior. | peticiones con la clave mala: 1 | clave guardada ahora: empieza=AIzaTEST- largo=36

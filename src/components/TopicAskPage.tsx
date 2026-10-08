@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { whenBackground } from '../lib/lifecycle'
 import { dictate } from '../lib/dictation'
 import { isAborted } from '../lib/gemini'
 import { MicError, Recorder } from '../lib/recorder'
@@ -53,6 +54,16 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
     },
     [],
   )
+  // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); el dictado no debe seguir «grabando».
+  useEffect(() => {
+    if (mic !== 'recording') return
+    return whenBackground(() => {
+      abandon()
+      setMicHint('Se cortó el dictado al salir de Habla. Toca el micro y dilo otra vez.')
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mic])
+
   const goStep = (n: number) => {
     abandon()
     setMicHint(null)

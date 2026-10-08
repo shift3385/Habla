@@ -1,0 +1,4 @@
+ok Grabar
+HOME 21:13:10.058
+VUELTA 21:13:25.373
+aperturas=1 live=0 rec=0 [Pausar el test,Grabar] 21571 track stop #0 ; 50969 gUM req #1 hidden=false ; 51122 gUM open #1 hidden=false ; 51123 rec start #1 ; 52332 rec stop #1 ; 52335 track stop #1

@@ -1,0 +1,3 @@
+mal → no es un JSON válido; no se cambió nada. | datos: {"cards":64,"lookups":2,"mistakes":70,"profile":1,"sessions":7,"turns":75}
+vacia → La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada. | datos: {"cards":64,"lookups":2,"mistakes":70,"profile":1,"sessions":7,"turns":75}
+vacia(real) → El archivo de copia está dañado o no es de Habla; no se cambió nada. (falta la tabla de sesiones) | datos: {"cards":64,"lookups":2,"mistakes":70,"profile":1,"sessions":7,"turns":75}

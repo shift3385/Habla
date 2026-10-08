@@ -1,0 +1,1 @@
+aperturas=1 recorders=1 | tras 2º dedo: grabando=0 [Salir y guardar la clase,Tocar para hablar,Escribir la respuesta] | envíos a la red=1 | tras descartar live=0

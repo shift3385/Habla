@@ -22,7 +22,7 @@ import type { Settings } from '../lib/settings'
 import { englishVoices, speak, type VoiceOption } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import Switch from '../ui/Switch'
-import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars } from '../ui/theme'
+import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars, teacherName } from '../ui/theme'
 import Mascot from '../ui/Mascot'
 
 export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag'
@@ -130,7 +130,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
   // Cada opción muestra en grande lo que tienes elegido ahora y, en pequeño, de qué sección se trata.
   const theme = THEME_INFO[settings.theme]
   const tiles: { key: string; icon: IconName; value: string; value2?: string | null; label: string; onClick: () => void }[] = [
-    { key: 'voice', icon: 'mic', value: `${teacher.name} · ${settings.ttsRate.toFixed(2)}×`, label: 'Profe y voz', onClick: () => setPage('voice') },
+    { key: 'voice', icon: 'mic', value: `Voz de ${teacher.name} · ${settings.ttsRate.toFixed(2)}×`, label: 'Profe y voz', onClick: () => setPage('voice') },
     {
       key: 'look',
       icon: settings.mode === 'dark' ? 'moon' : 'sun',
@@ -257,7 +257,7 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
 
   const test = async () => {
     setTesting(true)
-    await speak(`Hi! I'm ${teacher.name}. What would you like to talk about today?`, settings.ttsRate, settings.voiceIndex).catch(() => {})
+    await speak(`Hi! I'm ${teacherName(settings.theme)}. What would you like to talk about today?`, settings.ttsRate, settings.voiceIndex).catch(() => {})
     setTesting(false)
   }
 
@@ -323,7 +323,7 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
         </button>
         <button onClick={test} className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
           <Icon name="speakerWave" size={18} />
-          {testing ? `${teacher.name} hablando…` : 'Probar voz'}
+          {testing ? `${teacherName(settings.theme)} hablando…` : 'Probar voz'}
         </button>
         <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
           <Icon name="headphones" size={18} />

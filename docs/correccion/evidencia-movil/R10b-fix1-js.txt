@@ -1,0 +1,4 @@
+ok Grabar
+HOME 21:12:39.321
+VUELTA 21:12:54.631
+aperturas=1 live=0 rec=0 [Pausar el test,Grabar] 11553 NET https://generativelanguage.googleapis.com/v1beta/models/gemi ; 20238 gUM req #0 hidden=false ; 20428 gUM open #0 hidden=false ; 20870 rec start #0 ; 21563 rec stop #0 ; 21571 track stop #0

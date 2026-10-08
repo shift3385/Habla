@@ -1,0 +1,2 @@
+tap Tocar para hablar | grabando: 1 | quedan 0:57 · toca para enviar
+live=0 rec=0 | aperturas nuevas=1 | red: 6KB,audio 203KB | Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar. | ev: 454817 gUM open #3 hidden=false ; 454818 rec start #2 ; 467105 rec stop #2 ; 467109 track stop #3

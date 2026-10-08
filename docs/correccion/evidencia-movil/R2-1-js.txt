@@ -1,0 +1,4 @@
+tap Tocar para hablar
+HOME 21:23:59.920
+VUELTA 21:24:15.235
+aperturas=1 live=0 rec=0 [Salir y guardar la clase,Tocar para hablar,Escribir la respuesta] Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar. | 244472 gUM req #3 hidden=false ; 244976 gUM open #3 hidden=false ; 244978 rec start #2 ; 245679 rec stop #2 ; 245681 track stop #3

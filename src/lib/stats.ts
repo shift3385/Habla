@@ -67,7 +67,14 @@ export async function loadDashboard(): Promise<Dashboard> {
   const done = sessions.filter((s) => s.metrics && s.metrics.turns > 0)
 
   const practice = practiceByDay()
-  const days = new Set([...done.map((s) => dayKey(s.startedAt)), ...Object.keys(practice).filter((k) => practice[k] > 0)])
+  // MOV-5 (revisión móvil 5.9): también cuenta un día en el que solo hablaste en una clase que quedó a medias (mismo
+  // criterio que los minutos de hoy, AUD-E2E-603). Antes, la racha se rompía si no terminabas la clase.
+  const spoken = await db.turns.where('createdAt').aboveOrEqual(Date.now() - 60 * 864e5).toArray()
+  const days = new Set([
+    ...done.map((s) => dayKey(s.startedAt)),
+    ...Object.keys(practice).filter((k) => practice[k] > 0),
+    ...spoken.filter((t) => t.role === 'user' && !t.typed).map((t) => dayKey(t.createdAt)),
+  ])
   const today = new Date()
   const todayKey = dayKey(today.getTime())
   const secondsToday = (await classSecondsToday(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime())) + (practice[todayKey] ?? 0)

@@ -1,0 +1,28 @@
+// Revisión móvil 5.9 · R18: «Posponer» con confirmación de la mascota (una sola vez por test).
+const out = []
+const txt = () => document.body.innerText.replace(/\n+/g, ' | ')
+const has = (re) => re.test(document.body.innerText)
+out.push('1 botón: ' + (btns().find((b) => /Posponer/.test(b)) || 'NO HAY'))
+clickText('Posponer')
+await s(1200)
+out.push('2 confirmación: ' + txt().slice(0, 330))
+out.push('  botones: ' + btns().join(' / '))
+clickText('No, sigo')
+await s(1200)
+out.push('3 tras «No, sigo»: ' + (has(/Tarea \d de 3/) ? 'vuelve a la tarea' : txt().slice(0, 120)) + ' · Posponer=' + !!btns().find((b) => /Posponer/.test(b)))
+clickText('Posponer')
+await s(1000)
+clickText('Sí, posponer')
+await s(1500)
+out.push('4 pospuesto: ' + txt().slice(0, 260))
+const db = await new Promise((r) => {
+  const q = indexedDB.open('habla-draft')
+  q.onsuccess = () => r(q.result)
+})
+const p = await new Promise((r) => {
+  const q = db.transaction('kv').objectStore('kv').get('progress')
+  q.onsuccess = () => r(q.result)
+})
+db.close()
+out.push('5 guardado: step=' + JSON.stringify(p?.step) + ' pauseUsed=' + p?.pauseUsed)
+out.join('\n')

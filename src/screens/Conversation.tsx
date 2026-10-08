@@ -33,7 +33,7 @@ import { clearSavedClass, saveClass, type SavedClass } from '../lib/savedClass'
 import MascotPage from '../components/MascotPage'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotMood } from '../ui/Mascot'
-import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
+import { THEME_INFO, type ThemeVars, teacherName, teacherPersona } from '../ui/theme'
 import Wave from '../ui/Wave'
 
 interface SpokenAnswer {
@@ -71,7 +71,6 @@ function haptic(style: ImpactStyle) {
 
 export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, finishNow, settings, update, onExit, registerBack }: Props) {
   const scenario = getScenario(scenarioId)
-  const teacherInfo = TEACHERS[settings.teacher]
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
@@ -375,7 +374,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       if (found) setPlanInfo(found)
       titleRef.current = found ? found.lesson.titleEs : tp?.title ?? scenario.title
       const brief = found ? { ...scenario, brief: lessonBrief(found.week, found.lesson) } : scenario
-      system.current = buildSystemPrompt(profile, brief, recent, tp, TEACHERS[settingsRef.current.teacher].persona)
+      system.current = buildSystemPrompt(profile, brief, recent, tp, teacherPersona(settingsRef.current.theme, settingsRef.current.teacher))
       sessionId.current =
         (await db.sessions.add({ scenario: scenario.id, startedAt: Date.now(), topic: tp, ...(found ? { planLesson } : {}) })) ?? null
       history.current = [{ role: 'user', content: START_MESSAGE }]
@@ -415,6 +414,14 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
 
   // Al minimizar o cerrar la app con la clase abierta, también se guarda (el micrófono y la voz los cierra lifecycle).
   useEffect(() => whenBackground(persist), [persist])
+  // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); el botón no debe seguir «grabando».
+  useEffect(() => {
+    if (phase !== 'recording') return
+    return whenBackground(() => {
+      setPhase('idle')
+      setHint('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
+    })
+  }, [phase])
 
   /** Salir sin terminar: la clase queda guardada y la mascota se despide hasta la vuelta. */
   const leave = useCallback(async () => {
@@ -648,7 +655,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         sub: topic.summary,
       }
     : scenario.id === 'open'
-      ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherInfo.name} sigue tu conversación` }
+      ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherName(settings.theme)} sigue tu conversación` }
       : scenario.topic
         ? { icon: scenario.icon, label: scenario.title, title: status || 'Tema sorpresa', sub: '' }
         : { icon: scenario.icon, label: 'Práctica guiada', title: scenario.title, sub: scenario.subtitle }
@@ -673,7 +680,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         kind="clase"
         state={prep}
         mascot={mascotEl}
-        teacherName={teacherInfo.name}
+        teacherName={teacherName(settings.theme)}
         errorText={prepError}
         onRetry={() => {
           setPrep('loading')
@@ -760,9 +767,9 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
           <Icon name="back" size={20} stroke={1.8} />
         </button>
         <div className="flex flex-1 items-center justify-center gap-2.5">
-          <Mascot element={mascotEl} mood={mood} size={52} />
+          <Mascot element={mascotEl} mood={mood} size={64} />
           <div>
-            <div className="text-base font-semibold">{teacherInfo.name}</div>
+            <div className="text-base font-semibold">{teacherName(settings.theme)}</div>
             <div className="txt-sub text-xs">{chatStatus}</div>
           </div>
         </div>
@@ -1051,7 +1058,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         {inputMode === 'voice' ? (
           <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')}
             maxSeconds={MAX_SECONDS}
-            companion={<Mascot element={mascotEl} mood={mood} size={84} />}
+            level={() => recorder.current.level()}
           />
         ) : (
           <div className="anim-up flex w-full items-end gap-2">

@@ -1,0 +1,10 @@
+Cambiar modo claro u oscuro,Sorpréndeme,Reintentar,Temas 3,Prácticas 5,Noticias de hoy,Comida,Deportes,Tema libre,Más temas 12,Hablar,Palabras,Progreso,Ajustes,Dictar por voz,Mi trabajo,Una película que me encantó,Mis planes para el fin de sema,Un viaje que quiero hacer,Atrás,Empezar a hablar
+DOBLE 21:18:46
+ok Dictar por voz {"now":19717,"tl":["6893 live=[] rec=[] hidden=false","15962 live=[0] rec=[] hidden=false","16643 live=[0] rec=[0] hidden=false"],"ev":["9542 NET https://generativelanguage.googleapis.com/v1beta/models/gemi","15565 gUM req #0 hidden=false","15892 gUM open #0 hidden=false","16407 rec start #0"],"rec":["0:recording"],"mic":["0:live"],"net":["9541 2KB"]}
+TERMINAR 21:18:50
+{"now":24019,"tl":["6893 live=[] rec=[] hidden=false","15962 live=[0] rec=[] hidden=false","16643 live=[0] rec=[0] hidden=false","20144 live=[] rec=[] hidden=false"],"ev":["9542 NET https://generativelanguage.googleapis.com/v1beta/models/gemi","15565 gUM req #0 hidden=false","15892 gUM open #0 hidden=false","16407 rec start #0","20015 rec stop #0","20023 track stop #0"],"rec":["0:inactive"],"mic":["0:off"],"net":["9541 2KB"]}
+CERRAR 21:18:55
+Good evening. ¿De qué hablamos hoy? 0 ¡Tócame! Emma te esper {"now":27358,"tl":["6893 live=[] rec=[] hidden=false","15962 live=[0] rec=[] hidden=false","16643 live=[0] rec=[0] hidden=false","20144 live=[] rec=[] hidden=false"],"ev":["9542 NET https://generativelanguage.googleapis.com/v1beta/models/gemi","15565 gUM req #0 hidden=false","15892 gUM open #0 hidden=false","16407 rec start #0","20015 rec stop #0","20023 track stop #0"],"rec":["0:inactive"],"mic":["0:off"],"net":["9541 2KB"]}
+HOME 21:18:58
+VUELTA 21:19:13
+{"now":51214,"tl":["6893 live=[] rec=[] hidden=false","15962 live=[0] rec=[] hidden=false","16643 live=[0] rec=[0] hidden=false","20144 live=[] rec=[] hidden=false"],"ev":["9542 NET https://generativelanguage.googleapis.com/v1beta/models/gemi","15565 gUM req #0 hidden=false","15892 gUM open #0 hidden=false","16407 rec start #0","20015 rec stop #0","20023 track stop #0"],"rec":["0:inactive"],"mic":["0:off"],"net":["9541 2KB"]}

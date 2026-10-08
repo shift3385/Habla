@@ -1,0 +1,5 @@
+release · bienvenida en reposo, ventana 1: 34% de un núcleo
+release · bienvenida en reposo, ventana 2: 22% de un núcleo
+  952 13.3 com.shift.habla
+31791  3.3 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+26982  0.0 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0

@@ -6,7 +6,7 @@ import { speak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import HelpPoint from '../components/HelpPoint'
 import Mascot, { type MascotElement } from '../ui/Mascot'
-import { TEACHERS, THEME_INFO, type TeacherKey, type ThemeVars } from '../ui/theme'
+import { TEACHERS, THEME_INFO, type TeacherKey, type ThemeVars, teacherName } from '../ui/theme'
 import type { ReactNode } from 'react'
 
 const GOALS = [3, 5, 10, 15]
@@ -88,7 +88,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
     setSpeaking(true)
     // App.tsx ajusta la voz al cambiar de profe; esperamos un instante a que se aplique.
     setTimeout(async () => {
-      await speak(`Hi! I'm ${TEACHERS[k].name}. Nice to meet you!`, settings.ttsRate, null).catch(() => {})
+      await speak(`Hi! I'm ${teacherName(settings.theme)}. Nice to meet you!`, settings.ttsRate, null).catch(() => {})
       setSpeaking(false)
     }, 50)
   }
@@ -252,8 +252,8 @@ export default function Onboarding({ settings, update, onDone }: Props) {
 
       {step === 4 && (
         <div key="s4" className="anim-up flex flex-1 flex-col">
-          <h1 className="mt-6 text-[32px] font-semibold tracking-[-.8px]">Elige a tu profe</h1>
-          <p className="txt-sub mt-2 text-[15px]">Puedes cambiarlo cuando quieras en Ajustes.</p>
+          <h1 className="mt-6 text-[32px] font-semibold tracking-[-.8px]">Elige la voz de {teacherName(settings.theme)}</h1>
+          <p className="txt-sub mt-2 text-[15px]">Tu profe es tu mascota; aquí eliges cómo suena. Puedes cambiarla cuando quieras en Ajustes.</p>
           <div className="mt-7 flex flex-col gap-3.5">
             {(Object.keys(TEACHERS) as TeacherKey[]).map((k) => {
               const info = TEACHERS[k]
@@ -284,7 +284,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
           </div>
           <div className="flex-1" />
           <button onClick={() => setStep(5)} className="btn-acc h-[58px] rounded-full text-[17px]">
-            Continuar con {teacher.name}
+            Continuar con la voz de {teacher.name}
           </button>
         </div>
       )}
@@ -308,7 +308,7 @@ export default function Onboarding({ settings, update, onDone }: Props) {
           </div>
           <div className="flex-1" />
           <p className="txt-sub mb-3 text-center text-[13px] leading-snug">
-            A continuación harás un test de nivel (25–30 min) para que {teacher.name} adapte las clases a ti.
+            A continuación harás un test de nivel (25–30 min) para que {teacherName(settings.theme)} adapte las clases a ti.
           </p>
           <button onClick={finish} disabled={!keyOk} className="btn-acc h-[58px] rounded-full text-[17px]">
             Continuar al test de nivel

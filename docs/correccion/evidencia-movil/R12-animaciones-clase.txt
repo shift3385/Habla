@@ -1,0 +1,2 @@
+frames/s pedidos por la página (rAF en 3 s): 52 | animaciones CSS en marcha: 1 → card-glow@glass rounded-[24px] py-3 pr-3 pl-3.5 ca | pantalla: Emma | Tu profe de inglés | Terminar | 0.80× | Modo oído | NOTICIAS DE
+rAF de la app en 5 s: 88 (18/s) | origen: 88× at Ue (https://localhost/assets/index-CY49uQMs.js:9:84794)

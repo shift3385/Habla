@@ -1,0 +1,8 @@
+1 botón: ⏸ Posponer
+2 confirmación: ¿Posponer el test? | Ojo: solo lo puedes posponer una vez. Si lo pospones ahora, guardo todo lo que llevas y podrás cerrar Habla, pero la próxima vez tendrás que terminarlo de una vez. ¿Seguro que quieres posponerlo, o prefieres seguir y terminarlo ahora? | Sí, posponer | No, sigo y lo termino ahora
+  botones: Sí, posponer / No, sigo y lo termino ahora
+3 tras «No, sigo»: vuelve a la tarea · Posponer=true
+4 pospuesto: Test pospuesto | He guardado todo lo que llevas. Puedes cerrar Habla: cuando vuelvas, seguirás justo aquí. Ya lo has pospuesto una vez, así que la próxima vez tendrás que terminarlo. | Seguir ahora
+5 guardado: step={"k":"speaking","i":0} pauseUsed=true
+EXCEPCIÓN {"exceptionId":1,"text":"Uncaught","lineNumber":0,"columnNumber":0,"exception":{"type":"object","subtype":"error","className":"ReferenceError","description":"ReferenceError: clickText is not defined\n    at <anonymous>:1:68","objectId":"-1501813648986102459.1.1"}}
+Welcome back, | Prueba | 0 días | Nivel B1 | Continuar donde lo dejé  →  Test de nivel | 4/4 · Habla | Tarea 1 de 3 · Preguntas personales · unos 60 s | Where do you live? | What do you like about your home? | Escuchar otra vez | Grabado ✓ · toca para repetir la grabación | Seguimos don || botones: Escuchar otra vez / Grabar / Siguiente

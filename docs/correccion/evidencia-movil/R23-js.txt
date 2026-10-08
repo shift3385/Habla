@@ -1,0 +1,1 @@
+{"cards":64,"lookups":2,"mistakes":70,"profile":1,"sessions":7,"turns":75} | Importado: 7 sesiones y 70 errores ✓ · Lo que tenías antes quedó en Documentos/Habla/habla-antes-de-importar-20261008013322538.json

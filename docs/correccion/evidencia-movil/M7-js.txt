@@ -1,0 +1,52 @@
+{
+ "mic": [
+  {
+   "id": 0,
+   "req": "09:28:31",
+   "open": "09:28:31",
+   "close": "09:28:43",
+   "label": "",
+   "stack": "    at Dt.doOpen (https://localhost/assets/index-CTAIBscy.js:9:128354) |     at Dt.open (https://localhost/assets/index-CTAIBscy.js:9:128037) |     at"
+  },
+  {
+   "id": 1,
+   "req": "09:28:43",
+   "open": "09:28:45",
+   "close": "09:28:45",
+   "label": "Speakerphone",
+   "stack": "    at Dt.fallback (https://localhost/assets/index-CTAIBscy.js:9:129351) |     at async Dt.doOpen (https://localhost/assets/index-CTAIBscy.js:9:128787"
+  },
+  {
+   "id": 2,
+   "req": "09:28:54",
+   "open": "09:28:55",
+   "close": "09:29:01",
+   "label": "Speakerphone",
+   "stack": "    at Dt.doOpen (https://localhost/assets/index-CTAIBscy.js:9:128354) |     at Dt.open (https://localhost/assets/index-CTAIBscy.js:9:128037) |     at"
+  },
+  {
+   "id": 3,
+   "req": "09:29:01",
+   "open": "09:29:01",
+   "close": "09:29:07",
+   "label": "Speakerphone",
+   "stack": "    at Dt.fallback (https://localhost/assets/index-CTAIBscy.js:9:129351) |     at async Dt.doOpen (https://localhost/assets/index-CTAIBscy.js:9:128787"
+  }
+ ],
+ "ev": [
+  "09:28:43 track stop #0",
+  "09:28:43 gUM req #1 hidden=false",
+  "09:28:45 gUM open #1 hidden=false",
+  "09:28:45 track stop #1",
+  "09:28:45 NET https://generativelanguage.googleapis.com/v1beta/models/gemi",
+  "09:28:46 NET https://generativelanguage.googleapis.com/v1beta/models/gemi",
+  "09:28:54 gUM req #2 hidden=false",
+  "09:28:55 gUM open #2 hidden=false",
+  "09:29:01 track stop #2",
+  "09:29:01 gUM req #3 hidden=false",
+  "09:29:01 gUM open #3 hidden=false",
+  "09:29:03 rec start #0",
+  "09:29:07 rec stop #0",
+  "09:29:07 track stop #3"
+ ]
+}

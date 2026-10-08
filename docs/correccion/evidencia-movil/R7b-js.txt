@@ -1,0 +1,2 @@
+tap Tocar para hablar | grabando: 1 | quedan 0:57 · toca para enviar
+live=1 rec=1 | aperturas nuevas=1 | red: 6KB,audio 203KB | quedan 0:35 · toca para enviar

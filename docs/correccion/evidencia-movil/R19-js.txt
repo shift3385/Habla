@@ -1,0 +1,2 @@
+Good evening. | ¿De qué hablamos hoy? | 1 | ¡Tócame! | Emma te espera | 1/5 min hoy | Clase en progreso | Music | Te || INICIO: Clase en progreso | Music | Terminar || Clase en progreso Music / Terminar / Continuar
+{"live":0,"txt":"Tu informe | 41 | fluidez | Nivel al hablar hoy: B1 |  | Music |  | 18 | palabras/min | meta B2: 110+ | 6 | palabras/resp. | meta: 30+ | 0 | pausas > 1 s | 0/min | 18 | palabras | 1 min 1 s | hablando | 6 | resp. más larga | Cómo te fue |  | Lo que hiciste bien | Para mejorar | Tarea para mañana |  | Volver al inicio"}

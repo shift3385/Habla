@@ -1,0 +1,1 @@
+{"tablas":{"cards":64,"lookups":2,"mistakes":70,"profile":1,"sessions":7,"turns":75},"hasGeminiKey":true,"hasAzureKey":true,"tema":"marea","modo":"dark","clase":null}

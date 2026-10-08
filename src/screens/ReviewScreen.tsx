@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { whenBackground } from '../lib/lifecycle'
 import type { Grade } from 'ts-fsrs'
 import PrepareScreen from '../components/PrepareScreen'
 import { MAX_TALK_SECONDS } from '../components/TalkButton'
@@ -28,7 +29,7 @@ import {
 import { speak, stopSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
-import { TEACHERS, THEME_INFO, type ThemeVars } from '../ui/theme'
+import { TEACHERS, THEME_INFO, type ThemeVars, teacherName } from '../ui/theme'
 import Wave from '../ui/Wave'
 
 type Step = 'ask' | 'recording' | 'checking' | 'result'
@@ -91,6 +92,15 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     if (step !== 'recording') return
     const id = setInterval(() => setElapsed((performance.now() - recStart.current) / 1000), 250)
     return () => clearInterval(id)
+  }, [step])
+
+  // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); la tarjeta no debe seguir «grabando».
+  useEffect(() => {
+    if (step !== 'recording') return
+    return whenBackground(() => {
+      setStep('ask')
+      setError('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
+    })
   }, [step])
 
   // v5.9: como en la clase, una respuesta dura como mucho 60 s; al llegar se envía sola.
@@ -159,7 +169,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   const pad = 'relative z-[2] flex h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
 
   if (loadError) {
-    return <PrepareScreen kind="clase" state="error" mascot={THEME_INFO[settings.theme].mascot} teacherName={teacher.name} errorText={loadError} onBack={onExit} />
+    return <PrepareScreen kind="clase" state="error" mascot={THEME_INFO[settings.theme].mascot} teacherName={teacherName(settings.theme)} errorText={loadError} onBack={onExit} />
   }
   if (!queue) return null
 

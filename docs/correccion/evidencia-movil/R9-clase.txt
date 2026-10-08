@@ -1,0 +1,12 @@
+turno 1: tap Tocar para hablar
+  tap Enviar (enviar)
+  red: audio 29KB | micro vivo tras enviar: 0 | —
+turno 2: tap Tocar para hablar
+  tap Tocar para hablar (enviar)
+  red:  | micro vivo tras enviar: 1 | ppm
+turno 3: tap Enviar
+  tap Tocar para hablar (enviar)
+  red: audio 107KB | micro vivo tras enviar: 1 | ppm
+¿Qué digo?: sin cambio | Repetir / ES / Repetir / ES / Descartar grabación / Enviar
+texto: versación | Great! What kind of music do you like? | Repetir | ES | I like to talk about music. | 65 ppm | 6 palabras | 0 pausas | Great! What kind of music do you like? | Repetir | ES | I like to talk about music. | 14 ppm | 6 palabras | 0 pausas | Great! What kind of music do you like? | Repetir | ES | quedan 0:42 · toca para enviar
+tap Enviar → red: audio 131KB | micro vivo: 0 | respuestas con métricas: 3

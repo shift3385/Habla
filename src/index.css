@@ -476,26 +476,40 @@ html[data-landscape] .tab-content {
 }
 
 /* Tarjeta del objetivo de la clase: brilla (titila) hasta que la abres por primera vez. */
+/* Brillo de la tarjeta del tema hasta que la abres. MOV-3 (revisión móvil 5.9): antes se animaba box-shadow y borde de
+   la propia tarjeta, que lleva backdrop-filter: cada fotograma repintaba y volvía a desenfocar (~87 % de un núcleo en
+   el POCO). Ahora el brillo es una capa aparte que solo cambia de opacidad y titila 4 veces (~10 s); después se queda
+   encendido fijo hasta que abres la tarjeta. Medido en el POCO: aun solo con opacidad, una animación sin fin dentro de
+   una tarjeta con desenfoque costaba ~107 % de un núcleo; un brillo fijo no gasta nada. */
 .card-glow {
-  animation: card-glow 2.4s ease-in-out infinite;
+  position: relative;
+}
+.card-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid var(--acc);
+  box-shadow:
+    0 0 0 3px var(--glow),
+    0 0 26px var(--glow);
+  opacity: 0.7;
+  pointer-events: none;
+  animation: card-glow 2.4s ease-in-out 4;
 }
 @keyframes card-glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 transparent;
-    border-color: var(--gb);
+    opacity: 0;
   }
   50% {
-    box-shadow:
-      0 0 0 3px var(--glow),
-      0 0 26px var(--glow);
-    border-color: var(--acc);
+    opacity: 1;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .card-glow {
+  .card-glow::after {
     animation: none;
-    box-shadow: 0 0 0 2px var(--glow);
+    opacity: 0.6;
   }
 }
 

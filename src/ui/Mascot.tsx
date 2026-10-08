@@ -128,7 +128,12 @@ function tongue(B: Pt, nx: number, ny: number, tx: number, ty: number, L: number
 // completo solo mientras hay movimiento (toque, salto, partículas, habla, ojos siguiendo el dedo); en reposo, unos
 // 15 fps (el balanceo es lento y se ve igual); 4 fps con «reducir movimiento» del sistema; nada si la mascota no
 // se ve (fuera de pantalla, tapada por desmontaje o app oculta). Y entre fotogramas lentos no se pide ningún rAF.
-const IDLE_MS = 66
+// MOV-3 (revisión móvil 5.9): 15 fps en reposo seguían costando ~63 % de un núcleo en el POCO; a 8 fps el vaivén lento se ve igual.
+const IDLE_MS = 125
+// Modo descanso (MOV-3): tras 10 s sin movimiento ni cambios, 2 fps (el vaivén en reposo es mínimo). Medido en el POCO,
+// la mascota quieta a 8 fps costaba ~40 % de un núcleo; tocarla, que hable o un cambio de ánimo la despiertan al momento.
+const REST_AFTER_MS = 10_000
+const REST_MS = 500
 const REDUCED_MS = 250
 const HIDDEN_MS = 500
 const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -513,9 +518,14 @@ export default class Mascot extends Component<Props> {
     }
     this.draw()
     this.lastDraw = performance.now()
+    const busy = this.busy()
+    if (busy || this.props.mood !== this.restMood) {
+      this.restSince = now
+      this.restMood = this.props.mood
+    }
     // En reposo, el próximo fotograma cae en una rejilla común: varias mascotas quietas comparten despertar.
-    const step = reducedMotion() ? REDUCED_MS : IDLE_MS
-    this.nextAt = this.busy() ? 0 : Math.ceil((now + step) / step) * step
+    const step = reducedMotion() ? REDUCED_MS : now - this.restSince > REST_AFTER_MS ? REST_MS : IDLE_MS
+    this.nextAt = busy ? 0 : Math.ceil((now + step) / step) * step
   }
   /** ¿Hay movimiento que necesite el ritmo completo? */
   busy(): boolean {
@@ -534,6 +544,9 @@ export default class Mascot extends Component<Props> {
   }
   /** Momento del último dibujo (para que las partículas no vayan a cámara lenta a ritmo reducido). */
   lastDraw = 0
+  /** Desde cuándo está quieta (para el modo descanso) y con qué ánimo. */
+  restSince = 0
+  restMood: MascotMood | undefined = undefined
   draw() {
     const P = this.P,
       r = this.r

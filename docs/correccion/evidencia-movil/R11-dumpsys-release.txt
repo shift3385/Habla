@@ -1,0 +1,4 @@
+    versionCode=36 minSdk=24 targetSdk=36
+    versionName=5.9
+    flags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+run-as: package not debuggable: com.shift.habla

@@ -1,0 +1,590 @@
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:41.976 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:42.666 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:43.336 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:43.996 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:44.650 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:45.308 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:45.959 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:46.600 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:47.258 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:47.912 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:48.561 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:49.220 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:49.883 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:50.555 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:51.200 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:51.853 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:52.490 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:53.163 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:53.827 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:54.496 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:55.143 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:55.802 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:56.446 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:57.121 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:57.787 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:58.444 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:59.105 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:19:59.842 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:00.517 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:01.180 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:01.828 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:02.500 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:03.146 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:03.819 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:04.480 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:05.150 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:05.803 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:06.460 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:07.131 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:07.795 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:08.458 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:09.143 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:09.794 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:10.450 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:11.099 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:11.755 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:12.411 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:13.067 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:13.728 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:14.403 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:15.039 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:15.701 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:16.387 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:17.048 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:17.689 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:18.363 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:19.017 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:19.658 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:20.323 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:20.986 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:21.648 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:22.312 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:22.956 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:23.627 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:24.287 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:24.934 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:25.586 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:26.242 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:26.899 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:27.554 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:28.217 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:28.906 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:29.543 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:30.179 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:30.825 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:31.496 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:32.146 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:32.812 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:33.482 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:34.148 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:34.794 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:35.466 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:36.143 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:36.802 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:37.463 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:38.142 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:38.792 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service power: Broken pipe
+22:20:39.446 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:40.651 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:41.325 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:41.989 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:42.662 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:43.320 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:43.975 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:44.626 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:45.289 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:45.939 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:46.592 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:47.259 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:47.927 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:48.588 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:49.235 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:49.896 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:50.557 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:51.218 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:51.863 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:52.521 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:53.184 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:53.855 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:54.515 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:55.175 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:55.840 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:56.516 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:57.212 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:57.880 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:58.545 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:59.228 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:20:59.933 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:00.614 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:01.259 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:01.920 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:02.580 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:03.245 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:03.926 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:04.609 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:05.256 | mWakefulness=Awake | habla_top=1 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:05.885 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:06.795 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:07.482 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:08.130 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:08.810 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service power: Broken pipe
+22:21:09.637 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:10.313 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:11.086 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:11.823 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:12.528 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:13.186 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:13.893 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:14.595 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:15.339 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service power: Broken pipe
+22:21:16.003 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:16.700 | mWakefulness=Awake | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:17.393 | mWakefulness=Dozing | habla_top=1 | habla_in=1 | appops=running |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:18.185 | mWakefulness=Dozing | habla_top=0 | habla_in=1 | appops=no |- Actual mode = MODE_IN_COMMUNICATION
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:19.499 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:20.170 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:20.829 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:21.472 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:22.140 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:22.795 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:23.512 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:24.254 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:24.960 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:25.670 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:26.366 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:27.016 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:27.697 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:28.371 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:29.075 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:29.798 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:30.449 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:31.178 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:31.862 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:32.564 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:33.231 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:33.949 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:34.680 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:35.359 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:36.023 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:36.734 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:37.417 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:38.098 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:38.763 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:39.481 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:40.208 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:40.907 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:41.573 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:42.237 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:42.932 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:43.654 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service power: Broken pipe
+22:21:44.322 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:45.030 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:45.708 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:46.378 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:47.114 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:47.800 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:48.471 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:49.149 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:49.802 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:50.506 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:51.195 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:51.860 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:52.548 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:53.225 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:53.919 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:54.569 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:55.289 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:56.000 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:56.713 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+Failed to write while dumping service power: Broken pipe
+22:21:57.393 | mWakefulness=Dozing | habla_top=0 | habla_in=0 | appops=no |- Actual mode = MODE_NORMAL

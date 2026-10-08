@@ -5,7 +5,7 @@
 - **Dónde está:** rama `claude/peaceful-fermi-ua55yq`, PR https://github.com/shift3385/Habla/pull/1 (**aún sin fusionar en `main`**). En el PC: `git fetch origin` y `git checkout claude/peaceful-fermi-ua55yq` (o fusiona antes el PR).
 - **Comprobado en PC:** `npx tsc -b` OK, `npm run lint` 0 errores, `npm test` 39/39, banco OK, `npm run build` OK. Pruebas en la app real con Chromium y red simulada (`evidencia-rev/v582-navegador/`, `evidencia-rev/v59-navegador/`) y revisión de código (8 + 10 hallazgos, todos corregidos). Lo hizo una sesión en la nube, sin agente `rev` aparte: se da por cerrada la revisión en PC.
 - **Lo único pendiente:**
-  1. Compilar en el PC: `npm run apk` (release) y `npm run apk:debug`. Comprobar la firma (mismo certificado que la 5.8) y `versionCode 36`.
+  1. ~~Compilar en el PC~~ **HECHO (2026-10-07 20:30, sesión del PC):** `main` al día con GitHub (PR #1 + `03b5ca9`); tsc OK, lint 0 errores, `npm test` 39/39, banco OK. `apk/Habla-v5.9.apk` (release, `com.shift.habla` 36/5.9, **no depurable**, mismo certificado que la 5.8: SHA-256 `95626710…`) y `apk/Habla-v5.9-debug.apk` (`com.shift.habla.debug` 36/5.9-debug, depurable, firma debug de Android).
   2. **Pruebas en el teléfono:** R1–R24 de `REVISOR-MOVIL.md`. R21 (fonética real) gasta segundos del F0: pedir permiso al dueño.
   3. Decisiones del dueño: aceptar MIC-308 como riesgo residual BAJA; borrar los APK antiguos de `apk/` (FUG-402).
 - Prompt para la sesión del PC: `Lee docs/correccion/ESTADO.md y docs/correccion/REVISOR-MOVIL.md, compila la 5.9 y haz la revisión móvil en el POCO (serie 60d0718c).`

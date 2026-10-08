@@ -1,0 +1,2 @@
+Inicio en reposo, ventana 1: 10% de un núcleo
+Inicio en reposo, ventana 2: 9% de un núcleo
