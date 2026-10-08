@@ -50,7 +50,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
      > Por eso creé Habla.»
      > — **Liomar**, creador de Habla
    - Después, la nota de voz del principio se envía (*whoosh*), su onda se convierte en la **H que habla** (revelación del logo, §3): «Hoy, tu primera frase.»
-   - **Con la voz de Liomar** (`public/voz-liomar.mp3`, unos 8–9 s; hasta que exista, `// TODO voz-liomar.mp3` y el texto en pantalla):
+   - **Con la voz de Liomar** (YA GRABADA, dos archivos en `public/`): `voz-liomar-1-es.mp3` (7,3 s: «Yo también entendía inglés… pero me quedaba callado. Por eso creé Habla.») y `voz-liomar-2-en.mp3` (3,1 s: «Now it's your turn. Say your first sentence.»). Entre los dos, 1 s de silencio. Mide su duración con `getAudioDurationInSeconds()` y ajusta la escena a ellos:
      > «Yo también entendía inglés… pero me quedaba callado. Por eso creé Habla.» *(pausa de 1 s)* «Now it's your turn. Say your first sentence.»
      - La primera parte, en español, es la confesión. La segunda, **en inglés con su propia voz**, es la prueba viva de que funciona.
      - Mientras habla, la onda de la nota de voz sigue **su voz real** (`@remotion/media-utils`, `visualizeAudio`). Al terminar la frase en inglés, esa onda se convierte en la H del logo.
