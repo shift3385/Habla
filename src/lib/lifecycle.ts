@@ -52,6 +52,22 @@ function goForeground() {
   onForeground.forEach((fn) => fn())
 }
 
+/**
+ * Prueba de sonido al conectar auriculares (2026-10-08): corta lo que esté sonando o grabando, como al pasar a
+ * segundo plano, para que la prueba tenga el micro y el audio para ella. Las pantallas guardan y se reinician igual.
+ */
+export function interruptForSoundTest() {
+  releaseAllMics()
+  stopSpeaking().catch(() => {})
+  onBackground.forEach((fn) => {
+    try {
+      fn()
+    } catch {
+      // una pantalla que falle no impide al resto
+    }
+  })
+}
+
 export function installLifecycle() {
   if (installed) return
   installed = true

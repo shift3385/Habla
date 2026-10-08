@@ -1,0 +1,497 @@
+Failed to write while dumping service activity: Broken pipe
+10:49:48.949 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:49.448 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:49.928 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:50.394 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:50.859 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:51.324 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:51.790 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:52.258 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:52.724 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:53.186 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:53.651 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:54.120 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:54.600 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:55.090 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:55.601 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:56.097 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:56.591 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:57.097 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:57.599 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:58.094 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:58.601 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:59.061 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:49:59.557 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:00.028 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:00.503 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:01.002 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:01.490 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:01.981 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:02.483 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:02.960 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:03.431 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:03.910 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:04.413 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:04.900 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:05.374 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:05.834 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:06.292 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:06.773 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:07.230 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:07.700 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:08.181 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:08.635 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:09.094 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:09.580 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:10.048 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:10.533 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:10.993 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:11.462 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:11.917 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:12.369 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:12.844 | top=1 | habla_in=0 | MODE_IN_COMMUNICATION
+Failed to write while dumping service activity: Broken pipe
+10:50:13.472 | top=1 | habla_in=0 | MODE_IN_COMMUNICATION
+Failed to write while dumping service activity: Broken pipe
+10:50:13.959 | top=1 | habla_in=1 | MODE_IN_COMMUNICATION
+Failed to write while dumping service activity: Broken pipe
+10:50:14.415 | top=1 | habla_in=1 | MODE_IN_COMMUNICATION
+Failed to write while dumping service activity: Broken pipe
+10:50:14.876 | top=1 | habla_in=1 | MODE_IN_COMMUNICATION
+Failed to write while dumping service activity: Broken pipe
+10:50:15.328 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:16.526 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:17.021 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:17.490 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:17.953 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:18.408 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:18.872 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:19.332 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:19.797 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:20.275 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:20.772 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:21.240 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:21.705 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:22.217 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:22.677 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:23.175 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:23.641 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:24.085 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:24.553 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:25.005 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:25.469 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:25.937 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:26.400 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:26.863 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:27.350 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:27.822 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:28.281 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:28.745 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:29.212 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:29.694 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:30.191 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:30.655 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:31.123 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:31.583 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:32.038 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:32.509 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:32.973 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:33.425 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:33.896 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:34.372 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:34.853 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:35.322 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:35.780 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:36.257 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:36.734 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:37.222 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:37.706 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:38.191 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:38.683 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:39.148 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:39.630 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:40.103 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:40.570 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:41.054 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:41.507 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:41.976 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:42.462 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:42.965 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:43.443 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:43.925 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:44.392 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:44.847 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:45.341 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:45.799 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:46.260 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:46.719 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:47.196 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:47.642 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:48.120 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:48.595 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:49.072 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:49.556 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:50.022 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:50.497 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:50.972 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:51.432 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:51.901 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:52.354 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:52.814 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:53.270 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:53.708 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:54.161 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:54.633 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:55.103 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:55.580 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:56.054 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:56.503 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:56.972 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:57.444 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:57.915 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:50:58.416 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service audio: Broken pipe
+10:50:59.623 | top=1 | habla_in=2 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:00.406 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:01.053 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:01.536 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:01.997 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:02.467 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:02.962 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:03.441 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:03.912 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:04.387 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:04.864 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:05.328 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:05.809 | top=1 | habla_in=1 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:06.318 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:06.880 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:07.378 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:07.847 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:08.307 | top=1 | habla_in=0 | MODE_NORMAL
+10:51:08.815 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:09.284 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:09.751 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:10.224 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:10.702 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:11.171 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:11.632 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:12.111 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:12.580 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:13.077 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:13.564 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:14.036 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:14.509 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:15.002 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:15.479 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:15.973 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:16.449 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:16.927 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:17.386 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:17.851 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:18.347 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:18.824 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:19.306 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:19.765 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:20.232 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:20.686 | top=1 | habla_in=0 | MODE_NORMAL
+10:51:21.146 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:21.603 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:22.128 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:22.566 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:23.026 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:23.470 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:23.948 | top=1 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:24.431 | top=1 | habla_in=0 | MODE_NORMAL
+10:51:24.981 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:25.704 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:26.219 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:26.756 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:27.214 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:27.670 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:28.125 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:28.588 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:29.062 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:29.686 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:30.186 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:30.586 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:30.957 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:31.331 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:31.775 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:32.229 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:32.695 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:33.140 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:33.552 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:34.046 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:34.514 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:34.973 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:35.540 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:36.097 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:36.537 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:36.987 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:37.449 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:37.910 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:38.372 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:39.032 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:39.618 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:39.993 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:40.367 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:40.829 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:41.278 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:41.728 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:42.187 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:42.639 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:43.093 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:43.579 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:44.071 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:44.507 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:44.943 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:45.404 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:45.857 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:46.374 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:46.822 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:47.304 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:47.793 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:48.247 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:48.698 | top=0 | habla_in=0 | MODE_NORMAL
+Failed to write while dumping service activity: Broken pipe
+10:51:49.175 | top=0 | habla_in=0 | MODE_NORMAL

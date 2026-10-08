@@ -287,7 +287,7 @@ export default function App() {
   if (!settings || !t || calibrated === null) return null
 
   // Selector de audio con auriculares: puede aparecer en cualquier pantalla.
-  const audioPicker = <AudioPicker settings={settings} update={update} />
+  const audioPicker = <AudioPicker settings={settings} t={t} update={update} />
   const picker = (
     <>
       {audioPicker}

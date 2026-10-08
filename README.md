@@ -158,7 +158,10 @@ Al conectar unos auriculares (o al abrir Habla con ellos puestos) aparece un sel
 - **Escucho por los auriculares, hablo al teléfono**: la voz del profe suena con mejor calidad; habla cerca del teléfono.
 - **Todo por el teléfono**: altavoz y micrófono del teléfono.
 
-- **Comprobación al entrar en clase** (desde la 5.9): con *Todo por los auriculares*, tu mascota muestra «Conectando tus auriculares…» (solo deja salir) y comprueba en 1–3 s que su micrófono le envía audio. Si no llega nada (hay auriculares cuyo micrófono no funciona con algunos teléfonos), te avisa: sigues oyendo al profe por los auriculares y hablas al teléfono. Lo vuelve a comprobar al reconectarlos o al volver a abrir Habla.
+- **Prueba de sonido** (desde la 5.9): cada vez que conectas unos auriculares, en cualquier pantalla, después de elegir llega la prueba y no se sigue hasta pasarla:
+  1. **«¿Me oyes?»**: tu mascota dice una frase por donde elegiste; confirma si la oyes (o «Repetir» / «No te oigo»).
+  2. **«Ahora habla tú»**: di «Hello, Gota!» (o el nombre de tu mascota); las barras siguen tu voz y la prueba se pasa sola.
+  Si el micrófono de los auriculares no te oye, toca **Hablar al micro del teléfono**: sigues oyendo por los auriculares. Lo que pasa la prueba es lo que se guarda para esos auriculares. Está también en *Ajustes → Profe y voz → Prueba de sonido* (sin auriculares, prueba el altavoz y el micrófono del teléfono).
 
 Se recuerda para cada par de auriculares y se cambia en *Ajustes → Profe y voz → Audio con auriculares*. Al salir de la app, el audio del teléfono vuelve a la normalidad.
 

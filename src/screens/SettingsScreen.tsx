@@ -5,7 +5,7 @@ import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, li
 import { verifyGeminiKey } from '../lib/geminiKey'
 import { Share } from '@capacitor/share'
 import { askNotificationPermission, notificationsGranted, testReminder } from '../lib/reminders'
-import { openAudioPicker } from '../lib/audioRoute'
+import { openAudioPicker, openSoundTest } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import { ORIENTATIONS } from '../lib/orientation'
 import SkillProgressCard from '../components/SkillProgressCard'
@@ -328,6 +328,10 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
         <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
           <Icon name="headphones" size={18} />
           Audio con auriculares
+        </button>
+        <button onClick={openSoundTest} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
+          <Icon name="mic" size={18} />
+          Prueba de sonido
         </button>
         <p className="txt-sub mt-2.5 text-xs leading-snug">
           Si la voz suena rara, elige otra voz en inglés. Si no hay ninguna, instala "Speech Services by Google" desde Play Store.

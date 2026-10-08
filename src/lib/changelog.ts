@@ -48,7 +48,8 @@ export const RELEASES: Release[] = [
       'Si sales de la app mientras grabas, al volver ya no parece que sigues grabando: tu mascota te dice que la grabación se cortó',
       'Tu racha ya no se rompe si ese día hablaste en una clase que dejaste a medias',
       'Test: la audición dice «duración 1 min 20 s»',
-      'Con «Todo por los auriculares», al entrar en clase tu mascota comprueba en 1–3 s que su micrófono te envía la voz. Si no llega nada, te lo dice y hablas al teléfono mientras sigues oyendo por los auriculares; antes tardaba unos 9 s en empezar a grabar en cada toque',
+      'Prueba de sonido: cada vez que conectas unos auriculares, tu mascota te habla («¿Me oyes?») y luego te pide que digas algo; sigues cuando pasa. Si su micrófono no te oye, puedes hablarle al teléfono y seguir oyendo por los auriculares. También en Ajustes → Profe y voz → Prueba de sonido',
+      'Con auriculares, la grabación empieza al momento al tocar el micro (antes tardaba unos 9 s en cada toque)',
     ],
   },
   {

@@ -50,7 +50,7 @@ function clock(s: number) {
 const SHAPE = [0.45, 0.6, 0.75, 0.9, 1, 1, 0.9, 0.75, 0.6, 0.45]
 
 /** Barras que siguen el volumen real del micrófono (petición del dueño): quietas en silencio, altas al hablar. */
-function VoiceMeter({ level }: { level: () => number }) {
+export function VoiceMeter({ level }: { level: () => number }) {
   const bars = useRef<(HTMLSpanElement | null)[]>([])
   useEffect(() => {
     let id = 0

@@ -1,0 +1,215 @@
+10-08 10:50:12.842 V/AS.AudioService( 2833): setMode(mode=3, pid=2231, uid=10410, caller=com.shift.habla)
+10-08 10:50:12.842 V/AS.AudioService( 2833): setMode(3) updating hldr for pid: 2231
+10-08 10:50:12.842 D/AS.AudioService( 2833): setMode: newSceneValue: 2 currentScene value:1
+10-08 10:50:12.850 D/AudioManager( 2231): setCommunicationDevice() device.getId():2557, devicename=bt_sco
+10-08 10:50:12.850 I/AS.AudioService( 2833): In setCommunicationDevice(), deviceType = 16, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:12.939 D/MediaFocusControlStubImpl( 2833): setModeOwnerUid() 10410
+10-08 10:50:12.941 V/AS.AudioDeviceBroker( 2833): onSetCommunicationDeviceForClient: CommunicationDeviceInfo mCb=android.os.BinderProxy@e29522b mAttributionSource=android.content.AttributionSource@f988763 mDevice=[AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[]] mOn=true mScoAudioMode=-1 mIsPrivileged=false mEventSource=setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:12.941 V/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient: device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[], eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:12.942 I/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient for uid: 10410 pid: 2231 cb : android.os.BinderProxy@e29522b device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[] isPrivileged: false from API: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:12.954 V/AS.AudioDeviceBroker( 2833): updateCommunicationRoute, preferredCommunicationDevice: null eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:12.961 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CODEC_ST(0x02)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_CN_DONE_E(0x03)]
+10-08 10:50:12.961 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_LISTEN_ST(0x01)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_OPEN_E(0x01)]
+10-08 10:50:13.553 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPENING_ST(0x03)]->[BTA_AG_SCO_OPEN_ST(0x06)] after event [BTA_AG_SCO_CONN_OPEN_E(0x07)]
+10-08 10:50:13.556 D/HeadsetStateMachine(12516): transitionTo: destState=AudioOn
+10-08 10:50:13.557 D/HeadsetStateMachine(12516): moveTempStackToStateStack: X mStateStackTop=0,startingIndex=0,Top=AudioOn
+10-08 10:50:13.557 D/HeadsetStateMachine(12516): invokeEnterMethods: AudioOn
+10-08 10:50:13.560 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: Connected -> AudioOn
+10-08 10:50:13.560 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=broadcastAudioState: XX:XX:XX:XX:08:71: 10->12
+10-08 10:50:13.566 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:13.566 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:13.566 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:13.719 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:13.719 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:50:13.721 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 16, eventSource: setCommunicationDevice() from u/pid:1000/2833
+10-08 10:50:13.724 I/HablaAudio( 2231): ruta auriculares lista en 874 ms · MI03 tipo 7 · ahora: MI03 tipo 7 · modo 3
+10-08 10:50:13.762 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:13.762 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send alerting update
+10-08 10:50:13.764 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send delayed active mesg
+10-08 10:50:13.774 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:13.774 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=active message timer expired, send active update
+10-08 10:50:15.037 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 16, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:15.037 V/AS.AudioDeviceBroker( 2833): onSetCommunicationDeviceForClient: CommunicationDeviceInfo mCb=android.os.BinderProxy@e29522b mAttributionSource=android.content.AttributionSource@f988763 mDevice=[null] mOn=false mScoAudioMode=-1 mIsPrivileged=false mEventSource=setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:15.037 V/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient: device: null, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:15.038 I/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient for uid: 10410 pid: 2231 cb : android.os.BinderProxy@e29522b device: null isPrivileged: false from API: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:15.038 V/AS.AudioService( 2833): setMode(mode=0, pid=2231, uid=10410, caller=com.shift.habla)
+10-08 10:50:15.045 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:15.047 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPEN_ST(0x06)]->[BTA_AG_SCO_CLOSING_ST(0x07)] after event [BTA_AG_SCO_CLOSE_E(0x05)]
+10-08 10:50:15.048 V/AS.AudioDeviceBroker( 2833): updateCommunicationRoute, preferredCommunicationDevice: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name: profiles:[] descriptors:[] eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:15.055 V/AS.AudioService( 2833): setMode(0) removing hldr for pid: 2231
+10-08 10:50:15.055 D/AS.AudioService( 2833): setMode: newSceneValue: 1 currentScene value:2
+10-08 10:50:15.057 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:15.057 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:50:15.136 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CLOSING_ST(0x07)]->[BTA_AG_SCO_LISTEN_ST(0x01)] after event [BTA_AG_SCO_CONN_CLOSE_E(0x08)]
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=EVENT_TYPE_AUDIO_DISC_REASON: mLatestScoDiscReason = 22
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:15.139 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:15.139 I/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processAudioEvent: audio disconnected by remote
+10-08 10:50:15.144 D/HeadsetStateMachine(12516): transitionTo: destState=Connected
+10-08 10:50:15.144 D/HeadsetStateMachine(12516): invokeExitMethods: AudioOn
+10-08 10:50:15.145 D/HeadsetStateMachine(12516): Connected: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: AudioOn -> Connected
+10-08 10:50:16.070 D/MediaFocusControlStubImpl( 2833): setModeOwnerUid() 0
+10-08 10:50:16.148 D/AudioManager( 2231): setCommunicationDevice() device.getId():2557, devicename=bt_sco
+10-08 10:50:16.150 I/AS.AudioService( 2833): In setCommunicationDevice(), deviceType = 16, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:16.268 V/AS.AudioDeviceBroker( 2833): onSetCommunicationDeviceForClient: CommunicationDeviceInfo mCb=android.os.BinderProxy@90d4c5a mAttributionSource=android.content.AttributionSource@f988763 mDevice=[AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[]] mOn=true mScoAudioMode=-1 mIsPrivileged=false mEventSource=setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:16.268 V/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient: device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[], eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:16.268 I/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient for uid: 10410 pid: 2231 cb : android.os.BinderProxy@90d4c5a device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[] isPrivileged: false from API: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:16.280 V/AS.AudioDeviceBroker( 2833): updateCommunicationRoute, preferredCommunicationDevice: null eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:16.283 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CODEC_ST(0x02)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_CN_DONE_E(0x03)]
+10-08 10:50:16.283 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_LISTEN_ST(0x01)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_OPEN_E(0x01)]
+10-08 10:50:16.380 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPENING_ST(0x03)]->[BTA_AG_SCO_OPEN_ST(0x06)] after event [BTA_AG_SCO_CONN_OPEN_E(0x07)]
+10-08 10:50:16.388 D/HeadsetStateMachine(12516): transitionTo: destState=AudioOn
+10-08 10:50:16.388 D/HeadsetStateMachine(12516): moveTempStackToStateStack: X mStateStackTop=0,startingIndex=0,Top=AudioOn
+10-08 10:50:16.388 D/HeadsetStateMachine(12516): invokeEnterMethods: AudioOn
+10-08 10:50:16.391 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: Connected -> AudioOn
+10-08 10:50:16.391 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=broadcastAudioState: XX:XX:XX:XX:08:71: 10->12
+10-08 10:50:16.407 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:16.407 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AT_CLCC[14], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:16.407 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AT_CLCC[14], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:16.489 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:16.489 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:50:16.491 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 16, eventSource: setCommunicationDevice() from u/pid:1000/2833
+10-08 10:50:16.883 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:16.884 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:16.884 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:17.083 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:17.083 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send alerting update
+10-08 10:50:17.083 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send delayed active mesg
+10-08 10:50:17.094 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:17.094 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=active message timer expired, send active update
+10-08 10:50:18.559 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:18.560 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=SCO_RETRIIAL_NOT_REQ: 
+10-08 10:50:21.393 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:21.393 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=SCO_RETRIIAL_NOT_REQ: 
+10-08 10:50:22.499 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:22.502 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPEN_ST(0x06)]->[BTA_AG_SCO_CLOSING_ST(0x07)] after event [BTA_AG_SCO_CLOSE_E(0x05)]
+10-08 10:50:22.516 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:22.516 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:50:22.594 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CLOSING_ST(0x07)]->[BTA_AG_SCO_LISTEN_ST(0x01)] after event [BTA_AG_SCO_CONN_CLOSE_E(0x08)]
+10-08 10:50:22.598 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:22.599 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:22.599 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:22.599 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=EVENT_TYPE_AUDIO_DISC_REASON: mLatestScoDiscReason = 22
+10-08 10:50:22.599 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:22.599 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:22.599 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:50:22.599 I/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processAudioEvent: audio disconnected by remote
+10-08 10:50:22.602 D/HeadsetStateMachine(12516): transitionTo: destState=Connected
+10-08 10:50:22.602 D/HeadsetStateMachine(12516): invokeExitMethods: AudioOn
+10-08 10:50:22.603 D/HeadsetStateMachine(12516): Connected: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: AudioOn -> Connected
+10-08 10:50:58.174 D/AudioManager( 2231): setCommunicationDevice() device.getId():2557, devicename=bt_sco
+10-08 10:50:58.176 I/AS.AudioService( 2833): In setCommunicationDevice(), deviceType = 16, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:58.177 V/AS.AudioDeviceBroker( 2833): onSetCommunicationDeviceForClient: CommunicationDeviceInfo mCb=android.os.BinderProxy@90d4c5a mAttributionSource=android.content.AttributionSource@f988763 mDevice=[AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[]] mOn=true mScoAudioMode=-1 mIsPrivileged=false mEventSource=setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:58.178 V/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient: device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[], eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:58.178 I/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient for uid: 10410 pid: 2231 cb : android.os.BinderProxy@90d4c5a device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[] isPrivileged: false from API: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:58.195 V/AS.AudioDeviceBroker( 2833): updateCommunicationRoute, preferredCommunicationDevice: null eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:50:58.218 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CODEC_ST(0x02)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_CN_DONE_E(0x03)]
+10-08 10:50:58.218 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_LISTEN_ST(0x01)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_OPEN_E(0x01)]
+10-08 10:50:58.562 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPENING_ST(0x03)]->[BTA_AG_SCO_OPEN_ST(0x06)] after event [BTA_AG_SCO_CONN_OPEN_E(0x07)]
+10-08 10:50:58.569 D/HeadsetStateMachine(12516): transitionTo: destState=AudioOn
+10-08 10:50:58.569 D/HeadsetStateMachine(12516): moveTempStackToStateStack: X mStateStackTop=0,startingIndex=0,Top=AudioOn
+10-08 10:50:58.569 D/HeadsetStateMachine(12516): invokeEnterMethods: AudioOn
+10-08 10:50:58.575 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: Connected -> AudioOn
+10-08 10:50:58.575 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=broadcastAudioState: XX:XX:XX:XX:08:71: 10->12
+10-08 10:50:58.815 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:58.817 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:58.819 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:59.018 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:59.018 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send alerting update
+10-08 10:50:59.019 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send delayed active mesg
+10-08 10:50:59.030 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:59.030 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=active message timer expired, send active update
+10-08 10:50:59.725 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:50:59.725 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:50:59.879 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 16, eventSource: setCommunicationDevice() from u/pid:1000/2833
+10-08 10:51:03.573 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:51:03.573 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=SCO_RETRIIAL_NOT_REQ: 
+10-08 10:51:17.402 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:51:17.404 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPEN_ST(0x06)]->[BTA_AG_SCO_CLOSING_ST(0x07)] after event [BTA_AG_SCO_CLOSE_E(0x05)]
+10-08 10:51:17.412 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:51:17.412 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:51:17.513 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CLOSING_ST(0x07)]->[BTA_AG_SCO_LISTEN_ST(0x01)] after event [BTA_AG_SCO_CONN_CLOSE_E(0x08)]
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=EVENT_TYPE_AUDIO_DISC_REASON: mLatestScoDiscReason = 22
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:51:17.514 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:51:17.514 I/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processAudioEvent: audio disconnected by remote
+10-08 10:51:17.517 D/HeadsetStateMachine(12516): transitionTo: destState=Connected
+10-08 10:51:17.517 D/HeadsetStateMachine(12516): invokeExitMethods: AudioOn
+10-08 10:51:17.518 D/HeadsetStateMachine(12516): Connected: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: AudioOn -> Connected
+10-08 10:51:26.226 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 1, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:51:26.226 V/AS.AudioDeviceBroker( 2833): onSetCommunicationDeviceForClient: CommunicationDeviceInfo mCb=android.os.BinderProxy@e29522b mAttributionSource=android.content.AttributionSource@f988763 mDevice=[null] mOn=false mScoAudioMode=-1 mIsPrivileged=false mEventSource=setCommunicationDevice() from u/pid:10410/2231
+10-08 10:51:26.226 V/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient: device: null, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:51:26.226 I/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient for uid: 10410 pid: 2231 cb : android.os.BinderProxy@e29522b device: null isPrivileged: false from API: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:51:26.232 V/AS.AudioDeviceBroker( 2833): updateCommunicationRoute, preferredCommunicationDevice: null eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:51:26.330 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 1, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:51:26.336 V/AS.AudioService( 2833): setMode(mode=0, pid=2231, uid=10410, caller=com.shift.habla)
+10-08 10:51:26.336 D/AS.AudioService( 2833): setMode: newSceneValue: 1 currentScene value:1
+10-08 10:51:39.148 D/TouchFeatureV2( 1518): setModeValue id:0, mode:25, value:1
+10-08 10:51:58.547 D/TouchFeatureV2( 1518): setModeValue id:0, mode:25, value:0
+10-08 10:52:07.577 D/TouchFeatureV2( 1518): setModeValue id:0, mode:25, value:1
+10-08 10:52:09.360 D/TouchFeatureV2( 1518): setModeValue id:0, mode:25, value:0
+10-08 10:52:18.919 V/AS.AudioService( 2833): setMode(mode=3, pid=2231, uid=10410, caller=com.shift.habla)
+10-08 10:52:18.919 V/AS.AudioService( 2833): setMode(3) adding handler for pid=2231
+10-08 10:52:18.919 D/AS.AudioService( 2833): setMode: newSceneValue: 2 currentScene value:1
+10-08 10:52:18.924 D/AudioManager( 2231): setCommunicationDevice() device.getId():2557, devicename=bt_sco
+10-08 10:52:18.925 I/AS.AudioService( 2833): In setCommunicationDevice(), deviceType = 16, eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:52:19.041 D/MediaFocusControlStubImpl( 2833): setModeOwnerUid() 10410
+10-08 10:52:19.042 V/AS.AudioDeviceBroker( 2833): onSetCommunicationDeviceForClient: CommunicationDeviceInfo mCb=android.os.BinderProxy@e29522b mAttributionSource=android.content.AttributionSource@f988763 mDevice=[AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[]] mOn=true mScoAudioMode=-1 mIsPrivileged=false mEventSource=setCommunicationDevice() from u/pid:10410/2231
+10-08 10:52:19.042 V/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient: device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[], eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:52:19.042 I/AS.AudioDeviceBroker( 2833): setCommunicationRouteForClient for uid: 10410 pid: 2231 cb : android.os.BinderProxy@e29522b device: AudioDeviceAttributes: role:output type:bt_sco addr:XX:XX:XX:XX:00:00 name:MI03 profiles:[{ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}, {ENCODING_PCM_16BIT, sampling rates=[8000, 16000], channel masks=0x04, encapsulation type=0}] descriptors:[] isPrivileged: false from API: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:52:19.059 V/AS.AudioDeviceBroker( 2833): updateCommunicationRoute, preferredCommunicationDevice: null eventSource: setCommunicationDevice() from u/pid:10410/2231
+10-08 10:52:19.075 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CODEC_ST(0x02)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_CN_DONE_E(0x03)]
+10-08 10:52:19.075 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_LISTEN_ST(0x01)]->[BTA_AG_SCO_OPENING_ST(0x03)] after event [BTA_AG_SCO_OPEN_E(0x01)]
+10-08 10:52:19.285 D/EuiccConnector( 4453): transitionTo: destState=AvailableState
+10-08 10:52:19.288 D/EuiccConnector( 4453): transitionTo: destState=BindingState
+10-08 10:52:19.374 D/EuiccConnector( 4453): transitionTo: destState=DisconnectedState
+10-08 10:52:19.429 D/EuiccConnector( 4453): transitionTo: destState=ConnectedState
+10-08 10:52:19.578 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPENING_ST(0x03)]->[BTA_AG_SCO_OPEN_ST(0x06)] after event [BTA_AG_SCO_CONN_OPEN_E(0x07)]
+10-08 10:52:19.600 D/HeadsetStateMachine(12516): transitionTo: destState=AudioOn
+10-08 10:52:19.600 D/HeadsetStateMachine(12516): moveTempStackToStateStack: X mStateStackTop=0,startingIndex=0,Top=AudioOn
+10-08 10:52:19.600 D/HeadsetStateMachine(12516): invokeEnterMethods: AudioOn
+10-08 10:52:19.627 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: Connected -> AudioOn
+10-08 10:52:19.627 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=broadcastAudioState: XX:XX:XX:XX:08:71: 10->12
+10-08 10:52:19.673 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:19.674 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:19.675 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:19.877 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:19.878 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send alerting update
+10-08 10:52:19.878 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=alerting message timer expired, send delayed active mesg
+10-08 10:52:19.888 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:19.888 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=active message timer expired, send active update
+10-08 10:52:19.902 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:19.902 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:52:19.908 I/HablaAudio( 2231): ruta auriculares lista en 983 ms · MI03 tipo 7 · ahora: MI03 tipo 7 · modo 3
+10-08 10:52:19.911 I/AS.AudioService( 2833): In setCommunicationDevice(), curDeviceType = 16, eventSource: setCommunicationDevice() from u/pid:1000/2833
+10-08 10:52:22.582 D/TouchFeatureV2( 1518): setModeValue id:0, mode:25, value:1
+10-08 10:52:23.461 V/AS.AudioService( 2833): setMode(mode=0, pid=17378, uid=10480, caller=video.like)
+10-08 10:52:23.461 D/AS.AudioService( 2833): setMode: newSceneValue: 2 currentScene value:2
+10-08 10:52:24.627 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:24.627 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=SCO_RETRIIAL_NOT_REQ: 
+10-08 10:52:25.016 D/MediaFocusControlStubImpl( 2833): setModeOwnerUid() 0
+10-08 10:52:25.701 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:25.703 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_OPEN_ST(0x06)]->[BTA_AG_SCO_CLOSING_ST(0x07)] after event [BTA_AG_SCO_CLOSE_E(0x05)]
+10-08 10:52:25.721 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:25.721 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processIntentScoVolume: mSpeakerVolume=11, volumeValue=11
+10-08 10:52:25.794 W/bluetooth(12516): system/bta/ag/bta_ag_sco.cc:1300 bta_ag_sco_event: SCO_state_change: [BTA_AG_SCO_CLOSING_ST(0x07)]->[BTA_AG_SCO_LISTEN_ST(0x01)] after event [BTA_AG_SCO_CONN_CLOSE_E(0x08)]
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_DISC_REASON[23], valInt=22, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=EVENT_TYPE_AUDIO_DISC_REASON: mLatestScoDiscReason = 22
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): processMsg: AudioOn
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:52:25.796 D/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=STACK_EVENT: EVENT_TYPE_AUDIO_STATE_CHANGED[2], valInt=0, valInt2=0, valObject=null, device=XX:XX:XX:XX:08:71
+10-08 10:52:25.796 I/HeadsetStateMachine(12516): AudioOn: currentDevice=XX:XX:XX:XX:08:71, msg=processAudioEvent: audio disconnected by remote
+10-08 10:52:25.800 D/HeadsetStateMachine(12516): transitionTo: destState=Connected
+10-08 10:52:25.800 D/HeadsetStateMachine(12516): invokeExitMethods: AudioOn
+10-08 10:52:25.801 D/HeadsetStateMachine(12516): Connected: currentDevice=XX:XX:XX:XX:08:71, msg=audio state changed: XX:XX:XX:XX:08:71: AudioOn -> Connected
+10-08 10:52:26.297 D/TouchFeatureV2( 1518): setModeValue id:0, mode:25, value:0

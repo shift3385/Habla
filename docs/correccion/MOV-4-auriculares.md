@@ -49,7 +49,21 @@ Evidencia en `evidencia-movil/MOV4-*`, scripts en `arnes-movil/mov4-*.js`.
 
 **Descartado:** grabar en nativo en lugar del WebView (lo sugieren algunos foros). Aquí no ayudaría, porque el micro tampoco da audio en nativo, y supondría reescribir la grabación entera.
 
-## 6. Pendiente (pruebas del dueño)
-- [ ] **Auriculares por cable:** no deben ver la pantalla de comprobación más que un instante (no son Bluetooth: `ok` directo) y grabar con su micro.
-- [ ] **Auriculares Bluetooth de otra marca** (con micro que funcione): deben pasar la comprobación (`entregan audio`), grabar con su micro al momento y no ver el aviso. Es la prueba que valida el criterio «vivo = entrega muestras».
+## 6. Revisión tras la prueba con otros auriculares (2026-10-08, 10:50–11:10) — SOLUCIÓN DEFINITIVA
+Con unos **MI03** (Xiaomi), la comprobación nativa de §5.3 también dijo «no entrega audio» (0 de 19 328 muestras), **pero en la clase el dueño habló y Gota le entendió**, y después pasaron la prueba de sonido con su voz por el micro de los auriculares. Es decir: **la comprobación nativa daba falsos negativos en este teléfono** (AudioRecord de la app no recibe muestras del SCO aunque el WebView sí). No era fiable y se ha quitado (`checkMic` y la pantalla «Conectando tus auriculares…» de la clase).
+
+**Decisión del dueño:** no fiarse de detecciones automáticas; **prueba de audio y sonido obligatoria** que confirma la persona, como Zoom/Meet/Teams:
+1. Al conectar unos auriculares (en cualquier pantalla): selector (si no hay preferencia) → **prueba de sonido** (`SoundTest`), que bloquea hasta pasarla y luego sigue donde estabas (`interruptForSoundTest()` corta lo que sonaba o grababa).
+2. **«¿Me oyes?»**: la mascota habla por la ruta elegida; tú confirmas.
+3. **«Ahora habla tú»**: micro de esa ruta (mismas restricciones que `recorder.ts`) y medidor; se pasa sola con ~0,5 s de voz (nivel > 0,18). Si no te oye con los auriculares: «Hablar al micro del teléfono» (modo *split*) y se repite.
+4. Lo que pasa la prueba se guarda para esos auriculares; con «Todo por los auriculares» se confía en su micro al grabar (`trustDefaultMic`, sin la espera de 5 s). No se repite hasta reconectarlos.
+5. Ajustes → Profe y voz → **Prueba de sonido** (sin auriculares: altavoz y micro del teléfono).
+
+Se mantienen de §5: la ruta confirmada con límite (`setRoute` espera, 2 × 2 s) y el arreglo del bucle de 9 s.
+
+**Verificado en el POCO:** prueba del teléfono (captura `PRUEBA-SONIDO-oir.png`); MI03 y soundcore pasan la prueba con su micro (`audioPrefs`); cambiar de soundcore a MI03 con la app abierta lanza la prueba sola (11:14:57 → pasada 11:15:23), tras volver a mirar 1,5 s después de cada aviso (Android conecta el Bluetooth por etapas).
+
+## 7. Pendiente (pruebas del dueño)
+- [ ] **Auriculares por cable:** al conectarlos sale la prueba de sonido; deben oír a la mascota y pasar con su micro.
+- [x] **Auriculares Bluetooth de otra marca** (MI03): pasan la prueba de sonido con su micro.
 - [ ] Opcional: con los soundcore, hacer una llamada normal para saber si su micro funciona con este teléfono fuera de Habla.
