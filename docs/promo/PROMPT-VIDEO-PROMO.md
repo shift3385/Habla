@@ -49,7 +49,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
      > «Yo también entendía inglés… y me quedaba callado.
      > Por eso creé Habla.»
      > — **Liomar**, creador de Habla
-   - Después, la nota de voz del principio se envía (*whoosh*): «Hoy, tu primera frase.» y el icono.
+   - Después, la nota de voz del principio se envía (*whoosh*), su onda se convierte en la **H que habla** (revelación del logo, §3): «Hoy, tu primera frase.»
    - (Si el dueño lo graba, esta frase puede ir **con su propia voz**: es lo más potente del vídeo. Hueco `// TODO voz-liomar.mp3`.)
 
 **Reglas para que emocione de verdad:**
@@ -89,7 +89,17 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
   - PNG en `D:\My Apps\HABLA\android\app\src\main\res\drawable-nodpi\mascot_{gota,chispa,musgo,brisa}.png` → cópialos a `public/`.
   - La mascota animada de la app (`src/ui/Mascot.tsx`) es un SVG tipo *slime* de 16 puntos: ojos que siguen el dedo, se estira y tiene un secreto a los 5 toques. Si la portas, **hazla determinista con `useCurrentFrame()`**: nada de `requestAnimationFrame` ni `Math.random()` sin semilla (usa `random('semilla')` de Remotion).
   - Estados de ánimo: idle, listening, thinking, speaking y happy.
-- **Icono de la app:** `android/app/src/main/res/mipmap-xxxhdpi/ic_launcher*.png`.
+- **Logo / icono de la app: «La H que habla»** (elegido por el dueño, 5.9):
+  - Dos columnas redondeadas forman una **H** y su puente es una **onda de voz de 4 barras**.
+  - Degradado horizontal `#7fd0ff` → `#b7a8ff` (Marea → Nimbo) sobre fondo noche (`#0b1a2e` → `#061420`).
+  - Archivos en `public/`:
+    - `logo-habla.svg`: vector, con cada pieza con su id (`columna-izq`, `columna-der`, `onda-1`…`onda-4`) para animarlas por separado;
+    - `icono-habla.png` y `icono-habla-redondo.png`: 192 px, como se ve en el teléfono.
+  - **Es la firma visual del vídeo:** la onda conductora y el puente de la H son la misma cosa. Úsalo así:
+    - **Revelación del logo (cierre):** la onda llena de la nota de voz se encoge hasta 4 barras, dos columnas suben desde abajo con un `spring()` y la encierran formando la H. Después aparece el fondo noche con esquinas redondeadas y el logo queda como icono de app. Esa es la última imagen del vídeo, con «Creada por Liomar».
+    - **Aparición sutil (escena 1):** al primer latido de la onda, durante 4–6 frames, se intuyen las dos columnas de la H a su alrededor y desaparecen. Es una semilla que solo se entiende al final.
+    - **Marca de agua** pequeña (logo en blanco al 60 %) en una esquina durante las escenas 3–8, y en el `Teaser15` como último plano.
+  - No lo deformes ni cambies sus colores; sobre fondos claros, ponlo dentro de su cuadrado noche.
 - **UI dentro del teléfono:** recrea las pantallas en React, con nitidez vectorial y animables, a partir de las capturas de referencia:
   - `D:\My Apps\HABLA\docs\correccion\evidencia-movil\`:
     - `R22-globo.png`: Inicio;
@@ -162,7 +172,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 
 **Escena 9 · Cierre (70–75 s)**
 - Vuelve la nota de voz del principio, ahora llena y con «0:42». Se envía con un *whoosh*.
-- Logo/icono de Habla + **«Habla. Por fin, a hablar.»** → **«Hoy, tu primera frase.»**
+- **Revelación del logo «La H que habla»** (ver §3) + **«Habla. Por fin, a hablar.»** → **«Hoy, tu primera frase.»**
 - Debajo, en pequeño: «Android · Gratis con tu propia clave de Gemini · Tus datos se quedan en tu teléfono».
 - **Firma de autoría** (deseo expreso del dueño, que quede constancia de que la app es suya): «Creada por **Liomar**» con el año (© 2026), visible al menos 2 s en el cierre de las tres composiciones, también en el `Teaser15`. Pon el texto en `copy.ts` (`AUTHOR`) para poder añadir el apellido o un enlace.
 
