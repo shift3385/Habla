@@ -126,8 +126,6 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
     - `PRUEBA-SONIDO-oir.png`: prueba de sonido;
     - `ANILLO-*.png` y `BARRAS-10.png`: micrófono.
   - `D:\My Apps\HABLA\docs\evidencia-v5.7\*.jpg`: horizontal, «Mi nivel» y resumen del test.
-  - ⚠️ En R9 y R22 el profe se llama «Emma». En la 5.9 **el profe es la mascota** (dice «Gota»), y Emma y Leo son solo voces. Usa siempre el nombre de la mascota.
-  - ⚠️ El micro es **«toca para hablar, toca para enviar»**, con un anillo de 60 s alrededor. No muestres el gesto antiguo de mantener pulsado o deslizar al candado.
   - Usa capturas reales solo como fondo o detalle.
 
 ## 4. Guion (vertical, ~75 s). Textos en pantalla en español; lo que dice el profe, en inglés
@@ -143,7 +141,6 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 **Escena 2 · Elige a tu compañero (9–14 s)**
 - Título: **«Elige a tu compañero»**.
 - Las 4 mascotas en fila. Al pasar de una a otra, un círculo del color de su tema llena la pantalla (así lo hace la app). Debajo, el nombre y la personalidad: «Chispa · Enérgica y valiente», etc.
-- Texto pequeño: «Tu profe es tu mascota. Tú eliges su voz: americana o británica.»
 
 **Escena 3 · El test que te conoce (14–25 s)**
 - Título: **«Vamos a conocer tu inglés»**.
@@ -161,6 +158,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 - Un dedo toca el micro → el **anillo de 60 s** empieza a vaciarse en sentido horario y las **10 barras** siguen una voz real (la onda del principio, ¡por fin viva!).
 - Subtítulo de lo que dice el alumno, con un error: *«Yesterday I go to the cinema with my friends»*.
 - Respuesta del profe en burbuja: transcripción → corrección resaltada **go → went** con la etiqueta «tiempo verbal» → respuesta natural: *«Nice! What did you watch?»*, con la traducción ES debajo.
+- Fonetica evaluable con Azure.
 - Métricas que suben como un velocímetro: **ppm** (palabras por minuto, «la meta ronda las 120»), palabras y pausas.
 - Botón **«¿Qué digo?»** que despliega 3 ideas (inglés + español) para cuando te quedas en blanco.
 - Detalle del anillo: naranja en los últimos 10 s y rojo en los últimos 5.
@@ -190,15 +188,13 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 **Escena 9 · Cierre (70–75 s)**
 - Vuelve la nota de voz del principio, ahora llena y con «0:42». Se envía con un *whoosh*.
 - **Revelación del logo «La H que habla»** (ver §3) + **«Habla. Por fin, a hablar.»** → **«Hoy, tu primera frase.»**
-- Debajo, en pequeño: «Android · Gratis con tu propia clave de Gemini · Tus datos se quedan en tu teléfono».
-- **Firma de autoría** (deseo expreso del dueño, que quede constancia de que la app es suya): «Creada por **Liomar**» con el año (© 2026), visible al menos 2 s en el cierre de las tres composiciones, también en el `Teaser15`. Pon el texto en `copy.ts` (`AUTHOR`) para poder añadir el apellido o un enlace.
 
 ## 5. Sonido
 - **Música:** pop/lo-fi optimista, 100–110 BPM, que **arranca en el primer latido de la onda** (escena 1). Antes, silencio con un «tic».
 - **Efectos:** toque (tap), *pop* de burbujas, *whoosh* en transiciones, campanita al subir de nivel y chisporroteo/flor/gota/viento en cada secreto de mascota.
 - **Voz:**
-  - Opcional, una voz en off cálida en español neutro con las frases en negrita.
-  - Las frases del profe en inglés, con voz TTS americana (Emma) o británica (Leo).
+  - Una voz en off cálida en español neutro con las frases en negrita.
+  - Darle vida con la voz de  a Las frases del profe en inglés, con voz TTS americana (Emma) o británica (Leo).
   - Coloca el audio en `public/` y cárgalo con `<Audio>` de `@remotion/media`. Si no hay audio todavía, deja los huecos marcados con `// TODO audio` y el vídeo debe funcionar en silencio.
 - Sincroniza los cortes con los golpes de la música (calcula los frames a partir del BPM).
 
@@ -247,7 +243,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 - No muestres claves reales. **El dueño autoriza usar su nombre, Liomar** (2026-10-08): en las pantallas de la app (p. ej. «Welcome back, Liomar») y en los créditos de autoría. Ningún otro dato personal.
 - La app es para **Android** y se instala con un APK; no digas que está en Google Play.
 - Cada persona usa **su propia clave gratuita de Gemini** (con límite diario). La fonética con Azure es opcional.
-- Todo lo que se muestre debe existir en Habla 5.9. Si quieres una licencia creativa (p. ej. la escalera hasta C1), márcala como ilustrativa.
+- Todo lo que se muestre debe existir en Habla 5.9+. Si quieres una licencia creativa (p. ej. la escalera hasta C1), márcala como ilustrativa.
 
 ## 7 bis. Toques que lo hacen memorable
 - **Mapa de tiempos a 104 BPM** (1 compás ≈ 2,31 s ≈ 69 frames): cada cambio de escena cae en el primer tiempo de un compás. El «drop» de la música coincide con la primera respuesta del profe (escena 4) y el segundo, con el escalón C1 (escena 8).
@@ -256,7 +252,7 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 - **Micro-humor de la mascota:** en la escena 5, Gota se pone unas gafas para «leer» la palabra; en la escena 3, se rasca la cabeza al ver «No lo sé» y luego asiente: «mejor que adivinar».
 - **Frases motivadoras** (elige una por escena en `copy.ts`; tono cercano, de tú):
   - «El miedo a hablar se quita hablando.»
-  - «Equivocarte aquí es gratis. Y cada error te enseña algo.»
+  - «Cada error te enseña algo.»
   - «Tu profe tiene paciencia infinita. Y cero prisa.»
   - «Cinco minutos de voz al día cambian más que una hora de apuntes.»
   - «No memorizas: conversas.»
