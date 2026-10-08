@@ -50,7 +50,11 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
      > Por eso creé Habla.»
      > — **Liomar**, creador de Habla
    - Después, la nota de voz del principio se envía (*whoosh*), su onda se convierte en la **H que habla** (revelación del logo, §3): «Hoy, tu primera frase.»
-   - (Si el dueño lo graba, esta frase puede ir **con su propia voz**: es lo más potente del vídeo. Hueco `// TODO voz-liomar.mp3`.)
+   - **Con la voz de Liomar** (`public/voz-liomar.mp3`, unos 8–9 s; hasta que exista, `// TODO voz-liomar.mp3` y el texto en pantalla):
+     > «Yo también entendía inglés… pero me quedaba callado. Por eso creé Habla.» *(pausa de 1 s)* «Now it's your turn. Say your first sentence.»
+     - La primera parte, en español, es la confesión. La segunda, **en inglés con su propia voz**, es la prueba viva de que funciona.
+     - Mientras habla, la onda de la nota de voz sigue **su voz real** (`@remotion/media-utils`, `visualizeAudio`). Al terminar la frase en inglés, esa onda se convierte en la H del logo.
+     - Música al 15 % durante su voz (ducking).
 
 **Reglas para que emocione de verdad:**
 - **El silencio también suena:** deja 0,5–1 s de silencio real antes del primer latido y antes de la firma. Los contrastes son los que ponen la piel de gallina.
@@ -66,7 +70,8 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
 | `Teaser15` | 1080×1920 | 30 | 15 s (450 f) | Gancho: escenas 0, 4 y 8 recortadas |
 
 - La disposición se adapta con `useVideoConfig()`: en vertical, el teléfono en el centro y los textos arriba/abajo; en horizontal, el teléfono a un lado y los textos al otro.
-- **Subtítulos siempre visibles:** la mayoría lo verá sin sonido.
+- **Subtítulos OPCIONALES** (decisión del dueño): el vídeo sale **limpio, sin subtítulos grabados en la imagen**, y los subtítulos van en un archivo aparte que quien lo vea activa si quiere (botón CC). Ver §6 bis.
+  - Ojo: los **textos de diseño** del guion («Entiendes inglés.», «Elige a tu compañero»…) son parte de la animación y se quedan. Los subtítulos son solo la **transcripción de lo que se oye**: la voz en off, las frases del profe y la voz de Liomar.
 - Usa `<TransitionSeries>` (@remotion/transitions). Recuerda que cada transición **acorta** la duración total.
 
 ## 3. Identidad visual (tomada de la app; respétala)
@@ -206,6 +211,24 @@ La gente no se emociona con funciones: se emociona cuando **se ve reflejada** y 
     - `npx remotion render PromoHorizontal out/habla-horizontal.mp4`
   - Saca fotogramas de control con `npx remotion still` en los segundos 3, 12, 30, 43, 65 y 73, y revísalos.
 - **Internet lento:** antes del primer render, `npx remotion browser ensure`, y no borres `node_modules`.
+
+## 6 bis. Subtítulos como pista aparte (opcionales para quien lo ve)
+- Define las líneas habladas con sus tiempos en `src/subtitles.ts` (`{ from, to, es, en? }` en frames). Esa es la única fuente: si cambia el montaje, se cambian ahí.
+- Crea un script `npm run subs` que genere desde ese archivo:
+  - `out/habla-promo.es.srt` y `out/habla-promo.es.vtt`: español, con las frases en inglés del profe y de Liomar tal cual y su traducción entre corchetes;
+  - `out/habla-promo.en.srt`: versión en inglés, opcional.
+- **Pista incrustada (soft subs):** después del render, añade la pista al MP4 **sin quemarla en la imagen**, con el FFmpeg que trae Remotion:
+  `npx remotion ffmpeg -i out/habla-vertical.mp4 -i out/habla-promo.es.srt -c copy -c:s mov_text -metadata:s:s:0 language=spa out/habla-vertical-cc.mp4`
+  (lo mismo para el horizontal). Los reproductores que lo admiten (YouTube, VLC, la galería de muchos Android) muestran el botón CC.
+- **Dónde funciona cada cosa** (pon esta tabla en el README del proyecto):
+
+  | Plataforma | Cómo se activan los subtítulos |
+  |---|---|
+  | YouTube | Sube el `.srt` en Subtítulos; el espectador pulsa CC |
+  | Facebook / LinkedIn | Sube el `.srt` al publicar; se activan desde el reproductor |
+  | Instagram / TikTok | No admiten archivo: activa sus **subtítulos automáticos** (el espectador los enciende o apaga) |
+  | WhatsApp / estados | No admite subtítulos opcionales: se ve sin ellos |
+- **Variante opcional para WhatsApp:** prop `burnSubtitles` (por defecto `false`) en las composiciones. Solo si el dueño lo pide, render aparte `out/habla-vertical-subtitulado.mp4` con los subtítulos dibujados (fuente Outfit, fondo semitransparente, abajo y fuera del 10 % inferior).
 
 ## 7. Reglas de honestidad (obligatorias)
 - No prometas plazos («C1 en 3 meses») ni resultados garantizados.
