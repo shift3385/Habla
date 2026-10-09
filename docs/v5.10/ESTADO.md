@@ -14,8 +14,8 @@ Sin commit ni push hasta que el dueño lo apruebe.
 | G-D | Contenido: prepositions, word-order-linkers, false-friends-pronouns (15) | autor D | hecho | 15/15 temas, 120 ejercicios. prepositions: prepositions-of-time, prepositions-of-place, for-since-during-ago, by-until, verb-prepositions. word-order-linkers: basic-word-order, adverbs-of-frequency, comparatives-superlatives, order-of-adjectives, as-as-the-more, relative-clauses, linking-words. false-friends-pronouns: subject-object-possessive-pronouns, reflexive-pronouns, common-false-friends. Falta: nada; validate OK en sus 3 archivos, 0 coincidencias con src/bank |
 | G-V | Revisión experta del contenido | revisor de contenido | pendiente | tras cada autor |
 | D1 | Validador, catálogo, pestaña, sección, tema, buscador, progreso (Dexie + copias), ejercicios → Repaso | dev | para revisar | Hecho y probado en navegador (390×844, 320×640, 780×360); detalle en `docs/correccion/NC-v5.10.md`, capturas en `docs/v5.10/evidencia-D1/`. tsc OK, lint 0 errores, `npm test` 59/59. **El validador encuentra 3 frases del banco reutilizadas en tenses/verbs (ver NC-v5.10 §D1.1)** |
-| D2 | «Dilo tú» (Gemini + fonética + meta diaria) y «Pregúntale a <mascota>» (+ punto 0: barajar opciones) | dev | a medias (PAUSA) | Código escrito y compila; **sin probar en navegador ni tests propios**. Ver «Punto exacto de D2/D3» |
-| D3 | Clase y profe: `grammarTopic` en correcciones, clase centrada en un tema, plan e informe; «Para ti» | dev | a medias (PAUSA) | Hecho: esquema del profe, clase centrada, enlace del plan, «Para ti» con señales, hoja de Gramática en App. Falta: CorrectionView, ReportView, tests, navegador. Ver «Punto exacto de D2/D3» |
+| D2 | «Dilo tú» (Gemini + fonética + meta diaria) y «Pregúntale a <mascota>» (+ punto 0: barajar opciones) | dev | para revisar | Probado en navegador (390×844, 320×640, 780×360) con Gemini simulado; tests de barajar. Arreglado `alive` de `GrammarAskScreen` (StrictMode). `NC-v5.10.md` §D2 |
+| D3 | Clase y profe: `grammarTopic` en correcciones, clase centrada en un tema, plan e informe; «Para ti» | dev | para revisar | Hecho y probado: CorrectionView («📘 Ver en Gramática»), ReportView («Para repasar en Gramática»), clase centrada, chip del plan, «Para ti» con señales, hoja encima de la clase. `npm test` 65/65. `NC-v5.10.md` §D3 |
 | R | Revisión en PC (código, navegador, red falsa) | rev | pendiente | |
 | E | Entrega: 5.10/38, Novedades, docs, APK | orquestador | pendiente | |
 
@@ -69,6 +69,7 @@ Estado del código: `npx tsc -b` sin errores · `npm test` 59/59 · lint 0 error
 5. Documentar en `docs/correccion/NC-v5.10.md` (secciones D2 y D3) y pasar D2/D3 a «para revisar».
 
 ## Bitácora (lo último arriba)
+- 2026-10-09 · dev (sesión en la nube): D2/D3 terminados → para revisar. `CorrectionView` y `ReportView` con enlaces a Gramática; 6 pruebas nuevas en `grammar.test.mjs` y 2 casos en `backupCheck.test.mjs` (`npm test` 65/65); prueba en navegador con Gemini simulado según el esquema (390×844, 320×640, 780×360; capturas en `evidencia-D2D3/`); arreglado `alive` de `GrammarAskScreen` (en StrictMode no pintaba la respuesta). Contenido completo: `validate-grammar` 90 temas, 667 ejercicios, 0 errores. Rama de trabajo: `claude/peaceful-fermi-ua55yq` (desde `v5.10-gramatica`).
 - 2026-10-09 · autor C: escritos `conditionals.json` (8 temas, afirmativa/negativa/pregunta en cada uno), `passive.json` (3), `reported-speech.json` (3) y `articles-quantifiers.json` (5): 144 ejercicios; `validate-grammar` 0 errores; retocadas 4 frases que el validador cruzaba con el banco del test.
 - 2026-10-09 · dev: PAUSA en D2/D3 (orden del orquestador). Código compila, tests 59/59; pendiente CorrectionView, ReportView, tests nuevos y prueba en navegador (ver «Punto exacto de D2/D3»).
 - 2026-10-09 · autor D: escritos `prepositions.json` (5 temas, 40 ejercicios), `word-order-linkers.json` (7, 56) y `false-friends-pronouns.json` (3, 24); `validate-grammar` sin errores en esos archivos y 0 coincidencias con `src/bank` (script propio con ejemplos, errores, frases ordenadas y modelos). Los 4 errores actuales del validador son de `passive.json` y `reported-speech.json` (autor C). Ids `adverbs-of-frequency`, `for-since-during-ago`, `by-until` y `verb-prepositions` ya existen.
@@ -80,7 +81,10 @@ Estado del código: `npx tsc -b` sin errores · `npm test` 59/59 · lint 0 error
 - 2026-10-09 · dev: D1.1 `scripts/validate-grammar.mjs` listo (errores con código 1, avisos para `related` e iconos; compara con los `prompt` del banco). Icono `clock` añadido.
 - 2026-10-09 · orquestador: diseño aprobado; lanzados autor A, autor B y dev (D1).
 
-## ▶ CÓMO CONTINUAR (2026-10-09, pausa por límite de uso) — rama `v5.10-gramatica`
+## ▶ CÓMO CONTINUAR (2026-10-09, tras D2/D3) — rama `claude/peaceful-fermi-ua55yq` (= `v5.10-gramatica` + D2/D3 terminados)
+- Hecho: contenido A–D (90 temas), D1, D2 y D3, probados en PC y navegador. **Siguiente:** G-V (revisión experta del contenido), R (revisión en PC: `/code-review` y regresión), E (entrega 5.10/build 38: `version.json`, entrada 5.10 en `changelog.ts`, README/CLAUDE.md, APK en el PC) y teléfono (`REVISOR-MOVIL.md` + lo de «Para el teléfono» de `NC-v5.10.md`).
+
+## (Anterior) CÓMO CONTINUAR (2026-10-09, pausa por límite de uso) — rama `v5.10-gramatica`
 - Contenido: A, B y D **hechos**. C (conditionals, passive, reported-speech, articles-quantifiers) se detuvo al pausar: comprobar con `node scripts/validate-grammar.mjs` qué temas existen y completar los que falten según `DISENO-gramatica.md` §2.6–2.9 (corregir las frases que coincidan con el banco del test).
 - Código: D1 hecho; D2/D3 escritos y compilando, **sin probar** (ver «Punto exacto de D2/D3»). Falta por orden: «📘 Ver en Gramática» en `CorrectionView`, tarjeta en `ReportView`, tests, navegador (390×844, 780×360, 320×640, red falsa), `NC-v5.10.md`.
 - Después: revisor experto del contenido (dudas anotadas por los autores en la Bitácora y en este archivo), revisión en PC (`rev`), entrega 5.10/build 38 (version.json, entrada 5.10 en `changelog.ts`, docs) y APK en el PC del dueño.

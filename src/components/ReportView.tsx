@@ -1,4 +1,6 @@
 import type { Correction, SessionMetrics, SessionReport, Topic } from '../lib/db'
+import { topicsOfCorrections } from '../lib/grammar'
+import { openGrammarTopic } from '../lib/grammarLink'
 import { toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import CorrectionView from './CorrectionView'
@@ -23,6 +25,7 @@ function formatSeconds(s: number) {
 }
 
 export default function ReportView(p: Props) {
+  const grammarTopics = topicsOfCorrections(p.corrections)
   const m = p.metrics
   return (
     <div className="flex flex-col gap-3">
@@ -91,6 +94,19 @@ export default function ReportView(p: Props) {
             </button>
           )}
         </>
+      )}
+
+      {grammarTopics.length > 0 && (
+        <Card title="Para repasar en Gramática" icon="target">
+          {/* v5.10 (D3): los temas de las correcciones de esta clase, para repasarlos con explicación y ejercicios. */}
+          <div className="flex flex-wrap gap-2">
+            {grammarTopics.map((t) => (
+              <button key={t.id} onClick={() => openGrammarTopic(t.id)} className="field flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px]">
+                <span aria-hidden>📘</span> {t.nameEs}
+              </button>
+            ))}
+          </div>
+        </Card>
       )}
 
       {p.corrections.length > 0 && (

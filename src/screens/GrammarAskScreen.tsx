@@ -37,13 +37,15 @@ export default function GrammarAskScreen({
   const [answer, setAnswer] = useState<MascotAnswer | null>(null)
   const [error, setError] = useState<string | null>(null)
   const keyReady = settings.geminiKey.trim().length > 0
+  // Se marca vivo al montar (no solo al crear la ref): en desarrollo, StrictMode desmonta y vuelve a montar, y sin esto
+  // la respuesta nunca se pintaba («está pensando…» para siempre).
   const alive = useRef(true)
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    alive.current = true
+    return () => {
       alive.current = false
-    },
-    [],
-  )
+    }
+  }, [])
 
   const send = async () => {
     const text = q.trim()

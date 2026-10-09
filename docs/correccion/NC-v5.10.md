@@ -137,3 +137,38 @@ la app no baraja las opciones, así que conviene repartir la posición de la cor
   `topic.speaking` tipados; `forYouTopics` como punto de entrada de «Para ti» (añadir errores y plan);
   `GrammarTopicScreen` tiene el `Segmented` de partes listo para añadir «Dilo tú» y los botones de «Pregúntale a
   <mascota>» y «Practicar en una clase»; `searchTopics` para el buscador de «Pregúntale».
+
+---
+
+## D2 · «Dilo tú» y «Pregúntale a <mascota>» (2026-10-09, sesión en la nube)
+
+**Qué hay** (detalle de archivos en `docs/v5.10/ESTADO.md`, «Punto exacto de D2/D3»):
+- **Punto 0 · barajar opciones:** `shuffleChoice(ex, seed)` (mulberry32, semilla = id del ejercicio + ronda). En el JSON la correcta solía ir primero.
+- **«Dilo tú»** (pestaña del tema, oculta dentro de una clase): `GrammarSpeak.tsx` con el patrón del Repaso 5.9.1 (toca para hablar, 60 s, `isEmptyRecording`, fonética con la transcripción como referencia, suma a la meta). Evalúa `evaluateSpeaking` (`grammarAi.ts`) y guarda `spoken`/`spokenOk` (`grammarProgress.ts`, copias).
+- **«Pregúntale»**: `GrammarAskScreen.tsx` + `askMascot` (modelo rápido, lista id + nombre del catálogo; solo se enseñan ids que existen). Se abre desde el tema y desde el buscador, con la búsqueda precargada.
+
+**Arreglo encontrado al probar:** `GrammarAskScreen` marcaba `alive = false` al desmontar y nunca lo volvía a poner a `true`. En desarrollo (StrictMode desmonta y vuelve a montar) la respuesta no se pintaba nunca («está pensando…» para siempre). Ahora se marca al montar.
+
+## D3 · Clase y profe
+
+- El profe devuelve **`grammar_topic`** en cada corrección (lista compacta de ids en el prompt; se guarda solo si `validTopicId`). Llega a `mistakes` y a las copias.
+- **«📘 Ver en Gramática: <tema>»** en cada corrección (`CorrectionView.tsx`: clase e informe a la vez), que abre la **hoja de Gramática encima** de lo que haya (`grammarLink.ts` + `GrammarSheet.tsx`, con `inClass`: sin «Dilo tú» ni «Practicar en una clase»).
+- **Informe:** tarjeta **«Para repasar en Gramática»** con los temas de las correcciones (`ReportView.tsx`, `topicsOfCorrections`).
+- **Clase centrada en un tema** («Practicar en una clase»): escenario oculto `grammar`, `grammarBrief(topic)` en el prompt, tarjeta «Gramática · nivel», se guarda en la sesión y en la clase a medias.
+- **Plan:** chip «📘 tema» en la lección de hoy (`topicForLesson`: objetivo → foco de la semana → título; empate = sin enlace).
+- **«Para ti» con señales:** errores con tema exacto (+3), categoría de respaldo (+0,5, hasta 2), tema del plan (+5), tu nivel (+1) y el siguiente (+0,5); sin los dominados.
+
+## Cómo se probó D2/D3
+- `npx tsc -b` OK · `npm run lint` 0 errores · `npm test` **65/65** (6 nuevas en `tests/grammar.test.mjs`: barajar, plan, ids válidos, brief, informe y «Para ti» con señales; `tests/backupCheck.test.mjs`: `spoken`/`spokenOk` y `grammarTopic` en correcciones, errores y sesiones, más dos casos dañados) · `node scripts/validate-grammar.mjs`: **12 secciones, 90 temas, 667 ejercicios, 0 errores, 0 avisos**.
+- **Navegador** (Chromium headless + Vite, 390×844, 320×640 y 780×360). Gemini simulado que responde según el esquema de cada petición (`responseJsonSchema`) y guarda el prompt enviado; 0 llamadas reales. Capturas en `docs/v5.10/evidencia-D2D3/`.
+
+| Caso | Resultado (igual en los 3 tamaños) |
+|---|---|
+| Buscador «debería» → «Pregúntale a Gota» | La pregunta llega precargada; respuesta en español con ejemplo ▶; el tema sugerido real sale como «📘 …» y el id inventado (`tema-inventado-xyz`) **no** sale |
+| Tema «Presente perfecto» → «Dilo tú» | Reto 1 de 3; grabar y enviar → «¡Correcto!», el comentario y la forma modelo; los segundos suman a la meta (`habla.practiceSeconds`) |
+| «Practicar en una clase» | Tarjeta «GRAMÁTICA · B1 Present Perfect»; el prompt del profe lleva el brief («Grammar-focused speaking lesson») y la lista de ids |
+| Corrección con `grammar_topic: past-simple` | «📘 Ver en Gramática: Pasado simple…» → la hoja se abre encima de la clase (sin «Dilo tú» ni «Practicar»); Atrás → la clase sigue |
+| Terminar | Informe con «Para repasar en Gramática 📘 Pasado simple…»; en la base de datos, `mistakes.grammarTopic = past-simple` y `sessions.grammarTopic = present-perfect` |
+| Plan con «present perfect» en el objetivo de hoy | Chip «📘 Presente perfecto…» junto a Empezar → abre el tema; «Para ti» pone ese tema primero |
+
+**Para el teléfono:** la voz real del profe (en Chromium headless no hay motor de voz), el micro real en «Dilo tú», Atrás de Android con la hoja abierta encima de la clase, y la fonética real en «Dilo tú» (con permiso del dueño, gasta F0).

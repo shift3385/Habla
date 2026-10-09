@@ -182,3 +182,86 @@ test('validador: ejemplos, order, modelEn y errores típicos también se compara
   assert.ok(r.errors.some((e) => e.includes('la respuesta modelo')), all)
   assert.ok(r.errors.some((e) => e.includes('la frase correcta') && e.includes('I saw him yesterday')), all)
 })
+
+// ---------------------------------------------------------------------------
+// D2 · punto 0: barajar las opciones de los «choice»
+
+test('barajar: estable con la misma semilla, la correcta sigue siendo la misma opción y las trampas la acompañan', () => {
+  const ex = g.findTopic('sample-past-simple').exercises.find((e) => e.type === 'choice')
+  const a = g.shuffleChoice(ex, 1)
+  assert.deepEqual(g.shuffleChoice(ex, 1), a, 'misma semilla → mismo orden (al volver a pintar no cambia)')
+  assert.equal(a.options[a.answer], ex.options[ex.answer])
+  assert.deepEqual([...a.options].sort(), [...ex.options].sort())
+  for (let k = 0; k < a.options.length; k++) assert.equal(a.trapsEs[k], ex.trapsEs[ex.options.indexOf(a.options[k])] ?? '')
+  // Otra ronda (otra semilla) cambia el orden alguna vez, y la correcta acaba en cualquier posición.
+  const orders = new Set()
+  const positions = new Set()
+  for (let seed = 0; seed < 60; seed++) {
+    const s = g.shuffleChoice(ex, seed)
+    orders.add(s.options.join('|'))
+    positions.add(s.answer)
+    assert.equal(s.options[s.answer], ex.options[ex.answer])
+  }
+  assert.ok(orders.size > 1)
+  assert.deepEqual([...positions].sort(), [0, 1, 2, 3])
+})
+
+// ---------------------------------------------------------------------------
+// D3: plan, profe, clase centrada, informe y «Para ti» con señales
+
+test('plan: el tema que nombra un texto; gana la frase más larga y un empate no enlaza nada', () => {
+  assert.equal(g.topicForText('Tell a story about last weekend using the Past Simple.')?.id, 'sample-past-simple')
+  assert.equal(g.topicForText('Experiencias con el presente perfecto')?.id, 'sample-present-perfect')
+  // «present perfect» (15) gana a «past simple» (11) si aparecen los dos.
+  assert.equal(g.topicForText('past simple vs present perfect')?.id, 'sample-present-perfect')
+  // Empate de longitud (8 y 8): mejor sin enlace que con uno equivocado.
+  assert.equal(g.topicForText('ought to or he hecho'), undefined)
+  assert.equal(g.topicForText('Talk about your hobbies'), undefined)
+  // La lección: primero su objetivo, luego el foco de la semana y por último el título.
+  assert.equal(g.topicForLesson({ focusEn: 'present perfect' }, { targetEn: 'Use the past simple', titleEs: '' })?.id, 'sample-past-simple')
+  assert.equal(g.topicForLesson({ focusEn: 'present perfect for experiences' }, { targetEn: 'Talk about trips', titleEs: 'Viajes' })?.id, 'sample-present-perfect')
+  assert.equal(g.topicForLesson({ focusEn: 'travel' }, { targetEn: 'Talk about trips', titleEs: 'Viajes' }), undefined)
+})
+
+test('profe: solo se guardan ids que existen (nunca uno inventado por Gemini)', () => {
+  assert.equal(g.validTopicId(' sample-should '), 'sample-should')
+  assert.equal(g.validTopicId('inventado'), undefined)
+  assert.equal(g.validTopicId(7), undefined)
+  assert.equal(g.validTopicId(''), undefined)
+  assert.equal(g.topicIdsForPrompt(), 'sample-past-simple,sample-present-perfect,sample-should')
+})
+
+test('clase centrada: el brief lleva el tema, el nivel, el foco y las formas', () => {
+  const t = g.findTopic('sample-should')
+  const b = g.grammarBrief(t)
+  assert.match(b, /"Should and Ought To" \(level A2\)/)
+  assert.ok(b.includes(t.classFocusEn))
+  for (const k of ['affirmative', 'negative', 'question']) assert.ok(b.includes(`${k}: ${t.forms[k].pattern}`), k)
+})
+
+test('informe: temas de las correcciones en orden, sin repetir y sin ids desconocidos', () => {
+  const ids = g.topicsOfCorrections([
+    { grammarTopic: 'sample-should' },
+    { grammarTopic: 'inventado' },
+    {},
+    { grammarTopic: 'sample-past-simple' },
+    { grammarTopic: 'sample-should' },
+  ]).map((t) => t.id)
+  assert.deepEqual(ids, ['sample-should', 'sample-past-simple'])
+})
+
+test('«Para ti» con señales: errores con tema, tema del plan, categorías de respaldo y sin dominados', () => {
+  const ids = (level, progress, signals) => g.forYouTopics(level, progress, 6, signals).map((t) => t.id)
+  // Sin señales (A2): los de tu nivel y luego el siguiente.
+  assert.deepEqual(ids('A2', {}, {}), ['sample-past-simple', 'sample-should', 'sample-present-perfect'])
+  // Dos errores de present perfect (B1, 3·2 + 0,5) pasan delante de los de tu nivel; un id inventado no cuenta.
+  const mistakes = [{ grammarTopic: 'sample-present-perfect' }, { grammarTopic: 'sample-present-perfect' }, { grammarTopic: 'inventado' }]
+  assert.equal(ids('A2', {}, { mistakes })[0], 'sample-present-perfect')
+  // El tema del plan de hoy (+5, con tu nivel 6) gana a un error suelto (3,5); dos errores (6,5) ya pesan más.
+  assert.equal(ids('A2', {}, { mistakes: mistakes.slice(1), planTopic: 'sample-should' })[0], 'sample-should')
+  assert.equal(ids('A2', {}, { mistakes, planTopic: 'sample-should' })[0], 'sample-present-perfect')
+  // Errores sin tema (clases antiguas): la categoría «auxiliary» ayuda a los temas de tu nivel con ella; «grammar» es demasiado general.
+  assert.equal(ids('A2', {}, { mistakes: [{ category: 'auxiliary' }, { category: 'auxiliary' }] })[0], 'sample-past-simple')
+  // Un tema dominado no sale aunque tenga errores.
+  assert.ok(!ids('A2', { 'sample-present-perfect': { mastered: true } }, { mistakes }).includes('sample-present-perfect'))
+})

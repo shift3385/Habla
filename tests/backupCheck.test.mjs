@@ -111,6 +111,18 @@ test('v5.10: la tabla de Gramática es opcional (copias antiguas sin ella) y se 
   assert.equal(r.ok, true, r.error)
   assert.equal(r.backup.tables.grammar.length, 2)
   assert.equal(r.backup.tables.cards[1].source, 'grammar')
+  // D2/D3: «Dilo tú» (spoken/spokenOk) y el tema de Gramática en correcciones, errores y sesiones.
+  const d23 = checkBackup(
+    withGrammar((b) => {
+      b.tables.grammar[0].spoken = 3
+      b.tables.grammar[0].spokenOk = 2
+      b.tables.turns[1].corrections = [{ ...b.tables.turns[1].corrections[0], grammarTopic: 'past-simple' }] // copia: `corr` es compartido
+      b.tables.mistakes[0].grammarTopic = 'past-simple'
+      b.tables.sessions[1].grammarTopic = 'should'
+    }),
+  )
+  assert.equal(d23.ok, true, d23.error)
+  assert.equal(d23.backup.tables.grammar[0].spoken, 3)
   // Dañadas: se rechazan sin tocar nada.
   for (const [name, bad] of Object.entries({
     'grammar no es una lista': withGrammar((b) => (b.tables.grammar = { a: 1 })),
@@ -121,6 +133,8 @@ test('v5.10: la tabla de Gramática es opcional (copias antiguas sin ella) y se 
     'tema repetido': withGrammar((b) => b.tables.grammar.push({ ...gram })),
     'tarjeta de Gramática repetida (índice único)': withGrammar((b) => b.tables.cards.push({ ...b.tables.cards[1], id: 3 })),
     'origen de tarjeta desconocido': withGrammar((b) => (b.tables.cards[1].source = 'otro')),
+    'spoken como texto': withGrammar((b) => (b.tables.grammar[0].spoken = 'tres')),
+    'tema de la corrección como número': withGrammar((b) => (b.tables.turns[1].corrections = [{ ...b.tables.turns[1].corrections[0], grammarTopic: 5 }])),
   })) {
     const x = checkBackup(bad)
     assert.equal(x.ok, false, name)
