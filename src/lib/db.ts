@@ -21,6 +21,8 @@ export interface Correction {
   explanationEs: string
   category: MistakeCategory
   spanish: string // la frase correcta traducida al español (para el ejercicio oral)
+  /** v5.10: tema de Gramática de la corrección (id de src/grammar). Las correcciones antiguas no lo tienen. */
+  grammarTopic?: string
 }
 
 export interface VocabItem {
@@ -70,6 +72,7 @@ export interface Session {
   metrics?: SessionMetrics
   report?: SessionReport
   planLesson?: string // id de la lección del plan (w3l2), si la clase era una lección del plan
+  grammarTopic?: string // v5.10: id del tema de Gramática si fue «Practicar en una clase»
 }
 
 export interface Turn {
@@ -204,7 +207,8 @@ export interface StoredFsrs {
 /** Tarjeta de repaso: frase en español → cómo se dice en inglés. */
 export interface SrsCard {
   id?: number
-  source: 'mistake' | 'lookup'
+  /** v5.10: 'grammar' = ejercicio de Gramática fallado (sourceId = exerciseCardId del ejercicio, grammar.ts). */
+  source: 'mistake' | 'lookup' | 'grammar'
   sourceId: number
   promptEs: string
   answerEn: string
@@ -216,6 +220,24 @@ export interface SrsCard {
   archivedAt?: number
 }
 
+/**
+ * v5.10: progreso de un tema de Gramática (clave: id del tema). Una ronda = todos los ejercicios del tema una vez;
+ * cuenta el primer intento. «Dominado» = ≥ 80 % en la última ronda completa (grammar.ts, `isMasteryRound`).
+ */
+export interface GrammarProgress {
+  id: string // id del tema (src/grammar/*.json)
+  seenAt?: number // primera vez que abriste el tema
+  lastAt: number // último uso (abrir, ejercicios)
+  correct: number // aciertos al primer intento, acumulados
+  attempts: number // ejercicios hechos, acumulados
+  rounds: number // rondas completas
+  spoken?: number // v5.10 (D2): intentos de «Dilo tú» evaluados
+  spokenOk?: number // de ellos, correctos
+  lastRound?: { correct: number; total: number; at: number }
+  mastered: boolean
+  masteredAt?: number
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
@@ -223,6 +245,7 @@ export const db = new Dexie('habla') as Dexie & {
   profile: EntityTable<Profile, 'id'>
   lookups: EntityTable<Lookup, 'id'>
   cards: EntityTable<SrsCard, 'id'>
+  grammar: EntityTable<GrammarProgress, 'id'>
 }
 
 db.version(1).stores({
@@ -242,4 +265,9 @@ db.version(3).stores({
   cards: '++id, due, &[source+sourceId]',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards'] as const
+// v5.10: progreso de Gramática. Solo añade una tabla: los datos de las versiones anteriores no se tocan.
+db.version(4).stores({
+  grammar: 'id, lastAt',
+})
+
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar'] as const

@@ -1,0 +1,2173 @@
+{
+  "id": "verbs",
+  "order": 4,
+  "titleEn": "Non-Modal Verbs",
+  "titleEs": "Verbos no modales",
+  "icon": "bolt",
+  "descriptionEs": "Auxiliares, irregulares, «hay», make o do, -ing o «to», phrasal verbs.",
+  "topics": [
+    {
+      "id": "auxiliary-verbs",
+      "name": "Auxiliary Verbs: Be, Do, Have",
+      "nameEs": "Verbos auxiliares: be, do, have",
+      "level": "A1",
+      "summaryEs": "Los tres ayudantes del inglés: forman negaciones, preguntas y tiempos compuestos.",
+      "keywords": [
+        "auxiliary",
+        "auxiliar",
+        "be",
+        "do",
+        "does",
+        "did",
+        "have",
+        "has",
+        "verbo auxiliar",
+        "ayudante",
+        "preguntas",
+        "negaciones"
+      ],
+      "categories": [
+        "auxiliary"
+      ],
+      "explanationEs": [
+        "En inglés casi todas las preguntas y negaciones necesitan un verbo auxiliar. Hay tres: «be» (para los tiempos continuos: «I am working»), «do» (para el presente y pasado simples: «Do you work?», «I didn't work») y «have» (para los perfectos: «I have worked»).",
+        "En español basta con la entonación («¿Trabajas?»); en inglés, sin auxiliar la pregunta queda incompleta: «Do you work?». El auxiliar es el que cambia: «does» con he/she/it y «did» en pasado, y el verbo principal vuelve a su forma base.",
+        "Los tres también son verbos normales: «I am tired» (estar), «I do yoga» (hacer), «I have a car» (tener). Por eso a veces aparecen dos veces: «What do you do?», «Did you have lunch?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + am/is/are + -ing · has/have + participio · (do solo para dar énfasis)",
+          "examples": [
+            {
+              "en": "She is studying now.",
+              "es": "Ella está estudiando ahora."
+            },
+            {
+              "en": "We have finished.",
+              "es": "Hemos terminado."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + auxiliar + not + verbo",
+          "examples": [
+            {
+              "en": "I don't eat meat.",
+              "es": "No como carne."
+            },
+            {
+              "en": "He isn't coming.",
+              "es": "Él no viene."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Auxiliar + sujeto + verbo?",
+          "examples": [
+            {
+              "en": "Does your sister live here?",
+              "es": "¿Tu hermana vive aquí?"
+            },
+            {
+              "en": "Have you seen my keys?",
+              "es": "¿Has visto mis llaves?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "Do you take sugar in your coffee?",
+          "es": "¿Le pones azúcar al café?"
+        },
+        {
+          "en": "He doesn't work on Mondays.",
+          "es": "Él no trabaja los lunes.",
+          "noteEs": "Con he/she/it, «does»; el verbo vuelve a la forma base («work», no «works»)."
+        },
+        {
+          "en": "Are you listening to me?",
+          "es": "¿Me estás escuchando?"
+        },
+        {
+          "en": "I haven't had breakfast yet.",
+          "es": "Todavía no he desayunado.",
+          "noteEs": "«Have» como auxiliar y «had» como verbo normal."
+        },
+        {
+          "en": "Where did you buy that jacket?",
+          "es": "¿Dónde compraste esa chaqueta?"
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "You like coffee?",
+          "right": "Do you like coffee?",
+          "whyEs": "En español basta con la entonación; en inglés la pregunta necesita «do/does/did»."
+        },
+        {
+          "wrong": "She don't work here.",
+          "right": "She doesn't work here.",
+          "whyEs": "Con he/she/it el auxiliar es «does»."
+        },
+        {
+          "wrong": "I am agree.",
+          "right": "I agree.",
+          "whyEs": "«Agree» es un verbo; no necesita «be». En negativa: «I don't agree»."
+        },
+        {
+          "wrong": "Does she works here?",
+          "right": "Does she work here?",
+          "whyEs": "Con «does» el verbo vuelve a su forma base, sin -s."
+        }
+      ],
+      "related": [
+        "have-got",
+        "regular-irregular-verbs",
+        "contractions",
+        "short-answers"
+      ],
+      "exercises": [
+        {
+          "id": "auxiliary-verbs-1",
+          "type": "choice",
+          "prompt": "____ you working right now?",
+          "options": [
+            "Are",
+            "Do",
+            "Have",
+            "Does"
+          ],
+          "answer": 0,
+          "whyEs": "Con -ing (continuo) el auxiliar es «be».",
+          "trapsEs": [
+            "",
+            "«Do» no va con -ing.",
+            "«Have» va con participio, no con -ing.",
+            "«Does» no va con «you» ni con -ing."
+          ]
+        },
+        {
+          "id": "auxiliary-verbs-2",
+          "type": "choice",
+          "prompt": "____ she live near here?",
+          "options": [
+            "Does",
+            "Is",
+            "Do",
+            "Has"
+          ],
+          "answer": 0,
+          "whyEs": "Presente simple con «she»: «Does» + verbo base.",
+          "trapsEs": [
+            "",
+            "«Is» no va con un verbo en forma base.",
+            "Con «she» es «does», no «do».",
+            "«Has» va con participio («Has she lived…?»)."
+          ]
+        },
+        {
+          "id": "auxiliary-verbs-3",
+          "type": "gap",
+          "prompt": "____ you ever been to Mexico?",
+          "answers": [
+            "Have"
+          ],
+          "whyEs": "Con «been» (participio) el auxiliar es «have»."
+        },
+        {
+          "id": "auxiliary-verbs-4",
+          "type": "gap",
+          "prompt": "My brother ____ like spicy food. (do, negativa)",
+          "answers": [
+            "doesn't",
+            "does not"
+          ],
+          "whyEs": "Presente simple negativo con he/she/it: «doesn't»."
+        },
+        {
+          "id": "auxiliary-verbs-5",
+          "type": "choice",
+          "prompt": "I ____ agree with you. I think it's a bad idea.",
+          "options": [
+            "don't",
+            "am not",
+            "haven't",
+            "not"
+          ],
+          "answer": 0,
+          "whyEs": "«Agree» es un verbo normal: la negación se hace con «don't».",
+          "trapsEs": [
+            "",
+            "«Agree» no va con «be».",
+            "«Have» solo va con participio.",
+            "Falta el auxiliar: «don't»."
+          ]
+        },
+        {
+          "id": "auxiliary-verbs-6",
+          "type": "order",
+          "words": [
+            "you",
+            "Where",
+            "yesterday",
+            "go",
+            "did"
+          ],
+          "answer": "Where did you go yesterday",
+          "whyEs": "Pregunta Wh-: palabra interrogativa + did + sujeto + verbo base."
+        },
+        {
+          "id": "auxiliary-verbs-7",
+          "type": "choice",
+          "prompt": "They ____ finished the project yet.",
+          "options": [
+            "haven't",
+            "didn't",
+            "aren't",
+            "don't"
+          ],
+          "answer": 0,
+          "whyEs": "Con participio («finished») y «yet», el auxiliar es «have».",
+          "trapsEs": [
+            "",
+            "«Didn't» va con verbo base, no con participio.",
+            "«Aren't finished» cambia el sentido y no encaja con «the project».",
+            "«Don't» va con verbo base."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Hazle a tu profe tres preguntas: una con «do», una con «are» y una con «have».",
+          "modelEn": "Do you live near here? Are you working today? Have you ever been to Spain?",
+          "checkEs": "Cada pregunta empieza con su auxiliar correcto."
+        },
+        {
+          "promptEs": "Di dos cosas que no haces nunca y una que no has hecho todavía.",
+          "modelEn": "I don't drink coffee. I don't watch horror films. I haven't been to Japan yet.",
+          "checkEs": "Usa «don't/doesn't» con verbo base y «haven't» con participio."
+        }
+      ],
+      "classFocusEn": "Practise the auxiliaries be/do/have in questions and negatives. Correct questions without an auxiliary, 'she don't', 'I am agree' and 'does she works'."
+    },
+    {
+      "id": "regular-irregular-verbs",
+      "name": "Regular and Irregular Verbs",
+      "nameEs": "Verbos regulares e irregulares",
+      "level": "A1",
+      "summaryEs": "Cómo se forman el pasado y el participio: con -ed o de memoria.",
+      "keywords": [
+        "regular",
+        "irregular",
+        "verbos irregulares",
+        "lista de verbos",
+        "tabla",
+        "-ed",
+        "pasado",
+        "participio",
+        "went",
+        "gone",
+        "past participle"
+      ],
+      "categories": [
+        "tense",
+        "grammar"
+      ],
+      "explanationEs": [
+        "Cada verbo tiene tres formas: base (go), pasado (went) y participio (gone). Los regulares añaden -ed en las dos últimas: work – worked – worked. Si acaba en -e, solo -d (live – lived); en consonante + y, -ied (study – studied).",
+        "La -ed suena /t/ tras sonidos sordos (worked, watched), /d/ en el resto (played, lived) y /ɪd/, una sílaba más, solo tras t o d (wanted, needed). No digas «work-ed».",
+        "Los irregulares hay que aprenderlos: be – was/were – been · go – went – gone · have – had – had · do – did – done · make – made – made · get – got – gotten (UK: got) · see – saw – seen · take – took – taken · come – came – come.",
+        "Más: buy – bought – bought · think – thought – thought · know – knew – known · eat – ate – eaten · write – wrote – written · say – said – said · tell – told – told · find – found – found · give – gave – given · leave – left – left · put – put – put."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Pasado: sujeto + verbo en pasado (-ed o irregular) · Perfecto: have/has + participio",
+          "examples": [
+            {
+              "en": "I called you yesterday.",
+              "es": "Te llamé ayer."
+            },
+            {
+              "en": "She has written a book.",
+              "es": "Ella ha escrito un libro."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + didn't + verbo base · haven't/hasn't + participio",
+          "examples": [
+            {
+              "en": "We didn't see the game.",
+              "es": "No vimos el partido."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Did + sujeto + verbo base? · Have/Has + sujeto + participio?",
+          "examples": [
+            {
+              "en": "Did you buy the tickets?",
+              "es": "¿Compraste las entradas?"
+            },
+            {
+              "en": "Have you eaten?",
+              "es": "¿Has comido?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I studied engineering at university.",
+          "es": "Estudié ingeniería en la universidad.",
+          "noteEs": "Regular terminado en consonante + y: -ied."
+        },
+        {
+          "en": "We went to the beach and took a lot of photos.",
+          "es": "Fuimos a la playa e hicimos muchas fotos."
+        },
+        {
+          "en": "Have you ever driven on the left?",
+          "es": "¿Alguna vez has conducido por la izquierda?"
+        },
+        {
+          "en": "She bought a new phone, but she didn't like it.",
+          "es": "Se compró un móvil nuevo, pero no le gustó."
+        },
+        {
+          "en": "I've forgotten my password again.",
+          "es": "He vuelto a olvidar mi contraseña."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I goed to the party.",
+          "right": "I went to the party.",
+          "whyEs": "«Go» es irregular: su pasado es «went»."
+        },
+        {
+          "wrong": "Did you went to work?",
+          "right": "Did you go to work?",
+          "whyEs": "Con «did» el verbo vuelve a la forma base: el pasado ya lo marca «did»."
+        },
+        {
+          "wrong": "I have went there twice.",
+          "right": "I have gone there twice. / I have been there twice.",
+          "whyEs": "Detrás de «have» va el participio («gone»), no el pasado («went»)."
+        },
+        {
+          "wrong": "I work-ed yesterday. (pronunciado con dos sílabas)",
+          "right": "I worked yesterday. (una sílaba: /wɜːrkt/)",
+          "whyEs": "La -ed solo añade sílaba tras t o d («wanted»)."
+        }
+      ],
+      "related": [
+        "past-simple",
+        "present-perfect",
+        "auxiliary-verbs"
+      ],
+      "exercises": [
+        {
+          "id": "regular-irregular-verbs-1",
+          "type": "choice",
+          "prompt": "Last summer we ____ to Cancún.",
+          "options": [
+            "went",
+            "goed",
+            "gone",
+            "go"
+          ],
+          "answer": 0,
+          "whyEs": "Pasado de «go»: «went».",
+          "trapsEs": [
+            "",
+            "No existe: «go» es irregular.",
+            "«Gone» es el participio; necesita «have».",
+            "Forma base: falta el pasado."
+          ]
+        },
+        {
+          "id": "regular-irregular-verbs-2",
+          "type": "gap",
+          "prompt": "I ____ a new laptop last week. (buy)",
+          "answers": [
+            "bought"
+          ],
+          "whyEs": "Pasado irregular de «buy»: «bought»."
+        },
+        {
+          "id": "regular-irregular-verbs-3",
+          "type": "gap",
+          "prompt": "Have you ever ____ octopus? (eat)",
+          "answers": [
+            "eaten"
+          ],
+          "whyEs": "Detrás de «have» va el participio: «eaten»."
+        },
+        {
+          "id": "regular-irregular-verbs-4",
+          "type": "choice",
+          "prompt": "Did you ____ the email I sent you?",
+          "options": [
+            "see",
+            "saw",
+            "seen",
+            "seed"
+          ],
+          "answer": 0,
+          "whyEs": "Con «did», verbo base.",
+          "trapsEs": [
+            "",
+            "«Saw» es pasado; «did» ya marca el pasado.",
+            "«Seen» es participio.",
+            "No existe."
+          ]
+        },
+        {
+          "id": "regular-irregular-verbs-5",
+          "type": "choice",
+          "prompt": "Which verb has an extra syllable /ɪd/ in the past? ____",
+          "options": [
+            "wanted",
+            "worked",
+            "played",
+            "watched"
+          ],
+          "answer": 0,
+          "whyEs": "La -ed suena /ɪd/ solo tras t o d: «want-ed».",
+          "trapsEs": [
+            "",
+            "Tras /k/ suena /t/: una sílaba.",
+            "Tras vocal suena /d/: una sílaba.",
+            "Tras /tʃ/ suena /t/: una sílaba."
+          ]
+        },
+        {
+          "id": "regular-irregular-verbs-6",
+          "type": "order",
+          "words": [
+            "bus",
+            "didn't",
+            "I",
+            "the",
+            "catch"
+          ],
+          "answer": "I didn't catch the bus",
+          "whyEs": "Negativa en pasado: didn't + verbo base."
+        },
+        {
+          "id": "regular-irregular-verbs-7",
+          "type": "gap",
+          "prompt": "She has ____ three books. (write)",
+          "answers": [
+            "written"
+          ],
+          "whyEs": "Participio irregular de «write»: «written»."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta tres cosas que hiciste el fin de semana pasado usando verbos irregulares.",
+          "modelEn": "I went to the market, I bought some fruit and I saw a film with my friends.",
+          "checkEs": "Usa pasados irregulares correctos (went, bought, saw…)."
+        },
+        {
+          "promptEs": "Di dos cosas que nunca has hecho.",
+          "modelEn": "I have never eaten sushi. I have never ridden a horse.",
+          "checkEs": "Usa «have never» + participio."
+        }
+      ],
+      "classFocusEn": "Practise past simple and past participle forms of common irregular verbs and the pronunciation of -ed. Correct 'goed', 'did you went' and 'have went'."
+    },
+    {
+      "id": "have-got",
+      "name": "Have Got",
+      "nameEs": "Have got (tener)",
+      "level": "A1",
+      "summaryEs": "Otra forma de decir «tener» en presente, muy usada al hablar (sobre todo en británico).",
+      "keywords": [
+        "have got",
+        "has got",
+        "I've got",
+        "haven't got",
+        "tener",
+        "tengo",
+        "posesión",
+        "possession",
+        "británico"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Have got» significa lo mismo que «have» (tener) para posesiones, familia, aspecto y enfermedades: «I've got two sisters», «She's got a cold». Solo se usa en presente.",
+        "Funciona distinto de «have»: aquí «have» es auxiliar, así que la pregunta es «Have you got…?» y la negativa «haven't got», sin «do». Al hablar se contrae: «I've got», «she's got».",
+        "Es muy británico. En EE. UU. se oye «I've got» al hablar, pero en preguntas y negaciones lo normal es «Do you have…?» y «I don't have». Para el pasado se usa «had», no «had got»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + have/has got ('ve/'s got) + nombre",
+          "examples": [
+            {
+              "en": "I've got a meeting at ten.",
+              "es": "Tengo una reunión a las diez."
+            },
+            {
+              "en": "He's got blue eyes.",
+              "es": "Él tiene los ojos azules."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + haven't/hasn't got + nombre",
+          "examples": [
+            {
+              "en": "We haven't got time.",
+              "es": "No tenemos tiempo."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Have/Has + sujeto + got + nombre?",
+          "examples": [
+            {
+              "en": "Have you got a charger?",
+              "es": "¿Tienes un cargador?"
+            },
+            {
+              "en": "Has she got any brothers?",
+              "es": "¿Ella tiene hermanos?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I've got a headache. I'm going to take something.",
+          "es": "Me duele la cabeza. Voy a tomarme algo."
+        },
+        {
+          "en": "Have you got a minute?",
+          "es": "¿Tienes un minuto?"
+        },
+        {
+          "en": "She's got a new job in a bank.",
+          "es": "Ella tiene un trabajo nuevo en un banco."
+        },
+        {
+          "en": "We haven't got any bread left.",
+          "es": "No nos queda pan."
+        },
+        {
+          "en": "Do you have a car? — No, I don't.",
+          "es": "¿Tienes coche? — No.",
+          "noteEs": "En EE. UU., la pregunta normal es con «do»."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I have got 30 years.",
+          "right": "I'm 30.",
+          "whyEs": "La edad no se «tiene» en inglés: se «es» («I'm 30 years old»)."
+        },
+        {
+          "wrong": "Do you have got a pen?",
+          "right": "Have you got a pen? / Do you have a pen?",
+          "whyEs": "No mezcles: o «Have you got…?» o «Do you have…?»."
+        },
+        {
+          "wrong": "She have got a dog.",
+          "right": "She has got a dog.",
+          "whyEs": "Con he/she/it es «has got»."
+        },
+        {
+          "wrong": "When I was young, I had got a bike.",
+          "right": "When I was young, I had a bike.",
+          "whyEs": "«Have got» solo existe en presente; en pasado, «had»."
+        }
+      ],
+      "related": [
+        "auxiliary-verbs",
+        "there-is-there-are"
+      ],
+      "exercises": [
+        {
+          "id": "have-got-1",
+          "type": "choice",
+          "prompt": "____ you got a pen?",
+          "options": [
+            "Have",
+            "Do",
+            "Are",
+            "Has"
+          ],
+          "answer": 0,
+          "whyEs": "Con «got», la pregunta empieza por «Have».",
+          "trapsEs": [
+            "",
+            "«Do» va con «have» sin «got»: «Do you have…?».",
+            "«Be» no forma esta estructura.",
+            "Con «you» es «have», no «has»."
+          ]
+        },
+        {
+          "id": "have-got-2",
+          "type": "gap",
+          "prompt": "She ____ got two brothers.",
+          "answers": [
+            "has"
+          ],
+          "whyEs": "Con «she»: «has got»."
+        },
+        {
+          "id": "have-got-3",
+          "type": "choice",
+          "prompt": "We ____ got any milk. Can you buy some?",
+          "options": [
+            "haven't",
+            "don't",
+            "hasn't",
+            "aren't"
+          ],
+          "answer": 0,
+          "whyEs": "Negativa de «have got»: «haven't got».",
+          "trapsEs": [
+            "",
+            "«Don't» no va con «got».",
+            "Con «we» es «haven't».",
+            "«Be» no forma esta estructura."
+          ]
+        },
+        {
+          "id": "have-got-4",
+          "type": "order",
+          "words": [
+            "a",
+            "got",
+            "headache",
+            "I've"
+          ],
+          "answer": "I've got a headache",
+          "whyEs": "Sujeto + 've got + nombre."
+        },
+        {
+          "id": "have-got-5",
+          "type": "choice",
+          "prompt": "Do you have a car? — Yes, I ____.",
+          "options": [
+            "do",
+            "have",
+            "have got",
+            "am"
+          ],
+          "answer": 0,
+          "whyEs": "La respuesta corta repite el auxiliar de la pregunta: «do».",
+          "trapsEs": [
+            "",
+            "Respondería a «Have you got…?», no a «Do you have…?».",
+            "Las respuestas cortas no llevan «got».",
+            "La pregunta no se hizo con «be»."
+          ]
+        },
+        {
+          "id": "have-got-6",
+          "type": "choice",
+          "prompt": "When I was a child, I ____ a dog called Max.",
+          "options": [
+            "had",
+            "have got",
+            "had got",
+            "has got"
+          ],
+          "answer": 0,
+          "whyEs": "En pasado, «tener» es «had».",
+          "trapsEs": [
+            "",
+            "«Have got» es solo presente.",
+            "«Have got» no tiene pasado («had got» es otra cosa).",
+            "Presente y con «I» sería «have»."
+          ]
+        },
+        {
+          "id": "have-got-7",
+          "type": "gap",
+          "prompt": "____ he got a girlfriend?",
+          "answers": [
+            "Has"
+          ],
+          "whyEs": "Pregunta con he/she/it: «Has… got?»."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Describe a tu familia o a tu mascota usando «have got».",
+          "modelEn": "I've got two brothers and a sister. My sister has got a cat called Luna.",
+          "checkEs": "Usa «'ve got» / «'s got» correctamente."
+        },
+        {
+          "promptEs": "Pregunta a tu profe si tiene tres cosas.",
+          "modelEn": "Have you got a car? Have you got any pets? Have you got a big family?",
+          "checkEs": "Pregunta con «Have you got…?» sin «do»."
+        }
+      ],
+      "classFocusEn": "Practise have got for possession (questions with Have you got…?, negatives with haven't got) and compare with American do you have. Correct 'I have got 30 years' and 'Do you have got…?'."
+    },
+    {
+      "id": "there-is-there-are",
+      "name": "There Is and There Are",
+      "nameEs": "There is / there are (hay)",
+      "level": "A1",
+      "summaryEs": "Para decir que algo existe o está en un sitio: «hay».",
+      "keywords": [
+        "there is",
+        "there are",
+        "there was",
+        "there were",
+        "there will be",
+        "hay",
+        "había",
+        "hubo",
+        "habrá",
+        "existir"
+      ],
+      "categories": [
+        "grammar",
+        "vocabulary"
+      ],
+      "explanationEs": [
+        "«Hay» se dice «there is» con singular o incontable («There's a bank near here», «There is some milk») y «there are» con plural («There are two bank branches»).",
+        "No traduzcas «hay» con «have» ni empieces la frase sin sujeto: «Has a problem» o «Is a problem» están mal. Siempre «There is a problem».",
+        "Cambia el verbo «be» para otros tiempos: «there was / there were» (había, hubo), «there will be» (habrá), «there has been» (ha habido). En preguntas, se invierte: «Is there…?», «Are there…?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "There is (There's) + singular/incontable · There are + plural",
+          "examples": [
+            {
+              "en": "There's a pharmacy on the corner.",
+              "es": "Hay una farmacia en la esquina."
+            },
+            {
+              "en": "There are three people in the queue.",
+              "es": "Hay tres personas en la cola."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "There isn't / There aren't (any) + nombre · There's no + nombre",
+          "examples": [
+            {
+              "en": "There isn't any coffee.",
+              "es": "No hay café."
+            },
+            {
+              "en": "There aren't many tourists today.",
+              "es": "Hoy no hay muchos turistas."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Is there / Are there + nombre?",
+          "examples": [
+            {
+              "en": "Is there a hospital near here?",
+              "es": "¿Hay un hospital por aquí?"
+            },
+            {
+              "en": "Are there any vegetarian options?",
+              "es": "¿Hay opciones vegetarianas?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "There's a problem with my order.",
+          "es": "Hay un problema con mi pedido."
+        },
+        {
+          "en": "There were a lot of people at the concert.",
+          "es": "Había mucha gente en el concierto."
+        },
+        {
+          "en": "Is there Wi-Fi in the room?",
+          "es": "¿Hay wifi en la habitación?"
+        },
+        {
+          "en": "There will be a short delay.",
+          "es": "Habrá un pequeño retraso."
+        },
+        {
+          "en": "There has been an accident on the highway.",
+          "es": "Ha habido un accidente en la autopista."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "Has a bank near here?",
+          "right": "Is there a bank near here?",
+          "whyEs": "«Hay» no es «have»: es «there is», y en pregunta «Is there…?»."
+        },
+        {
+          "wrong": "There is two problems.",
+          "right": "There are two problems.",
+          "whyEs": "Con plural, «there are»."
+        },
+        {
+          "wrong": "Is a good idea.",
+          "right": "It's a good idea.",
+          "whyEs": "En inglés la frase necesita sujeto. Para «hay» usa «there is»; para «es», «it is»."
+        },
+        {
+          "wrong": "In my city there are much traffic.",
+          "right": "In my city there is a lot of traffic.",
+          "whyEs": "«Traffic» es incontable: va con «there is»."
+        }
+      ],
+      "related": [
+        "have-got",
+        "some-any",
+        "countable-uncountable-nouns"
+      ],
+      "exercises": [
+        {
+          "id": "there-is-there-are-1",
+          "type": "choice",
+          "prompt": "____ a supermarket near your house?",
+          "options": [
+            "Is there",
+            "There is",
+            "Has",
+            "Have it"
+          ],
+          "answer": 0,
+          "whyEs": "Pregunta con «hay»: «Is there…?».",
+          "trapsEs": [
+            "",
+            "Es el orden de la afirmación.",
+            "«Hay» no es «has».",
+            "No existe con este sentido."
+          ]
+        },
+        {
+          "id": "there-is-there-are-2",
+          "type": "gap",
+          "prompt": "____ three people waiting for you in reception.",
+          "answers": [
+            "There are",
+            "There're"
+          ],
+          "whyEs": "Plural: «there are»."
+        },
+        {
+          "id": "there-is-there-are-3",
+          "type": "choice",
+          "prompt": "There ____ a lot of traffic yesterday morning.",
+          "options": [
+            "was",
+            "were",
+            "had",
+            "have"
+          ],
+          "answer": 0,
+          "whyEs": "Pasado de «there is» con incontable: «there was».",
+          "trapsEs": [
+            "",
+            "«Traffic» es incontable: singular.",
+            "«Hay» no se dice con «have».",
+            "«Hay» no se dice con «have»."
+          ]
+        },
+        {
+          "id": "there-is-there-are-4",
+          "type": "order",
+          "words": [
+            "questions",
+            "Are",
+            "any",
+            "there"
+          ],
+          "answer": "Are there any questions",
+          "whyEs": "Pregunta en plural: Are there + any + nombre."
+        },
+        {
+          "id": "there-is-there-are-5",
+          "type": "gap",
+          "prompt": "There ____ any milk in the fridge. (be, negativa, presente)",
+          "answers": [
+            "isn't",
+            "is not"
+          ],
+          "whyEs": "Incontable en negativa: «there isn't any»."
+        },
+        {
+          "id": "there-is-there-are-6",
+          "type": "choice",
+          "prompt": "There ____ a concert in the park tomorrow.",
+          "options": [
+            "will be",
+            "will have",
+            "is going",
+            "has"
+          ],
+          "answer": 0,
+          "whyEs": "«Habrá»: «there will be».",
+          "trapsEs": [
+            "",
+            "«Hay» nunca va con «have».",
+            "Falta «to be»: «is going to be».",
+            "«Hay» nunca va con «have»."
+          ]
+        },
+        {
+          "id": "there-is-there-are-7",
+          "type": "choice",
+          "prompt": "How many students ____ in your class?",
+          "options": [
+            "are there",
+            "there are",
+            "have",
+            "is there"
+          ],
+          "answer": 0,
+          "whyEs": "Pregunta en plural: «How many… are there?».",
+          "trapsEs": [
+            "",
+            "En la pregunta se invierte el orden.",
+            "«Hay» no es «have».",
+            "«Students» es plural."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Describe tu barrio: di tres cosas que hay y una que no hay.",
+          "modelEn": "There's a park, there are two supermarkets and there's a gym. There isn't a cinema.",
+          "checkEs": "Usa «there is / there are / there isn't»."
+        },
+        {
+          "promptEs": "Llegas a un hotel. Pregunta si hay tres servicios.",
+          "modelEn": "Is there a gym? Is there parking? Are there any restaurants nearby?",
+          "checkEs": "Pregunta con «Is there…?» / «Are there…?»."
+        }
+      ],
+      "classFocusEn": "Practise there is/there are in different tenses and in questions. Correct 'has' for 'hay', 'there is + plural' and sentences without a subject ('Is a problem')."
+    },
+    {
+      "id": "make-vs-do",
+      "name": "Make vs Do",
+      "nameEs": "Make y do (hacer)",
+      "level": "A2",
+      "summaryEs": "Dos verbos para «hacer»: «make» crea algo; «do» realiza una tarea.",
+      "keywords": [
+        "make",
+        "do",
+        "hacer",
+        "make a mistake",
+        "do homework",
+        "make a decision",
+        "do a favor",
+        "collocations",
+        "colocaciones"
+      ],
+      "categories": [
+        "vocabulary"
+      ],
+      "explanationEs": [
+        "«Make» es crear o producir algo que antes no existía: make a cake, make coffee, make a list, make a plan, make money, make noise, make a phone call.",
+        "«Do» es realizar una tarea, un trabajo o una actividad: do homework, do the dishes, do the laundry, do exercise, do yoga, do a favor (UK: favour), do business, do your best. También va con palabras vagas: do something, do nothing.",
+        "Muchas expresiones fijas hay que aprenderlas: make a mistake (cometer un error), make a decision (tomar una decisión; en británico también «take»), make friends, make an effort, make sure; do research, do damage, do well."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + make/do + expresión",
+          "examples": [
+            {
+              "en": "I made a mistake.",
+              "es": "Me equivoqué."
+            },
+            {
+              "en": "I'll do the shopping.",
+              "es": "Yo hago la compra."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't/didn't + make/do + expresión",
+          "examples": [
+            {
+              "en": "Don't make so much noise!",
+              "es": "¡No hagas tanto ruido!"
+            },
+            {
+              "en": "I didn't do my homework.",
+              "es": "No hice los deberes."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do/Did + sujeto + make/do + expresión?",
+          "examples": [
+            {
+              "en": "Did you make a reservation?",
+              "es": "¿Hiciste una reserva?"
+            },
+            {
+              "en": "What does your brother do?",
+              "es": "¿A qué se dedica tu hermano?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "Could you do me a favor?",
+          "es": "¿Me harías un favor?"
+        },
+        {
+          "en": "The manager will make a decision about the budget on Monday.",
+          "es": "La gerente tomará una decisión sobre el presupuesto el lunes."
+        },
+        {
+          "en": "I do some exercise every morning.",
+          "es": "Hago algo de ejercicio cada mañana."
+        },
+        {
+          "en": "She makes a lot of money as a designer.",
+          "es": "Gana mucho dinero como diseñadora.",
+          "noteEs": "«Make money» = ganar dinero."
+        },
+        {
+          "en": "Make sure you save the file.",
+          "es": "Asegúrate de guardar el archivo."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I did a mistake.",
+          "right": "I made a mistake.",
+          "whyEs": "Un error se «make»: es una expresión fija."
+        },
+        {
+          "wrong": "I have to make my homework.",
+          "right": "I have to do my homework.",
+          "whyEs": "Las tareas y deberes van con «do»."
+        },
+        {
+          "wrong": "Can you make me a favor?",
+          "right": "Can you do me a favor?",
+          "whyEs": "Un favor se «do», aunque en español lo «hagamos» igual."
+        },
+        {
+          "wrong": "I make sport every day.",
+          "right": "I do sport every day. / I play sports every day.",
+          "whyEs": "Con deporte y ejercicio: «do exercise», «do sport» (UK) o «play sports» (US)."
+        }
+      ],
+      "related": [
+        "phrasal-verbs"
+      ],
+      "exercises": [
+        {
+          "id": "make-vs-do-1",
+          "type": "choice",
+          "prompt": "I always ____ a lot of mistakes when I'm nervous.",
+          "options": [
+            "make",
+            "do",
+            "have",
+            "take"
+          ],
+          "answer": 0,
+          "whyEs": "Expresión fija: «make a mistake».",
+          "trapsEs": [
+            "",
+            "«Do a mistake» es un calco de «hacer un error».",
+            "No se «tiene» un error en inglés.",
+            "No es una combinación natural."
+          ]
+        },
+        {
+          "id": "make-vs-do-2",
+          "type": "choice",
+          "prompt": "Can you ____ me a favor?",
+          "options": [
+            "do",
+            "make",
+            "give",
+            "have"
+          ],
+          "answer": 0,
+          "whyEs": "Expresión fija: «do someone a favor».",
+          "trapsEs": [
+            "",
+            "Calco de «hacer un favor».",
+            "No se usa con «favor» así.",
+            "No tiene sentido aquí."
+          ]
+        },
+        {
+          "id": "make-vs-do-3",
+          "type": "gap",
+          "prompt": "We need to ____ a decision today. (make o do)",
+          "answers": [
+            "make"
+          ],
+          "whyEs": "Expresión fija: «make a decision» (en británico también «take»)."
+        },
+        {
+          "id": "make-vs-do-4",
+          "type": "gap",
+          "prompt": "Have you ____ your homework yet? (make o do)",
+          "answers": [
+            "done"
+          ],
+          "whyEs": "Tareas: «do» (participio «done»)."
+        },
+        {
+          "id": "make-vs-do-5",
+          "type": "order",
+          "words": [
+            "do",
+            "I'll",
+            "dishes",
+            "the"
+          ],
+          "answer": "I'll do the dishes",
+          "whyEs": "Tareas de casa con «do»: do the dishes."
+        },
+        {
+          "id": "make-vs-do-6",
+          "type": "choice",
+          "prompt": "Please don't ____ so much noise. The baby is sleeping.",
+          "options": [
+            "make",
+            "do",
+            "play",
+            "say"
+          ],
+          "answer": 0,
+          "whyEs": "Expresión fija: «make noise».",
+          "trapsEs": [
+            "",
+            "El ruido se «make».",
+            "No se «juega» ruido.",
+            "«Say» es decir palabras."
+          ]
+        },
+        {
+          "id": "make-vs-do-7",
+          "type": "choice",
+          "prompt": "My sister ____ yoga every morning.",
+          "options": [
+            "does",
+            "makes",
+            "plays",
+            "goes"
+          ],
+          "answer": 0,
+          "whyEs": "Actividades como yoga: «do yoga».",
+          "trapsEs": [
+            "",
+            "Calco de «hace yoga».",
+            "«Play» es para juegos y deportes con pelota.",
+            "Sería «goes to yoga»."
+          ]
+        },
+        {
+          "id": "make-vs-do-8",
+          "type": "choice",
+          "prompt": "She ____ a lot of money in her new job.",
+          "options": [
+            "makes",
+            "does",
+            "wins",
+            "gains"
+          ],
+          "answer": 0,
+          "whyEs": "«Make money» = ganar dinero (también «earn»).",
+          "trapsEs": [
+            "",
+            "No se dice «do money».",
+            "«Win» es ganar un premio o una competición.",
+            "«Gain» no se usa así con el dinero del trabajo."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta qué tareas haces en casa y quién las hace.",
+          "modelEn": "I do the dishes and my partner does the laundry. We both make dinner.",
+          "checkEs": "Usa «do» con tareas y «make» con lo que se crea."
+        },
+        {
+          "promptEs": "Cuenta un error que cometiste y una decisión que tomaste hace poco.",
+          "modelEn": "Last week I made a mistake at work. Yesterday I made a decision: I'm going to study every day.",
+          "checkEs": "Usa «make a mistake» y «make a decision»."
+        }
+      ],
+      "classFocusEn": "Practise common collocations with make and do. Correct 'do a mistake', 'make homework', 'make a favor' and 'make sport'."
+    },
+    {
+      "id": "stative-dynamic-verbs",
+      "name": "Stative and Dynamic Verbs",
+      "nameEs": "Verbos de estado y de acción",
+      "level": "B1",
+      "summaryEs": "Verbos que no suelen ir en -ing (know, want, like) y los que cambian de sentido.",
+      "keywords": [
+        "stative verbs",
+        "dynamic verbs",
+        "state verbs",
+        "verbos de estado",
+        "know",
+        "want",
+        "like",
+        "understand",
+        "I'm knowing",
+        "continuo",
+        "-ing"
+      ],
+      "categories": [
+        "tense",
+        "grammar"
+      ],
+      "explanationEs": [
+        "Los verbos de estado describen lo que piensas, sientes o tienes, no una acción. Normalmente no van en forma continua aunque hablemos de ahora: «I know», no «I'm knowing».",
+        "Los más comunes: know, understand, believe, remember, mean (pensar y saber); like, love, hate, want, need, prefer (gustos y deseos); have (poseer), own, belong (posesión); seem, cost (cómo es algo).",
+        "Algunos cambian de sentido y entonces sí van en -ing: «I think it's good» (opino) / «I'm thinking about it» (lo estoy pensando); «I have a car» / «I'm having lunch» (comer); «I see» (entiendo) / «I'm seeing a friend» (quedar). «I'm loving it» es publicitario o informal."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo de estado en presente simple",
+          "examples": [
+            {
+              "en": "I need a break.",
+              "es": "Necesito un descanso."
+            },
+            {
+              "en": "She knows the answer.",
+              "es": "Ella sabe la respuesta."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't/doesn't + verbo de estado",
+          "examples": [
+            {
+              "en": "I don't understand.",
+              "es": "No lo entiendo."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do/Does + sujeto + verbo de estado?",
+          "examples": [
+            {
+              "en": "Do you remember her name?",
+              "es": "¿Te acuerdas de su nombre?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I don't believe him.",
+          "es": "No le creo."
+        },
+        {
+          "en": "This jacket belongs to my brother.",
+          "es": "Esta chaqueta es de mi hermano."
+        },
+        {
+          "en": "We're thinking about moving to Canada.",
+          "es": "Estamos pensando en mudarnos a Canadá.",
+          "noteEs": "«Think» como acción (considerar): sí va en -ing."
+        },
+        {
+          "en": "I think you're right.",
+          "es": "Creo que tienes razón.",
+          "noteEs": "«Think» como opinión: presente simple."
+        },
+        {
+          "en": "Sorry, we're having dinner. Can I call you later?",
+          "es": "Perdona, estamos cenando. ¿Te llamo luego?",
+          "noteEs": "«Have» = comer: sí va en -ing."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I'm knowing the answer.",
+          "right": "I know the answer.",
+          "whyEs": "«Know» es de estado: no va en -ing aunque hables de ahora."
+        },
+        {
+          "wrong": "Are you understanding me?",
+          "right": "Do you understand me?",
+          "whyEs": "En español decimos «¿me estás entendiendo?», pero en inglés «understand» no va en -ing."
+        },
+        {
+          "wrong": "I'm wanting a coffee.",
+          "right": "I want a coffee. / I'd like a coffee.",
+          "whyEs": "«Want» es de estado: presente simple."
+        },
+        {
+          "wrong": "I'm thinking that it's a good idea.",
+          "right": "I think it's a good idea.",
+          "whyEs": "Para dar tu opinión, «I think» en presente simple."
+        }
+      ],
+      "related": [
+        "present-simple-vs-continuous",
+        "present-continuous"
+      ],
+      "exercises": [
+        {
+          "id": "stative-dynamic-verbs-1",
+          "type": "choice",
+          "prompt": "I ____ what you mean.",
+          "options": [
+            "know",
+            "am knowing",
+            "knowing",
+            "am know"
+          ],
+          "answer": 0,
+          "whyEs": "«Know» es de estado: presente simple.",
+          "trapsEs": [
+            "",
+            "«Know» no suele ir en -ing.",
+            "Falta el verbo conjugado.",
+            "No se combina «am» con la forma base."
+          ]
+        },
+        {
+          "id": "stative-dynamic-verbs-2",
+          "type": "choice",
+          "prompt": "This bag ____ to my sister.",
+          "options": [
+            "belongs",
+            "is belonging",
+            "belong",
+            "is belong"
+          ],
+          "answer": 0,
+          "whyEs": "«Belong» es de estado: presente simple con -s.",
+          "trapsEs": [
+            "",
+            "«Belong» no va en -ing.",
+            "Con «this bag» (it) lleva -s.",
+            "No se combina «is» con la forma base."
+          ]
+        },
+        {
+          "id": "stative-dynamic-verbs-3",
+          "type": "choice",
+          "prompt": "Be quiet, please. I ____ about my answer.",
+          "options": [
+            "'m thinking",
+            "think",
+            "thinks",
+            "'m think"
+          ],
+          "answer": 0,
+          "whyEs": "«Think about» = considerar, una acción en curso: va en -ing.",
+          "trapsEs": [
+            "",
+            "Aquí no es opinión, sino lo que estás haciendo ahora.",
+            "Con «I» no lleva -s.",
+            "Falta -ing."
+          ]
+        },
+        {
+          "id": "stative-dynamic-verbs-4",
+          "type": "choice",
+          "prompt": "We ____ dinner right now. Can I call you back?",
+          "options": [
+            "'re having",
+            "have",
+            "has",
+            "'re have"
+          ],
+          "answer": 0,
+          "whyEs": "«Have» = comer: es una acción y va en -ing.",
+          "trapsEs": [
+            "",
+            "«Right now» pide la forma continua para esta acción.",
+            "Con «we» no lleva -s.",
+            "Falta -ing."
+          ]
+        },
+        {
+          "id": "stative-dynamic-verbs-5",
+          "type": "gap",
+          "prompt": "____ you ____ the question? (understand)",
+          "answers": [
+            "Do / understand"
+          ],
+          "whyEs": "«Understand» es de estado: pregunta con «do» en presente simple."
+        },
+        {
+          "id": "stative-dynamic-verbs-6",
+          "type": "gap",
+          "prompt": "I ____ you're right. (think, opinión)",
+          "answers": [
+            "think"
+          ],
+          "whyEs": "Opinión: «think» en presente simple."
+        },
+        {
+          "id": "stative-dynamic-verbs-7",
+          "type": "order",
+          "words": [
+            "don't",
+            "want",
+            "coffee",
+            "I",
+            "any"
+          ],
+          "answer": "I don't want any coffee",
+          "whyEs": "Verbo de estado en negativa: don't + want."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Di tres cosas que sabes, quieres o necesitas ahora mismo.",
+          "modelEn": "I know a lot about computers. I want a holiday. I need more sleep.",
+          "checkEs": "Usa verbos de estado en presente simple, sin -ing."
+        },
+        {
+          "promptEs": "Cuenta algo que estás pensando hacer y da tu opinión sobre ello.",
+          "modelEn": "I'm thinking about learning to drive. I think it's a good idea.",
+          "checkEs": "Distingue «I'm thinking about…» (considerar) y «I think…» (opinión)."
+        }
+      ],
+      "classFocusEn": "Practise stative verbs in the simple form (know, want, need, understand, belong) and verbs with two meanings (think, have, see). Correct 'I'm knowing', 'Are you understanding?' and 'I'm wanting'."
+    },
+    {
+      "id": "gerunds-infinitives",
+      "name": "Gerunds and Infinitives",
+      "nameEs": "Gerundios e infinitivos (enjoy doing, want to do)",
+      "level": "B1",
+      "summaryEs": "Qué verbos van con -ing y cuáles con «to»: enjoy doing, want to do.",
+      "keywords": [
+        "gerund",
+        "infinitive",
+        "gerundio",
+        "infinitivo",
+        "-ing",
+        "to + verbo",
+        "enjoy doing",
+        "want to",
+        "verbo + ing",
+        "verbo + to"
+      ],
+      "categories": [
+        "grammar"
+      ],
+      "explanationEs": [
+        "Cuando un verbo va detrás de otro, el primero decide la forma. Con -ing: enjoy, finish, mind, avoid, suggest, keep, practice (UK: practise), consider, miss, can't stand. Con «to»: want, need, decide, hope, plan, promise, agree, refuse, learn, afford, offer, expect, would like.",
+        "Detrás de una preposición siempre va -ing: «interested in learning», «before leaving», «thanks for coming». En español usamos el infinitivo («antes de salir»), y por eso es un error muy común.",
+        "Algunos verbos aceptan los dos casi sin cambio: like, love, hate, start, begin, continue («I started working / to work at nine»). Y el -ing puede ser sujeto: «Swimming is good for you» (nadar es bueno)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Verbo + -ing · Verbo + to + verbo base",
+          "examples": [
+            {
+              "en": "I enjoy cooking.",
+              "es": "Disfruto cocinando."
+            },
+            {
+              "en": "I want to learn Italian.",
+              "es": "Quiero aprender italiano."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't + verbo + -ing / to… · Verbo + not + -ing / not to…",
+          "examples": [
+            {
+              "en": "I don't mind waiting.",
+              "es": "No me importa esperar."
+            },
+            {
+              "en": "She decided not to go.",
+              "es": "Ella decidió no ir."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do + sujeto + verbo + -ing / to…?",
+          "examples": [
+            {
+              "en": "Do you enjoy working from home?",
+              "es": "¿Te gusta trabajar desde casa?"
+            },
+            {
+              "en": "Do you want to come with us?",
+              "es": "¿Quieres venir con nosotros?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I'm thinking of changing jobs.",
+          "es": "Estoy pensando en cambiar de trabajo.",
+          "noteEs": "Preposición «of» + -ing."
+        },
+        {
+          "en": "We can't afford to buy a house yet.",
+          "es": "Todavía no podemos permitirnos comprar una casa."
+        },
+        {
+          "en": "He keeps forgetting his password.",
+          "es": "Siempre se le olvida la contraseña.",
+          "noteEs": "«Keep» + -ing = repetirse algo."
+        },
+        {
+          "en": "I hope to see you soon.",
+          "es": "Espero verte pronto."
+        },
+        {
+          "en": "Before leaving, check that the windows are closed.",
+          "es": "Antes de salir, comprueba que las ventanas estén cerradas."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I enjoy to dance.",
+          "right": "I enjoy dancing.",
+          "whyEs": "«Enjoy» siempre va con -ing."
+        },
+        {
+          "wrong": "I'm interested in learn Chinese.",
+          "right": "I'm interested in learning Chinese.",
+          "whyEs": "Detrás de una preposición va -ing, aunque en español usemos el infinitivo."
+        },
+        {
+          "wrong": "Before to go, call me.",
+          "right": "Before going, call me. / Before you go, call me.",
+          "whyEs": "«Before» es preposición: -ing, no «to»."
+        },
+        {
+          "wrong": "I want going home.",
+          "right": "I want to go home.",
+          "whyEs": "«Want» va con «to» + verbo."
+        }
+      ],
+      "related": [
+        "verbs-change-meaning",
+        "would-like-rather-prefer"
+      ],
+      "exercises": [
+        {
+          "id": "gerunds-infinitives-1",
+          "type": "choice",
+          "prompt": "I really enjoy ____ in the mountains.",
+          "options": [
+            "hiking",
+            "to hike",
+            "hike",
+            "hiked"
+          ],
+          "answer": 0,
+          "whyEs": "«Enjoy» + -ing.",
+          "trapsEs": [
+            "",
+            "«Enjoy» no va con «to».",
+            "Falta la forma -ing.",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "gerunds-infinitives-2",
+          "type": "choice",
+          "prompt": "We've decided ____ a new car.",
+          "options": [
+            "to buy",
+            "buying",
+            "buy",
+            "bought"
+          ],
+          "answer": 0,
+          "whyEs": "«Decide» + to + verbo base.",
+          "trapsEs": [
+            "",
+            "«Decide» no va con -ing.",
+            "Falta «to».",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "gerunds-infinitives-3",
+          "type": "gap",
+          "prompt": "Have you finished ____ that book? (read)",
+          "answers": [
+            "reading"
+          ],
+          "whyEs": "«Finish» + -ing."
+        },
+        {
+          "id": "gerunds-infinitives-4",
+          "type": "gap",
+          "prompt": "I can't afford ____ this year. (travel)",
+          "answers": [
+            "to travel"
+          ],
+          "whyEs": "«Afford» + to + verbo base."
+        },
+        {
+          "id": "gerunds-infinitives-5",
+          "type": "choice",
+          "prompt": "Thanks for ____ me.",
+          "options": [
+            "helping",
+            "to help",
+            "help",
+            "helped"
+          ],
+          "answer": 0,
+          "whyEs": "Detrás de la preposición «for» va -ing.",
+          "trapsEs": [
+            "",
+            "Detrás de una preposición no va «to».",
+            "Falta la forma -ing.",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "gerunds-infinitives-6",
+          "type": "order",
+          "words": [
+            "keep",
+            "I",
+            "learning",
+            "want",
+            "to"
+          ],
+          "answer": "I want to keep learning",
+          "whyEs": "want + to + keep + -ing."
+        },
+        {
+          "id": "gerunds-infinitives-7",
+          "type": "choice",
+          "prompt": "She refused ____ the contract.",
+          "options": [
+            "to sign",
+            "signing",
+            "sign",
+            "signed"
+          ],
+          "answer": 0,
+          "whyEs": "«Refuse» + to + verbo base.",
+          "trapsEs": [
+            "",
+            "«Refuse» no va con -ing.",
+            "Falta «to».",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "gerunds-infinitives-8",
+          "type": "gap",
+          "prompt": "Would you mind ____ a moment? (wait)",
+          "answers": [
+            "waiting"
+          ],
+          "whyEs": "«Mind» + -ing."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta dos cosas que disfrutas haciendo y dos que quieres hacer este año.",
+          "modelEn": "I enjoy reading and I enjoy cooking. This year I want to travel and I hope to find a new job.",
+          "checkEs": "Usa -ing tras «enjoy» y «to» tras «want» y «hope»."
+        },
+        {
+          "promptEs": "Cuenta qué haces antes de salir de casa por la mañana.",
+          "modelEn": "Before leaving home, I check my phone and I make coffee.",
+          "checkEs": "Usa «before» + -ing."
+        }
+      ],
+      "classFocusEn": "Practise verb + -ing (enjoy, finish, mind, avoid) and verb + to-infinitive (want, decide, hope, afford), and -ing after prepositions. Correct 'enjoy to', 'interested in learn' and 'before to go'."
+    },
+    {
+      "id": "verbs-change-meaning",
+      "name": "Verbs That Change Meaning: Stop, Remember, Forget, Try",
+      "nameEs": "Verbos que cambian de significado (stop, remember, forget, try)",
+      "level": "B2",
+      "summaryEs": "Con -ing o con «to», estos verbos dicen cosas distintas: stop smoking ≠ stop to smoke.",
+      "keywords": [
+        "stop doing",
+        "stop to do",
+        "remember to",
+        "remember doing",
+        "forget to",
+        "try to",
+        "try doing",
+        "regret",
+        "dejar de",
+        "acordarse de",
+        "intentar",
+        "probar"
+      ],
+      "categories": [
+        "grammar",
+        "vocabulary"
+      ],
+      "explanationEs": [
+        "«Stop + -ing» = dejar de hacer algo («I stopped smoking»: dejé de fumar). «Stop + to» = parar para hacer otra cosa («I stopped to smoke»: paré para fumar).",
+        "«Remember / forget + to» = acordarse u olvidarse de algo que tienes que hacer («Remember to call»: acuérdate de llamar). «Remember / forget + -ing» = recordar algo que ya hiciste («I remember calling»: recuerdo haber llamado; casi siempre «I'll never forget…»).",
+        "«Try + to» = intentar algo difícil («I tried to open it»: intenté abrirlo). «Try + -ing» = probar algo para ver si funciona («Try restarting it»: prueba a reiniciarlo). «Regret to» = lamentar (anuncios formales) y «regret -ing» = arrepentirse."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Verbo + -ing (algo hecho o que se deja) · Verbo + to + verbo base (algo pendiente o un propósito)",
+          "examples": [
+            {
+              "en": "I stopped eating sugar.",
+              "es": "Dejé de comer azúcar."
+            },
+            {
+              "en": "I stopped to buy some water.",
+              "es": "Paré a comprar agua."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Don't forget + to… · Sujeto + don't/didn't + remember + -ing",
+          "examples": [
+            {
+              "en": "Don't forget to lock the door.",
+              "es": "No te olvides de cerrar la puerta con llave."
+            },
+            {
+              "en": "I don't remember saying that.",
+              "es": "No recuerdo haber dicho eso."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Did you remember + to…? · Have you tried + -ing?",
+          "examples": [
+            {
+              "en": "Did you remember to buy milk?",
+              "es": "¿Te acordaste de comprar leche?"
+            },
+            {
+              "en": "Have you tried drinking less coffee?",
+              "es": "¿Has probado a tomar menos café?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "Please remember to send me the invoice.",
+          "es": "Por favor, acuérdate de mandarme la factura."
+        },
+        {
+          "en": "I remember visiting this town as a child.",
+          "es": "Recuerdo haber visitado este pueblo de niño."
+        },
+        {
+          "en": "We stopped to have lunch on the way.",
+          "es": "Paramos a comer por el camino."
+        },
+        {
+          "en": "If you can't sleep, try reading before bed.",
+          "es": "Si no puedes dormir, prueba a leer antes de acostarte."
+        },
+        {
+          "en": "I regret not studying English when I was younger.",
+          "es": "Me arrepiento de no haber estudiado inglés de joven."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I stopped to smoke last year. (queriendo decir «dejé de fumar»)",
+          "right": "I stopped smoking last year.",
+          "whyEs": "«Dejar de» es «stop + -ing». Con «to» significa «parar para»."
+        },
+        {
+          "wrong": "Remember locking the door when you leave.",
+          "right": "Remember to lock the door when you leave.",
+          "whyEs": "Algo que tienes que hacer: «remember to»."
+        },
+        {
+          "wrong": "I remember to see him at the party.",
+          "right": "I remember seeing him at the party.",
+          "whyEs": "Un recuerdo de algo ya hecho: «remember + -ing»."
+        }
+      ],
+      "related": [
+        "gerunds-infinitives"
+      ],
+      "exercises": [
+        {
+          "id": "verbs-change-meaning-1",
+          "type": "choice",
+          "prompt": "My dad stopped ____ ten years ago. He feels much healthier.",
+          "options": [
+            "smoking",
+            "to smoke",
+            "smoke",
+            "smoked"
+          ],
+          "answer": 0,
+          "whyEs": "Dejar de hacer algo: «stop + -ing».",
+          "trapsEs": [
+            "",
+            "Significaría que paró para fumar.",
+            "Detrás de «stop» no va la forma base.",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "verbs-change-meaning-2",
+          "type": "choice",
+          "prompt": "On the way home, we stopped ____ some bread.",
+          "options": [
+            "to buy",
+            "buying",
+            "buy",
+            "bought"
+          ],
+          "answer": 0,
+          "whyEs": "Parar para hacer otra cosa: «stop + to».",
+          "trapsEs": [
+            "",
+            "Significaría que dejaron de comprar pan para siempre.",
+            "Falta «to».",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "verbs-change-meaning-3",
+          "type": "gap",
+          "prompt": "Remember ____ the lights when you leave. (turn off)",
+          "answers": [
+            "to turn off"
+          ],
+          "whyEs": "Algo pendiente: «remember to»."
+        },
+        {
+          "id": "verbs-change-meaning-4",
+          "type": "gap",
+          "prompt": "I remember ____ her at a conference in 2019. (meet)",
+          "answers": [
+            "meeting"
+          ],
+          "whyEs": "Recuerdo de algo ya hecho: «remember + -ing»."
+        },
+        {
+          "id": "verbs-change-meaning-5",
+          "type": "choice",
+          "prompt": "I'll never forget ____ the ocean for the first time.",
+          "options": [
+            "seeing",
+            "to see",
+            "see",
+            "saw"
+          ],
+          "answer": 0,
+          "whyEs": "Recuerdo de algo vivido: «never forget + -ing».",
+          "trapsEs": [
+            "",
+            "«Forget to» es olvidarse de algo pendiente.",
+            "Falta la forma -ing.",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "verbs-change-meaning-6",
+          "type": "choice",
+          "prompt": "We regret ____ you that your flight has been cancelled.",
+          "options": [
+            "to inform",
+            "informing",
+            "inform",
+            "informed"
+          ],
+          "answer": 0,
+          "whyEs": "Anuncio formal de una mala noticia: «regret to inform».",
+          "trapsEs": [
+            "",
+            "«Regret informing» = arrepentirse de haber informado.",
+            "Falta «to».",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "verbs-change-meaning-7",
+          "type": "order",
+          "words": [
+            "call",
+            "me",
+            "to",
+            "Don't",
+            "forget"
+          ],
+          "answer": "Don't forget to call me",
+          "whyEs": "Algo pendiente: forget + to + verbo."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta un hábito que dejaste y una vez que paraste en un viaje para hacer algo.",
+          "modelEn": "I stopped eating fast food last year. On our last trip, we stopped to take photos of the mountains.",
+          "checkEs": "Distingue «stop + -ing» y «stop + to»."
+        },
+        {
+          "promptEs": "Recuerda a un compañero dos cosas que no debe olvidar hacer mañana y cuenta un recuerdo de tu infancia.",
+          "modelEn": "Remember to bring your laptop and don't forget to call the client. I remember playing football with my cousins.",
+          "checkEs": "Usa «remember/forget to» (pendiente) y «remember + -ing» (recuerdo)."
+        }
+      ],
+      "classFocusEn": "Practise verbs that change meaning with -ing or to: stop, remember, forget, try, regret. Correct 'stopped to smoke' meaning 'quit' and 'remember + -ing' for future tasks."
+    },
+    {
+      "id": "phrasal-verbs",
+      "name": "Phrasal Verbs",
+      "nameEs": "Phrasal verbs (verbos con partícula)",
+      "level": "B1",
+      "summaryEs": "Verbo + partícula (up, off, on…) con un significado nuevo: get up, turn off, look for.",
+      "keywords": [
+        "phrasal verbs",
+        "verbos frasales",
+        "get up",
+        "turn on",
+        "turn off",
+        "look for",
+        "give up",
+        "find out",
+        "pick up",
+        "partícula",
+        "separable"
+      ],
+      "categories": [
+        "vocabulary",
+        "word_order"
+      ],
+      "explanationEs": [
+        "Un phrasal verb es un verbo con una partícula (up, down, on, off, out, in…) que forma un significado nuevo, a veces difícil de adivinar: «give up» = dejar o rendirse, «find out» = enterarse, «look after» = cuidar.",
+        "Son muy frecuentes al hablar. Básicos: get up, wake up, turn on/off, put on, take off, look for, look after, find out, give up, pick up, run out of, come back, go out, set up, figure out (EE. UU.: averiguar).",
+        "Muchos son separables: «turn off the TV» o «turn the TV off». Pero con un pronombre (it, them, me…) el pronombre va en medio: «turn it off», nunca «turn off it». Otros no se separan: «look after the kids», «get on the bus»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo + partícula + objeto · verbo + pronombre + partícula",
+          "examples": [
+            {
+              "en": "I get up at seven.",
+              "es": "Me levanto a las siete."
+            },
+            {
+              "en": "Put it on.",
+              "es": "Póntelo."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't/didn't + verbo + partícula",
+          "examples": [
+            {
+              "en": "Don't give up!",
+              "es": "¡No te rindas!"
+            },
+            {
+              "en": "I didn't find out until later.",
+              "es": "No me enteré hasta después."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do/Did + sujeto + verbo + partícula…?",
+          "examples": [
+            {
+              "en": "Did you turn off the oven?",
+              "es": "¿Apagaste el horno?"
+            },
+            {
+              "en": "What time do you wake up?",
+              "es": "¿A qué hora te despiertas?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "Can you pick me up at the airport?",
+          "es": "¿Puedes recogerme en el aeropuerto?"
+        },
+        {
+          "en": "We've run out of milk.",
+          "es": "Se nos ha acabado la leche."
+        },
+        {
+          "en": "I'm looking for a cheaper flight.",
+          "es": "Estoy buscando un vuelo más barato."
+        },
+        {
+          "en": "She looks after her grandmother on weekends.",
+          "es": "Ella cuida de su abuela los fines de semana."
+        },
+        {
+          "en": "It took me an hour to set up the new printer.",
+          "es": "Tardé una hora en configurar la impresora nueva."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "Turn off it, please.",
+          "right": "Turn it off, please.",
+          "whyEs": "Con un pronombre, este va entre el verbo y la partícula."
+        },
+        {
+          "wrong": "I'm looking my keys.",
+          "right": "I'm looking for my keys.",
+          "whyEs": "«Buscar» es «look for»: sin «for», «look» solo significa «mirar»."
+        },
+        {
+          "wrong": "I gave up to smoke.",
+          "right": "I gave up smoking.",
+          "whyEs": "Detrás de un phrasal verb, otro verbo va en -ing."
+        },
+        {
+          "wrong": "I woke me up at six.",
+          "right": "I woke up at six.",
+          "whyEs": "«Wake up» no lleva pronombre reflexivo, aunque en español digamos «me desperté»."
+        }
+      ],
+      "related": [
+        "make-vs-do",
+        "verb-prepositions"
+      ],
+      "exercises": [
+        {
+          "id": "phrasal-verbs-1",
+          "type": "choice",
+          "prompt": "I can't find my glasses. Can you help me ____ them?",
+          "options": [
+            "look for",
+            "look after",
+            "look up",
+            "look out"
+          ],
+          "answer": 0,
+          "whyEs": "«Buscar» = «look for».",
+          "trapsEs": [
+            "",
+            "«Look after» = cuidar.",
+            "«Look up» = buscar en un diccionario o internet.",
+            "«Look out» = ¡cuidado!"
+          ]
+        },
+        {
+          "id": "phrasal-verbs-2",
+          "type": "choice",
+          "prompt": "It's cold outside. ____ your coat.",
+          "options": [
+            "Put on",
+            "Take off",
+            "Put off",
+            "Turn on"
+          ],
+          "answer": 0,
+          "whyEs": "Ponerse ropa: «put on».",
+          "trapsEs": [
+            "",
+            "«Take off» = quitarse.",
+            "«Put off» = aplazar.",
+            "«Turn on» = encender un aparato."
+          ]
+        },
+        {
+          "id": "phrasal-verbs-3",
+          "type": "order",
+          "words": [
+            "it",
+            "Turn",
+            "please",
+            "off"
+          ],
+          "answer": "Turn it off please",
+          "whyEs": "Con pronombre: verbo + it + partícula."
+        },
+        {
+          "id": "phrasal-verbs-4",
+          "type": "gap",
+          "prompt": "I want to ____ up smoking this year. («dejar de»)",
+          "answers": [
+            "give"
+          ],
+          "whyEs": "«Give up» = dejar un hábito."
+        },
+        {
+          "id": "phrasal-verbs-5",
+          "type": "choice",
+          "prompt": "Who ____ your kids when you're at work?",
+          "options": [
+            "looks after",
+            "looks for",
+            "looks at",
+            "looks up"
+          ],
+          "answer": 0,
+          "whyEs": "Cuidar: «look after».",
+          "trapsEs": [
+            "",
+            "«Look for» = buscar.",
+            "«Look at» = mirar.",
+            "«Look up» = buscar información."
+          ]
+        },
+        {
+          "id": "phrasal-verbs-6",
+          "type": "choice",
+          "prompt": "Did you ____ who broke the window?",
+          "options": [
+            "find out",
+            "find up",
+            "find off",
+            "find on"
+          ],
+          "answer": 0,
+          "whyEs": "Enterarse o averiguar: «find out».",
+          "trapsEs": [
+            "",
+            "No existe con este sentido.",
+            "No existe.",
+            "No existe."
+          ]
+        },
+        {
+          "id": "phrasal-verbs-7",
+          "type": "gap",
+          "prompt": "What time do you usually ____ up in the morning?",
+          "answers": [
+            "get",
+            "wake"
+          ],
+          "whyEs": "«Get up» (levantarse) o «wake up» (despertarse)."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta tu rutina de la mañana con al menos tres phrasal verbs.",
+          "modelEn": "I wake up at six, I get up at quarter past six, I put on my clothes and I turn on the coffee machine.",
+          "checkEs": "Usa phrasal verbs (wake up, get up, put on, turn on…)."
+        },
+        {
+          "promptEs": "Cuenta algo que perdiste hace poco y cómo lo buscaste.",
+          "modelEn": "I lost my keys last week. I looked for them everywhere and finally I found them in my car.",
+          "checkEs": "Usa «look for» y pon bien los pronombres."
+        }
+      ],
+      "classFocusEn": "Practise common phrasal verbs (get up, turn on/off, look for/after, find out, give up, pick up) and pronoun position. Correct 'turn off it', 'look my keys' and 'give up to smoke'."
+    }
+  ]
+}

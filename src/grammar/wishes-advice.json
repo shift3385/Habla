@@ -1,0 +1,1876 @@
+{
+  "id": "wishes-advice",
+  "order": 5,
+  "titleEn": "Should, Could, Would and Wish",
+  "titleEs": "Debería, podría, tendría, desearía",
+  "icon": "spark",
+  "descriptionEs": "Cómo decir en inglés «debería», «podría», «tendría que», «me gustaría» y «ojalá».",
+  "topics": [
+    {
+      "id": "should-could-would",
+      "name": "Should, Could, Would",
+      "nameEs": "Should, could, would: «debería», «podría», «-ría»",
+      "level": "A2",
+      "summaryEs": "Cómo decir en inglés el condicional español: debería, podría, iría, haría…",
+      "keywords": [
+        "should",
+        "could",
+        "would",
+        "debería",
+        "podría",
+        "podrías",
+        "iría",
+        "haría",
+        "compraría",
+        "condicional",
+        "-ría",
+        "conditional"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "El condicional español en «-ría» se reparte en inglés en tres palabras. «Debería» = should («Deberías descansar»: You should rest). «Podría» = could («Podríamos ir al cine»: We could go to the cinema). Y el resto de verbos en «-ría» = would + verbo («Iría»: I would go; «Compraría»: I would buy).",
+        "Para pedir algo con educación: «¿Podrías…?» = Could you…?; «¿Me harías…?» = Would you…?. Y «me gustaría» = I would like («I'd like a coffee»).",
+        "Los tres van con el verbo base, sin «to», y no se juntan entre ellos: «would can» o «would should» no existen; «podría» ya es «could». Ojo: «podría llover» (posibilidad) también es «It might rain»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + should / could / would + verbo base",
+          "examples": [
+            {
+              "en": "You should call her.",
+              "es": "Deberías llamarla."
+            },
+            {
+              "en": "I would help you.",
+              "es": "Yo te ayudaría."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + shouldn't / couldn't / wouldn't + verbo base",
+          "examples": [
+            {
+              "en": "You shouldn't worry.",
+              "es": "No deberías preocuparte."
+            },
+            {
+              "en": "I wouldn't go there at night.",
+              "es": "Yo no iría allí de noche."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Should / Could / Would + sujeto + verbo base?",
+          "examples": [
+            {
+              "en": "Could you call me back?",
+              "es": "¿Podrías devolverme la llamada?"
+            },
+            {
+              "en": "What would you do?",
+              "es": "¿Qué harías tú?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "You should try the local food.",
+          "es": "Deberías probar la comida local."
+        },
+        {
+          "en": "We could take the train instead.",
+          "es": "Podríamos ir en tren."
+        },
+        {
+          "en": "I would love to visit Japan one day.",
+          "es": "Me encantaría visitar Japón algún día."
+        },
+        {
+          "en": "Could you lend me your umbrella?",
+          "es": "¿Podrías prestarme tu paraguas?"
+        },
+        {
+          "en": "If I were you, I wouldn't sign that contract.",
+          "es": "Yo en tu lugar no firmaría ese contrato."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I would can help you.",
+          "right": "I could help you.",
+          "whyEs": "«Podría» ya es «could»: no se juntan dos modales."
+        },
+        {
+          "wrong": "Would you can help me?",
+          "right": "Could you help me?",
+          "whyEs": "«¿Podrías…?» es «Could you…?»."
+        },
+        {
+          "wrong": "You would should study.",
+          "right": "You should study.",
+          "whyEs": "«Deberías» es solo «should»."
+        },
+        {
+          "wrong": "If I would know, I would tell you.",
+          "right": "If I knew, I would tell you.",
+          "whyEs": "En la parte del «if» va el pasado («si lo supiera»), no «would»."
+        }
+      ],
+      "related": [
+        "should-ought-to",
+        "could",
+        "would",
+        "would-like-rather-prefer",
+        "second-conditional"
+      ],
+      "exercises": [
+        {
+          "id": "should-could-would-1",
+          "type": "choice",
+          "prompt": "«¿Podrías ayudarme?» → ____ help me with my bags?",
+          "options": [
+            "Could you",
+            "Would you can",
+            "Should you",
+            "Can you to"
+          ],
+          "answer": 0,
+          "whyEs": "«¿Podrías…?» = «Could you…?».",
+          "trapsEs": [
+            "",
+            "No se juntan dos modales.",
+            "«Should» es «debería», no «podría».",
+            "Sobra «to»."
+          ]
+        },
+        {
+          "id": "should-could-would-2",
+          "type": "choice",
+          "prompt": "«Deberías dormir más.» → You ____ sleep more.",
+          "options": [
+            "should",
+            "would",
+            "could to",
+            "would should"
+          ],
+          "answer": 0,
+          "whyEs": "«Debería» = «should».",
+          "trapsEs": [
+            "",
+            "«Would sleep» = dormirías, no deberías dormir.",
+            "Sobra «to».",
+            "No se juntan dos modales."
+          ]
+        },
+        {
+          "id": "should-could-would-3",
+          "type": "gap",
+          "prompt": "«Yo compraría esa casa.» → I ____ buy that house.",
+          "answers": [
+            "would",
+            "'d"
+          ],
+          "whyEs": "El condicional «compraría» = «would buy»."
+        },
+        {
+          "id": "should-could-would-4",
+          "type": "order",
+          "words": [
+            "beach",
+            "We",
+            "to",
+            "could",
+            "the",
+            "go"
+          ],
+          "answer": "We could go to the beach",
+          "whyEs": "Sugerencia: sujeto + could + verbo base («podríamos ir»)."
+        },
+        {
+          "id": "should-could-would-5",
+          "type": "choice",
+          "prompt": "«Si tuviera tiempo, iría contigo.» → If I had time, I ____ with you.",
+          "options": [
+            "would go",
+            "will go",
+            "would went",
+            "go"
+          ],
+          "answer": 0,
+          "whyEs": "«Iría» = «would go».",
+          "trapsEs": [
+            "",
+            "«Will» es «iré»: no encaja con «si tuviera».",
+            "Después de «would», verbo base.",
+            "Falta «would»: «voy» no es «iría»."
+          ]
+        },
+        {
+          "id": "should-could-would-6",
+          "type": "gap",
+          "prompt": "«No deberías gastar tanto.» → You ____ spend so much.",
+          "answers": [
+            "shouldn't",
+            "should not"
+          ],
+          "whyEs": "«No deberías» = «shouldn't»."
+        },
+        {
+          "id": "should-could-would-7",
+          "type": "choice",
+          "prompt": "«Podría llover esta tarde.» → It ____ rain this afternoon.",
+          "options": [
+            "could",
+            "would",
+            "should",
+            "can to"
+          ],
+          "answer": 0,
+          "whyEs": "Posibilidad: «could» (también «might»).",
+          "trapsEs": [
+            "",
+            "«Would rain» = llovería, necesita una condición.",
+            "«Should rain» = debería llover (lo esperas), no es lo mismo.",
+            "Sobra «to»."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Tu amigo quiere aprender inglés. Dale un consejo («deberías»), una idea («podrías») y di qué harías tú («yo…»).",
+          "modelEn": "You should practise every day. You could watch series in English. I would use an app like this one.",
+          "checkEs": "Usa «should», «could» y «would» + verbo base."
+        },
+        {
+          "promptEs": "Pide a un desconocido, con educación, que te haga una foto.",
+          "modelEn": "Excuse me, could you take a photo of us, please?",
+          "checkEs": "Usa «Could you…?» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise should (advice), could (possibility, suggestions, requests) and would (Spanish -ría conditional). Correct 'would can', 'would you can' and 'if I would…'."
+    },
+    {
+      "id": "have-to-all-tenses",
+      "name": "Have To in All Tenses",
+      "nameEs": "Tener que (have to, had to, will have to)",
+      "level": "A2",
+      "summaryEs": "«Tener que» en presente, pasado, futuro y condicional.",
+      "keywords": [
+        "have to",
+        "has to",
+        "had to",
+        "will have to",
+        "would have to",
+        "tener que",
+        "tengo que",
+        "tuve que",
+        "tendré que",
+        "tendría que",
+        "obligación"
+      ],
+      "categories": [
+        "grammar",
+        "tense"
+      ],
+      "explanationEs": [
+        "«Tener que» es «have to» + verbo base, y se conjuga en todos los tiempos: have/has to (tengo que), had to (tuve que, tenía que), will have to (tendré que), would have to (tendría que), have had to (he tenido que).",
+        "No lo traduzcas palabra por palabra: «tengo que ir» no es «I have that go», sino «I have to go». Es un verbo normal: usa «do/does/did» en preguntas y negaciones.",
+        "Negativa: «don't have to» = no tener que (no hace falta). Para prohibir, «mustn't» o «can't». En británico también se dice «have got to» en presente («I've got to go»)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + have/has to · had to · will have to · would have to + verbo base",
+          "examples": [
+            {
+              "en": "She has to work late today.",
+              "es": "Hoy ella tiene que trabajar hasta tarde."
+            },
+            {
+              "en": "We'll have to wait.",
+              "es": "Tendremos que esperar."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't/doesn't/didn't have to · won't have to + verbo base",
+          "examples": [
+            {
+              "en": "I didn't have to pay.",
+              "es": "No tuve que pagar."
+            },
+            {
+              "en": "You won't have to change trains.",
+              "es": "No tendrás que hacer transbordo."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do/Does/Did + sujeto + have to + verbo base? · Will + sujeto + have to…?",
+          "examples": [
+            {
+              "en": "Did you have to wait long?",
+              "es": "¿Tuviste que esperar mucho?"
+            },
+            {
+              "en": "Will I have to show my passport?",
+              "es": "¿Tendré que enseñar el pasaporte?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I have to renew my driver's license.",
+          "es": "Tengo que renovar el carné de conducir."
+        },
+        {
+          "en": "We had to cancel the trip because of the storm.",
+          "es": "Tuvimos que cancelar el viaje por la tormenta."
+        },
+        {
+          "en": "You'll have to install the new version.",
+          "es": "Tendrás que instalar la versión nueva."
+        },
+        {
+          "en": "If the car broke down, we would have to take a bus.",
+          "es": "Si se estropeara el coche, tendríamos que coger un autobús."
+        },
+        {
+          "en": "I've had to work every weekend this month.",
+          "es": "Este mes he tenido que trabajar todos los fines de semana."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I have that go.",
+          "right": "I have to go.",
+          "whyEs": "«Tengo que» es «have to», no «have that»."
+        },
+        {
+          "wrong": "She have to study.",
+          "right": "She has to study.",
+          "whyEs": "Con he/she/it: «has to»."
+        },
+        {
+          "wrong": "I will must work tomorrow.",
+          "right": "I will have to work tomorrow.",
+          "whyEs": "«Must» no tiene futuro: «tendré que» es «will have to»."
+        },
+        {
+          "wrong": "Did you had to wait?",
+          "right": "Did you have to wait?",
+          "whyEs": "Con «did», «have» vuelve a su forma base."
+        }
+      ],
+      "related": [
+        "must-vs-have-to",
+        "need-neednt",
+        "should-have-would-have-had-to"
+      ],
+      "exercises": [
+        {
+          "id": "have-to-all-tenses-1",
+          "type": "choice",
+          "prompt": "My sister ____ work on Saturdays.",
+          "options": [
+            "has to",
+            "have to",
+            "has",
+            "must to"
+          ],
+          "answer": 0,
+          "whyEs": "Con «my sister» (she): «has to».",
+          "trapsEs": [
+            "",
+            "Con she es «has», no «have».",
+            "Falta «to».",
+            "«Must» no lleva «to»."
+          ]
+        },
+        {
+          "id": "have-to-all-tenses-2",
+          "type": "gap",
+          "prompt": "Last night I ____ take a taxi home. (have to)",
+          "answers": [
+            "had to"
+          ],
+          "whyEs": "«Tuve que»: «had to»."
+        },
+        {
+          "id": "have-to-all-tenses-3",
+          "type": "choice",
+          "prompt": "Tomorrow we ____ get up at five.",
+          "options": [
+            "'ll have to",
+            "will must",
+            "have got",
+            "are have to"
+          ],
+          "answer": 0,
+          "whyEs": "«Tendremos que»: «will have to».",
+          "trapsEs": [
+            "",
+            "«Must» no tiene futuro.",
+            "Falta «to» y no es futuro.",
+            "No se combina «are» con «have to»."
+          ]
+        },
+        {
+          "id": "have-to-all-tenses-4",
+          "type": "gap",
+          "prompt": "____ you ____ wear a uniform at work? (have to)",
+          "answers": [
+            "Do / have to"
+          ],
+          "whyEs": "Pregunta en presente: «Do you have to…?»."
+        },
+        {
+          "id": "have-to-all-tenses-5",
+          "type": "order",
+          "words": [
+            "have",
+            "don't",
+            "You",
+            "pay",
+            "me",
+            "to"
+          ],
+          "answer": "You don't have to pay me",
+          "whyEs": "No hace falta: don't have to + verbo base."
+        },
+        {
+          "id": "have-to-all-tenses-6",
+          "type": "choice",
+          "prompt": "If I lost my job, I ____ find another one quickly.",
+          "options": [
+            "would have to",
+            "will have to",
+            "would must",
+            "had to"
+          ],
+          "answer": 0,
+          "whyEs": "Situación imaginaria: «tendría que» = «would have to».",
+          "trapsEs": [
+            "",
+            "«Will» no encaja con «if I lost» (imaginario).",
+            "«Must» no tiene condicional.",
+            "«Had to» es pasado real, no «tendría que»."
+          ]
+        },
+        {
+          "id": "have-to-all-tenses-7",
+          "type": "choice",
+          "prompt": "I ____ to wait for an hour at the doctor's yesterday.",
+          "options": [
+            "had",
+            "have",
+            "must",
+            "has"
+          ],
+          "answer": 0,
+          "whyEs": "«Tuve que esperar»: «had to».",
+          "trapsEs": [
+            "",
+            "Presente: la frase dice «yesterday».",
+            "«Must» no lleva «to» ni tiene pasado.",
+            "Presente y con «I» sería «have»."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta algo que tienes que hacer hoy, algo que tuviste que hacer ayer y algo que tendrás que hacer el mes que viene.",
+          "modelEn": "Today I have to call the bank. Yesterday I had to work late. Next month I'll have to renew my passport.",
+          "checkEs": "Usa «have to», «had to» y «will have to»."
+        },
+        {
+          "promptEs": "Imagina que pierdes las llaves de casa. Di qué tendrías que hacer.",
+          "modelEn": "I would have to call a locksmith and I would have to sleep at my sister's.",
+          "checkEs": "Usa «would have to» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise have to across tenses (have/has to, had to, will have to, would have to) for obligation. Correct 'have that + verb', 'she have to', 'will must' and 'did you had to'."
+    },
+    {
+      "id": "would-like-rather-prefer",
+      "name": "Would Like, Would Rather, Would Prefer",
+      "nameEs": "Would like, would rather, would prefer (me gustaría, preferiría)",
+      "level": "B1",
+      "summaryEs": "Decir lo que te gustaría o lo que preferirías, con educación.",
+      "keywords": [
+        "would like",
+        "I'd like",
+        "would rather",
+        "I'd rather",
+        "would prefer",
+        "me gustaría",
+        "quisiera",
+        "preferiría",
+        "prefiero",
+        "rather than"
+      ],
+      "categories": [
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Me gustaría» o «quisiera» = «I'd like» (would like), con un nombre o con «to» + verbo: «I'd like a table for two», «I'd like to book a room». No es lo mismo que «I like» (me gusta en general).",
+        "«Preferiría» tiene dos formas: «I'd rather» + verbo base, sin «to» («I'd rather stay»), y «I'd prefer» + to + verbo o + nombre («I'd prefer to stay», «I'd prefer tea»). Para comparar: «I'd rather walk than drive».",
+        "Si prefieres que otra persona haga algo: «I'd rather you» + pasado («I'd rather you didn't smoke here»: preferiría que no fumaras aquí) o «I'd prefer you to…»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + 'd like (to) · 'd rather + verbo base · 'd prefer (to)",
+          "examples": [
+            {
+              "en": "I'd like to change my seat.",
+              "es": "Me gustaría cambiar de asiento."
+            },
+            {
+              "en": "I'd rather stay at home.",
+              "es": "Preferiría quedarme en casa."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + wouldn't like to · 'd rather not · 'd prefer not to + verbo",
+          "examples": [
+            {
+              "en": "I'd rather not talk about it.",
+              "es": "Prefiero no hablar de eso."
+            },
+            {
+              "en": "She'd prefer not to travel at night.",
+              "es": "Ella preferiría no viajar de noche."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Would + sujeto + like / rather / prefer…?",
+          "examples": [
+            {
+              "en": "Would you like something to eat?",
+              "es": "¿Quieres algo de comer?"
+            },
+            {
+              "en": "Would you rather go out or stay in?",
+              "es": "¿Prefieres salir o quedarte en casa?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I'd like a refund, please.",
+          "es": "Quisiera que me devolvieran el dinero, por favor."
+        },
+        {
+          "en": "Would you like to join us for dinner?",
+          "es": "¿Te gustaría cenar con nosotros?"
+        },
+        {
+          "en": "I'd rather work from home on Fridays.",
+          "es": "Preferiría trabajar desde casa los viernes."
+        },
+        {
+          "en": "I'd prefer an aisle seat.",
+          "es": "Preferiría un asiento de pasillo."
+        },
+        {
+          "en": "I'd rather walk than wait for the bus.",
+          "es": "Prefiero ir andando que esperar el autobús."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I would like go to the beach.",
+          "right": "I'd like to go to the beach.",
+          "whyEs": "«Would like» + verbo lleva «to»."
+        },
+        {
+          "wrong": "I'd rather to stay here.",
+          "right": "I'd rather stay here.",
+          "whyEs": "«Would rather» va sin «to»."
+        },
+        {
+          "wrong": "I'd prefer stay here.",
+          "right": "I'd prefer to stay here.",
+          "whyEs": "«Would prefer» + verbo lleva «to»."
+        },
+        {
+          "wrong": "I like a coffee, please.",
+          "right": "I'd like a coffee, please.",
+          "whyEs": "Para pedir algo, «I'd like» (me gustaría), no «I like» (me gusta)."
+        }
+      ],
+      "related": [
+        "would",
+        "should-could-would",
+        "gerunds-infinitives"
+      ],
+      "exercises": [
+        {
+          "id": "would-like-rather-prefer-1",
+          "type": "choice",
+          "prompt": "I'd rather ____ at home tonight.",
+          "options": [
+            "stay",
+            "to stay",
+            "staying",
+            "stayed"
+          ],
+          "answer": 0,
+          "whyEs": "«Would rather» + verbo base.",
+          "trapsEs": [
+            "",
+            "«Rather» no va con «to».",
+            "No va -ing.",
+            "Solo va el pasado si hay otro sujeto («I'd rather you stayed»)."
+          ]
+        },
+        {
+          "id": "would-like-rather-prefer-2",
+          "type": "choice",
+          "prompt": "I'd prefer ____ by train.",
+          "options": [
+            "to travel",
+            "travel",
+            "travelled",
+            "than travel"
+          ],
+          "answer": 0,
+          "whyEs": "«Would prefer» + to + verbo base.",
+          "trapsEs": [
+            "",
+            "Falta «to».",
+            "No va el pasado.",
+            "«Than» solo sirve para comparar dos cosas."
+          ]
+        },
+        {
+          "id": "would-like-rather-prefer-3",
+          "type": "gap",
+          "prompt": "____ you like something to drink?",
+          "answers": [
+            "Would"
+          ],
+          "whyEs": "Ofrecimiento educado: «Would you like…?»."
+        },
+        {
+          "id": "would-like-rather-prefer-4",
+          "type": "gap",
+          "prompt": "I'd rather walk ____ take the bus.",
+          "answers": [
+            "than"
+          ],
+          "whyEs": "Comparar con «would rather»: «than»."
+        },
+        {
+          "id": "would-like-rather-prefer-5",
+          "type": "order",
+          "words": [
+            "book",
+            "like",
+            "to",
+            "I'd",
+            "table",
+            "a"
+          ],
+          "answer": "I'd like to book a table",
+          "whyEs": "Petición educada: I'd like + to + verbo."
+        },
+        {
+          "id": "would-like-rather-prefer-6",
+          "type": "choice",
+          "prompt": "I'd rather you ____ smoke in the car.",
+          "options": [
+            "didn't",
+            "don't",
+            "not",
+            "won't"
+          ],
+          "answer": 0,
+          "whyEs": "Si prefieres que otra persona no haga algo: «I'd rather you» + pasado.",
+          "trapsEs": [
+            "",
+            "Tras «I'd rather you» la norma es el pasado (en la calle se oye el presente, pero no es lo estándar).",
+            "Falta el auxiliar: «didn't».",
+            "No va el futuro."
+          ]
+        },
+        {
+          "id": "would-like-rather-prefer-7",
+          "type": "choice",
+          "prompt": "«Me gustaría hablar con el gerente.» → I ____ speak to the manager.",
+          "options": [
+            "'d like to",
+            "like to",
+            "'d like",
+            "would like speak"
+          ],
+          "answer": 0,
+          "whyEs": "«Me gustaría» + verbo: «I'd like to».",
+          "trapsEs": [
+            "",
+            "«I like to» = me gusta (en general).",
+            "Falta «to».",
+            "Falta «to»."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Estás en un restaurante: pide una mesa y la comida que quieres, con educación.",
+          "modelEn": "Hi, I'd like a table for two, please. I'd like the fish and a glass of water.",
+          "checkEs": "Usa «I'd like» + nombre o + to + verbo."
+        },
+        {
+          "promptEs": "Tu profe te pregunta: ¿playa o montaña? Di qué preferirías y por qué.",
+          "modelEn": "I'd rather go to the mountains than to the beach. I'd prefer to avoid the crowds.",
+          "checkEs": "Usa «I'd rather» + verbo base y «I'd prefer to»."
+        }
+      ],
+      "classFocusEn": "Practise would like (to), would rather + base verb (than) and would prefer (to). Correct 'would like + verb' without to, 'rather to' and 'I like' for polite requests."
+    },
+    {
+      "id": "wish-past-simple",
+      "name": "Wish + Past Simple",
+      "nameEs": "Wish + pasado (ojalá, desearía)",
+      "level": "B1",
+      "summaryEs": "Deseos sobre el presente que no son reales: «ojalá tuviera…», «desearía que…».",
+      "keywords": [
+        "wish",
+        "I wish",
+        "wish + past",
+        "ojalá",
+        "desearía",
+        "ojalá tuviera",
+        "ojalá pudiera",
+        "hope",
+        "deseo",
+        "unreal present"
+      ],
+      "categories": [
+        "grammar",
+        "tense"
+      ],
+      "explanationEs": [
+        "«I wish» + pasado expresa que te gustaría que el presente fuera distinto: «I wish I had more time» = ojalá tuviera más tiempo (pero no lo tengo). El pasado no habla del pasado: indica que no es real, como el subjuntivo «tuviera».",
+        "Con «be» se usa «were» para todas las personas («I wish I were taller»); al hablar, «was» también es normal. Para habilidades, «could»: «I wish I could sing» (ojalá supiera cantar).",
+        "Si es un deseo posible para el futuro, no uses «wish», sino «hope» + presente: «I hope you get the job» (ojalá consigas el trabajo). «I wish you would…» sirve para quejarte de lo que hace otro: «I wish you would listen»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + wish + sujeto + pasado / were / could",
+          "examples": [
+            {
+              "en": "I wish I lived near the beach.",
+              "es": "Ojalá viviera cerca de la playa."
+            },
+            {
+              "en": "I wish it were Friday.",
+              "es": "Ojalá fuera viernes."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + wish + sujeto + didn't / weren't / couldn't…",
+          "examples": [
+            {
+              "en": "I wish I didn't have to work today.",
+              "es": "Ojalá no tuviera que trabajar hoy."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do you ever wish + sujeto + pasado?",
+          "examples": [
+            {
+              "en": "Do you ever wish you lived abroad?",
+              "es": "¿Alguna vez desearías vivir en otro país?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I wish I spoke English better.",
+          "es": "Ojalá hablara mejor inglés."
+        },
+        {
+          "en": "I wish I could stay longer.",
+          "es": "Ojalá pudiera quedarme más tiempo."
+        },
+        {
+          "en": "She wishes she had a bigger apartment.",
+          "es": "Ella desearía tener un piso más grande."
+        },
+        {
+          "en": "I wish it weren't so cold.",
+          "es": "Ojalá no hiciera tanto frío."
+        },
+        {
+          "en": "I hope you have a great trip.",
+          "es": "Ojalá tengas un buen viaje.",
+          "noteEs": "Deseo posible: «hope», no «wish»."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I wish I have more money.",
+          "right": "I wish I had more money.",
+          "whyEs": "Tras «wish» va el pasado, como en español «ojalá tuviera»."
+        },
+        {
+          "wrong": "I wish you get the job.",
+          "right": "I hope you get the job.",
+          "whyEs": "Para desear algo posible se usa «hope»; «wish» es para lo irreal."
+        },
+        {
+          "wrong": "I wish I can fly.",
+          "right": "I wish I could fly.",
+          "whyEs": "Tras «wish», «can» pasa a «could»."
+        },
+        {
+          "wrong": "I wish I would be taller.",
+          "right": "I wish I were taller. / I wish I was taller.",
+          "whyEs": "Para ti mismo no se usa «would»: se usa «were» o el pasado."
+        }
+      ],
+      "related": [
+        "wish-past-perfect",
+        "if-only",
+        "second-conditional"
+      ],
+      "exercises": [
+        {
+          "id": "wish-past-simple-1",
+          "type": "choice",
+          "prompt": "I wish I ____ more free time.",
+          "options": [
+            "had",
+            "have",
+            "would have",
+            "will have"
+          ],
+          "answer": 0,
+          "whyEs": "Deseo irreal sobre el presente: «wish» + pasado.",
+          "trapsEs": [
+            "",
+            "Tras «wish» no va el presente.",
+            "Para uno mismo no se usa «would».",
+            "Tras «wish» no va el futuro."
+          ]
+        },
+        {
+          "id": "wish-past-simple-2",
+          "type": "choice",
+          "prompt": "I wish I ____ speak Japanese.",
+          "options": [
+            "could",
+            "can",
+            "would",
+            "will"
+          ],
+          "answer": 0,
+          "whyEs": "Habilidad que no tienes: «wish» + could.",
+          "trapsEs": [
+            "",
+            "Tras «wish», «can» pasa a «could».",
+            "«Would» no expresa habilidad.",
+            "Tras «wish» no va el futuro."
+          ]
+        },
+        {
+          "id": "wish-past-simple-3",
+          "type": "gap",
+          "prompt": "I wish it ____ summer. (be)",
+          "answers": [
+            "were",
+            "was"
+          ],
+          "whyEs": "Tras «wish», «be» va en pasado: «were» (o «was» al hablar)."
+        },
+        {
+          "id": "wish-past-simple-4",
+          "type": "choice",
+          "prompt": "Good luck tomorrow! I ____ you pass your exam.",
+          "options": [
+            "hope",
+            "wish",
+            "want",
+            "would"
+          ],
+          "answer": 0,
+          "whyEs": "Deseo posible: «hope» + presente.",
+          "trapsEs": [
+            "",
+            "«Wish» es para lo irreal; aquí aprobar es posible.",
+            "«Want» necesitaría «you to pass».",
+            "No forma un deseo así."
+          ]
+        },
+        {
+          "id": "wish-past-simple-5",
+          "type": "gap",
+          "prompt": "I wish I ____ so far from work. (live, negativa)",
+          "answers": [
+            "didn't live",
+            "did not live"
+          ],
+          "whyEs": "Deseo irreal en negativa: «wish» + didn't + verbo base."
+        },
+        {
+          "id": "wish-past-simple-6",
+          "type": "order",
+          "words": [
+            "wish",
+            "I",
+            "knew",
+            "her",
+            "number",
+            "I"
+          ],
+          "answer": "I wish I knew her number",
+          "whyEs": "wish + sujeto + pasado."
+        },
+        {
+          "id": "wish-past-simple-7",
+          "type": "choice",
+          "prompt": "She wishes she ____ taller.",
+          "options": [
+            "were",
+            "is",
+            "be",
+            "will be"
+          ],
+          "answer": 0,
+          "whyEs": "Tras «wish», «be» en pasado: «were».",
+          "trapsEs": [
+            "",
+            "No va el presente.",
+            "No va la forma base.",
+            "No va el futuro."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Di tres cosas que desearías que fueran distintas en tu vida ahora mismo.",
+          "modelEn": "I wish I had more free time. I wish I lived closer to my family. I wish I could speak English fluently.",
+          "checkEs": "Usa «I wish» + pasado / could."
+        },
+        {
+          "promptEs": "Despide a un amigo que se va de viaje y deséale dos cosas.",
+          "modelEn": "I hope you have a great time. I hope the weather is good.",
+          "checkEs": "Para deseos posibles, «I hope» + presente."
+        }
+      ],
+      "classFocusEn": "Practise wish + past simple / were / could for unreal present wishes, and contrast with hope. Correct 'I wish I have', 'I wish you get the job' and 'I wish I can'."
+    },
+    {
+      "id": "wish-past-perfect",
+      "name": "Wish + Past Perfect",
+      "nameEs": "Wish + pasado perfecto (lamentos)",
+      "level": "B2",
+      "summaryEs": "Lamentar algo del pasado: «ojalá hubiera…», «me arrepiento de no haber…».",
+      "keywords": [
+        "wish + past perfect",
+        "I wish I had",
+        "I wish I hadn't",
+        "ojalá hubiera",
+        "ojalá no hubiera",
+        "me arrepiento",
+        "lamento",
+        "regret",
+        "arrepentirse"
+      ],
+      "categories": [
+        "tense",
+        "grammar"
+      ],
+      "explanationEs": [
+        "Para lamentar algo que ya pasó se usa «wish» + pasado perfecto (had + participio): «I wish I had studied more» = ojalá hubiera estudiado más (no lo hice y me arrepiento).",
+        "En negativa, «hadn't»: «I wish I hadn't said that» (ojalá no hubiera dicho eso). Con habilidades del pasado: «I wish I could have gone» (ojalá hubiera podido ir).",
+        "Compara: «I wish I had a car» (ahora no lo tengo) / «I wish I had had a car then» (entonces no lo tenía). Al hablar, muchos nativos dicen «I wish I would have known», pero lo correcto es «I wish I had known»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + wish + sujeto + had + participio",
+          "examples": [
+            {
+              "en": "I wish I had taken that job.",
+              "es": "Ojalá hubiera aceptado ese trabajo."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + wish + sujeto + hadn't + participio",
+          "examples": [
+            {
+              "en": "I wish I hadn't eaten so much.",
+              "es": "Ojalá no hubiera comido tanto."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do you wish + sujeto + had + participio?",
+          "examples": [
+            {
+              "en": "Do you wish you had studied something else?",
+              "es": "¿Te arrepientes de no haber estudiado otra cosa?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I wish I had brought a jacket.",
+          "es": "Ojalá me hubiera traído una chaqueta."
+        },
+        {
+          "en": "I wish I hadn't sent that message.",
+          "es": "Ojalá no hubiera mandado ese mensaje."
+        },
+        {
+          "en": "He wishes he had learned English as a child.",
+          "es": "Él desearía haber aprendido inglés de niño."
+        },
+        {
+          "en": "I wish you had told me earlier.",
+          "es": "Ojalá me lo hubieras dicho antes."
+        },
+        {
+          "en": "I wish I could have been there.",
+          "es": "Ojalá hubiera podido estar allí."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I wish I studied more when I was young.",
+          "right": "I wish I had studied more when I was young.",
+          "whyEs": "Para lamentar el pasado se usa el pasado perfecto («hubiera estudiado»)."
+        },
+        {
+          "wrong": "I wish I would have known.",
+          "right": "I wish I had known.",
+          "whyEs": "Se oye mucho, pero la forma correcta es «had» + participio."
+        },
+        {
+          "wrong": "I wish I didn't say that yesterday.",
+          "right": "I wish I hadn't said that yesterday.",
+          "whyEs": "Con algo ya pasado, «hadn't» + participio."
+        }
+      ],
+      "related": [
+        "wish-past-simple",
+        "if-only",
+        "should-have-would-have-had-to",
+        "third-conditional"
+      ],
+      "exercises": [
+        {
+          "id": "wish-past-perfect-1",
+          "type": "choice",
+          "prompt": "I wish I ____ to the concert last night. Everyone says it was amazing.",
+          "options": [
+            "had gone",
+            "went",
+            "would go",
+            "have gone"
+          ],
+          "answer": 0,
+          "whyEs": "Lamento sobre el pasado: «wish» + had + participio.",
+          "trapsEs": [
+            "",
+            "«Went» se refiere al presente irreal, no a anoche.",
+            "«Would go» no expresa un lamento del pasado.",
+            "Tras «wish» no va el presente perfecto."
+          ]
+        },
+        {
+          "id": "wish-past-perfect-2",
+          "type": "gap",
+          "prompt": "I wish I ____ so much. I feel sick. (eat, negativa)",
+          "answers": [
+            "hadn't eaten",
+            "had not eaten"
+          ],
+          "whyEs": "Lamento en negativa: «hadn't» + participio."
+        },
+        {
+          "id": "wish-past-perfect-3",
+          "type": "choice",
+          "prompt": "She wishes she ____ that job offer last year.",
+          "options": [
+            "had accepted",
+            "accepted",
+            "has accepted",
+            "would accept"
+          ],
+          "answer": 0,
+          "whyEs": "Lamento sobre el año pasado: «had accepted».",
+          "trapsEs": [
+            "",
+            "El pasado simple tras «wish» habla del presente.",
+            "Tras «wish» no va el presente perfecto.",
+            "«Would accept» no habla del pasado."
+          ]
+        },
+        {
+          "id": "wish-past-perfect-4",
+          "type": "order",
+          "words": [
+            "had",
+            "wish",
+            "I",
+            "I",
+            "known",
+            "earlier"
+          ],
+          "answer": "I wish I had known earlier",
+          "whyEs": "wish + sujeto + had + participio."
+        },
+        {
+          "id": "wish-past-perfect-5",
+          "type": "choice",
+          "prompt": "Which sentence is about a regret in the past? ____",
+          "options": [
+            "I wish I had called her.",
+            "I wish I called her more often.",
+            "I wish I could call her.",
+            "I hope I call her."
+          ],
+          "answer": 0,
+          "whyEs": "«Had called» = ojalá la hubiera llamado (pasado).",
+          "trapsEs": [
+            "",
+            "Habla de un hábito en el presente.",
+            "Habla de una habilidad o posibilidad en el presente.",
+            "«Hope» mira al futuro y no es un lamento."
+          ]
+        },
+        {
+          "id": "wish-past-perfect-6",
+          "type": "gap",
+          "prompt": "We wish we ____ the hotel earlier. Now it's full. (book)",
+          "answers": [
+            "had booked",
+            "'d booked"
+          ],
+          "whyEs": "Lamento sobre el pasado: «had booked»."
+        },
+        {
+          "id": "wish-past-perfect-7",
+          "type": "choice",
+          "prompt": "I wish you ____ me the truth from the beginning.",
+          "options": [
+            "had told",
+            "told",
+            "would tell",
+            "have told"
+          ],
+          "answer": 0,
+          "whyEs": "«From the beginning» es pasado: «had told».",
+          "trapsEs": [
+            "",
+            "Hablaría del presente.",
+            "«Would tell» es una queja sobre el presente o el futuro.",
+            "Tras «wish» no va el presente perfecto."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta dos cosas que lamentas de tu pasado: una que hiciste y otra que no hiciste.",
+          "modelEn": "I wish I hadn't stopped playing the guitar. I wish I had travelled more when I was younger.",
+          "checkEs": "Usa «I wish I had / hadn't» + participio."
+        },
+        {
+          "promptEs": "Ayer llegaste tarde a una cita importante. Di qué desearías haber hecho distinto.",
+          "modelEn": "I wish I had left home earlier. I wish I had checked the traffic.",
+          "checkEs": "Usa «wish» + had + participio."
+        }
+      ],
+      "classFocusEn": "Practise wish + past perfect for past regrets (I wish I had / hadn't + past participle). Correct 'I wish I studied' about the past and 'I wish I would have known'."
+    },
+    {
+      "id": "if-only",
+      "name": "If Only",
+      "nameEs": "If only (¡ojalá…!, ¡si tan solo…!)",
+      "level": "B2",
+      "summaryEs": "Un «wish» más intenso para deseos y lamentos: «¡ojalá…!», «¡si tan solo…!».",
+      "keywords": [
+        "if only",
+        "ojalá",
+        "si tan solo",
+        "si al menos",
+        "lamento",
+        "deseo",
+        "only if",
+        "regret"
+      ],
+      "categories": [
+        "grammar",
+        "word_order"
+      ],
+      "explanationEs": [
+        "«If only» funciona como «I wish», pero con más emoción: es como «¡ojalá…!» o «¡si tan solo…!». Con pasado habla del presente («If only I had more time!») y con pasado perfecto lamenta el pasado («If only I had listened!»).",
+        "Con «would» expresa el deseo de que algo o alguien cambie: «If only it would stop raining!» (¡ojalá dejara de llover!).",
+        "No lo confundas con «only if» (solo si), que pone una condición: «You can go only if you finish your homework»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "If only + sujeto + pasado (presente) / had + participio (pasado) / would + verbo",
+          "examples": [
+            {
+              "en": "If only I knew the answer!",
+              "es": "¡Si tan solo supiera la respuesta!"
+            },
+            {
+              "en": "If only we had left earlier!",
+              "es": "¡Ojalá hubiéramos salido antes!"
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "If only + sujeto + didn't / hadn't / wouldn't…",
+          "examples": [
+            {
+              "en": "If only I hadn't lost my phone!",
+              "es": "¡Ojalá no hubiera perdido el móvil!"
+            }
+          ]
+        },
+        "question": null
+      },
+      "examples": [
+        {
+          "en": "If only I lived closer to the office!",
+          "es": "¡Ojalá viviera más cerca de la oficina!"
+        },
+        {
+          "en": "If only you had told me!",
+          "es": "¡Si me lo hubieras dicho!"
+        },
+        {
+          "en": "If only the bus would come!",
+          "es": "¡Ojalá viniera ya el autobús!"
+        },
+        {
+          "en": "If only I could remember his name!",
+          "es": "¡Si pudiera acordarme de su nombre!"
+        },
+        {
+          "en": "I'll lend you the money only if you pay me back next week.",
+          "es": "Te dejo el dinero solo si me lo devuelves la semana que viene.",
+          "noteEs": "«Only if» = condición, no deseo."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "If only I have more money!",
+          "right": "If only I had more money!",
+          "whyEs": "Como con «wish», va el pasado para un deseo irreal sobre el presente."
+        },
+        {
+          "wrong": "If only I knew it yesterday!",
+          "right": "If only I had known it yesterday!",
+          "whyEs": "Para lamentar el pasado, pasado perfecto."
+        },
+        {
+          "wrong": "Only if I had a car! (queriendo decir «ojalá»)",
+          "right": "If only I had a car!",
+          "whyEs": "«Only if» es «solo si»; «ojalá» es «if only»."
+        }
+      ],
+      "related": [
+        "wish-past-simple",
+        "wish-past-perfect",
+        "third-conditional"
+      ],
+      "exercises": [
+        {
+          "id": "if-only-1",
+          "type": "choice",
+          "prompt": "If only I ____ how to fix this!",
+          "options": [
+            "knew",
+            "know",
+            "will know",
+            "known"
+          ],
+          "answer": 0,
+          "whyEs": "Deseo irreal sobre el presente: «if only» + pasado.",
+          "trapsEs": [
+            "",
+            "No va el presente.",
+            "No va el futuro.",
+            "El participio solo no forma el verbo."
+          ]
+        },
+        {
+          "id": "if-only-2",
+          "type": "choice",
+          "prompt": "If only we ____ the earlier train! Now we're going to be late.",
+          "options": [
+            "had taken",
+            "took",
+            "take",
+            "would take"
+          ],
+          "answer": 0,
+          "whyEs": "Lamento sobre el pasado: «if only» + had + participio.",
+          "trapsEs": [
+            "",
+            "El pasado simple hablaría del presente.",
+            "No va el presente.",
+            "«Would take» no lamenta el pasado."
+          ]
+        },
+        {
+          "id": "if-only-3",
+          "type": "gap",
+          "prompt": "If only it ____ raining! I want to go out. (stop)",
+          "answers": [
+            "would stop"
+          ],
+          "whyEs": "Deseo de que algo cambie: «if only» + would."
+        },
+        {
+          "id": "if-only-4",
+          "type": "choice",
+          "prompt": "You can borrow my car ____ you drive carefully.",
+          "options": [
+            "only if",
+            "if only",
+            "only",
+            "if so"
+          ],
+          "answer": 0,
+          "whyEs": "Condición: «only if» (solo si).",
+          "trapsEs": [
+            "",
+            "«If only» expresa un deseo, no una condición.",
+            "Falta «if».",
+            "«If so» significa «si es así» y no introduce una condición nueva."
+          ]
+        },
+        {
+          "id": "if-only-5",
+          "type": "order",
+          "words": [
+            "only",
+            "I",
+            "had",
+            "more",
+            "If",
+            "time"
+          ],
+          "answer": "If only I had more time",
+          "whyEs": "If only + sujeto + pasado."
+        },
+        {
+          "id": "if-only-6",
+          "type": "gap",
+          "prompt": "If only I ____ my phone yesterday. (lose, negativa)",
+          "answers": [
+            "hadn't lost",
+            "had not lost"
+          ],
+          "whyEs": "Lamento en negativa: «hadn't» + participio."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Di dos deseos con «if only»: uno sobre tu vida ahora y uno sobre algo que pasó.",
+          "modelEn": "If only I had a bigger flat! If only I had learned English at school!",
+          "checkEs": "Usa «if only» + pasado / had + participio."
+        },
+        {
+          "promptEs": "Está lloviendo y querías ir a la playa. Quéjate con «if only».",
+          "modelEn": "If only it would stop raining! If only we had checked the forecast!",
+          "checkEs": "Usa «if only» + would / had + participio."
+        }
+      ],
+      "classFocusEn": "Practise if only + past (present wishes), past perfect (past regrets) and would (wanting change). Correct present tense after 'if only' and confusion with 'only if'."
+    },
+    {
+      "id": "its-time",
+      "name": "It's Time + Past Simple",
+      "nameEs": "It's time + pasado (ya es hora de que…)",
+      "level": "B2",
+      "summaryEs": "«Ya es hora de que…»: algo que ya debería estar pasando.",
+      "keywords": [
+        "it's time",
+        "it's high time",
+        "it's about time",
+        "time to",
+        "ya es hora",
+        "ya va siendo hora",
+        "es hora de que",
+        "ya era hora"
+      ],
+      "categories": [
+        "grammar",
+        "tense"
+      ],
+      "explanationEs": [
+        "«It's time» + sujeto + pasado = ya es hora de que alguien haga algo (y debería haberlo hecho ya): «It's time we left» (ya es hora de que nos vayamos). El pasado no habla del pasado, igual que con «wish».",
+        "«It's high time» y «it's about time» añaden crítica o impaciencia: «It's high time you found a job» (ya va siendo hora de que encuentres trabajo).",
+        "Si no hay un sujeto concreto, usa «it's time to» + verbo base, que es neutral: «It's time to go» (es hora de irse). Y «it's time for» + nombre: «It's time for lunch»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "It's (high / about) time + sujeto + pasado · It's time to + verbo base",
+          "examples": [
+            {
+              "en": "It's time we went home.",
+              "es": "Ya es hora de que nos vayamos a casa."
+            },
+            {
+              "en": "It's time to go.",
+              "es": "Es hora de irse."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "It's not time to + verbo base (yet) · It's time + sujeto + stopped + -ing",
+          "examples": [
+            {
+              "en": "It's not time to leave yet.",
+              "es": "Todavía no es hora de irse."
+            },
+            {
+              "en": "It's time you stopped working so late.",
+              "es": "Ya es hora de que dejes de trabajar hasta tan tarde."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Isn't it time + sujeto + pasado?",
+          "examples": [
+            {
+              "en": "Isn't it time you got a haircut?",
+              "es": "¿No va siendo hora de que te cortes el pelo?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "It's late. It's time we went to bed.",
+          "es": "Es tarde. Ya es hora de que nos acostemos."
+        },
+        {
+          "en": "It's high time they fixed this road.",
+          "es": "Ya va siendo hora de que arreglen esta carretera."
+        },
+        {
+          "en": "It's about time you called your mother.",
+          "es": "Ya era hora de que llamaras a tu madre."
+        },
+        {
+          "en": "Come on, kids, it's time for dinner.",
+          "es": "Vamos, niños, es hora de cenar."
+        },
+        {
+          "en": "Isn't it time you updated your computer?",
+          "es": "¿No va siendo hora de que actualices el ordenador?"
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "It's time we go.",
+          "right": "It's time we went. / It's time to go.",
+          "whyEs": "Con sujeto, va el pasado («ya es hora de que nos vayamos»)."
+        },
+        {
+          "wrong": "It's time for go home.",
+          "right": "It's time to go home.",
+          "whyEs": "Con un verbo se usa «to»; «for» va con un nombre («time for lunch»)."
+        },
+        {
+          "wrong": "It's high time you start looking for a job.",
+          "right": "It's high time you started looking for a job.",
+          "whyEs": "Tras «it's high time» + sujeto, el verbo va en pasado."
+        }
+      ],
+      "related": [
+        "wish-past-simple",
+        "should-ought-to"
+      ],
+      "exercises": [
+        {
+          "id": "its-time-1",
+          "type": "choice",
+          "prompt": "It's late. It's time we ____ home.",
+          "options": [
+            "went",
+            "go",
+            "going",
+            "will go"
+          ],
+          "answer": 0,
+          "whyEs": "«It's time» + sujeto + pasado.",
+          "trapsEs": [
+            "",
+            "Con sujeto no va el presente.",
+            "Falta un verbo conjugado.",
+            "No va el futuro."
+          ]
+        },
+        {
+          "id": "its-time-2",
+          "type": "choice",
+          "prompt": "It's time ____ for the airport.",
+          "options": [
+            "to leave",
+            "leaving",
+            "leave",
+            "for leave"
+          ],
+          "answer": 0,
+          "whyEs": "Sin sujeto concreto: «It's time to» + verbo base.",
+          "trapsEs": [
+            "",
+            "No va -ing.",
+            "Falta «to».",
+            "«For» va con un nombre, no con un verbo."
+          ]
+        },
+        {
+          "id": "its-time-3",
+          "type": "gap",
+          "prompt": "You're 30! It's high time you ____ to cook. (learn)",
+          "answers": [
+            "learned",
+            "learnt"
+          ],
+          "whyEs": "«It's high time» + sujeto + pasado («learnt» en británico)."
+        },
+        {
+          "id": "its-time-4",
+          "type": "order",
+          "words": [
+            "we",
+            "to",
+            "bed",
+            "went",
+            "It's",
+            "time"
+          ],
+          "answer": "It's time we went to bed",
+          "whyEs": "It's time + sujeto + pasado."
+        },
+        {
+          "id": "its-time-5",
+          "type": "choice",
+          "prompt": "It's about time the government ____ something about the traffic.",
+          "options": [
+            "did",
+            "does",
+            "do",
+            "doing"
+          ],
+          "answer": 0,
+          "whyEs": "«It's about time» + sujeto + pasado.",
+          "trapsEs": [
+            "",
+            "Con este patrón no va el presente.",
+            "No va la forma base.",
+            "Falta un verbo conjugado."
+          ]
+        },
+        {
+          "id": "its-time-6",
+          "type": "gap",
+          "prompt": "Isn't it time you ____ a new phone? That one is ancient. (get)",
+          "answers": [
+            "got"
+          ],
+          "whyEs": "«Isn't it time» + sujeto + pasado: «got»."
+        },
+        {
+          "id": "its-time-7",
+          "type": "choice",
+          "prompt": "'It's high time you found a job' means: ____",
+          "options": [
+            "You should have found a job already.",
+            "You found a job at the right time.",
+            "You have a job with a high salary.",
+            "It's a good moment to relax."
+          ],
+          "answer": 0,
+          "whyEs": "Expresa que ya deberías haberlo hecho: crítica o impaciencia.",
+          "trapsEs": [
+            "",
+            "No dice que lo encontraste a tiempo.",
+            "«High» no habla del sueldo.",
+            "Dice lo contrario: que ya toca buscar trabajo."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Di tres cosas que ya va siendo hora de que hagas (en casa, en el trabajo, con tu salud).",
+          "modelEn": "It's time I cleaned my car. It's high time I updated my CV. It's about time I went to the dentist.",
+          "checkEs": "Usa «It's (high/about) time» + sujeto + pasado."
+        },
+        {
+          "promptEs": "Es medianoche en una fiesta. Di que es hora de irse, de dos formas.",
+          "modelEn": "It's time to go. It's time we went home.",
+          "checkEs": "Usa «It's time to» + verbo y «It's time we» + pasado."
+        }
+      ],
+      "classFocusEn": "Practise It's (high/about) time + subject + past simple and It's time to + infinitive. Correct present tense after 'It's time we…' and 'time for + verb'."
+    },
+    {
+      "id": "should-have-would-have-had-to",
+      "name": "Should Have and Would Have Had To",
+      "nameEs": "«Tendría que haber…» (should have, would have had to)",
+      "level": "B2",
+      "summaryEs": "Cómo decir «tendría que haber», «debería haber» y «habría tenido que».",
+      "keywords": [
+        "should have",
+        "would have had to",
+        "had to",
+        "tendría que haber",
+        "debería haber",
+        "habría tenido que",
+        "tuve que",
+        "no tendrías que haber",
+        "regret",
+        "lamento"
+      ],
+      "categories": [
+        "tense",
+        "auxiliary"
+      ],
+      "explanationEs": [
+        "«Tendría que haber» y «debería haber» (un lamento o una crítica sobre el pasado) se dicen «should have» + participio: «I should have called you» = tendría que haberte llamado. En negativa: «You shouldn't have paid» = no tendrías que haber pagado.",
+        "«Habría tenido que» (una obligación imaginaria en el pasado) es «would have had to»: «If I had missed the bus, I would have had to walk» = si hubiera perdido el autobús, habría tenido que ir andando.",
+        "Y «tuve que» (una obligación real que se cumplió) es simplemente «had to»: «I had to walk». No confundas «had to» (lo hice) con «should have» (no lo hice y debería)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + should have + participio · would have had to + verbo base",
+          "examples": [
+            {
+              "en": "I should have booked earlier.",
+              "es": "Tendría que haber reservado antes."
+            },
+            {
+              "en": "We would have had to wait two hours.",
+              "es": "Habríamos tenido que esperar dos horas."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + shouldn't have + participio · wouldn't have had to + verbo base",
+          "examples": [
+            {
+              "en": "You shouldn't have bought it.",
+              "es": "No tendrías que haberlo comprado."
+            },
+            {
+              "en": "With a car, I wouldn't have had to take two buses.",
+              "es": "Con coche, no habría tenido que coger dos autobuses."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Should + sujeto + have + participio? · Would + sujeto + have had to…?",
+          "examples": [
+            {
+              "en": "Should I have said something?",
+              "es": "¿Tendría que haber dicho algo?"
+            },
+            {
+              "en": "Would you have had to pay?",
+              "es": "¿Habrías tenido que pagar?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I should have brought my charger.",
+          "es": "Tendría que haber traído el cargador."
+        },
+        {
+          "en": "You should have seen his face!",
+          "es": "¡Tendrías que haber visto su cara!",
+          "noteEs": "Expresión muy común para contar algo sorprendente."
+        },
+        {
+          "en": "We shouldn't have left so late.",
+          "es": "No tendríamos que haber salido tan tarde."
+        },
+        {
+          "en": "Without the scholarship, she would have had to work full-time.",
+          "es": "Sin la beca, ella habría tenido que trabajar a jornada completa."
+        },
+        {
+          "en": "The printer broke, so I had to go to a copy shop.",
+          "es": "Se rompió la impresora y tuve que ir a una copistería."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I should had told you.",
+          "right": "I should have told you.",
+          "whyEs": "Detrás de «should» va «have», nunca «had»."
+        },
+        {
+          "wrong": "I had to tell you before. (queriendo decir «tendría que habértelo dicho»)",
+          "right": "I should have told you before.",
+          "whyEs": "«Had to» = tuve que (lo hice). Para un lamento, «should have»."
+        },
+        {
+          "wrong": "If I had missed the bus, I would had to walk.",
+          "right": "If I had missed the bus, I would have had to walk.",
+          "whyEs": "«Habría tenido que» = «would have had to»: «have» + «had»."
+        },
+        {
+          "wrong": "You should of called.",
+          "right": "You should have called.",
+          "whyEs": "Se pronuncia «should've», pero se escribe «should have»."
+        }
+      ],
+      "related": [
+        "past-modals",
+        "have-to-all-tenses",
+        "wish-past-perfect",
+        "third-conditional"
+      ],
+      "exercises": [
+        {
+          "id": "should-have-would-have-had-to-1",
+          "type": "choice",
+          "prompt": "«Tendría que haberte llamado.» → I ____ you.",
+          "options": [
+            "should have called",
+            "had to call",
+            "should call",
+            "would have call"
+          ],
+          "answer": 0,
+          "whyEs": "Lamento sobre el pasado: «should have» + participio.",
+          "trapsEs": [
+            "",
+            "«Had to call» = tuve que llamarte (y lo hice).",
+            "«Should call» = debería llamarte (ahora).",
+            "Falta el participio: «called»."
+          ]
+        },
+        {
+          "id": "should-have-would-have-had-to-2",
+          "type": "choice",
+          "prompt": "If the train had been cancelled, we ____ a taxi.",
+          "options": [
+            "would have had to take",
+            "would had to take",
+            "had to take",
+            "will have to take"
+          ],
+          "answer": 0,
+          "whyEs": "Obligación imaginaria en el pasado: «would have had to».",
+          "trapsEs": [
+            "",
+            "Falta «have»: «would have had to».",
+            "«Had to» es algo que pasó de verdad.",
+            "«Will» no encaja con «if… had been»."
+          ]
+        },
+        {
+          "id": "should-have-would-have-had-to-3",
+          "type": "gap",
+          "prompt": "«No deberías haber gastado tanto.» → You ____ so much. (spend)",
+          "answers": [
+            "shouldn't have spent",
+            "should not have spent"
+          ],
+          "whyEs": "Crítica sobre el pasado: «shouldn't have» + participio."
+        },
+        {
+          "id": "should-have-would-have-had-to-4",
+          "type": "order",
+          "words": [
+            "told",
+            "have",
+            "me",
+            "should",
+            "You"
+          ],
+          "answer": "You should have told me",
+          "whyEs": "Lamento o crítica: should have + participio."
+        },
+        {
+          "id": "should-have-would-have-had-to-5",
+          "type": "choice",
+          "prompt": "«Tuve que trabajar el domingo.» → I ____ work on Sunday.",
+          "options": [
+            "had to",
+            "should have",
+            "would have had to",
+            "must"
+          ],
+          "answer": 0,
+          "whyEs": "Obligación real del pasado: «had to».",
+          "trapsEs": [
+            "",
+            "Diría que debiste trabajar y no lo hiciste (y le faltaría el participio).",
+            "Sería imaginario: «habría tenido que».",
+            "«Must» no tiene pasado."
+          ]
+        },
+        {
+          "id": "should-have-would-have-had-to-6",
+          "type": "gap",
+          "prompt": "Without your help last year, I ____ pay a lawyer. (have to, «habría tenido que»)",
+          "answers": [
+            "would have had to",
+            "'d have had to"
+          ],
+          "whyEs": "«Habría tenido que» = «would have had to»."
+        },
+        {
+          "id": "should-have-would-have-had-to-7",
+          "type": "choice",
+          "prompt": "«¡Tendrías que haber visto su cara!» → You ____ his face!",
+          "options": [
+            "should have seen",
+            "should see",
+            "must have seen",
+            "had to see"
+          ],
+          "answer": 0,
+          "whyEs": "«Tendrías que haber visto» = «should have seen».",
+          "trapsEs": [
+            "",
+            "Es presente: «deberías ver».",
+            "«Must have seen» = seguro que la viste (deducción).",
+            "«Had to see» = tuviste que verla."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta un viaje en el que algo salió mal y di qué tendrías que haber hecho.",
+          "modelEn": "On my last trip I lost my bag. I should have kept my passport in my pocket.",
+          "checkEs": "Usa «should have» + participio."
+        },
+        {
+          "promptEs": "Ayer perdiste el autobús y fuiste andando. Di qué tuviste que hacer y qué habrías tenido que hacer si hubiera llovido.",
+          "modelEn": "I missed the bus, so I had to walk. If it had rained, I would have had to take a taxi.",
+          "checkEs": "Distingue «had to» (real) y «would have had to» (imaginario)."
+        }
+      ],
+      "classFocusEn": "Practise should have + past participle for regrets (Spanish 'tendría que haber'), would have had to for imaginary past obligation and had to for real past obligation. Correct 'should had', 'would had to' and 'had to' used for regrets."
+    }
+  ]
+}

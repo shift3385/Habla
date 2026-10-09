@@ -9,11 +9,12 @@ export const BACKUP_VERSION = 1
 /** Tamaño máximo del archivo: una copia real de un año de uso ocupa unos pocos MB. */
 export const MAX_BACKUP_BYTES = 20 * 1024 * 1024
 
-export const BACKUP_TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards'] as const
+export const BACKUP_TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar'] as const
 export type BackupTable = (typeof BACKUP_TABLES)[number]
 // REV-U3-1: tablas que no existían en copias antiguas y son legítimas sin ellas (si faltan, se importan vacías):
-// `lookups` llegó en la v4.2 y `cards` en la v4.7; hasta la v4.1 las copias tenían 4 tablas.
-const OPTIONAL_TABLES: readonly BackupTable[] = ['lookups', 'cards']
+// `lookups` llegó en la v4.2 y `cards` en la v4.7; hasta la v4.1 las copias tenían 4 tablas. `grammar` (progreso de
+// Gramática) llegó en la v5.10: las copias anteriores no la traen y se aceptan.
+const OPTIONAL_TABLES: readonly BackupTable[] = ['lookups', 'cards', 'grammar']
 
 export interface CheckedBackup {
   format: typeof BACKUP_FORMAT
@@ -29,6 +30,7 @@ const NAMES: Record<BackupTable, string> = {
   profile: 'perfil',
   lookups: 'consultas de palabras',
   cards: 'tarjetas de repaso',
+  grammar: 'progreso de Gramática',
 }
 
 type Row = Record<string, unknown>
@@ -39,6 +41,7 @@ const str: Rule = (v) => typeof v === 'string'
 const num: Rule = (v) => typeof v === 'number' && Number.isFinite(v)
 const id: Rule = (v) => typeof v === 'number' && Number.isInteger(v) && v > 0
 const bool: Rule = (v) => typeof v === 'boolean'
+const textId: Rule = (v) => typeof v === 'string' && v.length > 0
 const obj: Rule = isObj
 const arr: Rule = Array.isArray
 const strArr: Rule = (v) => Array.isArray(v) && v.every((x) => typeof x === 'string')
@@ -57,7 +60,7 @@ const shape =
     isObj(v) && Object.entries(fields).every(([k, r]) => r(v[k]))
 
 const LEVELS = shape({ overall: str, grammar: str, reading: str, listening: str, speaking: str })
-const CORRECTION = shape({ original: str, corrected: str, explanationEs: opt(str), category: opt(str), spanish: opt(str) })
+const CORRECTION = shape({ original: str, corrected: str, explanationEs: opt(str), category: opt(str), spanish: opt(str), grammarTopic: opt(str) })
 
 // Campo → regla. Solo lo que la app lee sin comprobar (lo que rompería una pantalla o el arranque).
 const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
@@ -70,6 +73,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     metrics: opt(obj),
     report: opt(shape({ summaryEs: opt(str), strengthsEs: opt(strArr), improveEs: opt(strArr), homeworkEs: opt(str) })),
     planLesson: opt(str),
+    grammarTopic: opt(str), // v5.10
   },
   turns: {
     id,
@@ -96,6 +100,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     explanationEs: opt(str),
     category: opt(str),
     spanish: opt(str),
+    grammarTopic: opt(str), // v5.10
   },
   profile: {
     id: oneOf('me'),
@@ -137,7 +142,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
   },
   cards: {
     id,
-    source: oneOf('mistake', 'lookup'),
+    source: oneOf('mistake', 'lookup', 'grammar'), // v5.10: ejercicios de Gramática fallados
     sourceId: num,
     promptEs: str,
     answerEn: str,
@@ -146,6 +151,19 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     due: num,
     fsrs: shape({ due: num, stability: num, difficulty: num, reps: num, lapses: num, state: num }),
     archivedAt: opt(num), // v5.9: «Ya me la sé»
+  },
+  grammar: {
+    id: textId, // id del tema
+    seenAt: opt(num),
+    lastAt: num,
+    correct: num,
+    attempts: num,
+    rounds: opt(num),
+    spoken: opt(num),
+    spokenOk: opt(num),
+    lastRound: opt(shape({ correct: num, total: num, at: num })),
+    mastered: bool,
+    masteredAt: opt(num),
   },
 }
 

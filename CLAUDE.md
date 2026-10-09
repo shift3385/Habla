@@ -85,6 +85,7 @@ $env:JAVA_HOME='C:\Program Files\Java\jdk-21'; $env:ANDROID_HOME="$env:LOCALAPPD
 | Tipos | `npx tsc -b` |
 | Lint | `npm run lint` (debe quedar con **0 errores**; hay ~6 avisos antiguos en Calibration/Conversation/Settings) |
 | Validar el banco del test | `node scripts/validate-bank.mjs` |
+| Validar el contenido de Gramática (5.10) | `node scripts/validate-grammar.mjs` (todo `src/grammar/`; o `node scripts/validate-grammar.mjs <archivo>`). Formato en `docs/v5.10/FORMATO-contenido.md` |
 | Tests | `npm test` (archivos `tests/**/*.test.mjs`) |
 | Comprobar que el Java compila | `cd android; .\gradlew.bat :app:compileDebugJavaWithJavac --offline -q` (no empaqueta ni copia nada a `apk/`) |
 | Compilar la web | `npm run build` |
@@ -98,7 +99,7 @@ Desde la 5.8.2, `npm run apk` y `npm run apk:debug` usan `--offline` (con intern
 
 - **`npm test`** (desde la 5.8.1): `node --test` sobre `tests/**/*.test.mjs`. `tests/helpers/vite.mjs` carga módulos de `src/` con un servidor Vite en `middlewareMode` (`loadFresh()` da estado de módulo limpio) y `tests/helpers/mic-mocks.mjs` simula `getUserMedia`, `MediaRecorder` y `AudioContext`. Hoy cubre el Recorder (AUD-MIC-301/302/304/800), el gesto del micro, la validación de copias (`backupCheck`), la clave de Gemini y Azure Monitor; añade aquí las de `levels`, `bank`, `placement`, `fluency` (AUD-ARQ-113). Sin dependencias nuevas (nada de Vitest/Jest).
 - Pruebas manuales en el **teléfono real** por USB: ver `docs/configuracion.md` (CDP, audio falso, varios dispositivos). Desde la 5.8.2 el CDP solo funciona con el APK debug (`com.shift.habla.debug`): la app de uso diario ya no es depurable.
-- Antes de compilar una entrega: `npx tsc -b`, `npm run lint`, `npm test`, `node scripts/validate-bank.mjs` y prueba local de lo cambiado.
+- Antes de compilar una entrega: `npx tsc -b`, `npm run lint`, `npm test`, `node scripts/validate-bank.mjs`, `node scripts/validate-grammar.mjs` y prueba local de lo cambiado.
 
 ## Convenciones
 

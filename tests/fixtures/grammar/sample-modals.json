@@ -1,0 +1,52 @@
+{
+  "id": "sample-modals",
+  "order": 2,
+  "titleEn": "Modal Verbs (sample)",
+  "titleEs": "Verbos modales (muestra)",
+  "icon": "key",
+  "descriptionEs": "Muestra de pruebas: no se carga en la app.",
+  "topics": [
+    {
+      "id": "sample-should",
+      "name": "Should and Ought To",
+      "nameEs": "Should / ought to (debería)",
+      "level": "A2",
+      "summaryEs": "Consejos y lo que es buena idea hacer: «deberías…».",
+      "keywords": ["should", "shouldn't", "ought to", "debería", "consejo"],
+      "categories": ["grammar", "auxiliary"],
+      "explanationEs": [
+        "«Should» sirve para dar consejos o decir lo que es correcto: You should rest. Es más suave que «must».",
+        "Después de «should» va el verbo sin «to»: «You should go», nunca «You should to go»."
+      ],
+      "forms": {
+        "affirmative": { "pattern": "Sujeto + should + verbo base", "examples": [{ "en": "You should drink more water.", "es": "Deberías beber más agua." }] },
+        "negative": { "pattern": "Sujeto + shouldn't + verbo base", "examples": [{ "en": "You shouldn't work so late.", "es": "No deberías trabajar hasta tan tarde." }] },
+        "question": { "pattern": "Should + sujeto + verbo base?", "examples": [{ "en": "Should I bring anything?", "es": "¿Debería llevar algo?" }] }
+      },
+      "examples": [
+        { "en": "You should update your phone.", "es": "Deberías actualizar el móvil." },
+        { "en": "We should leave now or we'll miss the bus.", "es": "Deberíamos irnos ya o perderemos el autobús." },
+        { "en": "He ought to apologise.", "es": "Debería disculparse.", "noteEs": "«ought to» es más formal y menos frecuente." },
+        { "en": "Should I call the doctor?", "es": "¿Debería llamar al médico?" }
+      ],
+      "commonMistakes": [
+        { "wrong": "You should to rest.", "right": "You should rest.", "whyEs": "Los modales van seguidos del verbo sin «to», aunque en español digamos «deberías descansar»." },
+        { "wrong": "She shoulds study.", "right": "She should study.", "whyEs": "Los modales no llevan -s en tercera persona." }
+      ],
+      "related": ["sample-past-simple", "modals-must"],
+      "exercises": [
+        { "id": "sample-should-1", "type": "choice", "prompt": "You look tired. You ____ go to bed early.", "options": ["should", "should to", "shoulds", "are should"], "answer": 0, "whyEs": "Consejo: should + verbo base.", "trapsEs": ["", "Después de un modal no va «to».", "Los modales no llevan -s.", "No se combina «be» con un modal."] },
+        { "id": "sample-should-2", "type": "gap", "prompt": "You ____ (not) eat so much sugar.", "answers": ["shouldn't", "should not"], "whyEs": "Consejo en negativa: shouldn't + verbo base." },
+        { "id": "sample-should-3", "type": "order", "words": ["I", "Should", "a", "jacket", "take"], "answer": "Should I take a jacket", "whyEs": "Pregunta: Should + sujeto + verbo base." },
+        { "id": "sample-should-4", "type": "choice", "prompt": "My boss says I ____ check my emails more often.", "options": ["should", "shouldn't to", "musted", "should checking"], "answer": 0, "whyEs": "Consejo de alguien: should + verbo base.", "trapsEs": ["", "Sobra «to».", "«must» no tiene pasado con -ed.", "Después de un modal no va -ing."] },
+        { "id": "sample-should-5", "type": "gap", "prompt": "Where ____ we park the car?", "answers": ["should"], "whyEs": "Pedir consejo: Where should we…?" },
+        { "id": "sample-should-6", "type": "order", "words": ["ought", "You", "see", "to", "this"], "answer": "You ought to see this", "whyEs": "«ought» sí lleva «to»: ought to + verbo base." }
+      ],
+      "speaking": [
+        { "promptEs": "Un amigo no duerme bien. Dale un consejo.", "modelEn": "You should stop drinking coffee in the afternoon.", "checkEs": "should + verbo base, sin «to»." },
+        { "promptEs": "Pregunta a tu profe qué deberías estudiar.", "modelEn": "What should I study next?", "checkEs": "Pregunta con should + sujeto + verbo base." }
+      ],
+      "classFocusEn": "Practise giving advice with should / shouldn't. Correct 'should to' and third-person -s on modals."
+    }
+  ]
+}

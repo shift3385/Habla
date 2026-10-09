@@ -13,6 +13,7 @@ export interface SavedClass {
   categoryId?: string
   customTopic?: string
   planLesson?: string
+  grammarTopic?: string // v5.10: clase de «Practicar en una clase» (id del tema)
   topic?: Topic
   system: string
   history: ChatMessage[]

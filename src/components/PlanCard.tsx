@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { friendlyError } from '../lib/errors'
+import { topicForLesson } from '../lib/grammar'
 import {
   createPlan,
   currentWeek,
@@ -20,6 +21,8 @@ interface Props {
   calibrated: boolean
   onPlanChange: (p: StudyPlan) => void
   onStartLesson: (id: string) => void
+  /** v5.10 (D3): la lección del día enlaza a su tema de Gramática (si lo nombra con claridad). */
+  onOpenGrammar?: (topicId: string) => void
   onOpenPlan: () => void
 }
 
@@ -38,7 +41,7 @@ let forgetTimer = 0
  * "Lección de hoy" en el Inicio (fase 4). Si aún no hay plan lo crea, y si la semana que toca no tiene
  * lecciones las prepara: todo automático, con un estado de carga y un botón de reintentar si falla.
  */
-export default function PlanCard({ settings, plan, calibrated, onPlanChange, onStartLesson, onOpenPlan }: Props) {
+export default function PlanCard({ settings, plan, calibrated, onPlanChange, onStartLesson, onOpenPlan, onOpenGrammar }: Props) {
   const [busy, setBusy] = useState<string | null>(null)
   const [failed, setFailed] = useState<Fail | null>(null)
   const sig = `${settings.geminiKey}|${settings.geminiModel}|${settings.geminiFallbackModel}`
@@ -150,6 +153,7 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
   }
 
   const { week, lesson, ahead } = today
+  const gram = lesson && onOpenGrammar ? topicForLesson(week, lesson) : undefined
   const done = weekDone(plan, week.n)
   const finishedToday = doneToday(plan)
 
@@ -181,6 +185,18 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
                 />
               ))}
             </div>
+            {gram && (
+              // En la misma fila que el botón: la tarjeta no crece (Inicio sin scroll).
+              <button
+                onClick={() => onOpenGrammar!(gram.id)}
+                className="field flex h-9 max-w-[42%] min-w-0 flex-none items-center gap-1 rounded-[18px] px-2.5 text-[12px]"
+                title={`Gramática: ${gram.nameEs}`}
+                aria-label={`Ver en Gramática: ${gram.nameEs}`}
+              >
+                <span aria-hidden>📘</span>
+                <span className="truncate">{gram.nameEs}</span>
+              </button>
+            )}
             <button
               onClick={() => onStartLesson(lesson.id)}
               className={`flex h-9 flex-none items-center gap-1.5 rounded-[18px] px-4 text-sm ${finishedToday ? 'glass' : 'btn-acc'}`}

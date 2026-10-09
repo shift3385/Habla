@@ -15,6 +15,10 @@ import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
 import { notificationsGranted } from '../lib/reminders'
 import AllTopicsView from '../components/AllTopicsView'
+import GrammarPanel from '../components/GrammarPanel'
+import MascotPage from '../components/MascotPage'
+import GrammarRoutes, { type GramRoute } from '../components/GrammarRoutes'
+import { grammarSections } from '../lib/grammar'
 import TopicAskPage, { type AskKind } from '../components/TopicAskPage'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
@@ -34,6 +38,8 @@ interface Props {
   calibrated: boolean
   onPlanChange: (p: StudyPlan) => void
   onStartLesson: (id: string) => void
+  /** v5.10 (D3): «Practicar en una clase» desde un tema de Gramática. */
+  onStartGrammar?: (topicId: string) => void
   onOpenPlan: () => void
   registerBack: (h: (() => void) | null) => void
   savedClass?: SavedClass | null
@@ -49,6 +55,7 @@ function greeting() {
 
 const PRACTICES = SCENARIOS.filter((s) => !s.hidden)
 
+
 export default function Home({
   settings,
   t,
@@ -61,6 +68,7 @@ export default function Home({
   calibrated,
   onPlanChange,
   onStartLesson,
+  onStartGrammar,
   onOpenPlan,
   registerBack,
   savedClass,
@@ -68,7 +76,13 @@ export default function Home({
   onFinishClass,
 }: Props) {
   const [dash, setDash] = useState<Dashboard | null>(null)
-  const [seg, setSeg] = useState<'topics' | 'practices'>('topics')
+  const [seg, setSeg] = useState<'topics' | 'practices' | 'grammar'>('topics')
+  // v5.10 «Gramática»: pila de pantallas (sección → tema → relacionado…) y búsqueda (se conserva al volver).
+  const [gram, setGram] = useState<GramRoute[]>([])
+  const [gramQuery, setGramQuery] = useState('')
+  const [gramLevel, setGramLevel] = useState('A2')
+  const pushGram = useCallback((r: GramRoute) => setGram((g) => [...g, r]), [])
+  const popGram = useCallback(() => setGram((g) => g.slice(0, -1)), [])
   // Tus 3 temas (5.4): el Inicio solo muestra esos; el resto está en "Más temas".
   const [favs, setFavs] = useState<string[]>([])
   const [allOpen, setAllOpen] = useState(false)
@@ -80,15 +94,19 @@ export default function Home({
       setFavs(p.interests ?? [])
       setRetestAt(nextRetestAt(p))
       setHasPurpose(!!(p.purposes?.length || p.goal?.trim()))
+      setGramLevel(p.levels.grammar || p.levels.overall)
     })
   }, [])
   // Atrás (Android): cierra la hoja o "Más temas" antes de salir del Inicio.
   // Solo mientras hay algo abierto: así no se borra el "atrás" de otras pantallas (Mi plan, Acerca de).
+  // v5.10: dentro de Gramática, Atrás vuelve a la pantalla anterior (tema → sección → pestaña Gramática).
+  const gramOpen = gram.length > 0
+  const gramIntro = seg === 'grammar' && !settings.grammarIntroSeen
   useEffect(() => {
-    if (!ask && !allOpen) return
-    registerBack(ask ? () => setAsk(null) : () => setAllOpen(false))
+    if (!ask && !allOpen && !gramOpen && !gramIntro) return
+    registerBack(ask ? () => setAsk(null) : allOpen ? () => setAllOpen(false) : gramOpen ? popGram : () => setSeg('topics'))
     return () => registerBack(null)
-  }, [ask, allOpen, registerBack])
+  }, [ask, allOpen, gramOpen, gramIntro, registerBack, popGram])
   const keysReady = settings.geminiKey.trim().length > 0
   const info = THEME_INFO[settings.theme]
   // La mascota habla en globos flotantes (MascotBubble); tocarla pasa al siguiente.
@@ -213,6 +231,21 @@ export default function Home({
       }}
     />
   )
+
+  const gramTop = gram[gram.length - 1]
+  if (gramTop) {
+    return (
+      <GrammarRoutes
+        route={gramTop}
+        settings={settings}
+        update={update}
+        level={gramLevel}
+        push={pushGram}
+        pop={popGram}
+        onPracticeClass={onStartGrammar}
+      />
+    )
+  }
 
   if (allOpen) {
     return (
@@ -363,6 +396,7 @@ export default function Home({
         onPlanChange={onPlanChange}
         onStartLesson={(id) => (keysReady ? onStartLesson(id) : onGoSettings())}
         onOpenPlan={onOpenPlan}
+        onOpenGrammar={(id) => pushGram({ kind: 'topic', id })}
       />
 
       {due && due.total > 0 && (
@@ -385,11 +419,36 @@ export default function Home({
           options={[
             { value: 'topics', label: 'Temas', count: FAV_COUNT },
             { value: 'practices', label: 'Prácticas', count: PRACTICES.length },
+            { value: 'grammar', label: 'Gramática', count: grammarSections().length },
           ]}
         />
       </div>
 
-      {seg === 'topics' ? (
+      {seg === 'grammar' ? (
+        <div key="grammar" className="anim-up">
+          <GrammarPanel
+            level={gramLevel}
+            query={gramQuery}
+            onQuery={setGramQuery}
+            onOpenSection={(id) => pushGram({ kind: 'section', id })}
+            onOpenTopic={(id) => pushGram({ kind: 'topic', id })}
+            onAsk={(q) => pushGram({ kind: 'ask', q })}
+            mascotName={info.mascotName}
+          />
+          {/* La primera vez, la mascota explica para qué sirve Gramática (patrón MascotPage, como el Repaso). */}
+          {gramIntro && (
+            <MascotPage
+              overlay={{ t }}
+              element={info.mascot}
+              mood="speaking"
+              title="Gramática, cuando la necesites"
+              subtitle={`Aquí está la gramática de inglés explicada en español: cada tema con su fórmula, ejemplos que puedes escuchar, los errores típicos de quien habla español y ejercicios. Busca lo que quieras («pasado», «wish», «debería») o mira lo que te marco con ⭐ para tu nivel. Los ejercicios que falles irán a tu Repaso. Funciona sin internet y no gasta tu clave.`}
+              primary={{ label: '¡Vamos!', onClick: () => update({ grammarIntroSeen: true }) }}
+              secondary={{ label: 'Ahora no', onClick: () => setSeg('topics') }}
+            />
+          )}
+        </div>
+      ) : seg === 'topics' ? (
         <div key="topics" className="anim-up">
           {/* Tus 3 temas: tarjetas grandes, sin scroll */}
           <div className="mt-3 grid grid-cols-3 gap-2">

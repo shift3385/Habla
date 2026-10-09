@@ -9,6 +9,7 @@ import {
   type Models,
   type RetryInfo,
 } from './gemini'
+import { topicIdsForPrompt, validTopicId } from './grammar'
 import { describeStudent, getProfile } from './profile'
 import type { Scenario } from './scenarios'
 
@@ -52,13 +53,15 @@ export const TEACHER_SCHEMA: JsonSchema = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['original', 'corrected', 'explanation_es', 'category', 'spanish'],
+        required: ['original', 'corrected', 'explanation_es', 'category', 'spanish', 'grammar_topic'],
         properties: {
           original: { type: 'string' },
           corrected: { type: 'string' },
           explanation_es: { type: 'string' },
           category: { type: 'string', enum: CATEGORIES },
           spanish: { type: 'string' },
+          // v5.10 (D3): id del tema de Gramática de la corrección, o "" (sin enum: la lista de ids va en el prompt).
+          grammar_topic: { type: 'string' },
         },
       },
     },
@@ -76,6 +79,7 @@ interface RawTeacherResponse {
     explanation_es: string
     category: MistakeCategory
     spanish: string
+    grammar_topic?: string
   }[]
   reply: string
   reply_es: string
@@ -95,6 +99,12 @@ export const START_MESSAGE =
 
 const AUDIO_INSTRUCTION =
   'This audio is the student\'s answer. Fill "transcript" with exactly what they said, word by word, keeping their grammar mistakes, then correct and reply.'
+
+/** v5.10 (D3): ids de los temas de Gramática, compactos (solo ids, ~1–2 KB), para que el profe marque cada corrección. */
+function grammarIds(): string {
+  const ids = topicIdsForPrompt()
+  return ids ? `- Grammar topic ids: ${ids}` : '- (no grammar topics available: always use "")'
+}
 
 export function buildSystemPrompt(
   profile: Profile,
@@ -159,6 +169,8 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 - "corrected": that same fragment with the minimal change that makes it correct and natural.
 - "explanation_es": one short sentence in Spanish explaining the rule, e.g. "Software es incontable: no lleva plural ni 'a'."
 - "spanish": a natural Spanish translation of the corrected fragment (it will be used later as a translation drill).
+- "grammar_topic": the id of the grammar topic the error belongs to, chosen ONLY from the list below (the app links the correction to its explanation). Use "" for pure vocabulary or pronunciation errors, or when no topic clearly fits.
+${grammarIds()}
 
 # Structures this student often gets wrong (create natural chances to practise them)
 ${structures || '- articles and uncountable nouns\n- auxiliary verbs in continuous tenses and the passive\n- false friends, only when misused ("actually" = "en realidad", "currently" = "actualmente")'}
@@ -212,6 +224,8 @@ export async function teacherTurn(
       explanationEs: (c.explanation_es ?? '').trim(),
       category: CATEGORIES.includes(c.category) ? c.category : 'other',
       spanish: (c.spanish ?? '').trim(),
+      // v5.10: solo ids que existen en el catálogo; uno inventado o vacío no se guarda.
+      ...(validTopicId(c.grammar_topic) ? { grammarTopic: validTopicId(c.grammar_topic) } : {}),
     }))
   return {
     heardSpeech: raw.heard_speech !== false,

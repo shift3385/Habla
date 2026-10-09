@@ -39,6 +39,8 @@ import GeminiTroubleSheet from './components/GeminiTroubleSheet'
 import { onGeminiTrouble, type Trouble } from './lib/geminiTrouble'
 import { discardSavedClass, getSavedClass, type SavedClass } from './lib/savedClass'
 import MascotPage from './components/MascotPage'
+import GrammarSheet from './components/GrammarSheet'
+import { onOpenGrammarTopic } from './lib/grammarLink'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, THEME_INFO, themeVars } from './ui/theme'
 
@@ -50,6 +52,7 @@ interface Lesson {
   categoryId?: string
   customTopic?: string // tema escrito por el alumno
   planLesson?: string // lección del plan de 12 semanas
+  grammarTopic?: string // v5.10: «Practicar en una clase» desde un tema de Gramática
   resume?: SavedClass // clase guardada que se retoma (NC-16)
   finishNow?: boolean // v5.9: «Terminar» desde el Inicio: se abre la clase guardada y se cierra con su informe
 }
@@ -78,6 +81,13 @@ export default function App() {
   // Exactamente 3 temas favoritos (5.4): a quien venga de una versión anterior con otro número se le piden.
   const [needsFavs, setNeedsFavs] = useState(false)
   const backHandler = useRef<(() => void) | null>(null)
+  // v5.10 (D3): hoja de Gramática encima de todo («📘 Ver en Gramática» en la clase y el informe). Su Atrás va primero.
+  const [gramSheet, setGramSheet] = useState<string | null>(null)
+  const sheetBack = useRef<(() => void) | null>(null)
+  useEffect(() => onOpenGrammarTopic(setGramSheet), [])
+  const registerSheetBack = useCallback((h: (() => void) | null) => {
+    sheetBack.current = h
+  }, [])
   const notifAsked = useRef(false)
   const tabRef = useRef(tab)
   useEffect(() => {
@@ -250,7 +260,8 @@ export default function App() {
   // Botón "atrás" de Android: primero la pantalla activa; si no, vuelve a Inicio; en Inicio sale.
   useEffect(() => {
     const sub = CapApp.addListener('backButton', () => {
-      if (backHandler.current) backHandler.current()
+      if (sheetBack.current) sheetBack.current()
+      else if (backHandler.current) backHandler.current()
       else if (tabRef.current !== 'home') setTab('home')
       // En el Inicio: la mascota pregunta antes de cerrar (NC-15).
       else setAskExit((open) => !open)
@@ -292,6 +303,18 @@ export default function App() {
   const picker = (
     <>
       {audioPicker}
+      {gramSheet && (
+        <GrammarSheet
+          key={gramSheet}
+          topicId={gramSheet}
+          settings={settings}
+          t={t}
+          update={update}
+          level={profileLevels?.grammar ?? level}
+          onClose={() => setGramSheet(null)}
+          registerBack={registerSheetBack}
+        />
+      )}
       {phonAlert && settings.onboarded && (
         <PhoneticsAlert
           settings={settings}
@@ -460,6 +483,7 @@ export default function App() {
           categoryId={lesson.categoryId}
           customTopic={lesson.customTopic}
           planLesson={lesson.planLesson}
+          grammarTopic={lesson.grammarTopic}
           resume={lesson.resume}
           finishNow={lesson.finishNow}
           settings={settings}
@@ -485,6 +509,9 @@ export default function App() {
   }
   const start = (scenarioId: string, categoryId?: string, customTopic?: string) =>
     guardNew(() => setLesson({ key: Date.now(), scenarioId, categoryId, customTopic }))
+  // v5.10 (D3): «Practicar en una clase» desde un tema de Gramática (cuenta como cualquier otra clase).
+  const startGrammar = (topicId: string) =>
+    guardNew(() => setLesson({ key: Date.now(), scenarioId: 'grammar', grammarTopic: topicId }))
   const startPlanLesson = (id: string) =>
     guardNew(() => {
       backHandler.current = null
@@ -496,7 +523,15 @@ export default function App() {
     if (!s) return
     backHandler.current = null
     setPlanOpen(false)
-    setLesson({ key: Date.now(), scenarioId: s.scenarioId, categoryId: s.categoryId, customTopic: s.customTopic, planLesson: s.planLesson, resume: s })
+    setLesson({
+      key: Date.now(),
+      scenarioId: s.scenarioId,
+      categoryId: s.categoryId,
+      customTopic: s.customTopic,
+      planLesson: s.planLesson,
+      grammarTopic: s.grammarTopic,
+      resume: s,
+    })
   }
   /** v5.9: terminar la clase guardada sin seguirla, con la misma evaluación que «Terminar» dentro de la clase. */
   function finishSavedClass() {
@@ -616,6 +651,7 @@ export default function App() {
                 calibrated={!!calibrated}
                 onPlanChange={setPlan}
                 onStartLesson={startPlanLesson}
+                onStartGrammar={(id) => (settings.geminiKey.trim() ? startGrammar(id) : setTab('settings'))}
                 onOpenPlan={openPlan}
                 registerBack={registerBack}
                 savedClass={savedClass}

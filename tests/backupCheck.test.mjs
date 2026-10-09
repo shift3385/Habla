@@ -91,6 +91,43 @@ test('REV-U3-1: copias antiguas legítimas se aceptan (v4.1 sin consultas ni tar
   assert.equal(checkBackup(mutate((b) => (b.tables.profile = []))).ok, true)
 })
 
+// v5.10: progreso de Gramática (tabla `grammar`, clave = id del tema) y tarjetas de ejercicios fallados (source 'grammar').
+const gram = { id: 'past-simple', seenAt: now, lastAt: now, correct: 5, attempts: 6, rounds: 1, lastRound: { correct: 5, total: 6, at: now }, mastered: true, masteredAt: now }
+const withGrammar = (fn = () => {}) =>
+  mutate((b) => {
+    b.tables.grammar = [gram, { id: 'should', lastAt: now, correct: 0, attempts: 0, rounds: 0, mastered: false }]
+    b.tables.cards.push({ ...b.tables.cards[0], id: 2, source: 'grammar', sourceId: 3_123_456_789, promptEs: 'She ____ the keys.', answerEn: 'She lost the keys.' })
+    fn(b)
+  })
+
+test('v5.10: la tabla de Gramática es opcional (copias antiguas sin ella) y se comprueba si viene', async () => {
+  const { checkBackup } = await loadFresh('/src/lib/backupCheck.ts')
+  // Copia de la 5.9 (sin `grammar`): se acepta y se importa vacía.
+  const old = checkBackup(goodBackup())
+  assert.equal(old.ok, true, old.error)
+  assert.deepEqual(old.backup.tables.grammar, [])
+  // Copia de la 5.10 con progreso y una tarjeta de Gramática.
+  const r = checkBackup(withGrammar())
+  assert.equal(r.ok, true, r.error)
+  assert.equal(r.backup.tables.grammar.length, 2)
+  assert.equal(r.backup.tables.cards[1].source, 'grammar')
+  // Dañadas: se rechazan sin tocar nada.
+  for (const [name, bad] of Object.entries({
+    'grammar no es una lista': withGrammar((b) => (b.tables.grammar = { a: 1 })),
+    'tema sin id': withGrammar((b) => delete b.tables.grammar[0].id),
+    'id numérico': withGrammar((b) => (b.tables.grammar[0].id = 7)),
+    'mastered como texto': withGrammar((b) => (b.tables.grammar[0].mastered = 'sí')),
+    'lastRound sin total': withGrammar((b) => delete b.tables.grammar[0].lastRound.total),
+    'tema repetido': withGrammar((b) => b.tables.grammar.push({ ...gram })),
+    'tarjeta de Gramática repetida (índice único)': withGrammar((b) => b.tables.cards.push({ ...b.tables.cards[1], id: 3 })),
+    'origen de tarjeta desconocido': withGrammar((b) => (b.tables.cards[1].source = 'otro')),
+  })) {
+    const x = checkBackup(bad)
+    assert.equal(x.ok, false, name)
+    assert.match(x.error, /no se cambió nada/i, name)
+  }
+})
+
 const BAD = {
   'tables vacío (antes borraba todo con «Importado ✓»)': { format: 'habla-backup', version: 1, tables: {} },
   'tables null': { format: 'habla-backup', version: 1, tables: null },

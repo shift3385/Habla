@@ -56,6 +56,26 @@ export async function syncCards(): Promise<number> {
   return fresh.length
 }
 
+/**
+ * v5.10: un ejercicio de Gramática fallado pasa al Repaso. La tarjeta enseña el enunciado (con su hueco o las palabras
+ * desordenadas) y se responde diciendo la frase completa en inglés. `sourceId` es el id numérico estable del ejercicio
+ * (grammar.ts, `exerciseCardId`) y respeta el índice único `[source+sourceId]`: fallar otra vez el mismo ejercicio no
+ * duplica la tarjeta (si estaba archivada con «Ya me la sé», se queda archivada). Devuelve true si la creó.
+ */
+export async function addGrammarCard(sourceId: number, promptEs: string, answerEn: string, hintEs: string): Promise<boolean> {
+  if (!promptEs.trim() || !answerEn.trim()) return false
+  const exists = await db.cards.where('[source+sourceId]').equals(['grammar', sourceId]).count()
+  if (exists) return false
+  const now = Date.now()
+  const f = toStored(createEmptyCard(new Date(now)))
+  try {
+    await db.cards.add({ source: 'grammar', sourceId, promptEs: promptEs.trim(), answerEn: answerEn.trim(), hintEs, createdAt: now, due: f.due, fsrs: f })
+    return true
+  } catch {
+    return false // dos fallos casi a la vez: el índice único rechaza el segundo
+  }
+}
+
 export interface DueSummary {
   review: number // tarjetas ya vistas que tocan hoy
   fresh: number // nuevas disponibles (máx. NEW_PER_SESSION)
@@ -162,8 +182,13 @@ export async function evaluateDrill(
   card: SrsCard,
   audio: { base64: string; mimeType: string },
 ): Promise<DrillResult> {
+  // v5.10: en las tarjetas de Gramática se ve un ejercicio en inglés (hueco o palabras desordenadas), no una frase en español.
+  const shown =
+    card.source === 'grammar'
+      ? `They saw this English grammar exercise (fill the gap, or put the words in order) and must say the complete correct sentence: "${card.promptEs}"`
+      : `They saw this Spanish sentence: "${card.promptEs}"`
   const task = `Spaced-repetition speaking drill for a Spanish speaker learning English.
-They saw this Spanish sentence: "${card.promptEs}"
+${shown}
 Reference English answer: "${card.answerEn}"
 ${card.hintEs ? `Note about the point being practised: ${card.hintEs}` : ''}
 The audio is their spoken English answer.

@@ -1,0 +1,659 @@
+{
+  "id": "negatives-questions",
+  "order": 2,
+  "titleEn": "Negatives and Questions",
+  "titleEs": "Negaciones y preguntas",
+  "icon": "what",
+  "descriptionEs": "Cómo decir «no» y cómo preguntar: auxiliares, orden de las palabras, respuestas cortas y coletillas.",
+  "topics": [
+    {
+      "id": "negatives-do-does-did",
+      "name": "Negative Sentences with Do, Does and Did",
+      "nameEs": "Negación con do, does y did",
+      "level": "A1",
+      "summaryEs": "Cómo decir «no» con verbos normales: don't, doesn't y didn't + verbo base.",
+      "keywords": ["negative", "negative sentences", "negativa", "negación", "frases negativas", "don't", "doesn't", "didn't", "do not", "does not", "no"],
+      "categories": ["auxiliary", "grammar"],
+      "explanationEs": [
+        "En inglés no basta con poner not delante del verbo como en español («no trabajo»). Con los verbos normales necesitas el auxiliar do: «I don't work».",
+        "Usa don't con I/you/we/they, doesn't con he/she/it y didn't para el pasado con todas las personas.",
+        "Después del auxiliar, el verbo vuelve a su forma base: sin -s y sin pasado. «She doesn't like it», «We didn't see it».",
+        "Con be y con los modales (can, will, should…) no se usa do: «I'm not», «I can't». Eso se ve en el tema siguiente."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo (la frase de partida)",
+          "examples": [
+            { "en": "She likes jazz.", "es": "Le gusta el jazz." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / doesn't / didn't + verbo base",
+          "examples": [
+            { "en": "She doesn't like jazz.", "es": "No le gusta el jazz." },
+            { "en": "We didn't go out last night.", "es": "Anoche no salimos." }
+          ]
+        },
+        "question": {
+          "pattern": "Pregunta negativa: Don't / Doesn't / Didn't + sujeto + verbo base?",
+          "examples": [
+            { "en": "Don't you like it?", "es": "¿No te gusta?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "I don't have time today.", "es": "Hoy no tengo tiempo." },
+        { "en": "My laptop doesn't turn on.", "es": "Mi portátil no enciende." },
+        { "en": "We didn't understand the instructions.", "es": "No entendimos las instrucciones." },
+        { "en": "He doesn't speak Spanish, so let's talk in English.", "es": "No habla español, así que hablemos en inglés." },
+        { "en": "Don't worry, it doesn't matter.", "es": "Tranquilo, no importa.", "noteEs": "Don't + verbo también sirve para dar órdenes negativas." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I no like it.", "right": "I don't like it.", "whyEs": "En español basta «no»; en inglés, con verbos normales, necesitas do + not." },
+        { "wrong": "She don't know.", "right": "She doesn't know.", "whyEs": "Con he/she/it el auxiliar es does: doesn't." },
+        { "wrong": "He doesn't works here.", "right": "He doesn't work here.", "whyEs": "La -s ya va en doesn't: el verbo se queda en forma base." },
+        { "wrong": "I didn't saw it.", "right": "I didn't see it.", "whyEs": "Didn't ya marca el pasado: el verbo va en forma base." }
+      ],
+      "related": ["negatives-be-and-auxiliaries", "contractions", "questions-do-does-did", "present-simple", "past-simple", "auxiliary-verbs"],
+      "exercises": [
+        { "id": "negatives-do-does-did-1", "type": "choice", "prompt": "My brother ____ eat fish.", "options": ["doesn't", "don't", "isn't", "not"], "answer": 0, "whyEs": "My brother = he: doesn't + verbo base.", "trapsEs": ["", "Don't va con I/you/we/they.", "Isn't es la negación de be, no sirve con un verbo como eat.", "Not solo, sin auxiliar, no forma la negativa de un verbo normal."] },
+        { "id": "negatives-do-does-did-2", "type": "choice", "prompt": "We ____ the movie last night; it was boring.", "options": ["didn't enjoy", "didn't enjoyed", "don't enjoyed", "not enjoyed"], "answer": 0, "whyEs": "Pasado: didn't + verbo base.", "trapsEs": ["", "Tras didn't el verbo va en forma base, no en pasado.", "Don't es presente y además el verbo debería ir en forma base.", "Falta el auxiliar did."] },
+        { "id": "negatives-do-does-did-3", "type": "choice", "prompt": "I ____ want to go out tonight.", "options": ["don't", "doesn't", "am not", "no"], "answer": 0, "whyEs": "Con I y un verbo normal (want): don't.", "trapsEs": ["", "Doesn't es solo para he/she/it.", "Am not es la negación de be, no de want.", "En inglés no se niega un verbo con no."] },
+        { "id": "negatives-do-does-did-4", "type": "gap", "prompt": "Sara ____ (not / live) here anymore. She moved to Chile.", "answers": ["doesn't live", "does not live"], "whyEs": "Sara = she: doesn't + verbo base." },
+        { "id": "negatives-do-does-did-5", "type": "gap", "prompt": "They ____ (not / call) me yesterday.", "answers": ["didn't call", "did not call"], "whyEs": "Yesterday: didn't + verbo base." },
+        { "id": "negatives-do-does-did-6", "type": "order", "words": ["doesn't", "This", "work", "app", "offline"], "answer": "This app doesn't work offline", "whyEs": "Sujeto + doesn't + verbo base." },
+        { "id": "negatives-do-does-did-7", "type": "order", "words": ["didn't", "I", "my", "bring", "umbrella"], "answer": "I didn't bring my umbrella", "whyEs": "Sujeto + didn't + verbo base + complemento." }
+      ],
+      "speaking": [
+        { "promptEs": "Di tres cosas que no te gustan.", "modelEn": "I don't like spicy food, I don't like waking up early and I don't like traffic.", "checkEs": "don't + verbo base." },
+        { "promptEs": "Habla de una persona que conoces: dos cosas que no hace.", "modelEn": "My dad doesn't drink coffee and he doesn't use social media.", "checkEs": "doesn't + verbo base, sin -s." },
+        { "promptEs": "Cuenta dos cosas que no hiciste ayer.", "modelEn": "Yesterday I didn't go to work and I didn't cook.", "checkEs": "didn't + verbo base." }
+      ],
+      "classFocusEn": "Practise negatives with don't/doesn't/didn't + base verb. Correct 'I no like', 'she don't' and 'didn't went'."
+    },
+    {
+      "id": "negatives-be-and-auxiliaries",
+      "name": "Negatives with Be and Auxiliary Verbs",
+      "nameEs": "Negación con be y otros auxiliares (isn't, haven't, won't)",
+      "level": "A1",
+      "summaryEs": "Si ya hay un auxiliar (be, have, will, can…), solo añades not detrás: isn't, haven't, won't, can't.",
+      "keywords": ["isn't", "aren't", "wasn't", "weren't", "haven't", "hasn't", "won't", "can't", "cannot", "negación con be", "not", "no es", "no está", "I'm not"],
+      "categories": ["auxiliary", "grammar"],
+      "explanationEs": [
+        "Si la frase ya tiene be (am, is, are, was, were) o un auxiliar (have en tiempos perfectos, will, can, should…), la negación es fácil: pon not justo después. No se añade do.",
+        "«She isn't here», «I haven't finished», «It won't rain», «You can't park here». Fíjate en won't (will not) y can't (cannot): son contracciones irregulares.",
+        "En los tiempos compuestos el not va después del primer auxiliar: «I have not been waiting» → «I haven't been waiting».",
+        "Con I am la contracción es I'm not (no existe «I amn't»)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + be / auxiliar + …",
+          "examples": [
+            { "en": "They're at home.", "es": "Están en casa." },
+            { "en": "She has finished.", "es": "Ha terminado." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + be / auxiliar + not (n't) + …",
+          "examples": [
+            { "en": "They aren't at home.", "es": "No están en casa." },
+            { "en": "She hasn't finished yet.", "es": "Todavía no ha terminado." }
+          ]
+        },
+        "question": {
+          "pattern": "Pregunta negativa: be / auxiliar + n't + sujeto + …?",
+          "examples": [
+            { "en": "Isn't it a bit late?", "es": "¿No es un poco tarde?" },
+            { "en": "Can't you stay a little longer?", "es": "¿No te puedes quedar un poco más?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "I'm not ready yet. Give me five minutes.", "es": "Todavía no estoy listo. Dame cinco minutos." },
+        { "en": "The bank isn't open on Sundays.", "es": "El banco no abre los domingos." },
+        { "en": "We haven't met before. I'm Ana.", "es": "No nos conocíamos. Soy Ana." },
+        { "en": "You shouldn't drink so much coffee.", "es": "No deberías tomar tanto café." },
+        { "en": "Sorry, I can't hear you. The connection is bad.", "es": "Perdona, no te oigo. La conexión es mala." },
+        { "en": "It wasn't my fault!", "es": "¡No fue culpa mía!" }
+      ],
+      "commonMistakes": [
+        { "wrong": "She doesn't is at home.", "right": "She isn't at home.", "whyEs": "Con be no se usa do: basta con añadir not." },
+        { "wrong": "I don't can swim.", "right": "I can't swim.", "whyEs": "Can es un modal: se niega directamente (can't / cannot), sin do." },
+        { "wrong": "I not have finished.", "right": "I haven't finished.", "whyEs": "El not va detrás del auxiliar have, no delante." },
+        { "wrong": "I amn't tired.", "right": "I'm not tired.", "whyEs": "Am not no se contrae como «amn't»: se dice I'm not." }
+      ],
+      "related": ["negatives-do-does-did", "contractions", "short-answers", "auxiliary-verbs"],
+      "exercises": [
+        { "id": "negatives-be-and-auxiliaries-1", "type": "choice", "prompt": "Sorry, Mr. Díaz ____ in the office today.", "options": ["isn't", "doesn't", "don't", "not"], "answer": 0, "whyEs": "Verbo be (estar): is + not = isn't.", "trapsEs": ["", "Con be no se usa does.", "Con be no se usa do, y además Mr. Díaz es he.", "Falta el verbo be: not solo no basta."] },
+        { "id": "negatives-be-and-auxiliaries-2", "type": "choice", "prompt": "I ____ seen that series yet.", "options": ["haven't", "don't have", "didn't", "am not"], "answer": 0, "whyEs": "Presente perfecto (seen + yet): haven't + participio.", "trapsEs": ["", "En los tiempos perfectos have es auxiliar: no se usa do.", "Didn't no va con un participio como seen.", "Am not seen sería una pasiva sin sentido aquí."] },
+        { "id": "negatives-be-and-auxiliaries-3", "type": "choice", "prompt": "Don't worry, it ____ take long.", "options": ["won't", "doesn't will", "willn't", "not will"], "answer": 0, "whyEs": "Will + not = won't.", "trapsEs": ["", "Will ya es auxiliar: no se combina con do.", "No existe: la contracción de will not es won't.", "El not va detrás de will, no delante."] },
+        { "id": "negatives-be-and-auxiliaries-4", "type": "gap", "prompt": "We ____ (not / be) at home yesterday afternoon.", "answers": ["weren't", "were not"], "whyEs": "Be en pasado con we: were + not." },
+        { "id": "negatives-be-and-auxiliaries-5", "type": "gap", "prompt": "My son is only two, so he ____ (not / can) read yet.", "answers": ["can't", "cannot", "can not"], "whyEs": "Can se niega sin do: can't (o cannot)." },
+        { "id": "negatives-be-and-auxiliaries-6", "type": "order", "words": ["not", "I'm", "sure", "about", "that"], "answer": "I'm not sure about that", "whyEs": "I'm + not + adjetivo." },
+        { "id": "negatives-be-and-auxiliaries-7", "type": "order", "words": ["hasn't", "The", "arrived", "package", "yet"], "answer": "The package hasn't arrived yet", "whyEs": "Sujeto + hasn't + participio + yet." }
+      ],
+      "speaking": [
+        { "promptEs": "Di dos cosas que no sabes hacer y una que todavía no has hecho este año.", "modelEn": "I can't swim very well and I can't cook paella, and I haven't taken a vacation this year.", "checkEs": "can't y haven't sin do." },
+        { "promptEs": "Corrige una información falsa sobre ti con isn't, aren't o wasn't.", "modelEn": "I'm not from Madrid, I'm from Valencia. And my brothers aren't engineers; they're doctors.", "checkEs": "be + not, sin do." }
+      ],
+      "classFocusEn": "Practise negatives with be, have (perfect tenses) and modals by adding not after the auxiliary (isn't, haven't, won't, can't). Correct 'doesn't is' and 'don't can'."
+    },
+    {
+      "id": "contractions",
+      "name": "Contractions",
+      "nameEs": "Contracciones (I'm, don't, it's…)",
+      "level": "A1",
+      "summaryEs": "Las formas cortas del inglés hablado: I'm, you're, don't, can't, I've, I'd…",
+      "keywords": ["contractions", "contracciones", "formas cortas", "apóstrofo", "I'm", "don't", "it's", "its", "you're", "your", "won't", "I'd", "let's"],
+      "categories": ["auxiliary", "grammar"],
+      "explanationEs": [
+        "Al hablar (y en mensajes o correos informales) el inglés une el sujeto y el auxiliar, o el auxiliar y not: I am → I'm, do not → don't. El apóstrofo marca las letras que faltan.",
+        "Afirmativas: 'm (am), 's (is/has), 're (are), 've (have), 'll (will), 'd (had/would). Negativas: isn't, aren't, don't, doesn't, didn't, haven't, can't, won't, shouldn't.",
+        "Ojo con 's y 'd, que tienen dos significados: «she's tired» (is) / «she's left» (has); «I'd go» (would) / «I'd gone» (had). Lo que viene detrás te da la pista.",
+        "No contraigas al final de una respuesta afirmativa: «Yes, I am», no «Yes, I'm». Y no confundas it's (it is) con its (su), ni you're con your."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + 'm / 's / 're / 've / 'll / 'd",
+          "examples": [
+            { "en": "I'm tired, but I'll finish it.", "es": "Estoy cansada, pero lo terminaré." }
+          ]
+        },
+        "negative": {
+          "pattern": "Auxiliar + n't (o sujeto contraído + not)",
+          "examples": [
+            { "en": "She isn't here. / She's not here.", "es": "No está aquí." }
+          ]
+        },
+        "question": {
+          "pattern": "Auxiliar + n't al principio: Don't…? Isn't…? Can't…?",
+          "examples": [
+            { "en": "Isn't she coming?", "es": "¿No viene?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "It's late. Let's go home.", "es": "Es tarde. Vámonos a casa.", "noteEs": "Let's = let us." },
+        { "en": "We've got a problem with the server.", "es": "Tenemos un problema con el servidor." },
+        { "en": "I'd like a coffee, please.", "es": "Quería un café, por favor.", "noteEs": "I'd like = I would like." },
+        { "en": "They're not answering their phones.", "es": "No contestan al teléfono." },
+        { "en": "The company changed its logo.", "es": "La empresa cambió su logotipo.", "noteEs": "Its sin apóstrofo = su (posesivo)." },
+        { "en": "You're right, I didn't check it.", "es": "Tienes razón, no lo revisé." }
+      ],
+      "commonMistakes": [
+        { "wrong": "Its raining.", "right": "It's raining.", "whyEs": "It's = it is. Its (sin apóstrofo) es el posesivo «su»." },
+        { "wrong": "Your welcome.", "right": "You're welcome.", "whyEs": "You're = you are. Your es el posesivo «tu»." },
+        { "wrong": "Are you ready? — Yes, I'm.", "right": "Are you ready? — Yes, I am.", "whyEs": "Al final de la frase afirmativa no se contrae." }
+      ],
+      "related": ["negatives-be-and-auxiliaries", "negatives-do-does-did", "short-answers"],
+      "exercises": [
+        { "id": "contractions-1", "type": "choice", "prompt": "____ going to be a long day.", "options": ["It's", "Its", "Its'", "It"], "answer": 0, "whyEs": "It's = it is: it is going to be…", "trapsEs": ["", "Its sin apóstrofo es el posesivo «su».", "No existe: el apóstrofo no va al final.", "Falta el verbo be (is)."] },
+        { "id": "contractions-2", "type": "choice", "prompt": "In «She's finished her homework», 's means ____.", "options": ["has", "is", "was", "does"], "answer": 0, "whyEs": "Detrás viene un participio (finished): 's = has (presente perfecto).", "trapsEs": ["", "Is + finished sería «está terminada», pero aquí lleva objeto (her homework): es has.", "'s nunca es la contracción de was.", "'s puede ser does solo en preguntas informales como «What's he do?», no aquí."] },
+        { "id": "contractions-3", "type": "choice", "prompt": "In «I'd already eaten», I'd means ____.", "options": ["I had", "I would", "I did", "I could"], "answer": 0, "whyEs": "Detrás viene un participio (eaten): 'd = had (pasado perfecto).", "trapsEs": ["", "Would va con el verbo base (I'd eat), no con un participio.", "'d no es la contracción de did en frases afirmativas.", "Could nunca se contrae como 'd."] },
+        { "id": "contractions-4", "type": "choice", "prompt": "Are you from Brazil? — Yes, I ____.", "options": ["am", "'m", "is", "do"], "answer": 0, "whyEs": "En la respuesta corta afirmativa no se contrae: Yes, I am.", "trapsEs": ["", "Al final de la frase no se puede contraer.", "Con I el verbo be es am.", "La pregunta es con are (be), no con do."] },
+        { "id": "contractions-5", "type": "gap", "prompt": "I ____ be late, I promise. (contraction of will not)", "answers": ["won't"], "whyEs": "Will not → won't (contracción irregular)." },
+        { "id": "contractions-6", "type": "gap", "prompt": "They ____ here yet. (contraction of are not)", "answers": ["aren't"], "whyEs": "Are not → aren't." },
+        { "id": "contractions-7", "type": "order", "words": ["isn't", "That", "what", "I", "meant"], "answer": "That isn't what I meant", "whyEs": "Sujeto + isn't + resto de la frase." },
+        { "id": "contractions-8", "type": "order", "words": ["don't", "Why", "you", "it", "try"], "answer": "Why don't you try it", "whyEs": "Why don't you…? es una forma típica de sugerir algo." }
+      ],
+      "speaking": [
+        { "promptEs": "Preséntate en tres frases usando contracciones (I'm, I've, I'd like).", "modelEn": "Hi, I'm Carlos. I've lived in Bogotá all my life and I'd like to travel more.", "checkEs": "Contracciones naturales: I'm, I've, I'd." },
+        { "promptEs": "Di dos cosas que no puedes y no quieres hacer hoy, con contracciones.", "modelEn": "I can't go out tonight and I don't want to cook.", "checkEs": "can't y don't." }
+      ],
+      "classFocusEn": "Encourage natural contractions in speech (I'm, don't, can't, I've, I'll, I'd). Correct contracted short answers like 'Yes, I'm' and it's/its, you're/your in writing."
+    },
+    {
+      "id": "questions-do-does-did",
+      "name": "Questions with Do, Does and Did",
+      "nameEs": "Preguntas con do, does y did",
+      "level": "A1",
+      "summaryEs": "Cómo preguntar con verbos normales: Do / Does / Did + sujeto + verbo base.",
+      "keywords": ["questions", "yes/no questions", "preguntas", "preguntar", "interrogativa", "preguntas de sí o no", "do you", "does he", "did you"],
+      "categories": ["auxiliary", "word_order"],
+      "explanationEs": [
+        "En español basta la entonación («¿Trabajas aquí?»). En inglés, con verbos normales, necesitas un auxiliar delante del sujeto: «Do you work here?».",
+        "Do con I/you/we/they, does con he/she/it y did para el pasado. El verbo principal va en forma base: «Does she live here?», «Did you call?».",
+        "Con be y con los modales no se usa do; basta con invertir el orden: «Are you tired?», «Can you help me?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo (la frase de partida)",
+          "examples": [
+            { "en": "You work from home.", "es": "Trabajas desde casa." }
+          ]
+        },
+        "negative": {
+          "pattern": "Pregunta negativa: Don't / Doesn't / Didn't + sujeto + verbo base?",
+          "examples": [
+            { "en": "Didn't you get my message?", "es": "¿No te llegó mi mensaje?" }
+          ]
+        },
+        "question": {
+          "pattern": "Do / Does / Did + sujeto + verbo base?",
+          "examples": [
+            { "en": "Do you work from home?", "es": "¿Trabajas desde casa?" },
+            { "en": "Did your team win?", "es": "¿Ganó tu equipo?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Do you have a charger I can borrow?", "es": "¿Tienes un cargador que me prestes?" },
+        { "en": "Does this bus go to the airport?", "es": "¿Este autobús va al aeropuerto?" },
+        { "en": "Did you sleep well?", "es": "¿Dormiste bien?" },
+        { "en": "Does your company offer remote work?", "es": "¿Tu empresa permite teletrabajar?" },
+        { "en": "Do they accept credit cards here?", "es": "¿Aquí aceptan tarjeta?" }
+      ],
+      "commonMistakes": [
+        { "wrong": "You like coffee?", "right": "Do you like coffee?", "whyEs": "En español basta la entonación; en inglés estándar necesitas do. (En el habla informal se oye, pero no es la forma correcta.)" },
+        { "wrong": "Does she speaks English?", "right": "Does she speak English?", "whyEs": "La -s ya va en does: el verbo se queda en forma base." },
+        { "wrong": "Did you went out?", "right": "Did you go out?", "whyEs": "Did ya marca el pasado: el verbo va en forma base." },
+        { "wrong": "Do you are ready?", "right": "Are you ready?", "whyEs": "Con be no se usa do: se invierte el orden." }
+      ],
+      "related": ["wh-questions", "short-answers", "negatives-do-does-did", "subject-and-object-questions"],
+      "exercises": [
+        { "id": "questions-do-does-did-1", "type": "choice", "prompt": "____ your parents live near you?", "options": ["Do", "Does", "Are", "Is"], "answer": 0, "whyEs": "Your parents = they: Do + sujeto + verbo base.", "trapsEs": ["", "Does es para he/she/it; your parents es plural.", "Are no forma preguntas con un verbo normal como live.", "Is es singular y además no va con live."] },
+        { "id": "questions-do-does-did-2", "type": "choice", "prompt": "Did you ____ the news this morning?", "options": ["hear", "heard", "hears", "hearing"], "answer": 0, "whyEs": "Tras did, verbo base.", "trapsEs": ["", "Did ya marca el pasado: no se repite en el verbo.", "No lleva -s tras did.", "La forma -ing no va tras did."] },
+        { "id": "questions-do-does-did-3", "type": "choice", "prompt": "____ Pedro work on weekends?", "options": ["Does", "Do", "Is", "Has"], "answer": 0, "whyEs": "Pedro = he: Does + sujeto + verbo base.", "trapsEs": ["", "Do va con I/you/we/they.", "Is no forma preguntas con un verbo normal como work.", "Has no se usa para preguntar en presente simple."] },
+        { "id": "questions-do-does-did-4", "type": "gap", "prompt": "____ you ____ (finish) the report yesterday?", "answers": ["Did / finish"], "whyEs": "Yesterday: Did + sujeto + verbo base." },
+        { "id": "questions-do-does-did-5", "type": "gap", "prompt": "____ this restaurant ____ (have) vegetarian options?", "answers": ["Does / have"], "whyEs": "This restaurant = it: Does + sujeto + verbo base." },
+        { "id": "questions-do-does-did-6", "type": "order", "words": ["you", "Do", "dogs", "like"], "answer": "Do you like dogs", "whyEs": "Do + sujeto + verbo base + complemento." },
+        { "id": "questions-do-does-did-7", "type": "order", "words": ["she", "Did", "the", "pass", "exam"], "answer": "Did she pass the exam", "whyEs": "Did + sujeto + verbo base." }
+      ],
+      "speaking": [
+        { "promptEs": "Hazle a tu profe tres preguntas de sí o no sobre su vida diaria.", "modelEn": "Do you work every day? Do you like your job? Do you have a pet?", "checkEs": "Do/Does + sujeto + verbo base." },
+        { "promptEs": "Pregunta a alguien por su fin de semana pasado con dos preguntas con did.", "modelEn": "Did you go out on Saturday? Did you see your family?", "checkEs": "Did + sujeto + verbo base." }
+      ],
+      "classFocusEn": "Practise yes/no questions with do/does/did + base verb. Correct intonation-only questions ('You like…?') and inflected verbs after the auxiliary."
+    },
+    {
+      "id": "wh-questions",
+      "name": "Wh- Questions",
+      "nameEs": "Preguntas con Wh- (what, where, when, why, who, how)",
+      "level": "A1",
+      "summaryEs": "Preguntas con partícula interrogativa: What, Where, When, Why, Who, Which, How + auxiliar + sujeto.",
+      "keywords": ["wh questions", "question words", "preguntas abiertas", "what", "where", "when", "why", "who", "which", "how", "how much", "how many", "qué", "dónde", "cuándo", "por qué", "cómo", "cuánto"],
+      "categories": ["word_order", "auxiliary"],
+      "explanationEs": [
+        "El orden básico es: palabra interrogativa + auxiliar + sujeto + verbo. «Where do you live?», «What did she say?», «Why are you laughing?».",
+        "Las más usadas: what (qué), where (dónde), when (cuándo), why (por qué), who (quién), which (cuál, entre opciones), how (cómo). Con how: how much (cuánto, incontable), how many (cuántos), how often, how long, how old.",
+        "Dos calcos frecuentes: «¿Cuántos años tienes?» es «How old are you?», y «¿Cómo es tu jefe?» (descripción) es «What is your boss like?».",
+        "Si who o what es el sujeto de la frase, no se usa do: lo verás en «Preguntas de sujeto y de objeto»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Respuesta: sujeto + verbo + la información",
+          "examples": [
+            { "en": "I live in Quito.", "es": "Vivo en Quito." }
+          ]
+        },
+        "negative": {
+          "pattern": "Wh- + auxiliar + n't + sujeto + verbo?",
+          "examples": [
+            { "en": "Why didn't you call me?", "es": "¿Por qué no me llamaste?" }
+          ]
+        },
+        "question": {
+          "pattern": "Wh- + auxiliar + sujeto + verbo?",
+          "examples": [
+            { "en": "Where do you work?", "es": "¿Dónde trabajas?" },
+            { "en": "How long did the trip take?", "es": "¿Cuánto duró el viaje?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "What time does the meeting start?", "es": "¿A qué hora empieza la reunión?" },
+        { "en": "How much does this jacket cost?", "es": "¿Cuánto cuesta esta chaqueta?" },
+        { "en": "Which bus should I take to get downtown?", "es": "¿Qué autobús tengo que coger para ir al centro?", "noteEs": "Which: elegir entre opciones conocidas." },
+        { "en": "Why are you still up? It's 2 a.m.", "es": "¿Por qué sigues despierto? Son las dos de la mañana." },
+        { "en": "How often do you go to the gym?", "es": "¿Cada cuánto vas al gimnasio?" },
+        { "en": "What's your new apartment like?", "es": "¿Cómo es tu piso nuevo?", "noteEs": "What … like? pide una descripción." }
+      ],
+      "commonMistakes": [
+        { "wrong": "Where you live?", "right": "Where do you live?", "whyEs": "Falta el auxiliar do entre la palabra interrogativa y el sujeto." },
+        { "wrong": "How many years do you have?", "right": "How old are you?", "whyEs": "La edad se dice con be: «I'm 30», y se pregunta con How old are you?" },
+        { "wrong": "What means this word?", "right": "What does this word mean?", "whyEs": "Mean es un verbo normal: necesita does, y el sujeto va antes del verbo." },
+        { "wrong": "How much people came?", "right": "How many people came?", "whyEs": "Con sustantivos contables en plural se usa many." }
+      ],
+      "related": ["questions-do-does-did", "subject-and-object-questions", "indirect-questions", "short-answers"],
+      "exercises": [
+        { "id": "wh-questions-1", "type": "choice", "prompt": "____ do you usually have lunch? — At about two.", "options": ["What time", "Where", "Why", "Who"], "answer": 0, "whyEs": "La respuesta es una hora: What time.", "trapsEs": ["", "Where pregunta por un lugar.", "Why pregunta por una razón.", "Who pregunta por una persona."] },
+        { "id": "wh-questions-2", "type": "choice", "prompt": "____ brothers and sisters do you have?", "options": ["How many", "How much", "How often", "How old"], "answer": 0, "whyEs": "Brothers and sisters son contables en plural: How many.", "trapsEs": ["", "How much es para incontables (money, time).", "How often pregunta por la frecuencia.", "How old pregunta por la edad."] },
+        { "id": "wh-questions-3", "type": "choice", "prompt": "What ____ «awkward» mean?", "options": ["does", "is", "do", "means"], "answer": 0, "whyEs": "Mean es un verbo normal: What + does + sujeto + verbo base.", "trapsEs": ["", "Is no se combina con el verbo base mean.", "La palabra es singular (it): does, no do.", "Falta el auxiliar: no se dice «What means…?»."] },
+        { "id": "wh-questions-4", "type": "choice", "prompt": "____ is your new boss like? — She's very friendly.", "options": ["What", "How", "Who", "Which"], "answer": 0, "whyEs": "Para pedir una descripción: What … like?", "trapsEs": ["", "How is your boss? pregunta cómo está; «How is … like?» no existe.", "Who pregunta quién es, no cómo es.", "Which sirve para elegir entre opciones."] },
+        { "id": "wh-questions-5", "type": "gap", "prompt": "Where ____ you ____ (go) on vacation last year?", "answers": ["did / go"], "whyEs": "Wh- + did + sujeto + verbo base." },
+        { "id": "wh-questions-6", "type": "gap", "prompt": "How often ____ your sister ____ (visit) you?", "answers": ["does / visit"], "whyEs": "Your sister = she: Wh- + does + sujeto + verbo base." },
+        { "id": "wh-questions-7", "type": "order", "words": ["did", "Why", "leave", "you", "early"], "answer": "Why did you leave early", "whyEs": "Wh- + did + sujeto + verbo base." },
+        { "id": "wh-questions-8", "type": "order", "words": ["How", "does", "long", "it", "take"], "answer": "How long does it take", "whyEs": "How long + does + sujeto + verbo." }
+      ],
+      "speaking": [
+        { "promptEs": "Imagina que conoces a alguien nuevo: hazle cuatro preguntas con palabras distintas (where, what, how, why).", "modelEn": "Where are you from? What do you do? How long have you lived here? Why did you choose this city?", "checkEs": "Wh- + auxiliar + sujeto + verbo." },
+        { "promptEs": "Pregunta por un lugar que alguien visitó: cómo era, cuánto costó y cuándo fue.", "modelEn": "What was it like? How much did it cost? When did you go?", "checkEs": "What … like?, How much…? y When did…?" }
+      ],
+      "classFocusEn": "Practise wh- questions with the order wh-word + auxiliary + subject + verb. Correct missing auxiliaries ('Where you live?'), 'How many years do you have?' and 'How is it like?'."
+    },
+    {
+      "id": "short-answers",
+      "name": "Short Answers",
+      "nameEs": "Respuestas cortas (Yes, I do / No, I don't)",
+      "level": "A1",
+      "summaryEs": "Responder sí o no repitiendo el auxiliar: Yes, I do · No, she isn't · Yes, we can.",
+      "keywords": ["short answers", "respuestas cortas", "yes I do", "no I don't", "yes I am", "sí", "no", "responder", "contestar"],
+      "categories": ["auxiliary"],
+      "explanationEs": [
+        "En inglés suena seco contestar solo «Yes» o «No». Lo natural es añadir el sujeto y el auxiliar de la pregunta: «Do you like it? — Yes, I do».",
+        "Repite el auxiliar de la pregunta: Are you…? → Yes, I am / No, I'm not. Can she…? → Yes, she can. Did they…? → No, they didn't. Have you…? → Yes, I have.",
+        "En la afirmativa no se contrae: «Yes, I am», «Yes, it is», nunca «Yes, I'm». En la negativa sí: «No, it isn't».",
+        "Responde con pronombre, no con el nombre: «Is Ana here? — Yes, she is»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Yes, + pronombre + auxiliar",
+          "examples": [
+            { "en": "Yes, I do.", "es": "Sí." },
+            { "en": "Yes, she has.", "es": "Sí (lo ha hecho)." }
+          ]
+        },
+        "negative": {
+          "pattern": "No, + pronombre + auxiliar + n't",
+          "examples": [
+            { "en": "No, they didn't.", "es": "No." },
+            { "en": "No, I'm not.", "es": "No." }
+          ]
+        },
+        "question": {
+          "pattern": "La pregunta que pide la respuesta corta: auxiliar + sujeto + …?",
+          "examples": [
+            { "en": "Is it raining? — Yes, it is.", "es": "¿Está lloviendo? — Sí." }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Do you speak English? — Yes, I do. A little.", "es": "¿Hablas inglés? — Sí, un poco." },
+        { "en": "Is the restaurant open? — No, it isn't. It opens at one.", "es": "¿Está abierto el restaurante? — No. Abre a la una." },
+        { "en": "Have you been here before? — No, I haven't.", "es": "¿Habías estado aquí antes? — No." },
+        { "en": "Can you hear me? — Yes, I can.", "es": "¿Me oyes? — Sí." },
+        { "en": "Did the package arrive? — Yes, it did.", "es": "¿Llegó el paquete? — Sí." },
+        { "en": "Will you be home tonight? — No, I won't.", "es": "¿Estarás en casa esta noche? — No." }
+      ],
+      "commonMistakes": [
+        { "wrong": "Do you like pizza? — Yes, I like.", "right": "Do you like pizza? — Yes, I do.", "whyEs": "La respuesta corta repite el auxiliar (do), no el verbo. «Yes, I like» sin complemento no es correcto." },
+        { "wrong": "Are you tired? — Yes, I'm.", "right": "Are you tired? — Yes, I am.", "whyEs": "En la respuesta corta afirmativa no se contrae." },
+        { "wrong": "Have you finished? — Yes, I did.", "right": "Have you finished? — Yes, I have.", "whyEs": "Repite el auxiliar de la pregunta: have, no did." }
+      ],
+      "related": ["questions-do-does-did", "negatives-be-and-auxiliaries", "contractions", "question-tags"],
+      "exercises": [
+        { "id": "short-answers-1", "type": "choice", "prompt": "Do you work here? — Yes, I ____.", "options": ["do", "am", "work", "does"], "answer": 0, "whyEs": "La pregunta es con do: Yes, I do.", "trapsEs": ["", "La pregunta no es con be.", "La respuesta corta repite el auxiliar, no el verbo.", "Con I es do, no does."] },
+        { "id": "short-answers-2", "type": "choice", "prompt": "Is your sister married? — No, she ____.", "options": ["isn't", "doesn't", "not", "hasn't"], "answer": 0, "whyEs": "La pregunta es con is: No, she isn't.", "trapsEs": ["", "La pregunta es con be, no con does.", "Falta el auxiliar: no se responde «she not».", "La pregunta no es con has."] },
+        { "id": "short-answers-3", "type": "choice", "prompt": "Have you ever been to Brazil? — Yes, I ____.", "options": ["have", "did", "am", "been"], "answer": 0, "whyEs": "La pregunta es con have: Yes, I have.", "trapsEs": ["", "Repite el auxiliar de la pregunta (have), no did.", "La pregunta no es con be.", "Been es un participio y no puede ir solo."] },
+        { "id": "short-answers-4", "type": "choice", "prompt": "Are you coming with us? — Yes, ____.", "options": ["I am", "I'm", "I come", "I do"], "answer": 0, "whyEs": "Respuesta corta afirmativa con be, sin contraer: Yes, I am.", "trapsEs": ["", "En la respuesta corta afirmativa no se contrae.", "La respuesta corta repite el auxiliar, no el verbo.", "La pregunta es con are, no con do."] },
+        { "id": "short-answers-5", "type": "gap", "prompt": "Can your kids swim? — Yes, they ____.", "answers": ["can"], "whyEs": "Pregunta con can: Yes, they can." },
+        { "id": "short-answers-6", "type": "gap", "prompt": "Did you lock the door? — No, I ____.", "answers": ["didn't", "did not"], "whyEs": "Pregunta con did: No, I didn't." },
+        { "id": "short-answers-7", "type": "gap", "prompt": "Does this phone have a good camera? — Yes, it ____.", "answers": ["does"], "whyEs": "Pregunta con does: Yes, it does." }
+      ],
+      "speaking": [
+        { "promptEs": "Responde con respuestas cortas: Do you like coffee? Are you tired? Can you drive?", "modelEn": "Yes, I do. No, I'm not. Yes, I can.", "checkEs": "Repite el auxiliar de cada pregunta." },
+        { "promptEs": "Contesta con una respuesta corta y añade un detalle: Have you ever been abroad?", "modelEn": "Yes, I have. I've been to Mexico and Peru.", "checkEs": "Yes, I have / No, I haven't, y luego el detalle." }
+      ],
+      "classFocusEn": "Practise short answers by repeating the auxiliary (Yes, I do / No, she isn't / Yes, I have). Correct 'Yes, I like' and contracted affirmatives like 'Yes, I'm'."
+    },
+    {
+      "id": "negative-words-double-negatives",
+      "name": "Negative Words and Double Negatives",
+      "nameEs": "Never, nothing, nobody y any: sin doble negación",
+      "level": "A2",
+      "summaryEs": "En inglés una frase lleva una sola negación: «I didn't see anything» o «I saw nothing», nunca «I didn't see nothing».",
+      "keywords": ["double negative", "doble negación", "negative words", "nothing", "anything", "nobody", "anybody", "no one", "anyone", "nowhere", "anywhere", "never", "ever", "any", "nada", "nadie", "nunca", "ningún"],
+      "categories": ["grammar", "auxiliary"],
+      "explanationEs": [
+        "En español decimos «no vi nada» o «no vino nadie», con dos negaciones. En inglés estándar solo cabe una: o niegas el verbo y usas any- («I didn't see anything»), o dejas el verbo en afirmativa y usas una palabra negativa («I saw nothing»).",
+        "Parejas: nothing / not … anything (nada); nobody, no one / not … anybody, anyone (nadie); nowhere / not … anywhere (a ningún sitio); never / not … ever (nunca); no + sustantivo / not … any (ningún).",
+        "Al principio de la frase va la palabra negativa: «Nobody called», «Nothing happened» (no «Anybody didn't call»). En la conversación suele sonar más natural not … any-.",
+        "Oirás dobles negaciones en canciones y en el habla de algunas zonas, pero no son inglés estándar."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Verbo en afirmativa + nothing / nobody / nowhere / never / no",
+          "examples": [
+            { "en": "I saw nobody.", "es": "No vi a nadie." },
+            { "en": "She never eats breakfast.", "es": "Nunca desayuna." }
+          ]
+        },
+        "negative": {
+          "pattern": "Auxiliar + not + verbo + anything / anybody / anywhere / ever / any",
+          "examples": [
+            { "en": "I didn't see anybody.", "es": "No vi a nadie." },
+            { "en": "We don't have any milk.", "es": "No tenemos leche." }
+          ]
+        },
+        "question": {
+          "pattern": "Auxiliar + sujeto + verbo + anything / anybody / ever…?",
+          "examples": [
+            { "en": "Did anybody call?", "es": "¿Llamó alguien?" },
+            { "en": "Do you ever eat out?", "es": "¿Comes fuera alguna vez?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "There's nothing in the fridge. Let's order pizza.", "es": "No hay nada en la nevera. Pidamos una pizza." },
+        { "en": "I didn't buy anything at the mall.", "es": "No compré nada en el centro comercial." },
+        { "en": "Nobody answered the phone.", "es": "No contestó nadie al teléfono." },
+        { "en": "We don't have any plans for Sunday.", "es": "No tenemos ningún plan para el domingo." },
+        { "en": "I've never seen anything like it.", "es": "Nunca he visto nada igual.", "noteEs": "Never ya niega: lo que sigue va con any-." },
+        { "en": "No one told me the meeting was canceled.", "es": "Nadie me dijo que habían cancelado la reunión." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I don't know nothing.", "right": "I don't know anything.", "whyEs": "Calco de «no sé nada». En inglés, una sola negación: don't + anything (o «I know nothing»)." },
+        { "wrong": "Nobody didn't come.", "right": "Nobody came.", "whyEs": "Nobody ya es negativo: el verbo va en afirmativa." },
+        { "wrong": "I don't never go there.", "right": "I never go there.", "whyEs": "Never ya niega: no necesita don't." },
+        { "wrong": "I haven't no money.", "right": "I don't have any money.", "whyEs": "Una sola negación: don't have any (o «I have no money»)." }
+      ],
+      "related": ["negatives-do-does-did", "some-any", "present-perfect"],
+      "exercises": [
+        { "id": "negative-words-double-negatives-1", "type": "choice", "prompt": "I looked everywhere, but I didn't find ____.", "options": ["anything", "nothing", "something", "none"], "answer": 0, "whyEs": "El verbo ya está negado (didn't): anything.", "trapsEs": ["", "Doble negación: didn't + nothing no es inglés estándar.", "Something va en afirmativas; aquí suena a algo concreto que no encontraste.", "None es un pronombre («ninguno») y no encaja como objeto de find aquí."] },
+        { "id": "negative-words-double-negatives-2", "type": "choice", "prompt": "____ knew the answer, not even the teacher.", "options": ["Nobody", "Anybody", "Somebody", "Everybody"], "answer": 0, "whyEs": "«Nadie» al principio de la frase: Nobody + verbo afirmativo.", "trapsEs": ["", "Anybody no hace negativa la frase; al principio sería «cualquiera».", "Somebody = alguien: contradice «not even the teacher».", "Everybody = todos: contradice «not even the teacher»."] },
+        { "id": "negative-words-double-negatives-3", "type": "choice", "prompt": "We ____ go to that restaurant. The food is terrible.", "options": ["never", "don't never", "ever", "not ever"], "answer": 0, "whyEs": "Never ya niega: va solo, con el verbo en afirmativa.", "trapsEs": ["", "Doble negación: don't + never.", "Ever solo no es negativo en una afirmación.", "Not ever necesita un auxiliar: don't ever."] },
+        { "id": "negative-words-double-negatives-4", "type": "choice", "prompt": "There's ____ milk left. Can you buy some?", "options": ["no", "any", "none", "not"], "answer": 0, "whyEs": "Verbo en afirmativa (there's) + no + sustantivo.", "trapsEs": ["", "Any con un verbo afirmativo no niega la frase.", "None no va delante de un sustantivo (sería none left).", "Not no va delante del sustantivo así; sería there isn't any."] },
+        { "id": "negative-words-double-negatives-5", "type": "gap", "prompt": "I didn't talk to ____ at the party. I didn't know a single person there.", "answers": ["anybody", "anyone"], "whyEs": "El verbo ya está negado (didn't): anybody / anyone." },
+        { "id": "negative-words-double-negatives-6", "type": "gap", "prompt": "She can't go ____ without her phone.", "answers": ["anywhere"], "whyEs": "Can't ya niega: «a ningún sitio» = anywhere." },
+        { "id": "negative-words-double-negatives-7", "type": "order", "words": ["didn't", "I", "say", "anything"], "answer": "I didn't say anything", "whyEs": "Una sola negación: didn't + anything." },
+        { "id": "negative-words-double-negatives-8", "type": "order", "words": ["has", "Nobody", "yet", "called"], "answer": "Nobody has called yet", "whyEs": "Nobody + verbo afirmativo." }
+      ],
+      "speaking": [
+        { "promptEs": "Describe tu nevera o tu mochila: di qué no tienes, usando any y no.", "modelEn": "I don't have any eggs and there's no milk, but I have some cheese.", "checkEs": "Una sola negación por frase." },
+        { "promptEs": "Cuenta un día aburrido: nadie, nada, a ningún sitio.", "modelEn": "Yesterday nobody called me, I didn't go anywhere and nothing interesting happened.", "checkEs": "nobody/nothing con verbo afirmativo; didn't + anywhere." }
+      ],
+      "classFocusEn": "Practise single negation with nothing/nobody/never or not … anything/anybody/ever. Gently correct Spanish-style double negatives like 'I don't know nothing'."
+    },
+    {
+      "id": "subject-and-object-questions",
+      "name": "Subject and Object Questions",
+      "nameEs": "Preguntas de sujeto y de objeto (Who called? / Who did you call?)",
+      "level": "B1",
+      "summaryEs": "Si who o what es el sujeto, no hay do: «Who called you?». Si es el objeto, sí: «Who did you call?».",
+      "keywords": ["subject questions", "object questions", "preguntas de sujeto", "preguntas de objeto", "who called", "who did you call", "what happened", "quién", "a quién", "qué pasó"],
+      "categories": ["word_order", "auxiliary"],
+      "explanationEs": [
+        "Cuando who, what o which (+ sustantivo) es el sujeto (quien hace la acción), la pregunta mantiene el orden de una afirmación y no lleva do/does/did: «Who called you?» (alguien te llamó: ¿quién?).",
+        "Cuando es el objeto (quien recibe la acción), la pregunta es normal, con auxiliar: «Who did you call?» (tú llamaste a alguien: ¿a quién?).",
+        "Truco: si la respuesta sería «X me llamó», es de sujeto; si sería «llamé a X», es de objeto. La «a» de «¿a quién…?» suele delatar una pregunta de objeto.",
+        "En las de sujeto, el verbo va con -s en presente o en pasado: «Who lives here?», «What happened?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Respuesta: sujeto + verbo + objeto",
+          "examples": [
+            { "en": "Ana called me.", "es": "Me llamó Ana." }
+          ]
+        },
+        "negative": {
+          "pattern": "De sujeto: Who / What + didn't / doesn't + verbo base?",
+          "examples": [
+            { "en": "Who didn't come to the meeting?", "es": "¿Quién no vino a la reunión?" }
+          ]
+        },
+        "question": {
+          "pattern": "Sujeto: Who / What + verbo? · Objeto: Who / What + auxiliar + sujeto + verbo?",
+          "examples": [
+            { "en": "Who called you?", "es": "¿Quién te llamó?" },
+            { "en": "Who did you call?", "es": "¿A quién llamaste?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "What happened at the meeting?", "es": "¿Qué pasó en la reunión?", "noteEs": "De sujeto: algo pasó." },
+        { "en": "Who wants more coffee?", "es": "¿Quién quiere más café?" },
+        { "en": "Who did you see at the party?", "es": "¿A quién viste en la fiesta?", "noteEs": "De objeto: viste a alguien." },
+        { "en": "Which team won the game last night?", "es": "¿Qué equipo ganó el partido anoche?" },
+        { "en": "What did your boss say about the project?", "es": "¿Qué dijo tu jefe del proyecto?" },
+        { "en": "Who told you that?", "es": "¿Quién te dijo eso?" }
+      ],
+      "commonMistakes": [
+        { "wrong": "What did happen?", "right": "What happened?", "whyEs": "What es el sujeto: no lleva did (solo se usa así para dar énfasis)." },
+        { "wrong": "Who did call you?", "right": "Who called you?", "whyEs": "Who es quien llama (sujeto): sin auxiliar." },
+        { "wrong": "Who you saw?", "right": "Who did you see?", "whyEs": "Who es el objeto (viste a alguien): necesita did y el verbo en forma base." }
+      ],
+      "related": ["wh-questions", "questions-do-does-did", "indirect-questions"],
+      "exercises": [
+        { "id": "subject-and-object-questions-1", "type": "choice", "prompt": "Who ____ the window? It's freezing in here.", "options": ["opened", "did open", "did you open", "opens"], "answer": 0, "whyEs": "Who es quien abrió (sujeto): verbo en pasado, sin did.", "trapsEs": ["", "Pregunta de sujeto: no lleva did (salvo para dar mucho énfasis).", "Preguntaría a quién abriste, lo que no tiene sentido con the window.", "Presente simple: suena a hábito, pero la ventana ya está abierta."] },
+        { "id": "subject-and-object-questions-2", "type": "choice", "prompt": "What ____ you at the airport? You look upset.", "options": ["happened to", "did happen to", "did happened to", "happens to"], "answer": 0, "whyEs": "What es el sujeto (algo te pasó): happened, sin did.", "trapsEs": ["", "Pregunta de sujeto: no lleva did.", "Ni did ni doble pasado.", "Presente: hablamos de algo que ya pasó."] },
+        { "id": "subject-and-object-questions-3", "type": "choice", "prompt": "Who ____ at the party last night?", "options": ["did you meet", "you met", "you did meet", "did you met"], "answer": 0, "whyEs": "Tú conociste a alguien (objeto): did + sujeto + verbo base.", "trapsEs": ["", "En una pregunta de objeto falta did.", "El orden es did + sujeto, no sujeto + did.", "Tras did, verbo base (meet)."] },
+        { "id": "subject-and-object-questions-4", "type": "choice", "prompt": "Which of your friends ____ in Madrid?", "options": ["lives", "does live", "do live", "living"], "answer": 0, "whyEs": "Which of your friends es el sujeto: verbo con -s, sin does.", "trapsEs": ["", "Pregunta de sujeto: no lleva does (salvo énfasis).", "Pregunta de sujeto: no lleva do.", "Falta un verbo conjugado."] },
+        { "id": "subject-and-object-questions-5", "type": "gap", "prompt": "Who ____ (write) this report? It's excellent.", "answers": ["wrote", "has written"], "whyEs": "Who es quien lo escribió (sujeto): wrote, sin did (has written también es correcto)." },
+        { "id": "subject-and-object-questions-6", "type": "gap", "prompt": "Who ____ you ____ (invite) to your birthday party last Saturday?", "answers": ["did / invite"], "whyEs": "Tú invitaste a alguien (objeto): did + sujeto + verbo base." },
+        { "id": "subject-and-object-questions-7", "type": "order", "words": ["Who", "this", "made", "cake"], "answer": "Who made this cake", "whyEs": "Pregunta de sujeto: Who + verbo + objeto." },
+        { "id": "subject-and-object-questions-8", "type": "order", "words": ["did", "What", "buy", "you"], "answer": "What did you buy", "whyEs": "Pregunta de objeto: What + did + sujeto + verbo base." }
+      ],
+      "speaking": [
+        { "promptEs": "Pregunta quién hizo algo (sujeto) y a quién se lo hizo (objeto).", "modelEn": "Who sent you that message? Who did you send the photos to?", "checkEs": "Sin did en la de sujeto; con did en la de objeto." },
+        { "promptEs": "Pregunta por una noticia reciente: qué pasó y qué dijo la gente.", "modelEn": "What happened in the final? What did the coach say?", "checkEs": "What happened? (sujeto) y What did … say? (objeto)." }
+      ],
+      "classFocusEn": "Practise subject questions without do (Who called? What happened?) and object questions with do (Who did you call?). Correct 'What did happen?' and 'Who you saw?'."
+    },
+    {
+      "id": "question-tags",
+      "name": "Question Tags",
+      "nameEs": "Coletillas interrogativas (question tags)",
+      "level": "B1",
+      "summaryEs": "Las coletillas para confirmar o pedir acuerdo, como «¿verdad?» o «¿no?»: «…, isn't it?», «…, don't you?».",
+      "keywords": ["question tags", "tag questions", "coletillas", "¿verdad?", "¿no?", "isn't it", "don't you", "aren't I", "right?", "confirmar"],
+      "categories": ["auxiliary", "grammar"],
+      "explanationEs": [
+        "En español añadimos «¿verdad?» o «¿no?». En inglés la coletilla repite el auxiliar y el sujeto en forma de pronombre: «It's cold, isn't it?», «You live here, don't you?».",
+        "Regla básica: frase afirmativa → coletilla negativa; frase negativa → coletilla afirmativa. «She can swim, can't she?» / «She can't swim, can she?».",
+        "Si la frase no tiene auxiliar, usa do/does/did: «You like jazz, don't you?». Casos especiales: I am → aren't I?; Let's… → shall we?; con never, nothing o nobody la frase es negativa y la coletilla, afirmativa.",
+        "Si la entonación baja, esperas que te den la razón; si sube, preguntas de verdad. En la conversación informal también vale «…, right?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Frase afirmativa + auxiliar en negativa + pronombre?",
+          "examples": [
+            { "en": "You're from Chile, aren't you?", "es": "Eres de Chile, ¿verdad?" }
+          ]
+        },
+        "negative": {
+          "pattern": "Frase negativa + auxiliar en afirmativa + pronombre?",
+          "examples": [
+            { "en": "They didn't call, did they?", "es": "No llamaron, ¿verdad?" }
+          ]
+        },
+        "question": {
+          "pattern": "Se responde con una respuesta corta: Yes, it is / No, they didn't",
+          "examples": [
+            { "en": "It's a nice day, isn't it? — Yes, it is.", "es": "Hace un día bonito, ¿verdad? — Sí." }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "You're coming tomorrow, aren't you?", "es": "Vienes mañana, ¿no?" },
+        { "en": "This is your first time here, isn't it?", "es": "Es la primera vez que vienes, ¿verdad?" },
+        { "en": "She works with you, doesn't she?", "es": "Trabaja contigo, ¿no?" },
+        { "en": "We haven't met before, have we?", "es": "No nos conocíamos, ¿verdad?" },
+        { "en": "I'm late again, aren't I?", "es": "Llego tarde otra vez, ¿verdad?", "noteEs": "Con I am, la coletilla es aren't I." },
+        { "en": "Let's order pizza, shall we?", "es": "Pedimos pizza, ¿vale?" }
+      ],
+      "commonMistakes": [
+        { "wrong": "You're Spanish, no?", "right": "You're Spanish, aren't you?", "whyEs": "Es un calco de «¿no?». Se entiende, pero lo natural es la coletilla con el auxiliar (o «right?» en informal)." },
+        { "wrong": "He lives in Lima, isn't he?", "right": "He lives in Lima, doesn't he?", "whyEs": "Lives no tiene auxiliar: la coletilla usa does." },
+        { "wrong": "Nobody called, didn't they?", "right": "Nobody called, did they?", "whyEs": "Nobody ya hace negativa la frase: coletilla afirmativa, y con nobody se usa they." }
+      ],
+      "related": ["short-answers", "negatives-be-and-auxiliaries", "questions-do-does-did", "negative-words-double-negatives"],
+      "exercises": [
+        { "id": "question-tags-1", "type": "choice", "prompt": "You've finished the report, ____?", "options": ["haven't you", "didn't you", "don't you", "have you"], "answer": 0, "whyEs": "Frase afirmativa con have (auxiliar): coletilla haven't you.", "trapsEs": ["", "El auxiliar de la frase es have, no did.", "El auxiliar de la frase es have, no do.", "Frase afirmativa → coletilla negativa."] },
+        { "id": "question-tags-2", "type": "choice", "prompt": "Your brother doesn't eat meat, ____?", "options": ["does he", "doesn't he", "is he", "isn't he"], "answer": 0, "whyEs": "Frase negativa con does: coletilla afirmativa does he.", "trapsEs": ["", "Frase negativa → coletilla afirmativa.", "El auxiliar de la frase es does, no is.", "El auxiliar es does, y además debería ser afirmativa."] },
+        { "id": "question-tags-3", "type": "choice", "prompt": "I'm in the right room, ____?", "options": ["aren't I", "don't I", "amn't I", "isn't I"], "answer": 0, "whyEs": "Con I am la coletilla negativa es aren't I.", "trapsEs": ["", "La frase es con be, no con do.", "«Amn't» no existe en inglés estándar.", "Isn't no va con I."] },
+        { "id": "question-tags-4", "type": "choice", "prompt": "Let's take a break, ____?", "options": ["shall we", "don't we", "will you", "let's we"], "answer": 0, "whyEs": "Con Let's… la coletilla es shall we.", "trapsEs": ["", "Let's no lleva do en la coletilla.", "Will you? va con órdenes (Close the door, will you?), no con Let's.", "No existe."] },
+        { "id": "question-tags-5", "type": "gap", "prompt": "She can't drive, ____ she?", "answers": ["can"], "whyEs": "Frase negativa con can: coletilla afirmativa can she." },
+        { "id": "question-tags-6", "type": "gap", "prompt": "They went to the concert, ____ they?", "answers": ["didn't"], "whyEs": "Frase afirmativa en pasado sin auxiliar: didn't they." },
+        { "id": "question-tags-7", "type": "gap", "prompt": "It's going to rain, ____ it?", "answers": ["isn't"], "whyEs": "Frase afirmativa con is (going to): isn't it." }
+      ],
+      "speaking": [
+        { "promptEs": "Confirma tres datos sobre tu profe con coletillas.", "modelEn": "You live in the United States, don't you? You've been a teacher for years, haven't you? You can't speak Spanish, can you?", "checkEs": "Afirmativa → coletilla negativa y al revés, con el auxiliar correcto." },
+        { "promptEs": "Empieza una conversación comentando el tiempo o la comida con una coletilla.", "modelEn": "It's really hot today, isn't it? This coffee is great, isn't it?", "checkEs": "isn't it? tras una frase con is." }
+      ],
+      "classFocusEn": "Practise question tags (positive sentence → negative tag and vice versa; do/does/did when there is no auxiliary). Correct the Spanish-style ', no?' and wrong auxiliaries in tags."
+    },
+    {
+      "id": "indirect-questions",
+      "name": "Indirect Questions",
+      "nameEs": "Preguntas indirectas (Can you tell me where…?)",
+      "level": "B1",
+      "summaryEs": "Preguntas más educadas: «Can you tell me where the station is?», con el orden de una afirmación.",
+      "keywords": ["indirect questions", "embedded questions", "preguntas indirectas", "preguntas educadas", "can you tell me", "could you tell me", "do you know", "I wonder", "if", "whether", "sabe usted"],
+      "categories": ["word_order"],
+      "explanationEs": [
+        "Para preguntar con más cortesía (a un desconocido, en el trabajo) se empieza con Can/Could you tell me…?, Do you know…?, I was wondering… o I'd like to know…",
+        "Después, la parte de la pregunta va en orden de afirmación (sujeto + verbo) y sin do/does/did: «Where is the station?» → «Can you tell me where the station is?»; «What time does it open?» → «Do you know what time it opens?».",
+        "Si la pregunta original es de sí o no, usa if o whether: «Is she in?» → «Do you know if she's in?».",
+        "Lleva signo de interrogación solo si la frase de inicio es una pregunta: «I wonder where he is.» termina en punto."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "I wonder / I'd like to know + wh- o if + sujeto + verbo",
+          "examples": [
+            { "en": "I'd like to know how much it costs.", "es": "Me gustaría saber cuánto cuesta." }
+          ]
+        },
+        "negative": {
+          "pattern": "I don't know / I'm not sure + wh- o if + sujeto + verbo",
+          "examples": [
+            { "en": "I'm not sure where I left my keys.", "es": "No sé muy bien dónde dejé las llaves." }
+          ]
+        },
+        "question": {
+          "pattern": "Can you tell me / Do you know + wh- o if + sujeto + verbo?",
+          "examples": [
+            { "en": "Could you tell me where the restrooms are?", "es": "¿Podría decirme dónde están los baños?" },
+            { "en": "Do you know if the store is open?", "es": "¿Sabes si la tienda está abierta?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Excuse me, do you know where the nearest pharmacy is?", "es": "Perdone, ¿sabe dónde está la farmacia más cercana?" },
+        { "en": "Could you tell me how long the flight takes?", "es": "¿Me podría decir cuánto dura el vuelo?" },
+        { "en": "Do you know if we need a visa for Canada?", "es": "¿Sabes si necesitamos visado para Canadá?" },
+        { "en": "I was wondering whether you could help me with this form.", "es": "Me preguntaba si podría ayudarme con este formulario." },
+        { "en": "Can you remind me what your name is?", "es": "¿Me recuerdas cómo te llamas?" }
+      ],
+      "commonMistakes": [
+        { "wrong": "Can you tell me where is the bank?", "right": "Can you tell me where the bank is?", "whyEs": "En la pregunta indirecta el sujeto va antes del verbo, como en una afirmación." },
+        { "wrong": "Do you know what time does the train leave?", "right": "Do you know what time the train leaves?", "whyEs": "La pregunta indirecta no lleva do/does: el verbo recupera la -s." },
+        { "wrong": "Do you know is she coming?", "right": "Do you know if she's coming?", "whyEs": "Las preguntas de sí o no se introducen con if o whether." }
+      ],
+      "related": ["wh-questions", "subject-and-object-questions", "reported-questions"],
+      "exercises": [
+        { "id": "indirect-questions-1", "type": "choice", "prompt": "Excuse me, can you tell me where ____?", "options": ["the bus stop is", "is the bus stop", "the bus stop", "does the bus stop is"], "answer": 0, "whyEs": "Pregunta indirecta: sujeto + verbo (the bus stop is).", "trapsEs": ["", "Orden de pregunta directa: en la indirecta va sujeto + verbo.", "Falta el verbo (is).", "Sobra does, y no se combina con is."] },
+        { "id": "indirect-questions-2", "type": "choice", "prompt": "Do you know what time ____?", "options": ["the bank opens", "does the bank open", "the bank does open", "opens the bank"], "answer": 0, "whyEs": "Orden de afirmación, sin does: the bank opens.", "trapsEs": ["", "Orden de pregunta directa con does: no va en la indirecta.", "Does sobra (solo se usaría para dar énfasis).", "El sujeto (the bank) va antes del verbo."] },
+        { "id": "indirect-questions-3", "type": "choice", "prompt": "I'd like to know ____ the price includes breakfast.", "options": ["if", "that", "what", "does"], "answer": 0, "whyEs": "La pregunta original es de sí o no (Does the price include…?): if.", "trapsEs": ["", "That no introduce preguntas.", "What necesitaría que faltara un complemento, y la frase está completa.", "No se usa does en la pregunta indirecta."] },
+        { "id": "indirect-questions-4", "type": "gap", "prompt": "Could you tell me how much this laptop ____ (cost) now?", "answers": ["costs"], "whyEs": "Orden de afirmación y sin does: el verbo lleva -s (this laptop costs)." },
+        { "id": "indirect-questions-5", "type": "gap", "prompt": "Do you know ____ the museum is open on Mondays?", "answers": ["if", "whether"], "whyEs": "Pregunta de sí o no dentro de otra: if o whether." },
+        { "id": "indirect-questions-6", "type": "order", "words": ["you", "Do", "where", "know", "she", "lives"], "answer": "Do you know where she lives", "whyEs": "Do you know + wh- + sujeto + verbo." },
+        { "id": "indirect-questions-7", "type": "order", "words": ["me", "Could", "tell", "you", "what", "this", "means", "word"], "answer": "Could you tell me what this word means", "whyEs": "Could you tell me + what + sujeto + verbo (sin does)." }
+      ],
+      "speaking": [
+        { "promptEs": "Estás en una ciudad nueva: pide tres datos a un desconocido con preguntas indirectas.", "modelEn": "Excuse me, could you tell me where the train station is? Do you know if it's far? Do you know how much a taxi costs?", "checkEs": "Sujeto + verbo después de la palabra interrogativa; if para sí/no." },
+        { "promptEs": "En el trabajo, pregunta con educación por una reunión.", "modelEn": "Could you tell me what time the meeting starts? I was wondering if I could join online.", "checkEs": "Sin do/does en la parte indirecta." }
+      ],
+      "classFocusEn": "Practise indirect questions (Can you tell me / Do you know + statement word order, if/whether). Correct inverted order like 'where is the bank' and extra do/does."
+    }
+  ]
+}

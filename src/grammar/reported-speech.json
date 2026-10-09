@@ -1,0 +1,360 @@
+{
+  "id": "reported-speech",
+  "order": 8,
+  "titleEn": "Reported Speech",
+  "titleEs": "Estilo indirecto",
+  "icon": "bubble",
+  "descriptionEs": "Contar lo que otra persona dijo, preguntó o pidió: «Me dijo que estaba cansado».",
+  "topics": [
+    {
+      "id": "reported-statements",
+      "name": "Reported Statements",
+      "nameEs": "Contar lo que alguien dijo",
+      "level": "B1",
+      "summaryEs": "«Dijo que estaba cansada»: say / tell y el cambio de tiempos al contar lo que otro dijo.",
+      "keywords": ["reported speech", "estilo indirecto", "said that", "told me", "say vs tell", "dijo que", "me dijo", "backshift"],
+      "categories": ["grammar", "tense"],
+      "explanationEs": [
+        "Para contar lo que alguien dijo se usa «said (that)…» o «told + persona + (that)…». «That» se puede omitir. Ojo: «tell» siempre lleva a quién («told me»); «say», no («said» o «said to me»).",
+        "Como el verbo de decir está en pasado, el tiempo de la frase suele dar un paso atrás: presente → pasado, «will» → «would», «can» → «could», pasado o presente perfecto → pasado perfecto. Igual que en español: «estoy cansada» → «dijo que estaba cansada».",
+        "Cambian también los pronombres y a veces las palabras de tiempo y lugar: «tomorrow» → «the next day», «here» → «there». Si lo dicho sigue siendo verdad, se puede mantener el presente: «He said the museum opens at ten»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + said (that) / told + persona + (that) + frase con el tiempo un paso atrás",
+          "examples": [
+            { "en": "She said (that) she was tired.", "es": "Dijo que estaba cansada." },
+            { "en": "He told me he would call later.", "es": "Me dijo que llamaría más tarde." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + said / told + persona + (that) + sujeto + didn't / wasn't / wouldn't / hadn't…",
+          "examples": [
+            { "en": "Ana said she didn't like the hotel.", "es": "Ana dijo que no le gustaba el hotel." },
+            { "en": "They told us they hadn't received the email.", "es": "Nos dijeron que no habían recibido el correo." }
+          ]
+        },
+        "question": {
+          "pattern": "Did + sujeto + say / tell + persona + (that)…? · What did + sujeto + say?",
+          "examples": [
+            { "en": "Did she tell you she was leaving the company?", "es": "¿Te dijo que se iba de la empresa?" },
+            { "en": "What did the doctor say?", "es": "¿Qué dijo el médico?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "«I'm working from home today.» → She said she was working from home that day.", "es": "«Hoy trabajo desde casa.» → Dijo que ese día trabajaba desde casa.", "noteEs": "Presente continuo → pasado continuo; «today» → «that day»." },
+        { "en": "«We'll send it tomorrow.» → They said they would send it the next day.", "es": "«Lo enviaremos mañana.» → Dijeron que lo enviarían al día siguiente." },
+        { "en": "«I've lost my keys.» → He told me he had lost his keys.", "es": "«He perdido las llaves.» → Me dijo que había perdido las llaves." },
+        { "en": "«I can't come.» → Luis said he couldn't come.", "es": "«No puedo ir.» → Luis dijo que no podía ir." },
+        { "en": "The receptionist said the museum opens at ten.", "es": "La recepcionista dijo que el museo abre a las diez.", "noteEs": "Si sigue siendo verdad, se puede mantener el presente." }
+      ],
+      "commonMistakes": [
+        { "wrong": "She said me that she was tired.", "right": "She told me (that) she was tired. / She said to me (that) she was tired.", "whyEs": "«Say» no lleva la persona directamente. «Me dijo» = «told me» o «said to me»." },
+        { "wrong": "He told that he was busy.", "right": "He said that he was busy. / He told me that he was busy.", "whyEs": "«Tell» siempre necesita a quién se lo dice; si no lo pones, usa «say»." },
+        { "wrong": "My boss told to me that I was late.", "right": "My boss told me (that) I was late.", "whyEs": "«Tell» va con la persona directamente, sin «to»." }
+      ],
+      "related": ["reported-questions", "reported-commands-requests", "past-perfect", "past-simple"],
+      "exercises": [
+        {
+          "id": "reported-statements-1",
+          "type": "choice",
+          "prompt": "Marta ____ me that she had a new job.",
+          "options": ["told", "said", "say", "told to"],
+          "answer": 0,
+          "whyEs": "Con la persona detrás («me»), el verbo es «tell»: «told me».",
+          "trapsEs": ["", "«Say» no lleva la persona directamente: «said to me».", "Es presente y además «say» no va con «me».", "«Tell» va sin «to»: «told me»."]
+        },
+        {
+          "id": "reported-statements-2",
+          "type": "choice",
+          "prompt": "«I'm hungry.» → Pablo said he ____ hungry.",
+          "options": ["was", "were", "has been", "be"],
+          "answer": 0,
+          "whyEs": "Presente → pasado: «am» pasa a «was».",
+          "trapsEs": ["", "Con «he» el pasado de «be» es «was».", "Presente perfecto: no corresponde a «I'm hungry».", "Falta conjugar el verbo."]
+        },
+        {
+          "id": "reported-statements-3",
+          "type": "gap",
+          "prompt": "«I will help you.» → She said she ____ help me.",
+          "answers": ["would"],
+          "whyEs": "«Will» da un paso atrás y pasa a «would»."
+        },
+        {
+          "id": "reported-statements-4",
+          "type": "gap",
+          "prompt": "«We have finished the project.» → They said they ____ ____ the project.",
+          "answers": ["had / finished"],
+          "whyEs": "Presente perfecto → pasado perfecto: «had finished»."
+        },
+        {
+          "id": "reported-statements-5",
+          "type": "order",
+          "words": ["told", "He", "me", "he", "busy", "was"],
+          "answer": "He told me he was busy",
+          "whyEs": "Told + persona + frase con orden de afirmación (sujeto + verbo)."
+        },
+        {
+          "id": "reported-statements-6",
+          "type": "choice",
+          "prompt": "«I can't drive.» → My sister said she ____.",
+          "options": ["couldn't drive", "can't drove", "couldn't to drive", "didn't can drive"],
+          "answer": 0,
+          "whyEs": "«Can't» → «couldn't» + verbo base.",
+          "trapsEs": ["", "Después de un modal va el verbo base, no el pasado.", "Después de «couldn't» no va «to».", "«Can» no se niega con «did»."]
+        },
+        {
+          "id": "reported-statements-7",
+          "type": "gap",
+          "prompt": "«I don't like sushi.» → Leo said he ____ like sushi.",
+          "answers": ["didn't", "did not", "doesn't", "does not"],
+          "whyEs": "Lo normal es dar un paso atrás: «didn't like». Como sus gustos siguen siendo verdad, «doesn't like» también es correcto."
+        },
+        {
+          "id": "reported-statements-8",
+          "type": "choice",
+          "prompt": "What did the doctor ____ to you?",
+          "options": ["say", "tell", "told", "said"],
+          "answer": 0,
+          "whyEs": "Con «to you» detrás, el verbo es «say» («say to someone»), en forma base tras «did».",
+          "trapsEs": ["", "«Tell» lleva la persona sin «to»: «What did the doctor tell you?».", "Después de «did» va el verbo base, y «tell» no lleva «to».", "Después de «did» va el verbo base: «say»."]
+        }
+      ],
+      "speaking": [
+        { "promptEs": "Cuenta algo que te dijo un amigo o alguien de tu familia esta semana.", "modelEn": "My brother told me he was going to buy a new car. He said he had found a good one.", "checkEs": "«Told me» / «said» y el tiempo un paso atrás." },
+        { "promptEs": "Tu jefe te dijo: «The meeting is at ten and I'll send you the agenda». Cuéntaselo a un compañero.", "modelEn": "The boss said the meeting was at ten and that he would send us the agenda.", "checkEs": "«Is» → «was» y «will» → «would»; pronombres cambiados." }
+      ],
+      "classFocusEn": "Practice reporting statements with said/told and backshift (is → was, will → would, have done → had done). Correct 'said me' and 'told that'."
+    },
+    {
+      "id": "reported-questions",
+      "name": "Reported Questions",
+      "nameEs": "Preguntas en estilo indirecto",
+      "level": "B1",
+      "summaryEs": "«Me preguntó dónde vivía»: asked + if / wh- y la frase en orden de afirmación, sin «do».",
+      "keywords": ["reported questions", "asked me", "if", "whether", "me preguntó", "preguntas indirectas", "estilo indirecto", "asked where"],
+      "categories": ["grammar", "word_order"],
+      "explanationEs": [
+        "Para contar una pregunta se usa «asked (+ persona)» y después la palabra interrogativa («where», «why», «how long»…) o, si la pregunta era de sí o no, «if» o «whether» (si).",
+        "Lo importante: ya no es una pregunta, así que va en orden de afirmación (sujeto + verbo), sin «do/does/did» y sin signo de interrogación: «Where do you live?» → «He asked me where I lived».",
+        "Los tiempos dan un paso atrás como en el resto del estilo indirecto. En español decimos «me preguntó que si…», pero en inglés no se pone «that» delante de «if»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + asked (+ persona) + wh- / if / whether + sujeto + verbo",
+          "examples": [
+            { "en": "She asked me where I was from.", "es": "Me preguntó de dónde era." },
+            { "en": "He asked if I was ready.", "es": "Preguntó si estaba listo." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + asked (+ persona) + why / if + sujeto + didn't / wasn't / hadn't…",
+          "examples": [
+            { "en": "She asked why I wasn't at the meeting.", "es": "Preguntó por qué no estaba en la reunión." },
+            { "en": "My teacher asked me why I hadn't done my homework.", "es": "Mi profesor me preguntó por qué no había hecho los deberes." }
+          ]
+        },
+        "question": {
+          "pattern": "What did + sujeto + ask (+ persona)? · Did + sujeto + ask + if…?",
+          "examples": [
+            { "en": "What did the officer ask you?", "es": "¿Qué te preguntó el agente?" },
+            { "en": "Did they ask if we needed a taxi?", "es": "¿Preguntaron si necesitábamos un taxi?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "«Where do you work?» → My new neighbor asked where I worked.", "es": "«¿Dónde trabajas?» → Mi nuevo vecino preguntó dónde trabajaba." },
+        { "en": "«Are you coming to the party?» → She asked if I was coming to the party.", "es": "«¿Vienes a la fiesta?» → Me preguntó si iba a ir a la fiesta.", "noteEs": "Pregunta de sí o no → «if»." },
+        { "en": "«How long have you lived here?» → My neighbor asked how long I had lived there.", "es": "«¿Cuánto llevas viviendo aquí?» → Mi vecino me preguntó cuánto tiempo llevaba viviendo allí." },
+        { "en": "«Can you speak Portuguese?» → The interviewer asked whether I could speak Portuguese.", "es": "«¿Hablas portugués?» → El entrevistador preguntó si hablaba portugués.", "noteEs": "«Whether» = «if», algo más formal." },
+        { "en": "«What time does the store close?» → I asked what time the store closed.", "es": "«¿A qué hora cierra la tienda?» → Pregunté a qué hora cerraba la tienda.", "noteEs": "Desaparece «does»." }
+      ],
+      "commonMistakes": [
+        { "wrong": "The guide asked us where were we staying.", "right": "The guide asked us where we were staying.", "whyEs": "Ya no es una pregunta: el sujeto va delante del verbo («we were»)." },
+        { "wrong": "She asked me if do I have a car.", "right": "She asked me if I had a car.", "whyEs": "Detrás de «if» va una frase normal (sujeto + verbo), sin «do»." },
+        { "wrong": "They asked me that if I was ready.", "right": "They asked me if I was ready.", "whyEs": "Calco de «me preguntó que si…». En inglés no se pone «that» delante de «if»." },
+        { "wrong": "He asked me what was my name.", "right": "He asked me what my name was.", "whyEs": "Orden de afirmación: sujeto («my name») + verbo («was»)." }
+      ],
+      "related": ["indirect-questions", "reported-statements", "wh-questions"],
+      "exercises": [
+        {
+          "id": "reported-questions-1",
+          "type": "choice",
+          "prompt": "«Where is the station?» → A tourist asked me where ____.",
+          "options": ["the station was", "was the station", "is the station", "did the station be"],
+          "answer": 0,
+          "whyEs": "Orden de afirmación (sujeto + verbo) y el tiempo un paso atrás: «the station was».",
+          "trapsEs": ["", "Es el orden de una pregunta; aquí ya no lo es.", "Orden de pregunta y además en presente.", "No existe: «be» no se usa con «did» así."]
+        },
+        {
+          "id": "reported-questions-2",
+          "type": "choice",
+          "prompt": "«Do you like your new job?» → My aunt asked me ____ my new job.",
+          "options": ["if I liked", "do I like", "did I like", "that I liked"],
+          "answer": 0,
+          "whyEs": "Pregunta de sí o no → «if» + sujeto + verbo en pasado.",
+          "trapsEs": ["", "Orden de pregunta con «do»: no va en estilo indirecto.", "Orden de pregunta con «did»: sobra el auxiliar.", "«That» es para afirmaciones; una pregunta de sí o no se cuenta con «if»."]
+        },
+        {
+          "id": "reported-questions-3",
+          "type": "gap",
+          "prompt": "«What are you doing?» → She asked me what I ____ ____.",
+          "answers": ["was / doing"],
+          "whyEs": "Presente continuo → pasado continuo, con el sujeto delante: «what I was doing»."
+        },
+        {
+          "id": "reported-questions-4",
+          "type": "order",
+          "words": ["asked", "He", "me", "I", "was", "how", "old"],
+          "answer": "He asked me how old I was",
+          "whyEs": "Asked + persona + «how old» + sujeto + verbo."
+        },
+        {
+          "id": "reported-questions-5",
+          "type": "gap",
+          "prompt": "«Have you ever been to Mexico?» → They asked me ____ I had ever been to Mexico.",
+          "answers": ["if", "whether"],
+          "whyEs": "Pregunta de sí o no: «if» o «whether»."
+        },
+        {
+          "id": "reported-questions-6",
+          "type": "choice",
+          "prompt": "«Why didn't you call me?» → My mom asked me why I ____ her.",
+          "options": ["hadn't called", "didn't called", "haven't called", "called not"],
+          "answer": 0,
+          "whyEs": "Pasado → pasado perfecto: «hadn't called». (En conversación también se oye «didn't call».)",
+          "trapsEs": ["", "Después de «didn't» va el verbo base, no el pasado.", "Presente perfecto: el tiempo tiene que ir hacia atrás, no hacia delante.", "La negación en inglés necesita auxiliar: «not» no va detrás del verbo."]
+        },
+        {
+          "id": "reported-questions-7",
+          "type": "order",
+          "words": ["us", "asked", "if", "we", "The", "waiter", "were", "ready"],
+          "answer": "The waiter asked us if we were ready",
+          "whyEs": "Asked + persona + if + sujeto + verbo (orden de afirmación)."
+        }
+      ],
+      "speaking": [
+        { "promptEs": "En una entrevista de trabajo te hicieron dos preguntas. Cuéntalas en estilo indirecto.", "modelEn": "The interviewer asked me why I wanted the job and if I could start in May.", "checkEs": "«Asked» + wh- / if + sujeto + verbo, sin «do»." },
+        { "promptEs": "Cuenta qué te preguntó alguien hoy o ayer.", "modelEn": "My neighbor asked me where I had bought my bike.", "checkEs": "Orden de afirmación y el tiempo un paso atrás." }
+      ],
+      "classFocusEn": "Practice reported questions with asked + wh-/if + subject + verb. Correct question word order and 'do/did' inside reported questions, and 'asked me that if…'."
+    },
+    {
+      "id": "reported-commands-requests",
+      "name": "Reported Commands and Requests",
+      "nameEs": "Órdenes y peticiones en estilo indirecto",
+      "level": "B2",
+      "summaryEs": "«Me dijo que esperara», «Me pidió que no llegara tarde»: told / asked + persona + (not) to + verbo.",
+      "keywords": ["told me to", "asked me to", "not to", "advised", "reminded", "warned", "me dijo que", "me pidió que", "suggested"],
+      "categories": ["grammar"],
+      "explanationEs": [
+        "Para contar una orden o una petición se usa «told / asked + persona + to + verbo»: «Wait here» → «He told me to wait there». En negativa, «not to»: «Don't be late» → «She told me not to be late».",
+        "En español usamos subjuntivo («me dijo que esperara»), pero en inglés va un infinitivo con «to». Con «tell» suena a orden; con «asked», a petición educada.",
+        "Otros verbos funcionan igual: «advise» (aconsejar), «remind» (recordar), «warn» (advertir). Pero «suggest» no: «He suggested taking a taxi» o «He suggested (that) I take a taxi», nunca «suggested me to»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + told / asked / advised / reminded + persona + to + verbo",
+          "examples": [
+            { "en": "The doctor told me to rest.", "es": "El médico me dijo que descansara." },
+            { "en": "She asked me to close the door.", "es": "Me pidió que cerrara la puerta." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + told / asked / warned + persona + not to + verbo",
+          "examples": [
+            { "en": "My dad told me not to drive at night.", "es": "Mi padre me dijo que no condujera de noche." },
+            { "en": "They asked us not to make noise after ten.", "es": "Nos pidieron que no hiciéramos ruido después de las diez." }
+          ]
+        },
+        "question": {
+          "pattern": "What did + sujeto + tell / ask + persona + to do? · Did + sujeto + ask / tell + persona + to + verbo?",
+          "examples": [
+            { "en": "What did your boss ask you to do?", "es": "¿Qué te pidió tu jefe que hicieras?" },
+            { "en": "Did she tell you to bring anything?", "es": "¿Te dijo que trajeras algo?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "«Fasten your seat belts, please.» → The flight attendant asked us to fasten our seat belts.", "es": "«Abróchense el cinturón, por favor.» → La azafata nos pidió que nos abrocháramos el cinturón." },
+        { "en": "«Don't be late.» → My mother told me not to be late.", "es": "«No llegues tarde.» → Mi madre me dijo que no llegara tarde." },
+        { "en": "«Can you send me the file?» → My colleague asked me to send her the file.", "es": "«¿Me mandas el archivo?» → Mi compañera me pidió que le mandara el archivo.", "noteEs": "Una pregunta que en realidad es una petición → «asked + persona + to»." },
+        { "en": "«You should see a doctor.» → My friend advised me to see a doctor.", "es": "«Deberías ir al médico.» → Mi amigo me aconsejó que fuera al médico." },
+        { "en": "«Don't forget to buy bread.» → She reminded me to buy bread.", "es": "«No te olvides de comprar pan.» → Me recordó que comprara pan." },
+        { "en": "«Don't touch the cables!» → The electrician warned us not to touch the cables.", "es": "«¡No toquéis los cables!» → El electricista nos advirtió que no tocáramos los cables." }
+      ],
+      "commonMistakes": [
+        { "wrong": "She told me that I came early.", "right": "She told me to come early.", "whyEs": "El «me dijo que viniera» del español (subjuntivo) se dice con «to + verbo» en inglés." },
+        { "wrong": "My boss told me don't be late.", "right": "My boss told me not to be late.", "whyEs": "La orden negativa se cuenta con «not to + verbo», no con «don't»." },
+        { "wrong": "He said me to wait.", "right": "He told me to wait. / He asked me to wait.", "whyEs": "«Say» no va con persona + «to»: usa «tell» (orden) o «ask» (petición)." },
+        { "wrong": "She suggested me to take a taxi.", "right": "She suggested taking a taxi. / She suggested (that) I take a taxi.", "whyEs": "«Suggest» no funciona como «tell»: va con «-ing» o con «that» + frase." }
+      ],
+      "related": ["reported-statements", "reported-questions", "gerunds-infinitives"],
+      "exercises": [
+        {
+          "id": "reported-commands-requests-1",
+          "type": "choice",
+          "prompt": "The teacher told us ____ our phones away.",
+          "options": ["to put", "put", "that we put", "putting"],
+          "answer": 0,
+          "whyEs": "Orden contada: told + persona + to + verbo.",
+          "trapsEs": ["", "Falta «to» después de la persona.", "Una orden no se cuenta con «that» + frase; eso sería una afirmación.", "Después de «told us» no va «-ing»."]
+        },
+        {
+          "id": "reported-commands-requests-2",
+          "type": "gap",
+          "prompt": "«Don't park here.» → The guard told me ____ ____ ____ there.",
+          "answers": ["not / to / park"],
+          "whyEs": "Orden negativa: «not to» + verbo base."
+        },
+        {
+          "id": "reported-commands-requests-3",
+          "type": "choice",
+          "prompt": "My neighbor ____ me to water her plants while she was away.",
+          "options": ["asked", "said", "told to", "asked to"],
+          "answer": 0,
+          "whyEs": "Petición: asked + persona + to + verbo.",
+          "trapsEs": ["", "«Say» no va con persona + «to».", "Sobra «to» detrás de «told»: «told me to…».", "Sobra «to» detrás de «asked»: «asked me to…»."]
+        },
+        {
+          "id": "reported-commands-requests-4",
+          "type": "order",
+          "words": ["me", "not", "He", "to", "worry", "told"],
+          "answer": "He told me not to worry",
+          "whyEs": "Told + persona + not to + verbo."
+        },
+        {
+          "id": "reported-commands-requests-5",
+          "type": "choice",
+          "prompt": "The doctor advised him ____ so much coffee.",
+          "options": ["not to drink", "to not drinking", "don't drink", "not drink"],
+          "answer": 0,
+          "whyEs": "Consejo negativo: advised + persona + not to + verbo.",
+          "trapsEs": ["", "Después de «to» va el verbo base, no «-ing».", "«Don't» no se usa al contar una orden.", "Falta «to»."]
+        },
+        {
+          "id": "reported-commands-requests-6",
+          "type": "gap",
+          "prompt": "«Please call me back.» → She ____ me to call her back.",
+          "answers": ["asked", "told"],
+          "whyEs": "Con «please» es una petición: «asked» es lo más natural. «Told» también es correcto, pero suena más a orden."
+        },
+        {
+          "id": "reported-commands-requests-7",
+          "type": "choice",
+          "prompt": "My friend suggested ____ the train instead of the bus.",
+          "options": ["taking", "me to take", "to take", "me take"],
+          "answer": 0,
+          "whyEs": "«Suggest» va con «-ing»: «suggested taking» (o «suggested that I take»).",
+          "trapsEs": ["", "«Suggest» no funciona como «tell»: no lleva persona + «to».", "«Suggest» no va con «to» + verbo.", "«Suggest» no lleva la persona directamente; sería «suggested that I take»."]
+        }
+      ],
+      "speaking": [
+        { "promptEs": "Cuenta dos cosas que te pidió tu jefe o tu profesor esta semana y una que te dijo que NO hicieras.", "modelEn": "My boss asked me to prepare a report and told me to send it by Friday. He told me not to forget the numbers.", "checkEs": "Asked / told + persona + (not) to + verbo." },
+        { "promptEs": "Recuerda un consejo de un médico o de tus padres y cuéntalo en estilo indirecto.", "modelEn": "My doctor advised me to walk every day and told me not to eat so much sugar.", "checkEs": "«Advised me to» y «told me not to», sin «that» ni «don't»." }
+      ],
+      "classFocusEn": "Practice reporting commands and requests with told/asked/advised + object + (not) to + verb. Correct 'told me that I come', 'told me don't…' and 'suggested me to…'."
+    }
+  ]
+}

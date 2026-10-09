@@ -24,6 +24,16 @@ export const SCENARIOS: Scenario[] = [
     brief: 'Guided lesson of the student\'s 12-week plan: a relaxed conversation that makes them practise their weak structures.',
   },
   {
+    // v5.10 (D3): «Practicar en una clase» desde un tema de Gramática. El brief real es grammarBrief(tema).
+    id: 'grammar',
+    title: 'Clase de gramática',
+    subtitle: 'Practica un tema de Gramática hablando',
+    emoji: '📘',
+    icon: 'book',
+    hidden: true,
+    brief: 'Grammar-focused speaking lesson: create natural situations that make the student use the target structure.',
+  },
+  {
     id: 'free',
     title: 'Charla libre',
     subtitle: 'Conversación relajada sobre lo que sea',

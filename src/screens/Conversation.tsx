@@ -17,6 +17,7 @@ import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/
 import { getProfile } from '../lib/profile'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
+import { findTopic, grammarBrief } from '../lib/grammar'
 import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
 import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording, type SpeechAnalysis } from '../lib/speech'
@@ -54,6 +55,8 @@ interface Props {
   categoryId?: string // para escenarios con tema; sin él, categoría al azar
   customTopic?: string // tema escrito por el alumno (Tema libre o debate propuesto)
   planLesson?: string // id de la lección del plan de 12 semanas
+  /** v5.10 (D3): clase centrada en un tema de Gramática («Practicar en una clase»). */
+  grammarTopic?: string
   /** Clase guardada que se retoma en el punto en que quedó (NC-16). */
   resume?: SavedClass
   /** v5.9: con `resume`, la clase no se sigue: se cierra en cuanto carga, con su informe («Terminar» del Inicio). */
@@ -71,8 +74,22 @@ function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
 
-export default function Conversation({ scenarioId, categoryId, customTopic, planLesson, resume, finishNow, settings, update, onExit, registerBack }: Props) {
+export default function Conversation({
+  scenarioId,
+  categoryId,
+  customTopic,
+  planLesson,
+  grammarTopic,
+  resume,
+  finishNow,
+  settings,
+  update,
+  onExit,
+  registerBack,
+}: Props) {
   const scenario = getScenario(scenarioId)
+  // v5.10: tema de Gramática de la clase (también al retomarla).
+  const gramTopic = findTopic(grammarTopic ?? resume?.grammarTopic)
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
@@ -374,11 +391,22 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       // Lección del plan: el profe recibe la situación, el objetivo y las frases de esa lección.
       const found = planLesson && profile.plan ? findLesson(profile.plan, planLesson) : null
       if (found) setPlanInfo(found)
-      titleRef.current = found ? found.lesson.titleEs : tp?.title ?? scenario.title
-      const brief = found ? { ...scenario, brief: lessonBrief(found.week, found.lesson) } : scenario
+      titleRef.current = found ? found.lesson.titleEs : gramTopic ? gramTopic.name : tp?.title ?? scenario.title
+      // v5.10 (D3): en «Practicar en una clase» el profe recibe el foco, las fórmulas y el nombre del tema.
+      const brief = found
+        ? { ...scenario, brief: lessonBrief(found.week, found.lesson) }
+        : gramTopic
+          ? { ...scenario, brief: grammarBrief(gramTopic) }
+          : scenario
       system.current = buildSystemPrompt(profile, brief, recent, tp, teacherPersona(settingsRef.current.theme, settingsRef.current.teacher))
       sessionId.current =
-        (await db.sessions.add({ scenario: scenario.id, startedAt: Date.now(), topic: tp, ...(found ? { planLesson } : {}) })) ?? null
+        (await db.sessions.add({
+          scenario: scenario.id,
+          startedAt: Date.now(),
+          topic: tp,
+          ...(found ? { planLesson } : {}),
+          ...(gramTopic ? { grammarTopic: gramTopic.id } : {}),
+        })) ?? null
       history.current = [{ role: 'user', content: START_MESSAGE }]
       await askTeacher()
     })()
@@ -404,6 +432,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       categoryId,
       customTopic,
       planLesson,
+      ...(gramTopic ? { grammarTopic: gramTopic.id } : {}),
       topic: topicRef.current,
       system: system.current,
       history: history.current,
@@ -412,7 +441,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
       turns: answers,
       savedAt: Date.now(),
     }).catch(() => {})
-  }, [scenarioId, categoryId, customTopic, planLesson])
+  }, [scenarioId, categoryId, customTopic, planLesson, gramTopic])
 
   // Al minimizar o cerrar la app con la clase abierta, también se guarda (el micrófono y la voz los cierra lifecycle).
   useEffect(() => whenBackground(persist), [persist])
@@ -660,7 +689,9 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
         title: topic.title,
         sub: topic.summary,
       }
-    : scenario.id === 'open'
+    : gramTopic
+      ? { icon: 'book', label: `Gramática · ${gramTopic.level}`, title: gramTopic.name, sub: `${gramTopic.nameEs}: ${gramTopic.summaryEs}` }
+      : scenario.id === 'open'
       ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherName(settings.theme)} sigue tu conversación` }
       : scenario.topic
         ? { icon: scenario.icon, label: scenario.title, title: status || 'Tema sorpresa', sub: '' }

@@ -46,6 +46,12 @@ interface Props {
   registerBack: (h: (() => void) | null) => void
 }
 
+const SOURCE_LABEL: Record<SrsCard['source'], string> = {
+  mistake: 'tu corrección',
+  lookup: 'palabra guardada',
+  grammar: 'ejercicio de Gramática', // v5.10
+}
+
 const VERDICT = {
   correct: { label: '¡Correcto!', icon: 'check' as const, color: '#5fe3a1' },
   almost: { label: 'Casi', icon: 'spark' as const, color: 'var(--acc)' },
@@ -278,7 +284,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
         <div className="flex-1">
           <div className="text-lg font-semibold">Repaso</div>
           <div className="txt-sub text-xs">
-            {Math.min(i + 1, queue.length)} de {queue.length} · {card.source === 'mistake' ? 'tu corrección' : 'palabra guardada'}
+            {Math.min(i + 1, queue.length)} de {queue.length} · {SOURCE_LABEL[card.source]}
           </div>
         </div>
         <PhoneticsToggle settings={settings} update={update} />
@@ -290,7 +296,10 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
       {/* En horizontal (Galaxy A11) la tarjeta y los botones no caben: el contenido se desplaza (antes quedaban fuera). */}
       <div key={i} className="anim-in no-scrollbar mt-5 flex min-h-0 flex-1 flex-col overflow-y-auto">
-        <div className="txt-acc2 text-xs tracking-[1.2px] uppercase">¿Cómo se dice en inglés?</div>
+        <div className="txt-acc2 text-xs tracking-[1.2px] uppercase">
+          {/* v5.10: en las de Gramática se ve el ejercicio en inglés (hueco o palabras) y se dice la frase entera. */}
+          {card.source === 'grammar' ? 'Di la frase completa en inglés' : '¿Cómo se dice en inglés?'}
+        </div>
         <div className="glass mt-2 rounded-[26px] p-5 text-[21px] leading-snug font-medium">{card.promptEs}</div>
         {card.hintEs && step !== 'result' && (
           <button onClick={() => setShowHint((s) => !s)} className="txt-sub mt-2 flex items-center gap-1.5 self-start text-[13px]">

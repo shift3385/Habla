@@ -40,6 +40,7 @@ export interface Settings {
   azurePlan: AzurePlan // plan del recurso en Azure (la app no lo cambia)
   phoneticsOn: boolean
   reviewHelpSeen: boolean // v5.9: la mascota ya explicó cómo se elige cuándo volver a ver una frase
+  grammarIntroSeen: boolean // v5.10: la mascota ya explicó la pestaña Gramática (la primera vez que entras)
   phoneticsUserOff: boolean // la apagaste tú: no se reactiva sola
   f0ExhaustedMonth: string // AAAA-MM en que Azure dijo que el F0 se agotó
   phoneticsAlertMonth: string // AAAA-MM del último aviso de la mascota
@@ -80,6 +81,7 @@ const DEFAULTS: Settings = {
   azurePlan: 'F0',
   phoneticsOn: false,
   reviewHelpSeen: false,
+  grammarIntroSeen: false,
   phoneticsUserOff: false,
   f0ExhaustedMonth: '',
   phoneticsAlertMonth: '',

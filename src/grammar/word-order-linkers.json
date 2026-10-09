@@ -1,0 +1,477 @@
+{
+  "id": "word-order-linkers",
+  "order": 11,
+  "titleEn": "Word Order and Linkers",
+  "titleEs": "Orden y conectores",
+  "icon": "sliders",
+  "descriptionEs": "Dónde va cada palabra en la frase, cómo comparar y cómo unir ideas con who, which, although, because of…",
+  "topics": [
+    {
+      "id": "basic-word-order",
+      "name": "Basic Word Order: Subject, Verb, Object",
+      "nameEs": "Orden básico de la frase",
+      "level": "A1",
+      "summaryEs": "Sujeto + verbo + objeto, siempre con sujeto y sin separar el verbo de su objeto.",
+      "keywords": ["word order", "orden", "sujeto", "verbo", "objeto", "it is", "SVO", "orden de las palabras", "frase"],
+      "categories": ["word_order"],
+      "explanationEs": [
+        "En español movemos las palabras con libertad («Me llamó María», «Llegó tarde el tren»). En inglés el orden es fijo y dice quién hace qué: sujeto + verbo + objeto. «Maria called me», «The train arrived late».",
+        "El sujeto nunca se omite. Si no hay uno «real», se usa «it»: «It's late», «It's raining», «It's ten minutes from here». Decir solo «Is late» es un error muy típico.",
+        "No separes el verbo de su objeto: «I speak English very well» (no «speak very well English»). Después del objeto suelen ir el cómo, el dónde y el cuándo, en ese orden: «We had lunch at home yesterday».",
+        "El adjetivo va delante del nombre: «a red car», «a long day». En las preguntas el auxiliar va delante del sujeto: «Where do you live?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo + objeto + (cómo) + (dónde) + (cuándo)",
+          "examples": [
+            { "en": "My brother plays the guitar really well.", "es": "Mi hermano toca muy bien la guitarra." },
+            { "en": "I met Ana at the station yesterday.", "es": "Ayer vi a Ana en la estación." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / doesn't / didn't + verbo + objeto…",
+          "examples": [
+            { "en": "She doesn't eat meat.", "es": "Ella no come carne." },
+            { "en": "We didn't watch the game last night.", "es": "Anoche no vimos el partido." }
+          ]
+        },
+        "question": {
+          "pattern": "(Wh-) + auxiliar + sujeto + verbo + objeto…?",
+          "examples": [
+            { "en": "Do you like spicy food?", "es": "¿Te gusta la comida picante?" },
+            { "en": "Where did you buy that jacket?", "es": "¿Dónde compraste esa chaqueta?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "It's really cold today.", "es": "Hoy hace mucho frío.", "noteEs": "El tiempo atmosférico lleva «it» como sujeto." },
+        { "en": "My boss sent me an email this morning.", "es": "Esta mañana me mandó un correo mi jefe.", "noteEs": "En español el sujeto puede ir al final; en inglés, delante del verbo." },
+        { "en": "I bought a new laptop online last week.", "es": "La semana pasada compré un portátil nuevo por internet." },
+        { "en": "Our neighbors have a very noisy dog.", "es": "Nuestros vecinos tienen un perro muy ruidoso." },
+        { "en": "Is it far from here?", "es": "¿Está lejos de aquí?", "noteEs": "También en preguntas hace falta «it»." }
+      ],
+      "commonMistakes": [
+        { "wrong": "Is very late. Let's go home.", "right": "It's very late. Let's go home.", "whyEs": "En inglés toda frase necesita sujeto; para la hora, el tiempo o las distancias se usa «it»." },
+        { "wrong": "I like very much the coffee.", "right": "I like coffee very much.", "whyEs": "No se separa el verbo de su objeto: «very much» va detrás. Y para hablar en general, sin «the»." },
+        { "wrong": "Arrived my sister yesterday.", "right": "My sister arrived yesterday.", "whyEs": "El sujeto va antes del verbo, aunque en español digamos «llegó mi hermana»." },
+        { "wrong": "I have a car red.", "right": "I have a red car.", "whyEs": "El adjetivo va delante del nombre, al revés que en español." }
+      ],
+      "related": ["adverbs-of-frequency", "order-of-adjectives", "wh-questions"],
+      "exercises": [
+        { "id": "basic-word-order-1", "type": "choice", "prompt": "Elige la frase correcta: «Hablo inglés bastante bien.»", "options": ["I speak English quite well.", "I speak quite well English.", "I quite well speak English.", "Speak I English quite well."], "answer": 0, "whyEs": "Verbo + objeto juntos, y el «cómo» detrás.", "trapsEs": ["", "Separa el verbo de su objeto: «quite well» debe ir detrás de «English».", "«Quite well» no va entre el sujeto y el verbo.", "El sujeto va antes del verbo en una afirmación."] },
+        { "id": "basic-word-order-2", "type": "gap", "prompt": "Take your umbrella. ____ is raining outside.", "answers": ["It"], "whyEs": "El tiempo atmosférico necesita el sujeto «it»: «It is raining»." },
+        { "id": "basic-word-order-3", "type": "order", "words": ["speaks", "Ana", "very", "English", "well"], "answer": "Ana speaks English very well", "whyEs": "Sujeto + verbo + objeto, y «very well» al final." },
+        { "id": "basic-word-order-4", "type": "choice", "prompt": "Elige la frase correcta: «Me llamó mi jefe.»", "options": ["My boss called me.", "Called me my boss.", "Me called my boss.", "My boss me called."], "answer": 0, "whyEs": "Sujeto (my boss) + verbo (called) + objeto (me).", "trapsEs": ["", "Falta el sujeto delante: es el orden del español.", "«Me» es objeto y no puede ir delante del verbo como sujeto.", "El objeto va detrás del verbo, no delante."] },
+        { "id": "basic-word-order-5", "type": "order", "words": ["a", "bought", "jacket", "black", "I"], "answer": "I bought a black jacket", "whyEs": "Sujeto + verbo + objeto, con el adjetivo delante del nombre." },
+        { "id": "basic-word-order-6", "type": "gap", "prompt": "Is your office far? — Yes, ____ is about forty minutes by car.", "answers": ["it"], "whyEs": "Para distancias también se usa «it» como sujeto." },
+        { "id": "basic-word-order-7", "type": "choice", "prompt": "Elige la frase correcta: «Anoche cenamos en un restaurante tailandés.»", "options": ["We had dinner at a Thai restaurant last night.", "We had at a Thai restaurant dinner last night.", "Had we dinner at a Thai restaurant last night.", "We dinner had at a Thai restaurant last night."], "answer": 0, "whyEs": "Sujeto + verbo + objeto + dónde + cuándo.", "trapsEs": ["", "El lugar separa el verbo de su objeto («had… dinner»).", "Es orden de pregunta, y además no se forma así: sería «Did we have…?».", "El verbo va antes del objeto."] },
+        { "id": "basic-word-order-8", "type": "order", "words": ["you", "do", "Where", "work"], "answer": "Where do you work", "whyEs": "Pregunta: palabra Wh- + auxiliar + sujeto + verbo." }
+      ],
+      "speaking": [
+        { "promptEs": "Cuéntale a tu profe qué hiciste ayer por la tarde: qué, dónde y cuándo.", "modelEn": "I watched a series at home yesterday evening.", "checkEs": "Sujeto + verbo + objeto, y después el lugar y el tiempo." },
+        { "promptEs": "Describe cómo está el tiempo hoy y cuánto tardas en llegar al trabajo o a clase.", "modelEn": "It's sunny today. It takes me twenty minutes to get to work.", "checkEs": "Empieza con «It» (no «Is sunny»)." }
+      ],
+      "classFocusEn": "Practice basic SVO word order: never drop the subject (use 'it' for weather, time and distance), keep verb and object together, adjectives before nouns. Correct 'Is very late', 'I like very much…' and 'Arrived my sister'."
+    },
+    {
+      "id": "adverbs-of-frequency",
+      "name": "Adverbs of Frequency",
+      "nameEs": "Adverbios de frecuencia (always, usually, never…)",
+      "level": "A2",
+      "summaryEs": "Con qué frecuencia haces algo, y dónde se colocan: antes del verbo, pero después de «be».",
+      "keywords": ["always", "usually", "often", "sometimes", "rarely", "hardly ever", "never", "how often", "siempre", "nunca", "a veces", "frecuencia"],
+      "categories": ["word_order"],
+      "explanationEs": [
+        "De más a menos: always (siempre), usually (normalmente), often (a menudo), sometimes (a veces), rarely / hardly ever (casi nunca), never (nunca).",
+        "Posición: delante del verbo principal («I always drink coffee»), pero DETRÁS de «be» («She is always late») y detrás del primer auxiliar («I have never been to Peru», «You can always call me»).",
+        "«Sometimes», «usually» y «often» también pueden ir al principio («Sometimes I work from home»). Las expresiones como every day, once a week o twice a month van al final de la frase.",
+        "«Never» ya es negativo: «I never eat fish», nunca «I don't never…». Para preguntar: «How often do you…?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + adverbio + verbo · Sujeto + be + adverbio",
+          "examples": [
+            { "en": "I usually take the subway to work.", "es": "Normalmente voy al trabajo en metro." },
+            { "en": "My boss is always in a good mood.", "es": "Mi jefe siempre está de buen humor." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / doesn't + usually / often / always + verbo",
+          "examples": [
+            { "en": "I don't usually eat breakfast.", "es": "No suelo desayunar." },
+            { "en": "We don't often go out on weekdays.", "es": "No salimos mucho entre semana." }
+          ]
+        },
+        "question": {
+          "pattern": "How often + do / does + sujeto + verbo? · Do / Does + sujeto + adverbio + verbo?",
+          "examples": [
+            { "en": "How often do you go to the dentist?", "es": "¿Cada cuánto vas al dentista?" },
+            { "en": "Do you ever work on weekends?", "es": "¿Trabajas alguna vez los fines de semana?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "We often order pizza on Friday nights.", "es": "Solemos pedir pizza los viernes por la noche." },
+        { "en": "I've always wanted to visit Japan.", "es": "Siempre he querido ir a Japón.", "noteEs": "Con un auxiliar (have), el adverbio va detrás de él." },
+        { "en": "She hardly ever checks her messages.", "es": "Ella casi nunca mira sus mensajes." },
+        { "en": "I check my phone about fifty times a day.", "es": "Miro el móvil unas cincuenta veces al día.", "noteEs": "Las expresiones de frecuencia van al final." },
+        { "en": "The trains here are never on time.", "es": "Aquí los trenes nunca llegan puntuales." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I go always to the gym after work.", "right": "I always go to the gym after work.", "whyEs": "El adverbio de frecuencia va delante del verbo principal, no detrás como en «voy siempre»." },
+        { "wrong": "She always is busy.", "right": "She is always busy.", "whyEs": "Con el verbo «be», el adverbio va detrás." },
+        { "wrong": "I don't never drink soda.", "right": "I never drink soda.", "whyEs": "«Never» ya es negativo; en inglés no se usan dos negaciones como en «no bebo nunca»." },
+        { "wrong": "I visit my parents one time per month.", "right": "I visit my parents once a month.", "whyEs": "Se dice once (una vez), twice (dos veces), three times… y «a month / a week», no «per»." }
+      ],
+      "related": ["present-simple", "basic-word-order", "negative-words-double-negatives"],
+      "exercises": [
+        { "id": "adverbs-of-frequency-1", "type": "choice", "prompt": "Elige la frase correcta: «Casi nunca veo la tele.»", "options": ["I hardly ever watch TV.", "I watch hardly ever TV.", "I don't hardly ever watch TV.", "Hardly ever I watch TV."], "answer": 0, "whyEs": "«Hardly ever» va delante del verbo principal, y ya es negativo.", "trapsEs": ["", "Separa el verbo de su objeto.", "Doble negación: «hardly ever» ya niega.", "«Hardly ever» no va al principio en una frase normal."] },
+        { "id": "adverbs-of-frequency-2", "type": "choice", "prompt": "My sister ____ late for work.", "options": ["is never", "never is", "is not never", "never are"], "answer": 0, "whyEs": "Con «be», el adverbio va detrás: «is never».", "trapsEs": ["", "Con «be» el adverbio va detrás, no delante.", "Doble negación.", "«Are» no concuerda con «my sister», y el orden es al revés."] },
+        { "id": "adverbs-of-frequency-3", "type": "order", "words": ["always", "password", "I", "forget", "my"], "answer": "I always forget my password", "whyEs": "Sujeto + always + verbo + objeto." },
+        { "id": "adverbs-of-frequency-4", "type": "gap", "prompt": "How ____ do you go swimming? — Twice a week.", "answers": ["often"], "whyEs": "Para preguntar por la frecuencia: «How often…?»." },
+        { "id": "adverbs-of-frequency-5", "type": "choice", "prompt": "We ____ eat out — maybe twice a year.", "options": ["rarely", "usually", "always", "often"], "answer": 0, "whyEs": "Dos veces al año es muy poco: «rarely» (casi nunca).", "trapsEs": ["", "«Usually» es «normalmente»: no encaja con dos veces al año.", "«Always» es «siempre».", "«Often» es «a menudo»."] },
+        { "id": "adverbs-of-frequency-6", "type": "order", "words": ["I've", "never", "to", "been", "Mexico"], "answer": "I've never been to Mexico", "whyEs": "Con un auxiliar (have), el adverbio va detrás de él y antes del participio." },
+        { "id": "adverbs-of-frequency-7", "type": "gap", "prompt": "Don't call Paula on Mondays. She ____ busy. (always, be)", "answers": ["is always", "'s always"], "whyEs": "Con «be», el adverbio va detrás: «is always»." },
+        { "id": "adverbs-of-frequency-8", "type": "choice", "prompt": "____ do you check your email? — Every hour or so.", "options": ["How often", "How much", "How long", "How many"], "answer": 0, "whyEs": "La respuesta es una frecuencia: «How often».", "trapsEs": ["", "«How much» pregunta por cantidad o precio.", "«How long» pregunta por duración.", "«How many» pregunta por un número de cosas."] }
+      ],
+      "speaking": [
+        { "promptEs": "Cuéntale a tu profe con qué frecuencia haces deporte, cocinas y llegas tarde.", "modelEn": "I usually go running twice a week, I sometimes cook on weekends and I'm never late for work.", "checkEs": "Adverbio delante del verbo, pero detrás de «be» (I'm never late)." },
+        { "promptEs": "Pregúntale a tu profe con qué frecuencia hace dos cosas.", "modelEn": "How often do you travel? Do you usually read before bed?", "checkEs": "«How often do you…?» y el adverbio detrás del sujeto en la pregunta." }
+      ],
+      "classFocusEn": "Practice adverbs of frequency and their position: before the main verb, after 'be' and after the first auxiliary; frequency expressions at the end; How often…? Correct 'I go always', 'She always is' and 'I don't never'."
+    },
+    {
+      "id": "comparatives-superlatives",
+      "name": "Comparatives and Superlatives",
+      "nameEs": "Comparativos y superlativos",
+      "level": "A2",
+      "summaryEs": "Más que (cheaper than, more expensive than) y el más (the cheapest, the most expensive).",
+      "keywords": ["comparative", "superlative", "than", "more", "most", "-er", "-est", "better", "best", "worse", "más que", "el más", "comparar"],
+      "categories": ["grammar"],
+      "explanationEs": [
+        "Adjetivos cortos (una sílaba): añade -er y the -est: cheap → cheaper → the cheapest. Si acaban en vocal + consonante, se dobla: big → bigger. Los de dos sílabas en -y cambian a -ier / -iest: easy → easier → the easiest.",
+        "Adjetivos largos (dos sílabas o más): more / the most: more expensive, the most interesting. Irregulares: good → better → the best; bad → worse → the worst; far → farther / further → the farthest / the furthest.",
+        "Para comparar se usa «than» (nunca «that»): «He's taller than me». En el superlativo va «the» y, para lugares o grupos, «in»: «the tallest building in the city». Con periodos se usa «of»: «the best day of my life»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "adjetivo-er / more + adjetivo + than · the + adjetivo-est / the most + adjetivo",
+          "examples": [
+            { "en": "The train is faster than the bus.", "es": "El tren es más rápido que el autobús." },
+            { "en": "This is the most popular app in the country.", "es": "Es la aplicación más popular del país." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + isn't / aren't + adjetivo-er / more + adjetivo + than…",
+          "examples": [
+            { "en": "The new version isn't better than the old one.", "es": "La versión nueva no es mejor que la antigua." },
+            { "en": "Flights aren't cheaper on weekends.", "es": "Los vuelos no son más baratos los fines de semana." }
+          ]
+        },
+        "question": {
+          "pattern": "Is + A + adjetivo-er / more + adjetivo + than + B? · Which / What is the + superlativo…?",
+          "examples": [
+            { "en": "Is Lima bigger than Santiago?", "es": "¿Lima es más grande que Santiago?" },
+            { "en": "What's the fastest way to get downtown?", "es": "¿Cuál es la forma más rápida de llegar al centro?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "My new apartment is bigger than my old one.", "es": "Mi piso nuevo es más grande que el anterior." },
+        { "en": "This is the best coffee in town.", "es": "Es el mejor café de la ciudad.", "noteEs": "Superlativo + «in» con un lugar." },
+        { "en": "The second exam was easier than the first.", "es": "El segundo examen fue más fácil que el primero." },
+        { "en": "It was the worst flight of my life.", "es": "Fue el peor vuelo de mi vida.", "noteEs": "Con un periodo (my life, the year) se usa «of»." },
+        { "en": "Online courses are usually more flexible than classroom courses.", "es": "Los cursos en línea suelen ser más flexibles que los presenciales." }
+      ],
+      "commonMistakes": [
+        { "wrong": "My sister is more tall than me.", "right": "My sister is taller than me.", "whyEs": "Los adjetivos cortos hacen el comparativo con -er, no con «more»." },
+        { "wrong": "This laptop is cheaper that the other one.", "right": "This laptop is cheaper than the other one.", "whyEs": "«Que» en una comparación es «than», no «that»." },
+        { "wrong": "It's the biggest city of the country.", "right": "It's the biggest city in the country.", "whyEs": "Con lugares y grupos, el superlativo va con «in» (en español decimos «del país»)." },
+        { "wrong": "This is the more interesting book I've read.", "right": "This is the most interesting book I've read.", "whyEs": "«El más» es «the most»; «more» es para comparar dos cosas." }
+      ],
+      "related": ["as-as-the-more", "order-of-adjectives", "basic-word-order"],
+      "exercises": [
+        { "id": "comparatives-superlatives-1", "type": "choice", "prompt": "My new job is ____ my old one.", "options": ["more interesting than", "interestinger than", "more interesting that", "most interesting than"], "answer": 0, "whyEs": "Adjetivo largo: more + adjetivo + than.", "trapsEs": ["", "Los adjetivos largos no llevan -er.", "Es «than», no «that».", "«Most» es para el superlativo y va con «the»."] },
+        { "id": "comparatives-superlatives-2", "type": "gap", "prompt": "Your suitcase is ____ than mine. (heavy)", "answers": ["heavier"], "whyEs": "Adjetivo en -y: la y cambia a i + -er: heavier." },
+        { "id": "comparatives-superlatives-3", "type": "gap", "prompt": "That was the ____ movie I've ever seen. (bad)", "answers": ["worst"], "whyEs": "Superlativo irregular: bad → worse → the worst." },
+        { "id": "comparatives-superlatives-4", "type": "choice", "prompt": "Mount Everest is the highest mountain ____ the world.", "options": ["in", "of", "than", "at"], "answer": 0, "whyEs": "Superlativo + «in» con un lugar: in the world.", "trapsEs": ["", "Calco de «del mundo»: con lugares se usa «in».", "«Than» es para comparativos, no superlativos.", "«At» no se usa con «the world»."] },
+        { "id": "comparatives-superlatives-5", "type": "choice", "prompt": "Which phone is ____? I can't spend more than two hundred dollars.", "options": ["the cheapest", "the most cheap", "more cheap", "cheapest than"], "answer": 0, "whyEs": "Adjetivo corto en superlativo: the + -est.", "trapsEs": ["", "Los adjetivos cortos no usan «most».", "Los adjetivos cortos no usan «more»: sería «cheaper».", "El superlativo no lleva «than»."] },
+        { "id": "comparatives-superlatives-6", "type": "order", "words": ["I'm", "than", "my", "taller", "brother"], "answer": "I'm taller than my brother", "whyEs": "Sujeto + be + adjetivo-er + than + segundo término." },
+        { "id": "comparatives-superlatives-7", "type": "gap", "prompt": "This is the ____ pizza in the neighborhood. (good)", "answers": ["best"], "whyEs": "Superlativo irregular: good → better → the best." },
+        { "id": "comparatives-superlatives-8", "type": "choice", "prompt": "Today is ____ yesterday. Take a coat.", "options": ["colder than", "more cold than", "colder that", "the coldest than"], "answer": 0, "whyEs": "Adjetivo corto: -er + than.", "trapsEs": ["", "Adjetivo corto: «colder», no «more cold».", "Es «than», no «that».", "El superlativo no lleva «than»."] }
+      ],
+      "speaking": [
+        { "promptEs": "Compara dos ciudades que conozcas y di cuál es la más bonita para ti.", "modelEn": "Bogotá is bigger than Medellín, but Medellín is warmer. For me, Medellín is the most beautiful city in Colombia.", "checkEs": "-er / more + than para comparar; the -est / the most + in para el superlativo." },
+        { "promptEs": "Di cuál es el mejor y el peor día de tu semana y por qué.", "modelEn": "The best day of my week is Friday because I finish early. The worst is Monday.", "checkEs": "Irregulares: the best, the worst." }
+      ],
+      "classFocusEn": "Practice comparatives and superlatives: -er/-est for short adjectives, more/most for long ones, irregulars (better, worst), 'than' and 'in' after superlatives. Correct 'more tall', 'cheaper that' and 'the biggest of the country'."
+    },
+    {
+      "id": "order-of-adjectives",
+      "name": "Order of Adjectives",
+      "nameEs": "Orden de los adjetivos",
+      "level": "B1",
+      "summaryEs": "Con varios adjetivos, primero la opinión y después tamaño, edad, color, origen y material.",
+      "keywords": ["adjective order", "adjectives", "opinión", "tamaño", "color", "material", "orden de los adjetivos", "adjetivos", "describir"],
+      "categories": ["word_order"],
+      "explanationEs": [
+        "En inglés los adjetivos van delante del nombre y no tienen plural: «two old red cars», nunca «reds». Cuando hay varios, siguen un orden bastante fijo.",
+        "Orden habitual: opinión (nice, beautiful) → tamaño (big, small) → edad (old, new) → forma (round, square) → color (red) → origen (Italian) → material (leather, wooden) → propósito (running shoes) + nombre. Ej.: «a nice big old Italian wooden table».",
+        "En la práctica se usan dos o tres: «a lovely old house», «a black leather jacket». La opinión siempre va primero y el material justo antes del nombre. Dos colores se unen con «and»: «a black and white photo»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "a / an + opinión + tamaño + edad + color + origen + material + nombre",
+          "examples": [
+            { "en": "She drives a small red car.", "es": "Ella tiene un coche rojo pequeño." },
+            { "en": "We stayed in a lovely old farmhouse.", "es": "Nos quedamos en una casa de campo antigua preciosa." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / doesn't + verbo + a / an + adjetivos + nombre",
+          "examples": [
+            { "en": "I don't want a big plastic bottle.", "es": "No quiero una botella de plástico grande." },
+            { "en": "He doesn't like long black coats.", "es": "No le gustan los abrigos negros largos." }
+          ]
+        },
+        "question": {
+          "pattern": "Do you have / Have you seen + a / my + adjetivos + nombre?",
+          "examples": [
+            { "en": "Have you seen my small black backpack?", "es": "¿Has visto mi mochila negra pequeña?" },
+            { "en": "Do you have a cheap white T-shirt?", "es": "¿Tienes una camiseta blanca barata?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "I bought a beautiful Mexican silver necklace.", "es": "Compré un collar de plata mexicano precioso.", "noteEs": "Opinión → origen → material." },
+        { "en": "He was wearing a long blue cotton shirt.", "es": "Llevaba una camisa larga de algodón azul." },
+        { "en": "They have a big white coffee machine in the office.", "es": "Tienen una cafetera blanca grande en la oficina.", "noteEs": "«Coffee» dice para qué sirve: va pegado al nombre." },
+        { "en": "It's a nice little Italian restaurant near the beach.", "es": "Es un restaurante italiano pequeño y agradable cerca de la playa." },
+        { "en": "My grandmother gave me an old wooden box.", "es": "Mi abuela me regaló una caja de madera antigua." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I want a jacket black.", "right": "I want a black jacket.", "whyEs": "El adjetivo va delante del nombre, al revés que en español." },
+        { "wrong": "I need two greens bottles.", "right": "I need two green bottles.", "whyEs": "Los adjetivos no tienen plural en inglés." },
+        { "wrong": "She has a leather black bag.", "right": "She has a black leather bag.", "whyEs": "El color va antes que el material; el material, pegado al nombre." },
+        { "wrong": "We ate an Italian delicious pizza.", "right": "We ate a delicious Italian pizza.", "whyEs": "La opinión va siempre primero, antes del origen. Fíjate: «a delicious», no «an», porque cambia la primera palabra." }
+      ],
+      "related": ["basic-word-order", "comparatives-superlatives"],
+      "exercises": [
+        { "id": "order-of-adjectives-1", "type": "choice", "prompt": "My daughter has ____ hair, like her dad.", "options": ["long black", "black long", "longs black", "hair black long"], "answer": 0, "whyEs": "Tamaño (long) antes que color (black).", "trapsEs": ["", "El color va después del tamaño.", "Los adjetivos no tienen plural.", "Los adjetivos van delante del nombre, y «hair» ya está en la frase."] },
+        { "id": "order-of-adjectives-2", "type": "choice", "prompt": "I'm looking for a ____ bag for work.", "options": ["big brown leather", "leather brown big", "brown big leather", "big leather brown"], "answer": 0, "whyEs": "Tamaño → color → material.", "trapsEs": ["", "Orden invertido: el material va al final, pegado al nombre.", "El tamaño va antes que el color.", "El color va antes que el material."] },
+        { "id": "order-of-adjectives-3", "type": "order", "words": ["a", "dog", "has", "She", "little", "white", "cute"], "answer": "She has a cute little white dog", "whyEs": "Opinión (cute) → tamaño (little) → color (white) + nombre." },
+        { "id": "order-of-adjectives-4", "type": "choice", "prompt": "We had dinner at a ____ restaurant.", "options": ["nice small Thai", "Thai small nice", "small Thai nice", "nice Thai small"], "answer": 0, "whyEs": "Opinión → tamaño → origen.", "trapsEs": ["", "Orden invertido: la opinión va primero.", "La opinión va primero, no al final.", "El tamaño va antes que el origen."] },
+        { "id": "order-of-adjectives-5", "type": "order", "words": ["old", "bought", "an", "I", "wooden", "table"], "answer": "I bought an old wooden table", "whyEs": "Edad (old) → material (wooden) + nombre." },
+        { "id": "order-of-adjectives-6", "type": "gap", "prompt": "They live in a ____ house near the river. (old, beautiful)", "answers": ["beautiful old"], "whyEs": "La opinión (beautiful) va antes que la edad (old)." },
+        { "id": "order-of-adjectives-7", "type": "gap", "prompt": "She gave me a ____ scarf for my birthday. (silk, red)", "answers": ["red silk"], "whyEs": "El color (red) va antes que el material (silk)." },
+        { "id": "order-of-adjectives-8", "type": "choice", "prompt": "Elige la frase correcta: «unas gafas de sol negras y caras»", "options": ["some expensive black sunglasses", "some black expensive sunglasses", "some sunglasses black expensive", "some expensives black sunglasses"], "answer": 0, "whyEs": "Opinión (expensive) → color (black) + nombre.", "trapsEs": ["", "La opinión va antes que el color.", "Los adjetivos van delante del nombre.", "Los adjetivos no tienen plural."] }
+      ],
+      "speaking": [
+        { "promptEs": "Describe a tu profe algo que llevas puesto o que tienes cerca, con dos o tres adjetivos.", "modelEn": "I'm wearing a comfortable old gray sweater.", "checkEs": "Opinión → edad → color, todo delante del nombre y sin plural." },
+        { "promptEs": "Describe la casa o el piso donde te gustaría vivir.", "modelEn": "I'd like to live in a big modern apartment with a small green garden.", "checkEs": "Adjetivos delante del nombre, en orden: tamaño → edad → color." }
+      ],
+      "classFocusEn": "Practice the order of adjectives before a noun (opinion, size, age, shape, color, origin, material, purpose), with no plural adjectives. Correct 'a jacket black', 'greens bottles' and 'a leather black bag'."
+    },
+    {
+      "id": "as-as-the-more",
+      "name": "As… As and The More…, The More…",
+      "nameEs": "Tan… como y cuanto más…, más…",
+      "level": "B1",
+      "summaryEs": "Comparar iguales con as… as, decir «no tan… como» y «cuanto más…, más…».",
+      "keywords": ["as as", "not as", "as much as", "as many as", "the more", "the better", "tan como", "cuanto más", "igual que", "comparar"],
+      "categories": ["grammar"],
+      "explanationEs": [
+        "«As + adjetivo / adverbio + as» compara dos cosas iguales: «My sister is as tall as me» (tan alta como yo). En negativa, «not as… as» es una forma suave de decir «menos que»: «The bus isn't as fast as the train». También se oye «not so… as».",
+        "Con nombres: «as much + incontable + as» y «as many + plural + as»: «I don't have as much free time as before», «We didn't sell as many tickets as last year».",
+        "«The + comparativo…, the + comparativo…» = «cuanto más…, más…»: «The more you practice, the better you speak». Las dos partes empiezan con «the». Versión corta: «The sooner, the better» (cuanto antes, mejor)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "as + adjetivo + as · The + comparativo + sujeto + verbo, the + comparativo + sujeto + verbo",
+          "examples": [
+            { "en": "This hotel is as good as the one we had last year.", "es": "Este hotel es tan bueno como el del año pasado." },
+            { "en": "The more I read in English, the easier it gets.", "es": "Cuanto más leo en inglés, más fácil me resulta." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + isn't / doesn't… + as + adjetivo / much / many + as",
+          "examples": [
+            { "en": "The new model isn't as heavy as the old one.", "es": "El modelo nuevo no pesa tanto como el antiguo." },
+            { "en": "I don't earn as much as my brother.", "es": "No gano tanto como mi hermano." }
+          ]
+        },
+        "question": {
+          "pattern": "Is + A + as + adjetivo + as + B?",
+          "examples": [
+            { "en": "Is the subway as expensive as a taxi?", "es": "¿El metro es tan caro como un taxi?" },
+            { "en": "Do you work as many hours as your wife?", "es": "¿Trabajas tantas horas como tu mujer?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Call me as soon as possible.", "es": "Llámame lo antes posible.", "noteEs": "Expresión fija: as soon as possible (ASAP)." },
+        { "en": "The bigger the city, the more expensive the rent.", "es": "Cuanto más grande es la ciudad, más caro es el alquiler." },
+        { "en": "My English isn't as good as I want, but it's improving.", "es": "Mi inglés no es tan bueno como quiero, pero va mejorando." },
+        { "en": "This phone has twice as much memory as my old one.", "es": "Este móvil tiene el doble de memoria que el que tenía." },
+        { "en": "The less you sleep, the worse you feel.", "es": "Cuanto menos duermes, peor te sientes." }
+      ],
+      "commonMistakes": [
+        { "wrong": "He is as tall than me.", "right": "He is as tall as me.", "whyEs": "Con «as… as» las dos partes son «as»; «than» es solo para comparativos (taller than)." },
+        { "wrong": "My English isn't so good like yours.", "right": "My English isn't as good as yours.", "whyEs": "Calco de «tan bueno como»: «como» aquí es «as», no «like»." },
+        { "wrong": "More you practice, more you learn.", "right": "The more you practice, the more you learn.", "whyEs": "«Cuanto más…, más…» lleva «the» delante de cada comparativo." },
+        { "wrong": "I don't have as many time as you.", "right": "I don't have as much time as you.", "whyEs": "«Time» es incontable: va con «much», no con «many»." }
+      ],
+      "related": ["comparatives-superlatives", "countable-uncountable-nouns"],
+      "exercises": [
+        { "id": "as-as-the-more-1", "type": "choice", "prompt": "Your laptop is ____ mine. They're the same model.", "options": ["as fast as", "as fast than", "so fast like", "as faster as"], "answer": 0, "whyEs": "Igualdad: as + adjetivo + as.", "trapsEs": ["", "Con «as… as» no se usa «than».", "Calco de «tan… como»: es «as… as».", "Entre los dos «as» va el adjetivo normal, no el comparativo."] },
+        { "id": "as-as-the-more-2", "type": "gap", "prompt": "The more you practice, the ____ you speak. (good)", "answers": ["better"], "whyEs": "«The + comparativo»: good → better." },
+        { "id": "as-as-the-more-3", "type": "choice", "prompt": "____ I sleep, the more tired I feel!", "options": ["The more", "More", "The most", "As more"], "answer": 0, "whyEs": "«Cuanto más…, más…»: the more…, the more…", "trapsEs": ["", "Falta «the» delante del comparativo.", "«The most» es superlativo, no «cuanto más».", "«As more» no existe en esta estructura."] },
+        { "id": "as-as-the-more-4", "type": "gap", "prompt": "This summer isn't ____ hot as last summer.", "answers": ["as", "so"], "whyEs": "Negativa de igualdad: not as… as (en negativa también vale «not so… as»)." },
+        { "id": "as-as-the-more-5", "type": "choice", "prompt": "I don't have ____ free time as I did last year.", "options": ["as much", "as many", "as more", "so many"], "answer": 0, "whyEs": "«Free time» es incontable: as much… as.", "trapsEs": ["", "«Many» es para plurales contables.", "«As more» no existe.", "«Many» no va con incontables."] },
+        { "id": "as-as-the-more-6", "type": "order", "words": ["better", "the", "sooner", "The"], "answer": "The sooner the better", "whyEs": "Versión corta de «cuanto antes, mejor»: The sooner, the better." },
+        { "id": "as-as-the-more-7", "type": "order", "words": ["I'm", "as", "as", "my", "not", "tall", "brother"], "answer": "I'm not as tall as my brother", "whyEs": "not as + adjetivo + as: «no soy tan alto como»." },
+        { "id": "as-as-the-more-8", "type": "choice", "prompt": "The bigger the car, ____ the insurance.", "options": ["the more expensive", "more expensive", "the most expensive", "the expensiver"], "answer": 0, "whyEs": "Las dos partes llevan «the» + comparativo; «expensive» es largo: the more expensive.", "trapsEs": ["", "Falta «the» en la segunda parte.", "«The most» es superlativo.", "Los adjetivos largos no llevan -er."] }
+      ],
+      "speaking": [
+        { "promptEs": "Compárate con alguien de tu familia usando «as… as» y «not as… as».", "modelEn": "I'm as tall as my father, but I'm not as patient as my mother.", "checkEs": "as + adjetivo + as, sin «than» ni «like»." },
+        { "promptEs": "Di una frase con «cuanto más…, más…» sobre aprender inglés o sobre tu trabajo.", "modelEn": "The more I talk to my teacher, the more confident I feel.", "checkEs": "Las dos partes empiezan con «the» + comparativo." }
+      ],
+      "classFocusEn": "Practice as… as / not as… as (with much/many for nouns) and 'the + comparative…, the + comparative'. Correct 'as tall than', 'so good like' and 'More you practice, more you learn'."
+    },
+    {
+      "id": "relative-clauses",
+      "name": "Relative Clauses: Who, Which, That, Where, Whose",
+      "nameEs": "Oraciones de relativo (who, which, that, where, whose)",
+      "level": "B1",
+      "summaryEs": "Dar información sobre una persona, cosa o lugar: «la mujer que…», «el sitio donde…», «el chico cuyo…».",
+      "keywords": ["relative clauses", "who", "which", "that", "where", "whose", "que", "quien", "donde", "cuyo", "el que", "relativo"],
+      "categories": ["grammar", "word_order"],
+      "explanationEs": [
+        "Para personas, «who»; para cosas, «which»; «that» vale para las dos en lenguaje normal. Para lugares, «where», y para posesión («cuyo», «de quien»), «whose»: «a friend whose father is a pilot».",
+        "El relativo ya hace de sujeto u objeto: no repitas el pronombre. «The man who lives next door» (no «who he lives»), «the book that I bought» (no «that I bought it»).",
+        "Si el relativo es el objeto, puedes quitarlo: «The movie (that) we saw was great». Si es el sujeto, no: «The woman who helped me» necesita «who».",
+        "Entre comas, la información es extra (explicativa) y solo se usa who o which, nunca that: «My mother, who lives in Lima, is a teacher»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "nombre + who / which / that / where / whose + frase",
+          "examples": [
+            { "en": "The woman who helped me at the airport was very kind.", "es": "La mujer que me ayudó en el aeropuerto fue muy amable." },
+            { "en": "That's the café where we first met.", "es": "Esa es la cafetería donde nos conocimos." }
+          ]
+        },
+        "negative": {
+          "pattern": "nombre + who / that + don't / doesn't / didn't + verbo",
+          "examples": [
+            { "en": "People who don't sleep enough get sick more often.", "es": "La gente que no duerme lo suficiente se pone enferma más a menudo." },
+            { "en": "It's a problem that doesn't have an easy solution.", "es": "Es un problema que no tiene una solución fácil." }
+          ]
+        },
+        "question": {
+          "pattern": "Is this the + nombre + (that) / where…? · Do you know anyone who…?",
+          "examples": [
+            { "en": "Is this the bag you were looking for?", "es": "¿Es esta la bolsa que estabas buscando?" },
+            { "en": "Do you know anyone who can fix my bike?", "es": "¿Conoces a alguien que pueda arreglarme la bici?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "I lost the headphones you gave me.", "es": "He perdido los auriculares que me regalaste.", "noteEs": "«that» omitido: es el objeto de «gave»." },
+        { "en": "I have a colleague whose wife is from Brazil.", "es": "Tengo un compañero cuya mujer es de Brasil." },
+        { "en": "My phone, which is only a year old, has stopped working.", "es": "Mi móvil, que solo tiene un año, ha dejado de funcionar.", "noteEs": "Entre comas: «which», nunca «that»." },
+        { "en": "We need someone who speaks Portuguese.", "es": "Necesitamos a alguien que hable portugués." },
+        { "en": "This is the neighborhood where I grew up.", "es": "Este es el barrio donde crecí." }
+      ],
+      "commonMistakes": [
+        { "wrong": "The man who he lives next door is a doctor.", "right": "The man who lives next door is a doctor.", "whyEs": "«Who» ya es el sujeto de «lives»: no se repite «he»." },
+        { "wrong": "This is the book what I told you about.", "right": "This is the book that I told you about.", "whyEs": "«What» no es relativo detrás de un nombre: usa «that» o «which» (o nada)." },
+        { "wrong": "My father, that is from Cuba, is a chef.", "right": "My father, who is from Cuba, is a chef.", "whyEs": "Entre comas no se usa «that»: «who» para personas, «which» para cosas." },
+        { "wrong": "The restaurant where we had dinner there was great.", "right": "The restaurant where we had dinner was great.", "whyEs": "«Where» ya dice el lugar: sobra «there»." }
+      ],
+      "related": ["linking-words", "subject-and-object-questions", "indirect-questions"],
+      "exercises": [
+        { "id": "relative-clauses-1", "type": "choice", "prompt": "The nurse ____ took care of my mother was very patient.", "options": ["who", "which", "where", "whose"], "answer": 0, "whyEs": "Persona y sujeto del verbo «took»: «who».", "trapsEs": ["", "«Which» es para cosas, no personas.", "«Where» es para lugares.", "«Whose» indica posesión y necesita un nombre detrás."] },
+        { "id": "relative-clauses-2", "type": "choice", "prompt": "Is this the app ____ you use for your workouts?", "options": ["that", "who", "where", "whose"], "answer": 0, "whyEs": "Una cosa (the app): «that» (o «which», o nada).", "trapsEs": ["", "«Who» es para personas.", "«Where» es para lugares; una app no es un lugar.", "«Whose» indica posesión."] },
+        { "id": "relative-clauses-3", "type": "gap", "prompt": "That's the hotel ____ we stayed on our honeymoon.", "answers": ["where"], "whyEs": "Un lugar en el que pasó algo: «where»." },
+        { "id": "relative-clauses-4", "type": "gap", "prompt": "I met a guy ____ sister works at your company.", "answers": ["whose"], "whyEs": "Posesión («cuya hermana»): «whose» + nombre." },
+        { "id": "relative-clauses-5", "type": "choice", "prompt": "My laptop, ____ I bought last year, is already slow.", "options": ["which", "that", "who", "what"], "answer": 0, "whyEs": "Información extra entre comas sobre una cosa: «which».", "trapsEs": ["", "Entre comas no se usa «that».", "«Who» es para personas.", "«What» no funciona como relativo detrás de un nombre."] },
+        { "id": "relative-clauses-6", "type": "order", "words": ["That's", "where", "the", "I", "town", "grew", "up"], "answer": "That's the town where I grew up", "whyEs": "Nombre del lugar + where + frase completa." },
+        { "id": "relative-clauses-7", "type": "choice", "prompt": "Did you like the movie ____ last night?", "options": ["we watched", "we watched it", "who we watched", "what we watched"], "answer": 0, "whyEs": "El relativo es objeto, así que se puede quitar: «the movie (that) we watched».", "trapsEs": ["", "Sobra «it»: el relativo ya es el objeto.", "«Who» es para personas.", "«What» no va detrás de un nombre."] },
+        { "id": "relative-clauses-8", "type": "gap", "prompt": "Nurses ____ work night shifts often have trouble sleeping.", "answers": ["who", "that"], "whyEs": "Personas y sujeto del verbo «work»: «who» (o «that»). Aquí no se puede omitir." }
+      ],
+      "speaking": [
+        { "promptEs": "Describe a una persona importante para ti usando «who» y un lugar especial usando «where».", "modelEn": "My aunt is a person who always listens to me. Her house is the place where I feel calm.", "checkEs": "«who» para personas, «where» para lugares, sin repetir el pronombre." },
+        { "promptEs": "Habla de algo que te regalaron y que usas mucho.", "modelEn": "The watch my parents gave me is the thing I use most.", "checkEs": "Puedes omitir «that» cuando es el objeto; no añadas «it» al final." }
+      ],
+      "classFocusEn": "Practice defining and non-defining relative clauses with who, which, that, where and whose, including omitting object pronouns. Correct 'who he lives', 'the book what…', 'that' after a comma and repeated 'there/it'."
+    },
+    {
+      "id": "linking-words",
+      "name": "Linking Words: Contrast, Cause and Result",
+      "nameEs": "Conectores: contraste, causa y consecuencia",
+      "level": "B1",
+      "summaryEs": "Although, however, despite, because (of) y so: unir ideas para decir «aunque», «sin embargo», «a pesar de», «porque» y «así que».",
+      "keywords": ["although", "even though", "however", "despite", "in spite of", "because", "because of", "so", "aunque", "sin embargo", "a pesar de", "porque", "así que", "conectores"],
+      "categories": ["word_order", "grammar"],
+      "explanationEs": [
+        "Contraste: «although / even though» + frase («Although it was late, we went out»); «but» une dos ideas en la misma frase; «however» (sin embargo) empieza una frase nueva y lleva coma: «The hotel was nice. However, it was noisy».",
+        "«Despite / in spite of» + nombre o verbo en -ing, nunca + frase: «Despite the rain», «Despite being tired». Y «despite of» no existe.",
+        "Causa: «because» + frase («because it was raining») y «because of» + nombre («because of the rain»). Consecuencia: «so» + frase («It was raining, so we stayed home»).",
+        "Ojo: en español se oye «aunque…, pero…»; en inglés «although» y «but» no van juntos en la misma frase. Elige uno."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Although + frase, frase · Despite + nombre / -ing, frase · Frase + because / so + frase",
+          "examples": [
+            { "en": "Although the hotel was cheap, it was really clean.", "es": "Aunque el hotel era barato, estaba muy limpio." },
+            { "en": "I was tired, so I went to bed early.", "es": "Estaba cansado, así que me acosté pronto." }
+          ]
+        },
+        "negative": {
+          "pattern": "Although + sujeto + didn't…, … · Frase negativa + because of + nombre",
+          "examples": [
+            { "en": "Although I didn't study much, I passed.", "es": "Aunque no estudié mucho, aprobé." },
+            { "en": "We couldn't land because of the fog.", "es": "No pudimos aterrizar por la niebla." }
+          ]
+        },
+        "question": {
+          "pattern": "Why…? — Because + frase / Because of + nombre",
+          "examples": [
+            { "en": "Why was the flight delayed? — Because of the storm.", "es": "¿Por qué se retrasó el vuelo? — Por la tormenta." },
+            { "en": "Why are you so happy? — Because I got the job!", "es": "¿Por qué estás tan contento? — ¡Porque me dieron el trabajo!" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Despite having a cold, she gave a great presentation.", "es": "A pesar de estar resfriada, hizo una presentación genial.", "noteEs": "«Despite» + verbo en -ing." },
+        { "en": "The app is free. However, some features cost extra.", "es": "La aplicación es gratis. Sin embargo, algunas funciones se pagan aparte." },
+        { "en": "Even though I live close, I'm always late.", "es": "Aunque vivo cerca, siempre llego tarde.", "noteEs": "«Even though» es un «although» más fuerte." },
+        { "en": "The store was closed because of the holiday.", "es": "La tienda estaba cerrada por el día festivo." },
+        { "en": "My phone died, so I couldn't call you.", "es": "Se me acabó la batería, así que no pude llamarte." }
+      ],
+      "commonMistakes": [
+        { "wrong": "Despite of the rain, we played.", "right": "Despite the rain, we played.", "whyEs": "«Despite» va sin «of». Si quieres «of», usa «in spite of the rain»." },
+        { "wrong": "Although it was expensive, but I bought it.", "right": "Although it was expensive, I bought it.", "whyEs": "«Although» y «but» no van juntos: en inglés basta con uno." },
+        { "wrong": "We stayed home because the rain.", "right": "We stayed home because of the rain.", "whyEs": "Delante de un nombre se usa «because of»; «because» solo va con una frase con verbo." },
+        { "wrong": "Despite it was late, we kept working.", "right": "Although it was late, we kept working.", "whyEs": "Detrás de «despite» no puede ir una frase con sujeto y verbo: usa «although» (o «despite the late hour»)." }
+      ],
+      "related": ["relative-clauses", "basic-word-order", "first-conditional"],
+      "exercises": [
+        { "id": "linking-words-1", "type": "choice", "prompt": "____ the traffic, we arrived on time.", "options": ["Despite", "Although", "Because", "However"], "answer": 0, "whyEs": "Contraste + nombre (the traffic): «Despite».", "trapsEs": ["", "«Although» necesita una frase con verbo detrás.", "«Because» no expresa contraste, y con un nombre sería «because of».", "«However» empieza una frase nueva y va seguido de coma."] },
+        { "id": "linking-words-2", "type": "choice", "prompt": "We canceled the picnic ____ the rain.", "options": ["because of", "because", "although", "so"], "answer": 0, "whyEs": "Causa + nombre (the rain): «because of».", "trapsEs": ["", "«Because» necesita una frase con verbo detrás.", "«Although» es contraste, no causa.", "«So» introduce la consecuencia, no la causa."] },
+        { "id": "linking-words-3", "type": "gap", "prompt": "It was really late, ____ I took a taxi home. (consecuencia)", "answers": ["so"], "whyEs": "Consecuencia: «so» + frase (así que)." },
+        { "id": "linking-words-4", "type": "gap", "prompt": "____ she studied a lot, she didn't pass the exam.", "answers": ["Although", "Even though", "Though"], "whyEs": "Contraste + frase con verbo: «Although» (o «Even though»)." },
+        { "id": "linking-words-5", "type": "choice", "prompt": "The hotel was great. ____, the breakfast was disappointing.", "options": ["However", "Although", "Despite", "Because"], "answer": 0, "whyEs": "Empieza una frase nueva con contraste y coma: «However».", "trapsEs": ["", "«Although» une dos partes dentro de la misma frase; no va seguido de coma.", "«Despite» necesita un nombre o -ing detrás.", "«Because» es causa, no contraste."] },
+        { "id": "linking-words-6", "type": "order", "words": ["was", "so", "It", "cheap", "bought", "two", "I"], "answer": "It was cheap so I bought two", "whyEs": "Causa + so + consecuencia." },
+        { "id": "linking-words-7", "type": "choice", "prompt": "I'm going to the party ____ I don't really feel like it.", "options": ["even though", "despite", "because of", "however"], "answer": 0, "whyEs": "Contraste + frase con verbo: «even though».", "trapsEs": ["", "«Despite» no va con una frase con sujeto y verbo.", "«Because of» es causa y va con un nombre.", "«However» no une dos partes de la misma frase."] },
+        { "id": "linking-words-8", "type": "gap", "prompt": "We stayed home because ____ the storm.", "answers": ["of"], "whyEs": "Delante de un nombre: «because of»." }
+      ],
+      "speaking": [
+        { "promptEs": "Cuéntale a tu profe algo que hiciste aunque no te apetecía.", "modelEn": "Although I was tired, I went to the gym yesterday.", "checkEs": "«Although» + frase, sin «but» en la otra parte." },
+        { "promptEs": "Explica por qué llegaste tarde alguna vez y qué pasó después.", "modelEn": "I was late because of the traffic, so I missed the start of the meeting.", "checkEs": "«because of» + nombre y «so» para la consecuencia." },
+        { "promptEs": "Di algo bueno y algo malo de tu ciudad usando «however».", "modelEn": "My city has great food. However, the traffic is terrible.", "checkEs": "«However» al principio de la segunda frase, con coma." }
+      ],
+      "classFocusEn": "Practice linkers of contrast, cause and result: although/even though, however, despite/in spite of (+ noun/-ing), because/because of, so. Correct 'despite of', 'although… but', 'because the rain' and 'despite + clause'."
+    }
+  ]
+}

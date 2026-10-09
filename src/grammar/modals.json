@@ -1,0 +1,2848 @@
+{
+  "id": "modals",
+  "order": 3,
+  "titleEn": "Modal Verbs",
+  "titleEs": "Verbos modales",
+  "icon": "key",
+  "descriptionEs": "Poder, deber, tener que, puede que…: los verbos que dan matiz a otros verbos.",
+  "topics": [
+    {
+      "id": "can-cant",
+      "name": "Can and Can't",
+      "nameEs": "Can y can't (poder, saber hacer)",
+      "level": "A1",
+      "summaryEs": "Para decir lo que sabes o puedes hacer, pedir permiso y pedir favores.",
+      "keywords": [
+        "can",
+        "can't",
+        "cannot",
+        "poder",
+        "puedo",
+        "sé nadar",
+        "saber hacer",
+        "habilidad",
+        "permiso",
+        "ability"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Can» sirve para la habilidad («I can swim»: sé nadar), el permiso («Can I sit here?»: ¿puedo sentarme aquí?) y las peticiones («Can you help me?»). Ojo: el «saber» de «sé nadar» o «sé cocinar» en inglés es «can», no «know».",
+        "Es un verbo modal: no lleva «to» detrás, no añade -s con he/she/it y no usa «do» en preguntas ni negaciones. La negativa es «can't» o «cannot» (en una sola palabra).",
+        "Pronunciación: en la afirmativa «can» suena débil (/kən/) y en la negativa «can't» suena fuerte. Así se distinguen al hablar rápido."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + can + verbo base",
+          "examples": [
+            {
+              "en": "I can speak a little French.",
+              "es": "Hablo un poco de francés (sé hablarlo)."
+            },
+            {
+              "en": "She can drive.",
+              "es": "Ella sabe conducir."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + can't / cannot + verbo base",
+          "examples": [
+            {
+              "en": "I can't find my wallet.",
+              "es": "No encuentro mi cartera."
+            },
+            {
+              "en": "He cannot come today.",
+              "es": "Él no puede venir hoy."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Can + sujeto + verbo base?",
+          "examples": [
+            {
+              "en": "Can you hear me?",
+              "es": "¿Me oyes?"
+            },
+            {
+              "en": "Can I pay by card?",
+              "es": "¿Puedo pagar con tarjeta?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I can cook, but I can't bake.",
+          "es": "Sé cocinar, pero no sé hornear."
+        },
+        {
+          "en": "Can you send me the link?",
+          "es": "¿Me puedes mandar el enlace?"
+        },
+        {
+          "en": "You can park here after six.",
+          "es": "Puedes aparcar aquí después de las seis.",
+          "noteEs": "Permiso: algo está permitido."
+        },
+        {
+          "en": "I can't hear you. The signal is bad.",
+          "es": "No te oigo. La señal es mala.",
+          "noteEs": "Con verbos de percepción, el español usa el presente; el inglés, «can»."
+        },
+        {
+          "en": "My grandmother can use WhatsApp now.",
+          "es": "Mi abuela ya sabe usar WhatsApp."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I can to swim.",
+          "right": "I can swim.",
+          "whyEs": "Después de un modal va el verbo sin «to», aunque en español digamos «puedo nadar» con infinitivo."
+        },
+        {
+          "wrong": "Do you can help me?",
+          "right": "Can you help me?",
+          "whyEs": "«Can» hace la pregunta solo, sin «do»: se pone delante del sujeto."
+        },
+        {
+          "wrong": "I know swim.",
+          "right": "I can swim.",
+          "whyEs": "El «saber» de una habilidad («sé nadar») se dice con «can», no con «know»."
+        },
+        {
+          "wrong": "She cans play the guitar.",
+          "right": "She can play the guitar.",
+          "whyEs": "Los modales no llevan -s con he/she/it."
+        }
+      ],
+      "related": [
+        "could",
+        "be-able-to",
+        "may-might"
+      ],
+      "exercises": [
+        {
+          "id": "can-cant-1",
+          "type": "choice",
+          "prompt": "My little brother ____ ride a bike, but he can't swim yet.",
+          "options": [
+            "can",
+            "cans",
+            "can to",
+            "is can"
+          ],
+          "answer": 0,
+          "whyEs": "Habilidad: «can» + verbo base, igual para todas las personas.",
+          "trapsEs": [
+            "",
+            "Los modales no llevan -s.",
+            "Después de «can» no va «to».",
+            "No se combina «be» con «can»."
+          ]
+        },
+        {
+          "id": "can-cant-2",
+          "type": "gap",
+          "prompt": "Sorry, I ____ come to the meeting tomorrow. (can, negativa)",
+          "answers": [
+            "can't",
+            "cannot",
+            "can not"
+          ],
+          "whyEs": "Negativa de «can»: «can't» o «cannot»."
+        },
+        {
+          "id": "can-cant-3",
+          "type": "order",
+          "words": [
+            "open",
+            "Can",
+            "the",
+            "you",
+            "window"
+          ],
+          "answer": "Can you open the window",
+          "whyEs": "Pregunta con modal: «Can» + sujeto + verbo base."
+        },
+        {
+          "id": "can-cant-4",
+          "type": "choice",
+          "prompt": "____ use your charger? Mine is at home.",
+          "options": [
+            "Can I",
+            "Can I to",
+            "Do I can",
+            "I can"
+          ],
+          "answer": 0,
+          "whyEs": "Para pedir permiso: «Can I…?», con el modal delante del sujeto.",
+          "trapsEs": [
+            "",
+            "Sobra «to» detrás del sujeto: es «Can I use».",
+            "«Can» no necesita «do».",
+            "Es el orden de una afirmación; la pregunta invierte: «Can I…?»."
+          ]
+        },
+        {
+          "id": "can-cant-5",
+          "type": "gap",
+          "prompt": "____ you speak French? — No, I can't.",
+          "answers": [
+            "Can"
+          ],
+          "whyEs": "La respuesta corta «I can't» indica que la pregunta se hizo con «can»."
+        },
+        {
+          "id": "can-cant-6",
+          "type": "choice",
+          "prompt": "I ____ find my keys anywhere. Can you help me?",
+          "options": [
+            "can't",
+            "don't can",
+            "can't to",
+            "not can"
+          ],
+          "answer": 0,
+          "whyEs": "Negativa de «can» sin «do»: «can't» + verbo base.",
+          "trapsEs": [
+            "",
+            "«Can» no usa «do» para negar.",
+            "Sobra «to».",
+            "El «not» va pegado al modal: «can't»."
+          ]
+        },
+        {
+          "id": "can-cant-7",
+          "type": "order",
+          "words": [
+            "car",
+            "can't",
+            "today",
+            "drive",
+            "the",
+            "She"
+          ],
+          "answer": "She can't drive the car today",
+          "whyEs": "Sujeto + can't + verbo + complemento + expresión de tiempo."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Dile a tu profe tres cosas que sabes hacer y una que no sabes hacer.",
+          "modelEn": "I can cook, I can drive and I can speak some English, but I can't swim.",
+          "checkEs": "Usa «can» / «can't» + verbo base, sin «to»."
+        },
+        {
+          "promptEs": "Estás en un café: pide permiso para sentarte y pregunta si puedes pagar con tarjeta.",
+          "modelEn": "Can I sit here? Can I pay by card?",
+          "checkEs": "Pregunta con «Can I…?» y verbo base."
+        }
+      ],
+      "classFocusEn": "Practise can/can't for ability, permission and requests. Correct 'can to + verb', 'Do you can…?' and 'I know swim'."
+    },
+    {
+      "id": "could",
+      "name": "Could",
+      "nameEs": "Could (podía, podría)",
+      "level": "A2",
+      "summaryEs": "Habilidad en el pasado, peticiones educadas, posibilidades y sugerencias.",
+      "keywords": [
+        "could",
+        "couldn't",
+        "podía",
+        "podría",
+        "pude",
+        "podrías",
+        "petición educada",
+        "past ability",
+        "polite request"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Could» tiene varios usos: habilidad general en el pasado («I could read at four»: sabía leer a los cuatro), peticiones educadas («Could you…?»: ¿podrías…?), posibilidad («It could be expensive»: podría ser caro) y sugerencias («We could eat out»: podríamos comer fuera).",
+        "Cuidado con un logro concreto del pasado: en afirmativa no se usa «could», sino «was able to» o «managed to» («I managed to get a ticket»: conseguí una entrada). En negativa sí vale: «I couldn't get a ticket».",
+        "Como todo modal, va con el verbo base, sin «to», sin -s y sin «do» en preguntas."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + could + verbo base",
+          "examples": [
+            {
+              "en": "I could swim when I was five.",
+              "es": "Sabía nadar a los cinco años."
+            },
+            {
+              "en": "We could meet on Friday.",
+              "es": "Podríamos quedar el viernes."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + couldn't / could not + verbo base",
+          "examples": [
+            {
+              "en": "I couldn't sleep last night.",
+              "es": "Anoche no pude dormir."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Could + sujeto + verbo base?",
+          "examples": [
+            {
+              "en": "Could you repeat that, please?",
+              "es": "¿Podrías repetirlo, por favor?"
+            },
+            {
+              "en": "Could I leave a bit early today?",
+              "es": "¿Podría salir un poco antes hoy?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "Could you speak a bit more slowly?",
+          "es": "¿Podrías hablar un poco más despacio?",
+          "noteEs": "Petición educada: más suave que «Can you…?»."
+        },
+        {
+          "en": "When I lived in Lima, I could walk to work.",
+          "es": "Cuando vivía en Lima, podía ir andando al trabajo."
+        },
+        {
+          "en": "This could take a few minutes.",
+          "es": "Esto podría tardar unos minutos.",
+          "noteEs": "Posibilidad en presente o futuro."
+        },
+        {
+          "en": "We could order pizza tonight.",
+          "es": "Podríamos pedir pizza esta noche.",
+          "noteEs": "Sugerencia."
+        },
+        {
+          "en": "I couldn't open the attachment.",
+          "es": "No pude abrir el archivo adjunto."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "Could you to help me?",
+          "right": "Could you help me?",
+          "whyEs": "Detrás de «could» va el verbo sin «to»."
+        },
+        {
+          "wrong": "Yesterday I could finish the report.",
+          "right": "Yesterday I managed to finish the report.",
+          "whyEs": "Para un logro concreto del pasado («pude terminarlo») se usa «managed to» o «was able to», no «could» en afirmativa."
+        },
+        {
+          "wrong": "I didn't could go.",
+          "right": "I couldn't go.",
+          "whyEs": "La negativa se hace con «couldn't», nunca con «didn't»."
+        }
+      ],
+      "related": [
+        "can-cant",
+        "be-able-to",
+        "should-could-would",
+        "may-might"
+      ],
+      "exercises": [
+        {
+          "id": "could-1",
+          "type": "choice",
+          "prompt": "When I was six, I ____ read, but I couldn't write very well.",
+          "options": [
+            "could",
+            "can",
+            "could to",
+            "was can"
+          ],
+          "answer": 0,
+          "whyEs": "Habilidad general en el pasado: «could» + verbo base.",
+          "trapsEs": [
+            "",
+            "«Can» es presente; aquí hablamos de cuando tenía seis años.",
+            "Sobra «to».",
+            "No se combina «be» con un modal."
+          ]
+        },
+        {
+          "id": "could-2",
+          "type": "choice",
+          "prompt": "____ the file again, please? I can't open it.",
+          "options": [
+            "Could you send me",
+            "Could you to send me",
+            "Can you sending me",
+            "You could send to me"
+          ],
+          "answer": 0,
+          "whyEs": "Petición educada: «Could you» + verbo base.",
+          "trapsEs": [
+            "",
+            "Sobra «to» después del sujeto.",
+            "Después de un modal va el verbo base, no -ing.",
+            "Es orden de afirmación y además sobra «to»."
+          ]
+        },
+        {
+          "id": "could-3",
+          "type": "gap",
+          "prompt": "I ____ sleep last night because of the noise. (could, negativa)",
+          "answers": [
+            "couldn't",
+            "could not"
+          ],
+          "whyEs": "Negativa de «could» para el pasado: «couldn't»."
+        },
+        {
+          "id": "could-4",
+          "type": "choice",
+          "prompt": "The flight was full, but in the end we ____ get two seats.",
+          "options": [
+            "were able to",
+            "could",
+            "can",
+            "are able to"
+          ],
+          "answer": 0,
+          "whyEs": "Logro concreto en el pasado (lo conseguimos una vez): «were able to» o «managed to».",
+          "trapsEs": [
+            "",
+            "En afirmativa, «could» es para habilidad general, no para un logro concreto.",
+            "Presente: la historia está en pasado.",
+            "Presente: la historia está en pasado."
+          ]
+        },
+        {
+          "id": "could-5",
+          "type": "choice",
+          "prompt": "It's sunny. We ____ have lunch in the park.",
+          "options": [
+            "could",
+            "could to",
+            "can to",
+            "couldn't to"
+          ],
+          "answer": 0,
+          "whyEs": "Sugerencia con «could» + verbo base («podríamos…»).",
+          "trapsEs": [
+            "",
+            "Sobra «to».",
+            "Sobra «to».",
+            "Sobra «to» y además es negativa: no es una sugerencia."
+          ]
+        },
+        {
+          "id": "could-6",
+          "type": "order",
+          "words": [
+            "could",
+            "rain",
+            "later",
+            "It"
+          ],
+          "answer": "It could rain later",
+          "whyEs": "Posibilidad: sujeto + could + verbo base + tiempo."
+        },
+        {
+          "id": "could-7",
+          "type": "order",
+          "words": [
+            "help",
+            "me",
+            "Could",
+            "you"
+          ],
+          "answer": "Could you help me",
+          "whyEs": "Petición educada: Could + sujeto + verbo base."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuéntale a tu profe dos cosas que sabías hacer de niño y una que no.",
+          "modelEn": "When I was a child, I could run very fast and I could climb trees, but I couldn't swim.",
+          "checkEs": "Usa «could» / «couldn't» + verbo base para el pasado."
+        },
+        {
+          "promptEs": "Pide a un compañero, con educación, que te mande un documento y que te llame más tarde.",
+          "modelEn": "Could you send me the document? Could you call me later?",
+          "checkEs": "Usa «Could you…?» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise could for past ability, polite requests, possibility and suggestions. Correct 'could to', 'didn't could' and 'could' for a single past achievement (use managed to / was able to)."
+    },
+    {
+      "id": "may-might",
+      "name": "May and Might",
+      "nameEs": "May y might (puede que, quizás)",
+      "level": "B1",
+      "summaryEs": "Posibilidad («puede que…») y permiso formal («May I…?»).",
+      "keywords": [
+        "may",
+        "might",
+        "maybe",
+        "puede que",
+        "quizás",
+        "tal vez",
+        "a lo mejor",
+        "posibilidad",
+        "permiso formal",
+        "possibility"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«May» y «might» expresan que algo es posible, como «puede que» o «a lo mejor»: «It might rain» = puede que llueva. En la práctica significan casi lo mismo; «might» suena un poco menos seguro y es más común al hablar.",
+        "«May» también sirve para pedir o dar permiso de forma formal: «May I come in?», «You may leave now». «Might» casi nunca se usa para permiso.",
+        "No confundas «maybe» (adverbio: quizás, va solo) con «may be» (verbo: puede ser). Para una posibilidad concreta no se usa «can»: «It might rain tomorrow», no «It can rain tomorrow»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + may / might + verbo base",
+          "examples": [
+            {
+              "en": "I might be a bit late.",
+              "es": "Puede que llegue un poco tarde."
+            },
+            {
+              "en": "The store may close early today.",
+              "es": "Puede que la tienda cierre pronto hoy."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + may not / might not + verbo base",
+          "examples": [
+            {
+              "en": "She might not like the idea.",
+              "es": "Puede que a ella no le guste la idea."
+            },
+            {
+              "en": "We may not have enough time.",
+              "es": "Puede que no tengamos tiempo suficiente."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "May + sujeto + verbo base? (permiso) · Do you think + sujeto + might…? (posibilidad)",
+          "examples": [
+            {
+              "en": "May I ask a question?",
+              "es": "¿Puedo hacer una pregunta?"
+            },
+            {
+              "en": "Do you think it might snow?",
+              "es": "¿Crees que puede nevar?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I might go to the gym after work.",
+          "es": "A lo mejor voy al gimnasio después del trabajo."
+        },
+        {
+          "en": "The meeting may take longer than planned.",
+          "es": "Puede que la reunión dure más de lo previsto."
+        },
+        {
+          "en": "May I see your passport, please?",
+          "es": "¿Me permite su pasaporte, por favor?",
+          "noteEs": "Permiso formal: típico en aeropuertos y hoteles."
+        },
+        {
+          "en": "Call him first. He might not be home.",
+          "es": "Llámalo primero. Puede que no esté en casa."
+        },
+        {
+          "en": "Maybe we can meet next week.",
+          "es": "Quizás podamos quedar la semana que viene.",
+          "noteEs": "«Maybe» va solo, al principio de la frase."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "It can rain tomorrow.",
+          "right": "It might rain tomorrow.",
+          "whyEs": "Para una posibilidad concreta («puede que llueva») se usa «might» o «may», no «can»."
+        },
+        {
+          "wrong": "May be I'll call you later.",
+          "right": "Maybe I'll call you later.",
+          "whyEs": "«Quizás» es «maybe», en una palabra. «May be» es verbo: «It may be true»."
+        },
+        {
+          "wrong": "She might comes tomorrow.",
+          "right": "She might come tomorrow.",
+          "whyEs": "Después del modal va el verbo base, sin -s."
+        }
+      ],
+      "related": [
+        "can-cant",
+        "could",
+        "modals-of-deduction"
+      ],
+      "exercises": [
+        {
+          "id": "may-might-1",
+          "type": "choice",
+          "prompt": "____ I'll see you at the party.",
+          "options": [
+            "Maybe",
+            "May be",
+            "Might",
+            "Can"
+          ],
+          "answer": 0,
+          "whyEs": "«Maybe» (quizás) es un adverbio y va delante de la frase completa.",
+          "trapsEs": [
+            "",
+            "«May be» es verbo + verbo; aquí falta un adverbio.",
+            "«Might» necesita sujeto delante y verbo base detrás.",
+            "«Can» no puede ir delante de «I'll»."
+          ]
+        },
+        {
+          "id": "may-might-2",
+          "type": "gap",
+          "prompt": "I'm not sure, but I ____ have time to call you later. (might, negativa)",
+          "answers": [
+            "might not",
+            "mightn't"
+          ],
+          "whyEs": "Negativa de «might»: «might not» (en británico también «mightn't»)."
+        },
+        {
+          "id": "may-might-3",
+          "type": "choice",
+          "prompt": "She ____ be in a meeting; I'm not sure.",
+          "options": [
+            "might",
+            "must",
+            "can't",
+            "doesn't"
+          ],
+          "answer": 0,
+          "whyEs": "Duda («I'm not sure»): posibilidad con «might».",
+          "trapsEs": [
+            "",
+            "«Must» indica que estás seguro, y aquí no lo estás.",
+            "«Can't» indica que estás seguro de que no.",
+            "«Doesn't be» no existe."
+          ]
+        },
+        {
+          "id": "may-might-4",
+          "type": "order",
+          "words": [
+            "not",
+            "train",
+            "catch",
+            "may",
+            "We",
+            "the"
+          ],
+          "answer": "We may not catch the train",
+          "whyEs": "Negativa: sujeto + may not + verbo base."
+        },
+        {
+          "id": "may-might-5",
+          "type": "choice",
+          "prompt": "Airline rule: passengers ____ use their phones during takeoff.",
+          "options": [
+            "may not",
+            "might not",
+            "don't may",
+            "mayn't to"
+          ],
+          "answer": 0,
+          "whyEs": "Prohibición formal (una norma): «may not».",
+          "trapsEs": [
+            "",
+            "«Might not» expresa posibilidad, no una norma.",
+            "«May» no usa «do».",
+            "No existe; y además sobra «to»."
+          ]
+        },
+        {
+          "id": "may-might-6",
+          "type": "gap",
+          "prompt": "Excuse me, ____ I ask you a question?",
+          "answers": [
+            "May",
+            "Can",
+            "Could"
+          ],
+          "whyEs": "Para pedir permiso: «May I» (formal), «Could I» o «Can I»."
+        },
+        {
+          "id": "may-might-7",
+          "type": "order",
+          "words": [
+            "might",
+            "need",
+            "get",
+            "a",
+            "I",
+            "visa",
+            "to"
+          ],
+          "answer": "I might need to get a visa",
+          "whyEs": "Sujeto + might + need to + verbo."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuéntale a tu profe tres planes que quizás hagas este fin de semana y uno que puede que no hagas.",
+          "modelEn": "I might go to the cinema, I may visit my parents and I might cook something new. I might not go out on Sunday.",
+          "checkEs": "Usa «might» / «may» + verbo base, sin «to»."
+        },
+        {
+          "promptEs": "Estás en un hotel elegante: pide permiso, de forma formal, para dejar tu maleta en recepción.",
+          "modelEn": "May I leave my suitcase here, please?",
+          "checkEs": "Usa «May I…?» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise may/might for possibility and may for formal permission. Correct 'It can rain tomorrow', 'may be' for 'maybe' and verbs with -s after might."
+    },
+    {
+      "id": "must-vs-have-to",
+      "name": "Must vs Have To",
+      "nameEs": "Must y have to (obligación y prohibición)",
+      "level": "B1",
+      "summaryEs": "Obligación (must, have to), prohibición (mustn't) y falta de obligación (don't have to).",
+      "keywords": [
+        "must",
+        "mustn't",
+        "have to",
+        "don't have to",
+        "tener que",
+        "deber",
+        "no hace falta",
+        "prohibido",
+        "obligación",
+        "obligation",
+        "prohibition"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Must» y «have to» expresan obligación. «Must» suele venir de quien habla o de normas escritas («You must wear a seatbelt»); «have to», de fuera o de las circunstancias («I have to work on Saturday»). Al hablar, «have to» es lo más normal.",
+        "En negativa cambian por completo: «mustn't» = está prohibido («You mustn't smoke here») y «don't have to» = no hace falta, es opcional («You don't have to come»). Es el error más típico.",
+        "«Must» no tiene pasado ni futuro: se usa «had to» (tuve que) y «will have to» (tendré que). En británico también se dice «have got to» («I've got to go»)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + must / have to (has to) + verbo base",
+          "examples": [
+            {
+              "en": "You must show your ID at the door.",
+              "es": "Tienes que enseñar tu identificación en la puerta."
+            },
+            {
+              "en": "I have to finish this today.",
+              "es": "Tengo que terminar esto hoy."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + mustn't (prohibido) / don't have to (no hace falta) + verbo base",
+          "examples": [
+            {
+              "en": "You mustn't park here.",
+              "es": "No puedes aparcar aquí (está prohibido)."
+            },
+            {
+              "en": "You don't have to bring anything.",
+              "es": "No hace falta que traigas nada."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do / Does + sujeto + have to + verbo base?",
+          "examples": [
+            {
+              "en": "Do I have to sign here?",
+              "es": "¿Tengo que firmar aquí?"
+            },
+            {
+              "en": "Does she have to work tomorrow?",
+              "es": "¿Ella tiene que trabajar mañana?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I have to take my car to the mechanic.",
+          "es": "Tengo que llevar el coche al mecánico."
+        },
+        {
+          "en": "You mustn't share your password with anyone.",
+          "es": "No debes compartir tu contraseña con nadie.",
+          "noteEs": "Prohibición."
+        },
+        {
+          "en": "We don't have to wear a tie at the office.",
+          "es": "No tenemos que llevar corbata en la oficina.",
+          "noteEs": "No hay obligación: es opcional."
+        },
+        {
+          "en": "I must call my grandmother this week.",
+          "es": "Tengo que llamar a mi abuela esta semana.",
+          "noteEs": "Obligación que siente quien habla."
+        },
+        {
+          "en": "She had to cancel her trip.",
+          "es": "Tuvo que cancelar su viaje.",
+          "noteEs": "Pasado: siempre «had to»."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "You don't have to smoke here. (queriendo decir «está prohibido»)",
+          "right": "You mustn't smoke here.",
+          "whyEs": "«Don't have to» significa «no hace falta», no «no debes». Para prohibir, «mustn't»."
+        },
+        {
+          "wrong": "Yesterday I must go to the bank.",
+          "right": "Yesterday I had to go to the bank.",
+          "whyEs": "«Must» no tiene pasado: para «tuve que» se usa «had to»."
+        },
+        {
+          "wrong": "Do I must pay now?",
+          "right": "Do I have to pay now?",
+          "whyEs": "«Must» no va con «do». En la pregunta lo normal es «Do I have to…?»."
+        },
+        {
+          "wrong": "I must to leave.",
+          "right": "I must leave.",
+          "whyEs": "«Must» es modal: va sin «to». En cambio, «have to» siempre lleva «to»."
+        }
+      ],
+      "related": [
+        "have-to-all-tenses",
+        "need-neednt",
+        "should-ought-to"
+      ],
+      "exercises": [
+        {
+          "id": "must-vs-have-to-1",
+          "type": "choice",
+          "prompt": "It's Saturday, so I ____ get up early. I can stay in bed.",
+          "options": [
+            "don't have to",
+            "mustn't",
+            "must",
+            "have to"
+          ],
+          "answer": 0,
+          "whyEs": "No hay obligación («puedo quedarme en la cama»): «don't have to».",
+          "trapsEs": [
+            "",
+            "«Mustn't» significaría que está prohibido levantarse temprano.",
+            "«Must» es obligación, y la frase dice lo contrario.",
+            "«Have to» es obligación, y la frase dice lo contrario."
+          ]
+        },
+        {
+          "id": "must-vs-have-to-2",
+          "type": "choice",
+          "prompt": "You ____ tell anyone my password. It's a secret.",
+          "options": [
+            "mustn't",
+            "don't have to",
+            "must",
+            "have to"
+          ],
+          "answer": 0,
+          "whyEs": "Prohibición: «mustn't».",
+          "trapsEs": [
+            "",
+            "«Don't have to» = no hace falta; pero es un secreto: está prohibido.",
+            "Obligación de contarlo: lo contrario de un secreto.",
+            "Obligación de contarlo: lo contrario de un secreto."
+          ]
+        },
+        {
+          "id": "must-vs-have-to-3",
+          "type": "gap",
+          "prompt": "Yesterday I ____ work until 9 p.m. (have to)",
+          "answers": [
+            "had to"
+          ],
+          "whyEs": "Obligación en pasado: «had to»."
+        },
+        {
+          "id": "must-vs-have-to-4",
+          "type": "choice",
+          "prompt": "____ wear a suit to the interview?",
+          "options": [
+            "Do I have to",
+            "Must I to",
+            "Do I must",
+            "Have I to"
+          ],
+          "answer": 0,
+          "whyEs": "Pregunta de obligación: «Do I have to…?».",
+          "trapsEs": [
+            "",
+            "Sobra «to» después de «must».",
+            "«Must» no se usa con «do».",
+            "Forma antigua; hoy se dice «Do I have to…?»."
+          ]
+        },
+        {
+          "id": "must-vs-have-to-5",
+          "type": "order",
+          "words": [
+            "doesn't",
+            "have",
+            "the",
+            "pay",
+            "to",
+            "for",
+            "course",
+            "She"
+          ],
+          "answer": "She doesn't have to pay for the course",
+          "whyEs": "No hace falta: doesn't have to + verbo base."
+        },
+        {
+          "id": "must-vs-have-to-6",
+          "type": "gap",
+          "prompt": "Drivers ____ stop at a red light. It's the law.",
+          "answers": [
+            "must",
+            "have to"
+          ],
+          "whyEs": "Obligación: «must» (norma) o «have to»."
+        },
+        {
+          "id": "must-vs-have-to-7",
+          "type": "choice",
+          "prompt": "When I was at school, we ____ wear a uniform.",
+          "options": [
+            "had to",
+            "must",
+            "musted",
+            "have to"
+          ],
+          "answer": 0,
+          "whyEs": "Obligación en el pasado: «had to».",
+          "trapsEs": [
+            "",
+            "«Must» no tiene pasado.",
+            "No existe.",
+            "Presente; la frase habla del colegio, en pasado."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Explica a un compañero nuevo tres normas de tu trabajo o tu casa: algo obligatorio, algo prohibido y algo que no hace falta hacer.",
+          "modelEn": "You have to arrive at nine. You mustn't eat at your desk. You don't have to wear a suit.",
+          "checkEs": "Distingue «have to / must», «mustn't» y «don't have to»."
+        },
+        {
+          "promptEs": "Cuenta algo que tuviste que hacer la semana pasada.",
+          "modelEn": "Last week I had to take my dog to the vet.",
+          "checkEs": "Usa «had to» para el pasado, nunca «must»."
+        }
+      ],
+      "classFocusEn": "Practise must/have to for obligation, mustn't for prohibition and don't have to for lack of obligation. Correct 'must' in the past (had to) and 'don't have to' used to mean 'it's forbidden'."
+    },
+    {
+      "id": "should-ought-to",
+      "name": "Should and Ought To",
+      "nameEs": "Should y ought to (consejos)",
+      "level": "A2",
+      "summaryEs": "Para dar y pedir consejos: «deberías…», «¿debería…?».",
+      "keywords": [
+        "should",
+        "shouldn't",
+        "ought to",
+        "debería",
+        "deberías",
+        "consejo",
+        "advice",
+        "recomendación"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Should» sirve para dar consejos u opiniones sobre lo correcto, como «deberías»: «You should rest» = deberías descansar. Es más suave que «must» o «have to»: no es una obligación.",
+        "Para pedir consejo se pone delante: «Should I call him?» (¿lo llamo?, ¿debería llamarlo?). La negativa es «shouldn't».",
+        "«Ought to» significa lo mismo, pero es más formal y menos frecuente, sobre todo en preguntas y negaciones. Ojo: siempre lleva «to»: «You ought to rest»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + should / ought to + verbo base",
+          "examples": [
+            {
+              "en": "You should try this café.",
+              "es": "Deberías probar este café."
+            },
+            {
+              "en": "We ought to leave soon.",
+              "es": "Deberíamos irnos pronto."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + shouldn't + verbo base",
+          "examples": [
+            {
+              "en": "You shouldn't drive when you're tired.",
+              "es": "No deberías conducir cansado."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Should + sujeto + verbo base?",
+          "examples": [
+            {
+              "en": "Should I bring a gift?",
+              "es": "¿Debería llevar un regalo?"
+            },
+            {
+              "en": "What should we do?",
+              "es": "¿Qué deberíamos hacer?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "You should drink more water.",
+          "es": "Deberías beber más agua."
+        },
+        {
+          "en": "Should I update my phone?",
+          "es": "¿Debería actualizar el teléfono?"
+        },
+        {
+          "en": "You shouldn't answer emails at midnight.",
+          "es": "No deberías contestar correos a medianoche."
+        },
+        {
+          "en": "We ought to thank them.",
+          "es": "Deberíamos darles las gracias.",
+          "noteEs": "Más formal que «should»."
+        },
+        {
+          "en": "The package should arrive tomorrow.",
+          "es": "El paquete debería llegar mañana.",
+          "noteEs": "También expresa lo que esperamos que pase."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "You should to rest.",
+          "right": "You should rest.",
+          "whyEs": "«Should» va sin «to», aunque en español digamos «deberías descansar»."
+        },
+        {
+          "wrong": "Do I should call her?",
+          "right": "Should I call her?",
+          "whyEs": "«Should» hace la pregunta solo, sin «do»."
+        },
+        {
+          "wrong": "You don't should eat that.",
+          "right": "You shouldn't eat that.",
+          "whyEs": "La negativa es «shouldn't», sin «do»."
+        },
+        {
+          "wrong": "You ought study more.",
+          "right": "You ought to study more.",
+          "whyEs": "«Ought» siempre lleva «to»."
+        }
+      ],
+      "related": [
+        "should-could-would",
+        "had-better",
+        "must-vs-have-to"
+      ],
+      "exercises": [
+        {
+          "id": "should-ought-to-1",
+          "type": "choice",
+          "prompt": "You have been coughing all week. You ____ see a doctor.",
+          "options": [
+            "should",
+            "should to",
+            "ought",
+            "shoulds"
+          ],
+          "answer": 0,
+          "whyEs": "Consejo: «should» + verbo base.",
+          "trapsEs": [
+            "",
+            "Sobra «to» después de «should».",
+            "«Ought» necesita «to»: «ought to see».",
+            "Los modales no llevan -s."
+          ]
+        },
+        {
+          "id": "should-ought-to-2",
+          "type": "gap",
+          "prompt": "You ____ drink coffee so late. (should, negativa)",
+          "answers": [
+            "shouldn't",
+            "should not"
+          ],
+          "whyEs": "Consejo en negativa: «shouldn't»."
+        },
+        {
+          "id": "should-ought-to-3",
+          "type": "order",
+          "words": [
+            "Should",
+            "the",
+            "doctor",
+            "I",
+            "call"
+          ],
+          "answer": "Should I call the doctor",
+          "whyEs": "Pedir consejo: Should + sujeto + verbo base."
+        },
+        {
+          "id": "should-ought-to-4",
+          "type": "choice",
+          "prompt": "We ____ to leave now, or we'll miss the bus.",
+          "options": [
+            "ought",
+            "should",
+            "must",
+            "can"
+          ],
+          "answer": 0,
+          "whyEs": "Con «to» detrás, el único posible es «ought to».",
+          "trapsEs": [
+            "",
+            "«Should» no lleva «to».",
+            "«Must» no lleva «to».",
+            "«Can» no lleva «to»."
+          ]
+        },
+        {
+          "id": "should-ought-to-5",
+          "type": "choice",
+          "prompt": "What do you think I ____ do?",
+          "options": [
+            "should",
+            "should to",
+            "ought",
+            "am should"
+          ],
+          "answer": 0,
+          "whyEs": "Pedir consejo dentro de otra pregunta: «I should do».",
+          "trapsEs": [
+            "",
+            "Sobra «to».",
+            "«Ought» necesita «to».",
+            "No se combina «be» con un modal."
+          ]
+        },
+        {
+          "id": "should-ought-to-6",
+          "type": "gap",
+          "prompt": "____ we bring anything to the party? (debería)",
+          "answers": [
+            "Should"
+          ],
+          "whyEs": "Pedir consejo: «Should we…?»."
+        },
+        {
+          "id": "should-ought-to-7",
+          "type": "order",
+          "words": [
+            "work",
+            "shouldn't",
+            "You",
+            "much",
+            "so"
+          ],
+          "answer": "You shouldn't work so much",
+          "whyEs": "Consejo negativo: sujeto + shouldn't + verbo + complemento."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Un amigo duerme mal. Dale tres consejos, uno de ellos en negativa.",
+          "modelEn": "You should go to bed earlier. You should do some exercise. You shouldn't look at your phone in bed.",
+          "checkEs": "Usa «should» / «shouldn't» + verbo base."
+        },
+        {
+          "promptEs": "Pide consejo a tu profe sobre cómo mejorar tu inglés.",
+          "modelEn": "What should I do to improve my English? Should I watch films in English?",
+          "checkEs": "Pregunta con «Should I…?» o «What should I…?»."
+        }
+      ],
+      "classFocusEn": "Practise should/shouldn't (and ought to) for advice. Correct 'should to', 'Do I should…?' and 'don't should'."
+    },
+    {
+      "id": "would",
+      "name": "Would",
+      "nameEs": "Would (el condicional «-ría»)",
+      "level": "B1",
+      "summaryEs": "Peticiones educadas, situaciones imaginarias y el futuro visto desde el pasado.",
+      "keywords": [
+        "would",
+        "wouldn't",
+        "'d",
+        "condicional",
+        "-ría",
+        "iría",
+        "haría",
+        "would you mind",
+        "polite",
+        "imaginary"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Would» es la forma del condicional español en «-ría»: «I would go» = iría. Se usa en situaciones imaginarias («If I had time, I would help you»), en peticiones educadas («Would you…?») y en ofrecimientos («Would you like…?»).",
+        "También es el futuro visto desde el pasado: «She said she would call» (dijo que llamaría). Y, al contar recuerdos, hábitos del pasado: «We would play outside every day» (jugábamos).",
+        "Ojo: en la parte del «if» no se pone «would». En español decimos «si tuviera», y en inglés el pasado: «If I had…», no «If I would have…»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + would ('d) + verbo base",
+          "examples": [
+            {
+              "en": "I'd buy a house by the sea.",
+              "es": "Me compraría una casa junto al mar."
+            },
+            {
+              "en": "She said she would help us.",
+              "es": "Dijo que nos ayudaría."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + wouldn't + verbo base",
+          "examples": [
+            {
+              "en": "I wouldn't do that.",
+              "es": "Yo no haría eso."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Would + sujeto + verbo base?",
+          "examples": [
+            {
+              "en": "Would you help me with this?",
+              "es": "¿Me ayudarías con esto?"
+            },
+            {
+              "en": "What would you do?",
+              "es": "¿Qué harías?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "Would you mind turning down the music?",
+          "es": "¿Te importaría bajar la música?",
+          "noteEs": "Detrás de «mind» va -ing."
+        },
+        {
+          "en": "I would travel more if I had the money.",
+          "es": "Viajaría más si tuviera el dinero."
+        },
+        {
+          "en": "He promised he would be on time.",
+          "es": "Prometió que llegaría a tiempo.",
+          "noteEs": "Futuro visto desde el pasado."
+        },
+        {
+          "en": "I wouldn't buy that phone. It's too expensive.",
+          "es": "Yo no compraría ese teléfono. Es demasiado caro."
+        },
+        {
+          "en": "Would you like some help?",
+          "es": "¿Quieres que te ayude?",
+          "noteEs": "Ofrecimiento educado."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "If I would have money, I would buy a car.",
+          "right": "If I had money, I would buy a car.",
+          "whyEs": "Después de «if» va el pasado («si tuviera»), no «would»."
+        },
+        {
+          "wrong": "Would you mind to open the door?",
+          "right": "Would you mind opening the door?",
+          "whyEs": "«Mind» va seguido de -ing."
+        },
+        {
+          "wrong": "I would like go.",
+          "right": "I would like to go.",
+          "whyEs": "«Would like» lleva «to» antes del verbo."
+        }
+      ],
+      "related": [
+        "should-could-would",
+        "would-like-rather-prefer",
+        "second-conditional",
+        "used-to-would"
+      ],
+      "exercises": [
+        {
+          "id": "would-1",
+          "type": "choice",
+          "prompt": "____ you mind closing the door?",
+          "options": [
+            "Would",
+            "Are",
+            "Should",
+            "Have"
+          ],
+          "answer": 0,
+          "whyEs": "Petición educada: «Would you mind + -ing?».",
+          "trapsEs": [
+            "",
+            "«Are you mind» no existe.",
+            "«Should you mind» no es una forma de pedir algo.",
+            "«Have you mind» no existe."
+          ]
+        },
+        {
+          "id": "would-2",
+          "type": "choice",
+          "prompt": "If I had more time, I ____ learn to play the guitar.",
+          "options": [
+            "would",
+            "will",
+            "would to",
+            "am"
+          ],
+          "answer": 0,
+          "whyEs": "Situación imaginaria (if + pasado): resultado con «would» + verbo base.",
+          "trapsEs": [
+            "",
+            "«Will» va con situaciones reales (if + presente).",
+            "Sobra «to».",
+            "«Am learn» no existe."
+          ]
+        },
+        {
+          "id": "would-3",
+          "type": "gap",
+          "prompt": "She promised she ____ call me, but she didn't. (will → pasado)",
+          "answers": [
+            "would",
+            "'d"
+          ],
+          "whyEs": "Futuro visto desde el pasado: «will» pasa a «would»."
+        },
+        {
+          "id": "would-4",
+          "type": "choice",
+          "prompt": "Would you mind ____ me with this box?",
+          "options": [
+            "helping",
+            "to help",
+            "help",
+            "helped"
+          ],
+          "answer": 0,
+          "whyEs": "«Would you mind» + -ing.",
+          "trapsEs": [
+            "",
+            "«Mind» no va con «to».",
+            "Falta la forma -ing.",
+            "No es pasado: es una petición."
+          ]
+        },
+        {
+          "id": "would-5",
+          "type": "order",
+          "words": [
+            "Would",
+            "like",
+            "a",
+            "you",
+            "coffee"
+          ],
+          "answer": "Would you like a coffee",
+          "whyEs": "Ofrecimiento: Would + sujeto + like + nombre."
+        },
+        {
+          "id": "would-6",
+          "type": "gap",
+          "prompt": "I ____ do that if I were you. (would, negativa)",
+          "answers": [
+            "wouldn't",
+            "would not"
+          ],
+          "whyEs": "Consejo imaginario en negativa: «wouldn't»."
+        },
+        {
+          "id": "would-7",
+          "type": "choice",
+          "prompt": "If I ____ rich, I would travel all year.",
+          "options": [
+            "were",
+            "would be",
+            "will be",
+            "am"
+          ],
+          "answer": 0,
+          "whyEs": "En la parte imaginaria del «if» va el pasado: «were» (también se oye «was»).",
+          "trapsEs": [
+            "",
+            "No se pone «would» en la parte del «if».",
+            "«Will» no va con una situación imaginaria.",
+            "Presente: aquí es algo irreal."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Imagina que te toca la lotería. Cuenta tres cosas que harías y una que no harías.",
+          "modelEn": "I would buy a house, I would travel around the world and I'd help my family. I wouldn't stop working.",
+          "checkEs": "Usa «would» / «'d» / «wouldn't» + verbo base."
+        },
+        {
+          "promptEs": "Pide a un compañero, con mucha educación, que te deje su cargador.",
+          "modelEn": "Would you mind lending me your charger?",
+          "checkEs": "Usa «Would you mind + -ing?» o «Would you…?»."
+        }
+      ],
+      "classFocusEn": "Practise would for imaginary situations, polite requests and future in the past. Correct 'If I would…', 'would you mind to…' and 'would like + verb' without 'to'."
+    },
+    {
+      "id": "will-shall-offers",
+      "name": "Will and Shall for Offers and Promises",
+      "nameEs": "Will y shall: ofrecer y prometer",
+      "level": "A2",
+      "summaryEs": "Ofrecerte («I'll help you»), prometer («I won't tell anyone») y proponer («Shall we…?»).",
+      "keywords": [
+        "will",
+        "won't",
+        "shall",
+        "I'll",
+        "shall I",
+        "shall we",
+        "ofrecer",
+        "prometer",
+        "te ayudo",
+        "promesa",
+        "offer",
+        "promise"
+      ],
+      "categories": [
+        "auxiliary",
+        "tense"
+      ],
+      "explanationEs": [
+        "Cuando decides algo en el momento para ofrecerte o prometer, el inglés usa «will» («'ll»): «I'll carry it» = yo lo llevo. En español usamos el presente («te ayudo», «ya voy»), pero en inglés el presente aquí suena raro.",
+        "Para prometer que no harás algo: «I won't tell anyone» (no se lo diré a nadie).",
+        "«Shall I…?» ofrece ayuda y «Shall we…?» propone un plan. Es muy británico; en EE. UU. se dice más «Should I…?», «Do you want me to…?» o «Why don't we…?». Para ofrecerte no se dice «Will I…?»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + will ('ll) + verbo base",
+          "examples": [
+            {
+              "en": "I'll call you tonight.",
+              "es": "Te llamo esta noche."
+            },
+            {
+              "en": "Don't worry, I'll pay.",
+              "es": "Tranquilo, pago yo."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + won't (will not) + verbo base",
+          "examples": [
+            {
+              "en": "I won't forget, I promise.",
+              "es": "No se me olvidará, te lo prometo."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Shall I / Shall we + verbo base?",
+          "examples": [
+            {
+              "en": "Shall I turn on the heating?",
+              "es": "¿Pongo la calefacción?"
+            },
+            {
+              "en": "Shall we take a break?",
+              "es": "¿Hacemos una pausa?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I'll send you the details later.",
+          "es": "Luego te mando los detalles."
+        },
+        {
+          "en": "Shall I call a taxi for you?",
+          "es": "¿Te pido un taxi?",
+          "noteEs": "Ofrecimiento (sobre todo británico)."
+        },
+        {
+          "en": "I won't be late, I promise.",
+          "es": "No llegaré tarde, te lo prometo."
+        },
+        {
+          "en": "Shall we meet at the entrance?",
+          "es": "¿Quedamos en la entrada?",
+          "noteEs": "Propuesta."
+        },
+        {
+          "en": "I'll have the chicken, please.",
+          "es": "Para mí, el pollo, por favor.",
+          "noteEs": "Decisión en el momento al pedir comida."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "Wait, I help you.",
+          "right": "Wait, I'll help you.",
+          "whyEs": "Para ofrecerte en el momento se usa «will», aunque en español digamos «te ayudo»."
+        },
+        {
+          "wrong": "Will I open the window?",
+          "right": "Shall I open the window? / Should I open the window?",
+          "whyEs": "Para ofrecerte no se usa «Will I…?»: suena a preguntar por tu propio futuro."
+        },
+        {
+          "wrong": "I promise I don't tell anyone.",
+          "right": "I promise I won't tell anyone.",
+          "whyEs": "Una promesa mira al futuro: «won't», no el presente."
+        }
+      ],
+      "related": [
+        "future-will",
+        "would",
+        "should-ought-to"
+      ],
+      "exercises": [
+        {
+          "id": "will-shall-offers-1",
+          "type": "choice",
+          "prompt": "The phone's ringing. — Don't worry, I ____ get it.",
+          "options": [
+            "'ll",
+            "am",
+            "was",
+            "have"
+          ],
+          "answer": 0,
+          "whyEs": "Decisión en el momento para ofrecerte: «I'll».",
+          "trapsEs": [
+            "",
+            "«Am get» no existe.",
+            "«Was get» no existe.",
+            "«Have get» no existe."
+          ]
+        },
+        {
+          "id": "will-shall-offers-2",
+          "type": "choice",
+          "prompt": "It's hot in here. ____ I open the window?",
+          "options": [
+            "Shall",
+            "Will",
+            "Am",
+            "Have"
+          ],
+          "answer": 0,
+          "whyEs": "Ofrecerte: «Shall I…?» (en EE. UU. también «Should I…?»).",
+          "trapsEs": [
+            "",
+            "«Will I…?» pregunta por tu futuro, no ofrece ayuda.",
+            "«Am I open» no existe.",
+            "«Have I open» no existe."
+          ]
+        },
+        {
+          "id": "will-shall-offers-3",
+          "type": "gap",
+          "prompt": "I promise I ____ be late again. (will, negativa)",
+          "answers": [
+            "won't",
+            "will not"
+          ],
+          "whyEs": "Promesa en negativa: «won't»."
+        },
+        {
+          "id": "will-shall-offers-4",
+          "type": "order",
+          "words": [
+            "we",
+            "Shall",
+            "order",
+            "dinner"
+          ],
+          "answer": "Shall we order dinner",
+          "whyEs": "Proponer un plan: Shall we + verbo base."
+        },
+        {
+          "id": "will-shall-offers-5",
+          "type": "choice",
+          "prompt": "That bag looks heavy. ____ carry it for you.",
+          "options": [
+            "I'll",
+            "I carry",
+            "I'm carry",
+            "I will to"
+          ],
+          "answer": 0,
+          "whyEs": "Ofrecimiento en el momento: «I'll» + verbo base.",
+          "trapsEs": [
+            "",
+            "Calco del español «te la llevo»: en inglés suena raro.",
+            "«Am carry» no existe.",
+            "Sobra «to»."
+          ]
+        },
+        {
+          "id": "will-shall-offers-6",
+          "type": "gap",
+          "prompt": "A: I'm hungry. B: ____ make you a sandwich.",
+          "answers": [
+            "I'll",
+            "I will"
+          ],
+          "whyEs": "Ofrecerte en el momento: «I'll»."
+        },
+        {
+          "id": "will-shall-offers-7",
+          "type": "choice",
+          "prompt": "Don't worry, I ____ tell anyone about it.",
+          "options": [
+            "won't",
+            "don't",
+            "am not",
+            "willn't"
+          ],
+          "answer": 0,
+          "whyEs": "Promesa en negativa: «won't».",
+          "trapsEs": [
+            "",
+            "Calco de «no se lo digo»: para prometer se usa «won't».",
+            "«Am not tell» no existe.",
+            "No existe; la contracción es «won't»."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Una amiga tiene mucho trabajo. Ofrécele dos formas de ayudarla.",
+          "modelEn": "I'll make dinner tonight. Shall I take the kids to school tomorrow?",
+          "checkEs": "Usa «I'll…» y «Shall I…?» (o «Should I…?»)."
+        },
+        {
+          "promptEs": "Promete a tu jefe dos cosas: una que harás y otra que no volverás a hacer.",
+          "modelEn": "I'll send the report on Friday. I won't be late again.",
+          "checkEs": "Usa «will» / «won't» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise will for offers, promises and instant decisions, and Shall I/we…? for offers and suggestions. Correct present simple used for offers ('I help you') and 'Will I…?' for offers."
+    },
+    {
+      "id": "need-neednt",
+      "name": "Need and Needn't",
+      "nameEs": "Need y needn't (necesitar, no hace falta)",
+      "level": "B1",
+      "summaryEs": "Para decir que algo es necesario o que no hace falta.",
+      "keywords": [
+        "need",
+        "need to",
+        "needn't",
+        "don't need to",
+        "necesitar",
+        "hace falta",
+        "no hace falta",
+        "no es necesario",
+        "necessity"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Need to» + verbo funciona como un verbo normal: lleva -s («she needs to»), usa «do» en preguntas («Do you need to…?») y en negativa («don't need to»). Con un nombre va sin «to»: «I need a break».",
+        "«Don't need to» y «needn't» significan «no hace falta», igual que «don't have to». «Needn't» (sin «to») es un modal más británico y algo formal; en EE. UU. casi siempre se dice «don't need to».",
+        "Para el pasado: «didn't need to» = no hacía falta. Si lo hiciste igualmente sin necesidad, en británico se dice «needn't have + participio» («You needn't have bought flowers»)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + need(s) to + verbo base · need(s) + nombre",
+          "examples": [
+            {
+              "en": "I need to charge my phone.",
+              "es": "Tengo que cargar el móvil."
+            },
+            {
+              "en": "She needs a new laptop.",
+              "es": "Ella necesita un portátil nuevo."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / doesn't need to + verbo base · needn't + verbo base",
+          "examples": [
+            {
+              "en": "You don't need to call me.",
+              "es": "No hace falta que me llames."
+            },
+            {
+              "en": "You needn't worry.",
+              "es": "No tienes por qué preocuparte."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Do / Does + sujeto + need to + verbo base?",
+          "examples": [
+            {
+              "en": "Do I need to print the ticket?",
+              "es": "¿Hace falta imprimir la entrada?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I need to talk to you.",
+          "es": "Tengo que hablar contigo."
+        },
+        {
+          "en": "You don't need to bring anything.",
+          "es": "No hace falta que traigas nada."
+        },
+        {
+          "en": "Does he need a visa for Canada?",
+          "es": "¿Él necesita visado para Canadá?"
+        },
+        {
+          "en": "We didn't need to wait. The doctor saw us right away.",
+          "es": "No tuvimos que esperar. El médico nos atendió enseguida."
+        },
+        {
+          "en": "You needn't have cooked. We could have ordered something.",
+          "es": "No hacía falta que cocinaras. Podríamos haber pedido algo.",
+          "noteEs": "Lo hizo, pero no era necesario (británico)."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I need go now.",
+          "right": "I need to go now.",
+          "whyEs": "Con otro verbo, «need» lleva «to»."
+        },
+        {
+          "wrong": "She need to rest.",
+          "right": "She needs to rest.",
+          "whyEs": "«Need to» es un verbo normal: lleva -s con he/she/it."
+        },
+        {
+          "wrong": "You needn't to come.",
+          "right": "You needn't come. / You don't need to come.",
+          "whyEs": "«Needn't» va sin «to»; «don't need to» lleva «to»."
+        }
+      ],
+      "related": [
+        "must-vs-have-to",
+        "have-to-all-tenses"
+      ],
+      "exercises": [
+        {
+          "id": "need-neednt-1",
+          "type": "choice",
+          "prompt": "You ____ bring food. There will be plenty at the party.",
+          "options": [
+            "don't need to",
+            "mustn't",
+            "need to",
+            "don't need"
+          ],
+          "answer": 0,
+          "whyEs": "No hace falta: «don't need to».",
+          "trapsEs": [
+            "",
+            "«Mustn't» prohíbe; aquí solo no es necesario.",
+            "Lo contrario: dice que habrá mucha comida.",
+            "Con un verbo detrás falta «to»."
+          ]
+        },
+        {
+          "id": "need-neednt-2",
+          "type": "gap",
+          "prompt": "My phone ____ a new battery. (need)",
+          "answers": [
+            "needs"
+          ],
+          "whyEs": "Con «my phone» (it), «need» lleva -s."
+        },
+        {
+          "id": "need-neednt-3",
+          "type": "choice",
+          "prompt": "You needn't ____ me up. I'll take a taxi.",
+          "options": [
+            "pick",
+            "to pick",
+            "picking",
+            "picked"
+          ],
+          "answer": 0,
+          "whyEs": "«Needn't» es modal: verbo base sin «to».",
+          "trapsEs": [
+            "",
+            "Sobra «to» después de «needn't».",
+            "Después de un modal no va -ing.",
+            "No va el pasado."
+          ]
+        },
+        {
+          "id": "need-neednt-4",
+          "type": "order",
+          "words": [
+            "we",
+            "need",
+            "tickets",
+            "Do",
+            "to",
+            "buy"
+          ],
+          "answer": "Do we need to buy tickets",
+          "whyEs": "Pregunta: Do + sujeto + need to + verbo base."
+        },
+        {
+          "id": "need-neednt-5",
+          "type": "gap",
+          "prompt": "She ____ to work tomorrow; it's a holiday. (need, negativa)",
+          "answers": [
+            "doesn't need",
+            "does not need"
+          ],
+          "whyEs": "Con «she», negativa con «doesn't need to»."
+        },
+        {
+          "id": "need-neednt-6",
+          "type": "choice",
+          "prompt": "I ____ to call my mother tonight. It's her birthday.",
+          "options": [
+            "need",
+            "needs",
+            "need not",
+            "am need"
+          ],
+          "answer": 0,
+          "whyEs": "Con «I», «need to» sin -s.",
+          "trapsEs": [
+            "",
+            "La -s es solo para he/she/it.",
+            "«Need not» no lleva «to» detrás y aquí hay obligación.",
+            "No se combina «am» con «need»."
+          ]
+        },
+        {
+          "id": "need-neednt-7",
+          "type": "choice",
+          "prompt": "We ____ to hurry. The film doesn't start until nine.",
+          "options": [
+            "don't need",
+            "needn't",
+            "mustn't",
+            "aren't need"
+          ],
+          "answer": 0,
+          "whyEs": "No hace falta: «don't need to».",
+          "trapsEs": [
+            "",
+            "«Needn't» no lleva «to».",
+            "Con «to» detrás no encaja, y además prohibiría.",
+            "No existe."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Explica a un amigo que viene a tu casa qué necesita traer y qué no hace falta que traiga.",
+          "modelEn": "You need to bring a towel, but you don't need to bring food.",
+          "checkEs": "Usa «need to» y «don't need to» (o «needn't») + verbo."
+        },
+        {
+          "promptEs": "Cuenta algo que no tuviste que hacer ayer.",
+          "modelEn": "Yesterday I didn't need to cook because we ate out.",
+          "checkEs": "Usa «didn't need to» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise need to / don't need to / needn't for necessity and lack of necessity. Correct 'I need go', 'she need to' and 'needn't to'."
+    },
+    {
+      "id": "be-able-to",
+      "name": "Be Able To",
+      "nameEs": "Be able to (poder en todos los tiempos)",
+      "level": "B1",
+      "summaryEs": "«Poder» en los tiempos en los que «can» no existe: futuro, perfecto, infinitivo.",
+      "keywords": [
+        "be able to",
+        "able to",
+        "will be able to",
+        "was able to",
+        "managed to",
+        "poder",
+        "podré",
+        "he podido",
+        "pude",
+        "conseguir",
+        "ability"
+      ],
+      "categories": [
+        "grammar",
+        "tense"
+      ],
+      "explanationEs": [
+        "«Can» solo tiene presente (can) y pasado (could). Para el resto de tiempos se usa «be able to»: «I'll be able to» (podré), «I've been able to» (he podido), «to be able to» (poder, en infinitivo).",
+        "En español «poder» se conjuga en todo; en inglés, «will can» o «have could» no existen.",
+        "Para un logro concreto en el pasado, en afirmativa se usa «was/were able to» o «managed to», no «could»: «I was able to fix it» (pude arreglarlo). En negativa valen los dos: «I couldn't / wasn't able to fix it»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + be (am/is/are, was/were, will be, have been) + able to + verbo base",
+          "examples": [
+            {
+              "en": "I'll be able to help you tomorrow.",
+              "es": "Mañana podré ayudarte."
+            },
+            {
+              "en": "She was able to fix the problem.",
+              "es": "Ella pudo arreglar el problema."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + be + not + able to + verbo base",
+          "examples": [
+            {
+              "en": "I haven't been able to call her.",
+              "es": "No he podido llamarla."
+            },
+            {
+              "en": "We won't be able to come.",
+              "es": "No podremos venir."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Be + sujeto + able to + verbo base? · Will / Have + sujeto + (be / been) able to…?",
+          "examples": [
+            {
+              "en": "Will you be able to finish today?",
+              "es": "¿Podrás terminar hoy?"
+            },
+            {
+              "en": "Were you able to sleep?",
+              "es": "¿Pudiste dormir?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "I hope to be able to travel next year.",
+          "es": "Espero poder viajar el año que viene.",
+          "noteEs": "Infinitivo: «can» no puede ir detrás de «to»."
+        },
+        {
+          "en": "I haven't been able to sleep well this week.",
+          "es": "Esta semana no he podido dormir bien."
+        },
+        {
+          "en": "After a few tries, I was able to connect to the Wi-Fi.",
+          "es": "Tras varios intentos, pude conectarme al wifi."
+        },
+        {
+          "en": "You'll be able to see the city from the top.",
+          "es": "Desde arriba podrás ver la ciudad."
+        },
+        {
+          "en": "Will you be able to pick me up?",
+          "es": "¿Podrás recogerme?"
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I will can help you tomorrow.",
+          "right": "I will be able to help you tomorrow.",
+          "whyEs": "Dos modales no van juntos: «poder» en futuro es «will be able to»."
+        },
+        {
+          "wrong": "I haven't could finish.",
+          "right": "I haven't been able to finish.",
+          "whyEs": "«Can» no tiene participio: «he podido» es «have been able to»."
+        },
+        {
+          "wrong": "I want to can speak English.",
+          "right": "I want to be able to speak English.",
+          "whyEs": "«Can» no tiene infinitivo: «quiero poder» es «want to be able to»."
+        }
+      ],
+      "related": [
+        "can-cant",
+        "could"
+      ],
+      "exercises": [
+        {
+          "id": "be-able-to-1",
+          "type": "choice",
+          "prompt": "Next year I ____ speak English fluently.",
+          "options": [
+            "'ll be able to",
+            "will can",
+            "can to",
+            "am able"
+          ],
+          "answer": 0,
+          "whyEs": "«Poder» en futuro: «will be able to».",
+          "trapsEs": [
+            "",
+            "Dos modales juntos no son posibles.",
+            "Sobra «to» y no es futuro.",
+            "Falta «to» y no es futuro."
+          ]
+        },
+        {
+          "id": "be-able-to-2",
+          "type": "gap",
+          "prompt": "I ____ sleep well lately because of work. (be able to, negativa, presente perfecto)",
+          "answers": [
+            "haven't been able to",
+            "have not been able to"
+          ],
+          "whyEs": "«No he podido» últimamente: «haven't been able to»."
+        },
+        {
+          "id": "be-able-to-3",
+          "type": "choice",
+          "prompt": "I'd love ____ play the piano.",
+          "options": [
+            "to be able to",
+            "to can",
+            "can",
+            "being able"
+          ],
+          "answer": 0,
+          "whyEs": "Después de «I'd love» va «to» + infinitivo; «can» no tiene infinitivo.",
+          "trapsEs": [
+            "",
+            "«Can» no tiene infinitivo.",
+            "Falta «to».",
+            "Falta «to» y la forma correcta es el infinitivo."
+          ]
+        },
+        {
+          "id": "be-able-to-4",
+          "type": "order",
+          "words": [
+            "fix",
+            "printer",
+            "able",
+            "She",
+            "to",
+            "the",
+            "was"
+          ],
+          "answer": "She was able to fix the printer",
+          "whyEs": "Logro concreto en el pasado: was able to + verbo base."
+        },
+        {
+          "id": "be-able-to-5",
+          "type": "choice",
+          "prompt": "After three hours, the firefighters ____ put out the fire.",
+          "options": [
+            "were able to",
+            "could",
+            "can",
+            "are able to"
+          ],
+          "answer": 0,
+          "whyEs": "Logro concreto del pasado (lo consiguieron): «were able to».",
+          "trapsEs": [
+            "",
+            "En afirmativa, «could» no se usa para un logro concreto.",
+            "Presente: la historia es pasada.",
+            "Presente: la historia es pasada."
+          ]
+        },
+        {
+          "id": "be-able-to-6",
+          "type": "gap",
+          "prompt": "Will you ____ come to my party on Saturday?",
+          "answers": [
+            "be able to"
+          ],
+          "whyEs": "Futuro de «poder»: «Will you be able to…?»."
+        },
+        {
+          "id": "be-able-to-7",
+          "type": "choice",
+          "prompt": "____ to finish the report yesterday?",
+          "options": [
+            "Were you able",
+            "Could you able",
+            "Did you able",
+            "Were you can"
+          ],
+          "answer": 0,
+          "whyEs": "Pregunta en pasado: «Were you able to…?».",
+          "trapsEs": [
+            "",
+            "Mezcla «could» con «able».",
+            "«Able» es adjetivo: va con «be», no con «did».",
+            "«Can» no va detrás de «were»."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta a tu profe algo que podrás hacer cuando hables mejor inglés.",
+          "modelEn": "When my English is better, I'll be able to watch films without subtitles.",
+          "checkEs": "Usa «will be able to» + verbo base."
+        },
+        {
+          "promptEs": "Cuenta algo que no has podido hacer esta semana y por qué.",
+          "modelEn": "I haven't been able to go to the gym because I've been very busy.",
+          "checkEs": "Usa «haven't been able to» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise be able to in the future, present perfect and infinitive. Correct 'will can', 'have could' and 'want to can'."
+    },
+    {
+      "id": "had-better",
+      "name": "Had Better",
+      "nameEs": "Had better (más vale que…)",
+      "level": "B1",
+      "summaryEs": "Consejo fuerte o advertencia: «más te vale…», «será mejor que…».",
+      "keywords": [
+        "had better",
+        "'d better",
+        "better not",
+        "más vale",
+        "será mejor que",
+        "más te vale",
+        "advertencia",
+        "warning"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "«Had better» («'d better» al hablar) da un consejo fuerte o una advertencia sobre ahora o el futuro, aunque lleve «had»: «You'd better leave now» = será mejor que te vayas ya (si no, habrá problemas).",
+        "Es más fuerte que «should». Va con el verbo base, sin «to», y la negativa es «had better not»: «You'd better not be late».",
+        "Las preguntas son raras («Hadn't we better go?», más británico). Lo normal es usarlo en afirmativa o negativa."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + had better ('d better) + verbo base",
+          "examples": [
+            {
+              "en": "We'd better hurry.",
+              "es": "Más vale que nos demos prisa."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + had better not + verbo base",
+          "examples": [
+            {
+              "en": "You'd better not tell her.",
+              "es": "Será mejor que no se lo digas."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Hadn't + sujeto + better + verbo base? (poco frecuente)",
+          "examples": [
+            {
+              "en": "Hadn't we better call first?",
+              "es": "¿No sería mejor llamar antes?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "It's late. I'd better go.",
+          "es": "Es tarde. Será mejor que me vaya."
+        },
+        {
+          "en": "You'd better save your work before the update.",
+          "es": "Más vale que guardes tu trabajo antes de la actualización."
+        },
+        {
+          "en": "We'd better not drive. It's snowing a lot.",
+          "es": "Mejor no conducimos. Está nevando mucho."
+        },
+        {
+          "en": "You'd better bring a jacket. It gets cold at night.",
+          "es": "Más vale que te lleves una chaqueta. Por la noche hace frío."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "You had better to go.",
+          "right": "You had better go.",
+          "whyEs": "«Had better» va con el verbo base, sin «to»."
+        },
+        {
+          "wrong": "You'd better don't call him.",
+          "right": "You'd better not call him.",
+          "whyEs": "La negativa es «better not», sin «don't»."
+        },
+        {
+          "wrong": "You have better rest.",
+          "right": "You'd better rest.",
+          "whyEs": "Siempre es «had» («'d»), aunque hable del presente o del futuro."
+        }
+      ],
+      "related": [
+        "should-ought-to",
+        "must-vs-have-to"
+      ],
+      "exercises": [
+        {
+          "id": "had-better-1",
+          "type": "choice",
+          "prompt": "It's late. We'd better ____ a taxi.",
+          "options": [
+            "get",
+            "to get",
+            "getting",
+            "got"
+          ],
+          "answer": 0,
+          "whyEs": "«Had better» + verbo base.",
+          "trapsEs": [
+            "",
+            "Sobra «to».",
+            "No va -ing.",
+            "No va el pasado aunque haya «had»."
+          ]
+        },
+        {
+          "id": "had-better-2",
+          "type": "gap",
+          "prompt": "You'd better ____ your passport. (forget, negativa)",
+          "answers": [
+            "not forget"
+          ],
+          "whyEs": "Negativa: «'d better not» + verbo base."
+        },
+        {
+          "id": "had-better-3",
+          "type": "choice",
+          "prompt": "You ____ better hurry, or you'll miss the train.",
+          "options": [
+            "had",
+            "have",
+            "would",
+            "should"
+          ],
+          "answer": 0,
+          "whyEs": "La expresión fija es «had better».",
+          "trapsEs": [
+            "",
+            "No existe «have better» con este sentido.",
+            "No existe «would better».",
+            "No existe «should better»."
+          ]
+        },
+        {
+          "id": "had-better-4",
+          "type": "order",
+          "words": [
+            "him",
+            "You'd",
+            "not",
+            "tell",
+            "better"
+          ],
+          "answer": "You'd better not tell him",
+          "whyEs": "Negativa: 'd better not + verbo base."
+        },
+        {
+          "id": "had-better-5",
+          "type": "choice",
+          "prompt": "The boss is angry. You'd better ____ late again.",
+          "options": [
+            "not be",
+            "don't be",
+            "not to be",
+            "no be"
+          ],
+          "answer": 0,
+          "whyEs": "Negativa de «had better»: «not» + verbo base.",
+          "trapsEs": [
+            "",
+            "No se usa «don't».",
+            "Sobra «to».",
+            "La negación es «not», no «no»."
+          ]
+        },
+        {
+          "id": "had-better-6",
+          "type": "gap",
+          "prompt": "It's going to rain. I'd better ____ an umbrella. (take)",
+          "answers": [
+            "take"
+          ],
+          "whyEs": "«'d better» + verbo base."
+        },
+        {
+          "id": "had-better-7",
+          "type": "choice",
+          "prompt": "'You'd better see a doctor' means: ____",
+          "options": [
+            "It's important that you see a doctor soon.",
+            "You saw a doctor before.",
+            "Seeing a doctor is better than before.",
+            "You are better now."
+          ],
+          "answer": 0,
+          "whyEs": "Es un consejo fuerte sobre el presente o el futuro.",
+          "trapsEs": [
+            "",
+            "No habla del pasado, aunque lleve «had».",
+            "No compara con antes.",
+            "No dice que estés mejor."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Tu amigo sale mañana de viaje. Adviértele de dos cosas que más le vale hacer y una que mejor no haga.",
+          "modelEn": "You'd better check your passport. You'd better leave early. You'd better not take too much luggage.",
+          "checkEs": "Usa «'d better» / «'d better not» + verbo base."
+        },
+        {
+          "promptEs": "Es tarde y estás en casa de alguien. Di que será mejor que te vayas y por qué.",
+          "modelEn": "It's late. I'd better go, I have to work tomorrow.",
+          "checkEs": "Usa «I'd better» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise had better / had better not for strong advice and warnings about now or the future. Correct 'had better to', 'had better don't' and 'have better'."
+    },
+    {
+      "id": "modals-of-deduction",
+      "name": "Modal Verbs of Deduction",
+      "nameEs": "Modales de deducción (must be, can't be, might be)",
+      "level": "B1",
+      "summaryEs": "Sacar conclusiones: «debe de ser», «no puede ser», «puede que sea».",
+      "keywords": [
+        "must be",
+        "can't be",
+        "might be",
+        "could be",
+        "may be",
+        "debe de ser",
+        "debe de estar",
+        "no puede ser",
+        "seguro que",
+        "deducción",
+        "deduction"
+      ],
+      "categories": [
+        "auxiliary",
+        "grammar"
+      ],
+      "explanationEs": [
+        "Cuando deduces algo a partir de pistas: «must» = estás casi seguro de que sí («debe de estar cansado»: He must be tired); «can't» = estás casi seguro de que no («no puede ser verdad»: It can't be true).",
+        "Si solo es posible, usa «might», «may» o «could»: «She might be at lunch» (puede que esté comiendo). Para una posibilidad concreta no se usa «can».",
+        "Lo contrario de «must be» no es «mustn't be» (suena a prohibición), sino «can't be». En EE. UU. también se oye «must not be» (sin contraer) para deducir: «He must not be home»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + must / might / may / could + verbo base (a menudo «be»)",
+          "examples": [
+            {
+              "en": "You must be Ana's brother.",
+              "es": "Tú debes de ser el hermano de Ana."
+            },
+            {
+              "en": "It might be in the car.",
+              "es": "Puede que esté en el coche."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + can't / couldn't (seguro que no) · might not / may not (puede que no) + verbo base",
+          "examples": [
+            {
+              "en": "That can't be the right address.",
+              "es": "Esa no puede ser la dirección correcta."
+            },
+            {
+              "en": "He might not know.",
+              "es": "Puede que él no lo sepa."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Could + sujeto + be…? · Can + sujeto + be…? (sorpresa)",
+          "examples": [
+            {
+              "en": "Could it be a virus?",
+              "es": "¿Podría ser un virus?"
+            },
+            {
+              "en": "Can that be right?",
+              "es": "¿Puede ser eso correcto?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "You've been driving all day. You must be tired.",
+          "es": "Has conducido todo el día. Debes de estar cansado."
+        },
+        {
+          "en": "That can't be my bus. It's too early.",
+          "es": "Ese no puede ser mi autobús. Es demasiado pronto."
+        },
+        {
+          "en": "The keys might be in my other jacket.",
+          "es": "Puede que las llaves estén en mi otra chaqueta."
+        },
+        {
+          "en": "Someone's at the door. It could be the delivery guy.",
+          "es": "Llaman a la puerta. Podría ser el repartidor."
+        },
+        {
+          "en": "She isn't answering. She may be asleep.",
+          "es": "No contesta. Puede que esté dormida."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "He can be at home now.",
+          "right": "He might be at home now.",
+          "whyEs": "Para una posibilidad concreta se usa «might/may/could», no «can»."
+        },
+        {
+          "wrong": "She must to be tired.",
+          "right": "She must be tired.",
+          "whyEs": "Después de «must» va el verbo base, sin «to»."
+        },
+        {
+          "wrong": "It mustn't be true.",
+          "right": "It can't be true.",
+          "whyEs": "Para deducir que algo es imposible se usa «can't»; «mustn't» suena a prohibición."
+        }
+      ],
+      "related": [
+        "past-modals",
+        "may-might",
+        "must-vs-have-to"
+      ],
+      "exercises": [
+        {
+          "id": "modals-of-deduction-1",
+          "type": "choice",
+          "prompt": "He's been working for twelve hours. He ____ be exhausted.",
+          "options": [
+            "must",
+            "can't",
+            "mustn't to",
+            "is"
+          ],
+          "answer": 0,
+          "whyEs": "Conclusión casi segura: «must be».",
+          "trapsEs": [
+            "",
+            "Lo contrario: tras doce horas de trabajo es lógico que esté agotado.",
+            "Sobra «to» y el sentido es contrario.",
+            "«Is be» no existe."
+          ]
+        },
+        {
+          "id": "modals-of-deduction-2",
+          "type": "choice",
+          "prompt": "That ____ be Ana. She's in Japan this week.",
+          "options": [
+            "can't",
+            "must",
+            "might to",
+            "doesn't"
+          ],
+          "answer": 0,
+          "whyEs": "Estás seguro de que no (está en Japón): «can't be».",
+          "trapsEs": [
+            "",
+            "«Must» = seguro que sí; contradice la pista.",
+            "Sobra «to».",
+            "«Doesn't be» no existe."
+          ]
+        },
+        {
+          "id": "modals-of-deduction-3",
+          "type": "choice",
+          "prompt": "I'm not sure where Tom is. He ____ be in the gym.",
+          "options": [
+            "might",
+            "must",
+            "can't",
+            "shall"
+          ],
+          "answer": 0,
+          "whyEs": "Solo es posible: «might be».",
+          "trapsEs": [
+            "",
+            "«Must» indica seguridad, y dices que no estás seguro.",
+            "«Can't» indica seguridad de que no.",
+            "«Shall» no expresa posibilidad."
+          ]
+        },
+        {
+          "id": "modals-of-deduction-4",
+          "type": "gap",
+          "prompt": "You haven't eaten anything since this morning. You ____ be starving! (seguro que sí)",
+          "answers": [
+            "must"
+          ],
+          "whyEs": "Conclusión casi segura: «must be»."
+        },
+        {
+          "id": "modals-of-deduction-5",
+          "type": "order",
+          "words": [
+            "at",
+            "can't",
+            "home",
+            "be",
+            "They"
+          ],
+          "answer": "They can't be at home",
+          "whyEs": "Deducción negativa: sujeto + can't + be + lugar."
+        },
+        {
+          "id": "modals-of-deduction-6",
+          "type": "choice",
+          "prompt": "The lights are on. Someone ____ be in the office.",
+          "options": [
+            "must",
+            "can't",
+            "mustn't",
+            "needn't"
+          ],
+          "answer": 0,
+          "whyEs": "Con las luces encendidas concluyes que sí: «must be».",
+          "trapsEs": [
+            "",
+            "Contradice la pista de las luces.",
+            "Suena a prohibición y contradice la pista.",
+            "«Needn't» habla de necesidad, no de deducción."
+          ]
+        },
+        {
+          "id": "modals-of-deduction-7",
+          "type": "gap",
+          "prompt": "That bag costs 2,000 dollars? That ____ be right! (seguro que no)",
+          "answers": [
+            "can't",
+            "cannot",
+            "couldn't"
+          ],
+          "whyEs": "Imposible: «can't be» (o «couldn't be»)."
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Imagina una foto de una persona con bata blanca en un hospital. Haz tres deducciones: seguro que sí, quizás y seguro que no.",
+          "modelEn": "She must be a doctor. She might be on her break. She can't be on holiday.",
+          "checkEs": "Usa «must be», «might/could be» y «can't be»."
+        },
+        {
+          "promptEs": "Tu amigo no contesta al teléfono. Di dos posibles motivos.",
+          "modelEn": "He might be in a meeting. He could be driving.",
+          "checkEs": "Usa «might» / «could» + verbo base."
+        }
+      ],
+      "classFocusEn": "Practise modals of deduction: must be, might/may/could be, can't be. Correct 'can' for specific possibility and 'mustn't be' for impossibility."
+    },
+    {
+      "id": "past-modals",
+      "name": "Past Modals: Should Have, Could Have, Must Have, Might Have",
+      "nameEs": "Modales en pasado (should have, could have, must have, might have)",
+      "level": "B2",
+      "summaryEs": "Lamentar, criticar y deducir sobre el pasado: «debería haber», «podría haber», «debe de haber».",
+      "keywords": [
+        "should have",
+        "could have",
+        "must have",
+        "might have",
+        "can't have",
+        "debería haber",
+        "podría haber",
+        "debe de haber",
+        "tendría que haber",
+        "past modals",
+        "regret"
+      ],
+      "categories": [
+        "tense",
+        "auxiliary"
+      ],
+      "explanationEs": [
+        "Modal + «have» + participio habla del pasado. «Should have» = lamento o crítica (debería haber…). «Could have» = algo que era posible y no pasó (podría haber…).",
+        "Para deducir sobre el pasado: «must have» = seguro que sí (debe de haber…), «might/may/could have» = puede que, «can't/couldn't have» = seguro que no.",
+        "Al hablar se contraen: «should've», «could've». Por eso muchos nativos escriben mal «should of»: es incorrecto. Recuerda el participio: «should have gone», no «should have went»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + should / could / must / might + have + participio",
+          "examples": [
+            {
+              "en": "I should have called you.",
+              "es": "Debería haberte llamado."
+            },
+            {
+              "en": "He must have forgotten.",
+              "es": "Se le debe de haber olvidado."
+            }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + shouldn't / can't / couldn't / might not + have + participio",
+          "examples": [
+            {
+              "en": "You shouldn't have paid.",
+              "es": "No tenías que haber pagado."
+            },
+            {
+              "en": "She can't have seen us.",
+              "es": "No puede habernos visto."
+            }
+          ]
+        },
+        "question": {
+          "pattern": "Should / Could + sujeto + have + participio?",
+          "examples": [
+            {
+              "en": "Should I have told her?",
+              "es": "¿Debería habérselo dicho?"
+            },
+            {
+              "en": "Could they have taken the wrong road?",
+              "es": "¿Podrían haberse equivocado de camino?"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "en": "We should have left earlier. Now we're stuck in traffic.",
+          "es": "Deberíamos haber salido antes. Ahora estamos en un atasco."
+        },
+        {
+          "en": "You could have asked me for help.",
+          "es": "Podrías haberme pedido ayuda."
+        },
+        {
+          "en": "The streets are wet. It must have rained.",
+          "es": "Las calles están mojadas. Debe de haber llovido."
+        },
+        {
+          "en": "I can't find my phone. I might have left it at the restaurant.",
+          "es": "No encuentro el móvil. Puede que me lo haya dejado en el restaurante."
+        },
+        {
+          "en": "He can't have finished already. He only started ten minutes ago.",
+          "es": "No puede haber terminado ya. Empezó hace diez minutos."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "wrong": "I should have went.",
+          "right": "I should have gone.",
+          "whyEs": "Detrás de «have» va el participio («gone»), no el pasado («went»)."
+        },
+        {
+          "wrong": "You should of told me.",
+          "right": "You should have told me.",
+          "whyEs": "Se pronuncia «should've», pero se escribe «should have»."
+        },
+        {
+          "wrong": "She can have forgotten.",
+          "right": "She might have forgotten. / She could have forgotten.",
+          "whyEs": "Para una posibilidad en el pasado se usa «might/could have», no «can have»."
+        },
+        {
+          "wrong": "I should study more before the exam. (hablando de un examen pasado)",
+          "right": "I should have studied more before the exam.",
+          "whyEs": "«Debería haber estudiado» es «should have studied»: el pasado lo marca «have» + participio."
+        }
+      ],
+      "related": [
+        "modals-of-deduction",
+        "should-have-would-have-had-to",
+        "wish-past-perfect",
+        "third-conditional"
+      ],
+      "exercises": [
+        {
+          "id": "past-modals-1",
+          "type": "choice",
+          "prompt": "The ground is wet. It ____ rained last night.",
+          "options": [
+            "must have",
+            "should have",
+            "can't have",
+            "must"
+          ],
+          "answer": 0,
+          "whyEs": "Deducción segura sobre el pasado: «must have» + participio.",
+          "trapsEs": [
+            "",
+            "«Should have» es lamento o crítica, no deducción.",
+            "Contradice la pista del suelo mojado.",
+            "Falta «have» para hablar del pasado."
+          ]
+        },
+        {
+          "id": "past-modals-2",
+          "type": "choice",
+          "prompt": "I failed the test. I ____ studied more.",
+          "options": [
+            "should have",
+            "must have",
+            "can't have",
+            "would"
+          ],
+          "answer": 0,
+          "whyEs": "Lamento: «should have» + participio.",
+          "trapsEs": [
+            "",
+            "«Must have» deduce, no lamenta.",
+            "Significa que es imposible que estudiaras más.",
+            "«Would studied» no existe."
+          ]
+        },
+        {
+          "id": "past-modals-3",
+          "type": "gap",
+          "prompt": "She ____ have seen me. I was behind the door the whole time. (imposible)",
+          "answers": [
+            "can't",
+            "couldn't",
+            "cannot"
+          ],
+          "whyEs": "Imposible en el pasado: «can't / couldn't have» + participio."
+        },
+        {
+          "id": "past-modals-4",
+          "type": "order",
+          "words": [
+            "should",
+            "have",
+            "taxi",
+            "We",
+            "taken",
+            "a"
+          ],
+          "answer": "We should have taken a taxi",
+          "whyEs": "Lamento: sujeto + should have + participio."
+        },
+        {
+          "id": "past-modals-5",
+          "type": "choice",
+          "prompt": "I don't know why he's late. He ____ missed the bus.",
+          "options": [
+            "might have",
+            "must",
+            "should have",
+            "can't have"
+          ],
+          "answer": 0,
+          "whyEs": "Posibilidad en el pasado (no lo sabes): «might have».",
+          "trapsEs": [
+            "",
+            "Falta «have» para el pasado.",
+            "«Should have» diría que era bueno perder el autobús.",
+            "Dices que no sabes el motivo; «can't have» es una certeza."
+          ]
+        },
+        {
+          "id": "past-modals-6",
+          "type": "gap",
+          "prompt": "Why didn't you call? I ____ you up at the station. (pick, «podría haberte recogido»)",
+          "answers": [
+            "could have picked",
+            "could've picked"
+          ],
+          "whyEs": "Algo posible que no pasó: «could have» + participio."
+        },
+        {
+          "id": "past-modals-7",
+          "type": "choice",
+          "prompt": "She looks really happy. She ____ the exam.",
+          "options": [
+            "must have passed",
+            "must pass",
+            "should have passed",
+            "can't have passed"
+          ],
+          "answer": 0,
+          "whyEs": "Deducción segura sobre el pasado: «must have passed».",
+          "trapsEs": [
+            "",
+            "«Must pass» habla de obligación presente.",
+            "«Should have passed» significa que lo esperabas y quizá no ocurrió.",
+            "Contradice que esté contenta."
+          ]
+        }
+      ],
+      "speaking": [
+        {
+          "promptEs": "Cuenta un error que cometiste el año pasado y qué deberías haber hecho.",
+          "modelEn": "I bought a cheap laptop. I should have spent a bit more money.",
+          "checkEs": "Usa «should have» + participio."
+        },
+        {
+          "promptEs": "Tu compañero no ha venido hoy a clase. Haz dos deducciones sobre lo que puede haber pasado.",
+          "modelEn": "He might have gotten sick. He must have forgotten about the class.",
+          "checkEs": "Usa «might/must have» + participio."
+        }
+      ],
+      "classFocusEn": "Practise past modals: should have (regret), could have (unreal past possibility), must/might/can't have (deduction). Correct 'should have went', 'should of' and 'can have'."
+    }
+  ]
+}

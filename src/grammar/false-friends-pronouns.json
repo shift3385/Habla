@@ -1,0 +1,195 @@
+{
+  "id": "false-friends-pronouns",
+  "order": 12,
+  "titleEn": "False Friends and Pronouns",
+  "titleEs": "Falsos amigos y pronombres",
+  "icon": "bubble",
+  "descriptionEs": "Palabras que se parecen al español pero significan otra cosa, y los pronombres: I / me / my / mine, myself…",
+  "topics": [
+    {
+      "id": "subject-object-possessive-pronouns",
+      "name": "Subject, Object and Possessive Pronouns",
+      "nameEs": "Pronombres de sujeto, de objeto y posesivos",
+      "level": "A1",
+      "summaryEs": "I / me / my / mine: quién hace la acción, a quién se la hacen y de quién es algo.",
+      "keywords": ["pronouns", "I", "me", "my", "mine", "his", "her", "its", "their", "pronombres", "posesivos", "su", "suyo", "lo", "la", "le"],
+      "categories": ["grammar"],
+      "explanationEs": [
+        "Sujeto (I, you, he, she, it, we, they): va delante del verbo y nunca se omite: «She works here», no «Works here». «It» es para cosas y animales.",
+        "Objeto (me, you, him, her, it, us, them): va DETRÁS del verbo o de la preposición, nunca delante como en español: «te llamo» = «I'll call you», «con ellos» = «with them».",
+        "Posesivos: los adjetivos (my, your, his, her, its, our, their) van delante del nombre y no tienen plural: «my friends». Los pronombres (mine, yours, his, hers, ours, theirs) sustituyen al nombre: «This bag is mine».",
+        "El español «su» sirve para todo; en inglés depende de quién lo posee: «Juan and his sister», «María and her husband», «the company and its logo». Y no confundas «its» (su) con «it's» (it is)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo + objeto · my / your / his… + nombre · … is mine / yours / hers…",
+          "examples": [
+            { "en": "My sister lives in Miami. I visit her every summer.", "es": "Mi hermana vive en Miami. La visito cada verano." },
+            { "en": "That umbrella is mine.", "es": "Ese paraguas es mío." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / doesn't + verbo + objeto · … isn't mine / yours…",
+          "examples": [
+            { "en": "I don't know them very well.", "es": "No los conozco muy bien." },
+            { "en": "This charger isn't mine.", "es": "Este cargador no es mío." }
+          ]
+        },
+        "question": {
+          "pattern": "Is this + yours / his / hers…? · Do / Can + sujeto + verbo + objeto?",
+          "examples": [
+            { "en": "Is this coat yours?", "es": "¿Este abrigo es tuyo?" },
+            { "en": "Can you help us with the boxes?", "es": "¿Nos ayudas con las cajas?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Carlos is coming to dinner with his wife.", "es": "Carlos viene a cenar con su mujer.", "noteEs": "«his» porque el poseedor es Carlos (hombre)." },
+        { "en": "Ana called her brother last night.", "es": "Ana llamó a su hermano anoche.", "noteEs": "«her» porque el poseedor es Ana, aunque el hermano sea un hombre." },
+        { "en": "I love this café. Its coffee is amazing.", "es": "Me encanta esta cafetería. Su café es buenísimo." },
+        { "en": "Our neighbors are lovely. We often have dinner with them.", "es": "Nuestros vecinos son encantadores. Cenamos a menudo con ellos." },
+        { "en": "Is that your car or theirs?", "es": "¿Ese coche es tuyo o de ellos?" }
+      ],
+      "commonMistakes": [
+        { "wrong": "My boss is great. Is very funny.", "right": "My boss is great. She's very funny.", "whyEs": "En inglés el sujeto no se omite: hay que decir «she», «he» o «it»." },
+        { "wrong": "María came with his husband.", "right": "María came with her husband.", "whyEs": "El posesivo concuerda con quien posee (María → her), no con la cosa poseída como «su» en español." },
+        { "wrong": "I you call later.", "right": "I'll call you later.", "whyEs": "El pronombre de objeto va detrás del verbo, no delante como en «te llamo»." },
+        { "wrong": "This phone is my.", "right": "This phone is mine.", "whyEs": "Sin nombre detrás se usa el pronombre posesivo: mine, yours, his, hers, ours, theirs." }
+      ],
+      "related": ["reflexive-pronouns", "basic-word-order", "common-false-friends"],
+      "exercises": [
+        { "id": "subject-object-possessive-pronouns-1", "type": "choice", "prompt": "Laura left ____ keys at the office.", "options": ["her", "his", "she", "hers"], "answer": 0, "whyEs": "La poseedora es Laura y va delante de un nombre: «her».", "trapsEs": ["", "«His» es para un poseedor masculino.", "«She» es pronombre de sujeto, no posesivo.", "«Hers» no va delante de un nombre: «the keys are hers»."] },
+        { "id": "subject-object-possessive-pronouns-2", "type": "choice", "prompt": "I don't know ____. Who is he?", "options": ["him", "he", "his", "her"], "answer": 0, "whyEs": "Objeto masculino detrás del verbo: «him».", "trapsEs": ["", "«He» es sujeto; detrás del verbo va el objeto.", "«His» es posesivo.", "«Her» es femenino, y la pregunta dice «he»."] },
+        { "id": "subject-object-possessive-pronouns-3", "type": "gap", "prompt": "This isn't my scarf. Mine is blue, so this one must be ____. (de ella)", "answers": ["hers"], "whyEs": "Sin nombre detrás: pronombre posesivo «hers» (sin apóstrofo)." },
+        { "id": "subject-object-possessive-pronouns-4", "type": "gap", "prompt": "Pedro still lives with ____ parents. (su, de él)", "answers": ["his"], "whyEs": "Poseedor masculino delante de un nombre: «his»." },
+        { "id": "subject-object-possessive-pronouns-5", "type": "order", "words": ["it", "Give", "to", "me"], "answer": "Give it to me", "whyEs": "Los pronombres de objeto van detrás del verbo: «dámelo» = «Give it to me»." },
+        { "id": "subject-object-possessive-pronouns-6", "type": "choice", "prompt": "The company changed ____ logo last year.", "options": ["its", "it's", "her", "his"], "answer": 0, "whyEs": "Posesivo de una cosa: «its», sin apóstrofo.", "trapsEs": ["", "«It's» es «it is» o «it has».", "«Her» es para una mujer.", "«His» es para un hombre."] },
+        { "id": "subject-object-possessive-pronouns-7", "type": "gap", "prompt": "My parents land tomorrow. I'm going to pick ____ up at the airport.", "answers": ["them"], "whyEs": "Objeto plural: «them» (los / las)." },
+        { "id": "subject-object-possessive-pronouns-8", "type": "choice", "prompt": "Is this coffee ____? — No, mine is the one with milk.", "options": ["yours", "your", "you", "you's"], "answer": 0, "whyEs": "Sin nombre detrás: pronombre posesivo «yours».", "trapsEs": ["", "«Your» necesita un nombre detrás (your coffee).", "«You» no es posesivo.", "No existe."] }
+      ],
+      "speaking": [
+        { "promptEs": "Habla de dos personas de tu familia: cómo se llaman, qué hacen y algo suyo (su coche, su trabajo…).", "modelEn": "My brother is called Luis. He's a teacher and his school is near our house. My mother loves her garden.", "checkEs": "Sujeto siempre presente, y «his» / «her» según quién posee." },
+        { "promptEs": "Imagina que encuentras unas llaves en la mesa: pregunta de quién son y responde.", "modelEn": "Are these keys yours? — No, they aren't mine. I think they're hers.", "checkEs": "Pronombres posesivos (yours, mine, hers) sin nombre detrás." }
+      ],
+      "classFocusEn": "Practice subject, object and possessive pronouns: never drop the subject, object pronouns after the verb, his/her agreeing with the owner, its vs it's, mine/yours. Correct 'Is very funny', 'María… his husband' and 'This is my'."
+    },
+    {
+      "id": "reflexive-pronouns",
+      "name": "Reflexive Pronouns",
+      "nameEs": "Pronombres reflexivos (myself, yourself…)",
+      "level": "A2",
+      "summaryEs": "Myself, yourself, themselves…: cuando haces algo a ti mismo. Y por qué «me levanto» no lleva «myself».",
+      "keywords": ["myself", "yourself", "himself", "herself", "itself", "ourselves", "themselves", "by myself", "each other", "reflexivo", "me", "se", "a mí mismo"],
+      "categories": ["grammar"],
+      "explanationEs": [
+        "Myself, yourself, himself, herself, itself, ourselves, yourselves, themselves se usan cuando el sujeto y el objeto son la misma persona: «I cut myself» (me corté), «She taught herself to code» (aprendió sola a programar).",
+        "Muchos verbos que en español llevan «se» NO son reflexivos en inglés: get up (levantarse), take a shower (ducharse), get dressed (vestirse), sit down (sentarse), remember (acordarse), relax (relajarse), worry (preocuparse), feel (sentirse).",
+        "Expresiones útiles: «by myself» (solo, sin ayuda), «Help yourself» (sírvete), «Enjoy yourselves» (pasadlo bien). Para dar énfasis: «I made it myself» (lo hice yo mismo).",
+        "«Se» recíproco (el uno al otro) es «each other», no un reflexivo: «They love each other» (se quieren). «They love themselves» sería que cada uno se quiere a sí mismo."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + verbo + myself / yourself / himself…",
+          "examples": [
+            { "en": "Be careful with that knife. You'll cut yourself.", "es": "Cuidado con ese cuchillo. Te vas a cortar." },
+            { "en": "My dad taught himself to play the piano.", "es": "Mi padre aprendió solo a tocar el piano." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't / didn't + verbo + myself / yourself…",
+          "examples": [
+            { "en": "Don't blame yourself. It wasn't your fault.", "es": "No te culpes. No fue culpa tuya." },
+            { "en": "He didn't hurt himself, luckily.", "es": "Por suerte, no se hizo daño." }
+          ]
+        },
+        "question": {
+          "pattern": "Did / Do + sujeto + verbo + yourself / themselves…?",
+          "examples": [
+            { "en": "Did you hurt yourself?", "es": "¿Te hiciste daño?" },
+            { "en": "Did they enjoy themselves at the concert?", "es": "¿Se lo pasaron bien en el concierto?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "I live by myself in a small studio.", "es": "Vivo solo en un estudio pequeño.", "noteEs": "«by myself» = solo, sin nadie más." },
+        { "en": "Please help yourselves to some cake.", "es": "Por favor, servíos tarta." },
+        { "en": "We built the website ourselves.", "es": "Hicimos la web nosotros mismos." },
+        { "en": "Ana and Luis met at work, and now they text each other every day.", "es": "Ana y Luis se conocieron en el trabajo y ahora se escriben todos los días.", "noteEs": "Recíproco: «each other», no «themselves»." },
+        { "en": "I usually take a shower and get dressed in ten minutes.", "es": "Normalmente me ducho y me visto en diez minutos.", "noteEs": "Ducharse y vestirse no llevan reflexivo en inglés." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I get up myself at seven.", "right": "I get up at seven.", "whyEs": "«Levantarse» no es reflexivo en inglés: no lleva «myself»." },
+        { "wrong": "I feel myself tired today.", "right": "I feel tired today.", "whyEs": "«Sentirse» es solo «feel» + adjetivo, sin reflexivo." },
+        { "wrong": "My parents love themselves very much.", "right": "My parents love each other very much.", "whyEs": "«Se quieren» (el uno al otro) es «each other»; «themselves» sería a sí mismos." },
+        { "wrong": "He hurt hisself playing soccer.", "right": "He hurt himself playing soccer.", "whyEs": "La forma correcta es «himself» (y en plural «themselves», no «theirselves»)." }
+      ],
+      "related": ["subject-object-possessive-pronouns", "common-false-friends"],
+      "exercises": [
+        { "id": "reflexive-pronouns-1", "type": "choice", "prompt": "Did you make this cake ____? It's delicious!", "options": ["yourself", "you", "yours", "yourselfs"], "answer": 0, "whyEs": "Énfasis («tú mismo»): «yourself».", "trapsEs": ["", "«You» no da la idea de «tú mismo».", "«Yours» es posesivo (tuyo).", "El plural es «yourselves», y aquí hablas con una persona."] },
+        { "id": "reflexive-pronouns-2", "type": "choice", "prompt": "I usually ____ at 6:30 and go for a run.", "options": ["get up", "get up myself", "raise myself", "myself get up"], "answer": 0, "whyEs": "«Levantarse» = «get up», sin reflexivo.", "trapsEs": ["", "Calco de «me levanto»: sobra «myself».", "«Raise myself» significa «alzarme», no levantarse de la cama.", "El reflexivo no va delante del verbo."] },
+        { "id": "reflexive-pronouns-3", "type": "gap", "prompt": "My son is only six, but he can get dressed by ____.", "answers": ["himself"], "whyEs": "«By himself» = solo, sin ayuda." },
+        { "id": "reflexive-pronouns-4", "type": "gap", "prompt": "We really enjoyed ____ at the wedding.", "answers": ["ourselves"], "whyEs": "«Enjoy» necesita objeto: «enjoy ourselves» = pasarlo bien." },
+        { "id": "reflexive-pronouns-5", "type": "choice", "prompt": "Marta and Tomás text ____ every night. They're in love.", "options": ["each other", "themselves", "theirselves", "them"], "answer": 0, "whyEs": "El uno al otro: «each other».", "trapsEs": ["", "«Themselves» sería que cada uno se escribe a sí mismo.", "No existe: es «themselves».", "«Them» serían otras personas."] },
+        { "id": "reflexive-pronouns-6", "type": "gap", "prompt": "Don't worry about the heater. It turns ____ off after an hour.", "answers": ["itself"], "whyEs": "La cosa se apaga sola: «itself»." },
+        { "id": "reflexive-pronouns-7", "type": "order", "words": ["herself", "She", "Japanese", "taught"], "answer": "She taught herself Japanese", "whyEs": "«Teach yourself» algo = aprenderlo solo, sin profe." },
+        { "id": "reflexive-pronouns-8", "type": "choice", "prompt": "Come in, sit down and ____ at home.", "options": ["make yourself", "make you", "make yours", "make yourselfs"], "answer": 0, "whyEs": "Expresión fija: «Make yourself at home» (estás en tu casa).", "trapsEs": ["", "Falta el reflexivo: el que se pone cómodo eres tú.", "«Yours» es posesivo.", "No existe: es «yourself» (o «yourselves» en plural)."] }
+      ],
+      "speaking": [
+        { "promptEs": "Cuéntale a tu profe algo que aprendiste a hacer tú solo.", "modelEn": "I taught myself to cook by watching videos.", "checkEs": "«teach myself» o «by myself» bien usados." },
+        { "promptEs": "Describe tu mañana: levantarte, ducharte, vestirte… sin reflexivos de más.", "modelEn": "I get up at seven, take a shower, get dressed and have breakfast.", "checkEs": "Sin «myself» con get up, shower o get dressed." }
+      ],
+      "classFocusEn": "Practice reflexive pronouns (myself… themselves), by myself, enjoy yourself, and each other for reciprocal actions. Correct Spanish-style reflexives: 'I get up myself', 'I feel myself tired', 'hisself'."
+    },
+    {
+      "id": "common-false-friends",
+      "name": "Common False Friends",
+      "nameEs": "Falsos amigos frecuentes",
+      "level": "A2",
+      "summaryEs": "Actually no es «actualmente», embarrassed no es «embarazada», library no es «librería»…",
+      "keywords": ["false friends", "falsos amigos", "actually", "embarrassed", "sensible", "assist", "library", "realize", "carpet", "constipated", "actualmente", "embarazada"],
+      "categories": ["false_friend", "vocabulary"],
+      "explanationEs": [
+        "Los falsos amigos son palabras que se parecen al español pero significan otra cosa. Son una fuente constante de malentendidos (y de alguna situación graciosa).",
+        "Los cinco más peligrosos: actually = en realidad (actualmente = currently / nowadays); embarrassed = avergonzado (embarazada = pregnant); sensible = sensato (sensible = sensitive); assist = ayudar (asistir = attend); library = biblioteca (librería = bookstore).",
+        "Otros frecuentes: realize = darse cuenta (realizar = carry out / do); carpet = alfombra (carpeta = folder); exit = salida (éxito = success); constipated = estreñido (constipado = have a cold); fabric = tela (fábrica = factory); eventually = al final (eventualmente = possibly).",
+        "Truco: si una palabra inglesa se parece mucho a una española, desconfía un poco y comprueba su significado antes de usarla."
+      ],
+      "forms": {
+        "affirmative": null,
+        "negative": null,
+        "question": null
+      },
+      "examples": [
+        { "en": "I thought the meeting was today, but actually it's tomorrow.", "es": "Creía que la reunión era hoy, pero en realidad es mañana." },
+        { "en": "Currently, I work as a sales manager.", "es": "Actualmente trabajo como jefe de ventas.", "noteEs": "«Actualmente» = currently, no «actually»." },
+        { "en": "I was so embarrassed when I called my teacher 'Mom'.", "es": "Me dio muchísima vergüenza cuando llamé «mamá» a mi profesora." },
+        { "en": "It's a sensible plan. We can't spend more right now.", "es": "Es un plan sensato. Ahora mismo no podemos gastar más." },
+        { "en": "I'm going to the library to return some books.", "es": "Voy a la biblioteca a devolver unos libros." },
+        { "en": "I didn't realize you were Peruvian!", "es": "¡No me había dado cuenta de que eras peruano!" }
+      ],
+      "commonMistakes": [
+        { "wrong": "Actually it's very hard to find a cheap apartment.", "right": "Nowadays it's very hard to find a cheap apartment.", "whyEs": "Para «actualmente» (en esta época) se dice «nowadays» o «currently». «Actually» significa «en realidad»." },
+        { "wrong": "My sister is embarrassed. The baby is due in May.", "right": "My sister is pregnant. The baby is due in May.", "whyEs": "«Embarazada» es «pregnant»; «embarrassed» es «avergonzado»." },
+        { "wrong": "I assisted the trade fair in March.", "right": "I attended the trade fair in March.", "whyEs": "«Asistir a un evento» es «attend». «Assist» significa «ayudar»." },
+        { "wrong": "He's very sensible. He cries at every movie.", "right": "He's very sensitive. He cries at every movie.", "whyEs": "«Sensible» (emotivo) es «sensitive»; «sensible» en inglés es «sensato»." }
+      ],
+      "related": ["verb-prepositions", "make-vs-do", "phrasal-verbs"],
+      "exercises": [
+        { "id": "common-false-friends-1", "type": "choice", "prompt": "I'm going to the ____ to buy a new novel.", "options": ["bookstore", "library", "bookshelf", "bookcase"], "answer": 0, "whyEs": "Donde se compran libros: «bookstore» (en Reino Unido, «bookshop»).", "trapsEs": ["", "«Library» es biblioteca: ahí se prestan libros, no se venden.", "«Bookshelf» es una estantería.", "«Bookcase» es una librería de mueble, no una tienda."] },
+        { "id": "common-false-friends-2", "type": "choice", "prompt": "Traduce: «Actualmente trabajo en un hospital.»", "options": ["Currently, I work at a hospital.", "Actually, I work at a hospital.", "Eventually, I work at a hospital.", "Lately, I work at a hospital."], "answer": 0, "whyEs": "«Actualmente» = «currently» (o «at the moment»).", "trapsEs": ["", "«Actually» significa «en realidad»: cambia el sentido.", "«Eventually» significa «al final, con el tiempo».", "«Lately» (últimamente) pide presente perfecto y no significa «actualmente»."] },
+        { "id": "common-false-friends-3", "type": "choice", "prompt": "I felt so ____ when I forgot my client's name in the meeting.", "options": ["embarrassed", "pregnant", "embarrassing", "constipated"], "answer": 0, "whyEs": "«Avergonzado» = «embarrassed».", "trapsEs": ["", "«Pregnant» es «embarazada».", "«Embarrassing» describe la situación (vergonzosa), no cómo te sientes tú.", "«Constipated» es «estreñido», no «constipado»."] },
+        { "id": "common-false-friends-4", "type": "gap", "prompt": "I can't find the ____ with the contracts on my desktop. (carpeta)", "answers": ["folder"], "whyEs": "«Carpeta» = «folder». «Carpet» es alfombra." },
+        { "id": "common-false-friends-5", "type": "choice", "prompt": "Ramón is very ____: he always thinks carefully before he spends money.", "options": ["sensible", "sensitive", "sentimental", "susceptible"], "answer": 0, "whyEs": "Pensar antes de gastar es ser sensato: «sensible».", "trapsEs": ["", "«Sensitive» es «sensible» en español: que se emociona o se ofende con facilidad.", "«Sentimental» es emotivo, nostálgico.", "«Susceptible» significa propenso a algo (susceptible to colds)."] },
+        { "id": "common-false-friends-6", "type": "gap", "prompt": "I didn't ____ the store was closed until I got there. (darme cuenta)", "answers": ["realize", "realise"], "whyEs": "«Darse cuenta» = «realize» (en Reino Unido también «realise»). «Realizar» es «carry out» o «do»." },
+        { "id": "common-false-friends-7", "type": "choice", "prompt": "I'm going to ____ a cooking class on Saturday.", "options": ["attend", "assist", "assist to", "attend to"], "answer": 0, "whyEs": "«Asistir a» una clase o evento = «attend», sin preposición.", "trapsEs": ["", "«Assist» significa «ayudar».", "«Assist to» no existe con este sentido.", "«Attend to» significa «ocuparse de» algo o alguien."] },
+        { "id": "common-false-friends-8", "type": "choice", "prompt": "I can't come to the office today. I ____ and my head hurts.", "options": ["have a cold", "am constipated", "have cold", "am a cold"], "answer": 0, "whyEs": "«Estar constipado / resfriado» = «have a cold».", "trapsEs": ["", "«Constipated» significa «estreñido».", "Falta el artículo: «a cold».", "No se usa «be» con «a cold»."] }
+      ],
+      "speaking": [
+        { "promptEs": "Cuéntale a tu profe a qué te dedicas actualmente y algo de tu trabajo que en realidad no es como la gente cree.", "modelEn": "Currently, I work as an engineer. People think it's boring, but actually it's very creative.", "checkEs": "«currently» para «actualmente» y «actually» para «en realidad»." },
+        { "promptEs": "Cuenta una situación en la que pasaste vergüenza.", "modelEn": "I felt really embarrassed when I fell down in the street.", "checkEs": "«embarrassed» = avergonzado (no «embarazada»)." },
+        { "promptEs": "Di a qué evento asististe hace poco y de qué te diste cuenta allí.", "modelEn": "I attended a tech conference last month, and I realized my English is better than I thought.", "checkEs": "«attend» (no «assist») y «realize» = darse cuenta." }
+      ],
+      "classFocusEn": "Practice common Spanish-English false friends: actually/currently, embarrassed/pregnant, sensible/sensitive, assist/attend, library/bookstore, realize, carpet/folder, constipated/have a cold. Gently correct them whenever they appear."
+    }
+  ]
+}

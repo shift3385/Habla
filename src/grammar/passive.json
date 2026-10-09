@@ -1,0 +1,367 @@
+{
+  "id": "passive",
+  "order": 7,
+  "titleEn": "The Passive Voice",
+  "titleEs": "Voz pasiva",
+  "icon": "wrench",
+  "descriptionEs": "Cuando importa lo que se hace, no quién lo hace: «se fabrica», «fue construido», «me cortaron el pelo».",
+  "topics": [
+    {
+      "id": "passive-present-past",
+      "name": "The Passive: Present and Past",
+      "nameEs": "La pasiva en presente y pasado",
+      "level": "B1",
+      "summaryEs": "«Se habla», «fue construido», «nací»: be + participio cuando no importa quién hace la acción.",
+      "keywords": ["passive voice", "voz pasiva", "is made", "was built", "se hace", "se habla", "fue construido", "by", "be born", "nací"],
+      "categories": ["grammar", "tense"],
+      "explanationEs": [
+        "La pasiva pone delante lo que recibe la acción: «This bridge was built in 1932» (este puente se construyó / fue construido en 1932). Se usa cuando no sabemos quién lo hizo, no importa o es obvio.",
+        "Se forma con «be» en el tiempo que toque + participio: «is/are made» (presente), «was/were made» (pasado), «is being made» (ahora mismo). Si quieres decir quién lo hace, añade «by»: «painted by Frida Kahlo».",
+        "Muchas frases con «se» del español van en pasiva en inglés: «se habla inglés» = «English is spoken». Y «nacer» es siempre pasiva: «I was born in 1995» (nací en 1995)."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + am/is/are (presente) · was/were (pasado) + participio (+ by…)",
+          "examples": [
+            { "en": "Coffee is grown in the mountains of Colombia.", "es": "El café se cultiva en las montañas de Colombia." },
+            { "en": "This bridge was built in 1932.", "es": "Este puente se construyó en 1932." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + isn't/aren't · wasn't/weren't + participio",
+          "examples": [
+            { "en": "Breakfast isn't included in the price.", "es": "El desayuno no está incluido en el precio." },
+            { "en": "The package wasn't delivered yesterday.", "es": "El paquete no se entregó ayer." }
+          ]
+        },
+        "question": {
+          "pattern": "Is/Are · Was/Were + sujeto + participio? · Wh- + is/was + sujeto + participio?",
+          "examples": [
+            { "en": "Is this seat taken?", "es": "¿Está ocupado este asiento?" },
+            { "en": "When was the email sent?", "es": "¿Cuándo se envió el correo?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "Spanish is spoken in more than twenty countries.", "es": "El español se habla en más de veinte países.", "noteEs": "«Se habla» → pasiva en inglés." },
+        { "en": "My phone was stolen on the train.", "es": "Me robaron el móvil en el tren.", "noteEs": "No sabemos quién fue: pasiva." },
+        { "en": "The meeting was canceled because of the storm.", "es": "La reunión se canceló por la tormenta." },
+        { "en": "These cars are made in Mexico.", "es": "Estos coches se fabrican en México." },
+        { "en": "The road is being repaired, so take another route.", "es": "Están arreglando la carretera, así que coge otra ruta.", "noteEs": "«Is being + participio»: está pasando ahora." },
+        { "en": "I was born in Lima in 1992.", "es": "Nací en Lima en 1992.", "noteEs": "«Nacer» siempre es «be born»." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I born in 1990.", "right": "I was born in 1990.", "whyEs": "«Nacer» en inglés es pasiva: «be born». Sin «was», a la frase le falta el verbo." },
+        { "wrong": "The museum was build in 1900.", "right": "The museum was built in 1900.", "whyEs": "La pasiva lleva participio: «built», no el verbo base." },
+        { "wrong": "Here is spoken English.", "right": "English is spoken here.", "whyEs": "Calco de «aquí se habla inglés». En inglés el sujeto (English) va delante del verbo." },
+        { "wrong": "This song was written for Shakira. (queriendo decir que la escribió ella)", "right": "This song was written by Shakira.", "whyEs": "Quien hace la acción va con «by» (por). «For» significa «para»." }
+      ],
+      "related": ["passive-perfect-modals", "causative-have-something-done", "regular-irregular-verbs", "past-simple"],
+      "exercises": [
+        {
+          "id": "passive-present-past-1",
+          "type": "choice",
+          "prompt": "Most of our furniture ____ in Italy.",
+          "options": ["is made", "is make", "makes", "made"],
+          "answer": 0,
+          "whyEs": "Los muebles no fabrican nada: reciben la acción. Pasiva en presente: «is made».",
+          "trapsEs": ["", "La pasiva lleva participio («made»), no el verbo base.", "Activa: diría que los muebles fabrican algo.", "Falta «be»: sin «is» la frase no tiene verbo completo."]
+        },
+        {
+          "id": "passive-present-past-2",
+          "type": "gap",
+          "prompt": "The windows ____ (clean) every Friday.",
+          "answers": ["are cleaned"],
+          "whyEs": "Rutina en pasiva: «are» (plural) + participio."
+        },
+        {
+          "id": "passive-present-past-3",
+          "type": "choice",
+          "prompt": "My bike ____ last night, so I took the bus.",
+          "options": ["was stolen", "stole", "is stolen", "was stole"],
+          "answer": 0,
+          "whyEs": "Pasado en pasiva: «was» + participio (steal → stolen).",
+          "trapsEs": ["", "Activa: diría que la bici robó algo.", "Presente: no encaja con «last night».", "Después de «was» va el participio («stolen»), no el pasado («stole»)."]
+        },
+        {
+          "id": "passive-present-past-4",
+          "type": "gap",
+          "prompt": "This photo ____ (take) by my grandfather in 1975.",
+          "answers": ["was taken"],
+          "whyEs": "Pasado en pasiva con quien lo hizo: «was taken by…»."
+        },
+        {
+          "id": "passive-present-past-5",
+          "type": "order",
+          "words": ["the", "When", "was", "invented", "telephone"],
+          "answer": "When was the telephone invented",
+          "whyEs": "Pregunta en pasiva: Wh- + was + sujeto + participio."
+        },
+        {
+          "id": "passive-present-past-6",
+          "type": "choice",
+          "prompt": "Sorry, credit cards ____ here. Cash only.",
+          "options": ["aren't accepted", "don't accept", "aren't accept", "weren't accepted"],
+          "answer": 0,
+          "whyEs": "Norma actual en pasiva negativa: «aren't» + participio.",
+          "trapsEs": ["", "Activa: diría que las tarjetas no aceptan algo.", "Falta el participio: «accepted».", "Pasado: el cartel habla de ahora."]
+        },
+        {
+          "id": "passive-present-past-7",
+          "type": "gap",
+          "prompt": "Where ____ you ____ (bear)? — In Bogotá.",
+          "answers": ["were / born"],
+          "whyEs": "«¿Dónde naciste?» = «Where were you born?»: pasiva con el participio «born»."
+        },
+        {
+          "id": "passive-present-past-8",
+          "type": "order",
+          "words": ["The", "is", "office", "being", "painted"],
+          "answer": "The office is being painted",
+          "whyEs": "Pasiva en presente continuo: is being + participio («están pintando la oficina»)."
+        }
+      ],
+      "speaking": [
+        { "promptEs": "Describe tu ciudad: algo que se produce allí y un edificio famoso (y cuándo se construyó).", "modelEn": "Coffee is grown near my city, and the cathedral was built in the eighteenth century.", "checkEs": "Usa «is/are + participio» y «was/were + participio»." },
+        { "promptEs": "Di dónde y cuándo naciste, y algo que te robaron o te rompieron alguna vez.", "modelEn": "I was born in Quito in 1995. My bike was stolen when I was a student.", "checkEs": "«Was born» y pasiva en pasado con «was» + participio." }
+      ],
+      "classFocusEn": "Practice the present and past passive (is/are/was/were + past participle), including 'be born'. Correct 'I born…', base forms instead of participles and 'Here is spoken…'."
+    },
+    {
+      "id": "passive-perfect-modals",
+      "name": "The Passive: Perfect Tenses and Modals",
+      "nameEs": "La pasiva en tiempos perfectos y con modales",
+      "level": "B2",
+      "summaryEs": "«Ha sido enviado», «debe entregarse», «tendría que haberse hecho»: la pasiva en más tiempos.",
+      "keywords": ["has been done", "had been done", "will be done", "must be done", "should have been done", "pasiva", "ha sido", "debe hacerse", "modales pasivos"],
+      "categories": ["grammar", "tense"],
+      "explanationEs": [
+        "La pasiva funciona en todos los tiempos: solo cambia la forma de «be» y el participio se queda igual. Presente perfecto: «has/have been + participio» («Your order has been shipped»: tu pedido ha sido enviado).",
+        "Pasado perfecto: «had been + participio». Futuro: «will be + participio». Con modales: modal + «be» + participio: «must be finished», «can be washed», «should be taken».",
+        "Para el pasado con modales: modal + «have been» + participio. «It should have been delivered yesterday»: tendría que haberse entregado ayer. En español solemos usar «se» o «lo han…» donde el inglés usa estas pasivas."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "has/have been + participio · had been + participio · will / can / must / should + be + participio",
+          "examples": [
+            { "en": "Your order has been shipped.", "es": "Tu pedido ha sido enviado." },
+            { "en": "The slides must be finished by Thursday.", "es": "Las diapositivas tienen que estar terminadas el jueves." }
+          ]
+        },
+        "negative": {
+          "pattern": "hasn't/haven't been + participio · won't / can't / mustn't + be + participio",
+          "examples": [
+            { "en": "The problem hasn't been solved yet.", "es": "El problema todavía no se ha resuelto." },
+            { "en": "This door mustn't be left open.", "es": "Esta puerta no debe dejarse abierta." }
+          ]
+        },
+        "question": {
+          "pattern": "Has/Have + sujeto + been + participio? · Will / Can / Should + sujeto + be + participio?",
+          "examples": [
+            { "en": "Have the tickets been booked?", "es": "¿Se han reservado las entradas?" },
+            { "en": "Can this jacket be washed in the machine?", "es": "¿Se puede lavar esta chaqueta en la lavadora?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "The flight has been delayed by two hours.", "es": "El vuelo se ha retrasado dos horas." },
+        { "en": "All the tickets had been sold before we got there.", "es": "Ya se habían vendido todas las entradas antes de que llegáramos." },
+        { "en": "The results will be published next week.", "es": "Los resultados se publicarán la semana que viene." },
+        { "en": "This medicine should be taken with food.", "es": "Este medicamento debe tomarse con comida." },
+        { "en": "The package should have been delivered yesterday.", "es": "El paquete tendría que haberse entregado ayer.", "noteEs": "Modal + have been + participio: algo que debió pasar y no pasó." },
+        { "en": "Phones can't be used during the exam.", "es": "No se pueden usar los móviles durante el examen." }
+      ],
+      "commonMistakes": [
+        { "wrong": "The project has been finish.", "right": "The project has been finished.", "whyEs": "Después de «been» va el participio («finished»), no el verbo base." },
+        { "wrong": "My car has repaired.", "right": "My car has been repaired.", "whyEs": "Sin «been» parece que el coche ha reparado algo. «Lo han reparado» = «has been repaired»." },
+        { "wrong": "The work must be do today.", "right": "The work must be done today.", "whyEs": "Modal + be + participio: «done», no «do» («tiene que hacerse hoy»)." }
+      ],
+      "related": ["passive-present-past", "present-perfect", "past-modals", "causative-have-something-done"],
+      "exercises": [
+        {
+          "id": "passive-perfect-modals-1",
+          "type": "choice",
+          "prompt": "Good news: your application ____.",
+          "options": ["has been accepted", "has accepted", "has been accept", "is accepting"],
+          "answer": 0,
+          "whyEs": "Tu solicitud recibe la acción: pasiva en presente perfecto, «has been» + participio.",
+          "trapsEs": ["", "Activa: diría que la solicitud ha aceptado algo.", "Después de «been» va el participio: «accepted».", "Activa en continuo: la solicitud no acepta nada."]
+        },
+        {
+          "id": "passive-perfect-modals-2",
+          "type": "gap",
+          "prompt": "The new bridge ____ (finish) next year.",
+          "answers": ["will be finished", "is going to be finished"],
+          "whyEs": "Pasiva de futuro: «will be» (o «is going to be») + participio."
+        },
+        {
+          "id": "passive-perfect-modals-3",
+          "type": "choice",
+          "prompt": "This form must ____ in black ink.",
+          "options": ["be filled in", "filled in", "be fill in", "been filled in"],
+          "answer": 0,
+          "whyEs": "Modal + be + participio: «must be filled in» (tiene que rellenarse).",
+          "trapsEs": ["", "Falta «be» después del modal.", "Falta el participio: «filled».", "Después de un modal va «be», no «been»."]
+        },
+        {
+          "id": "passive-perfect-modals-4",
+          "type": "gap",
+          "prompt": "The thief ____ (not / catch) yet.",
+          "answers": ["hasn't been caught", "has not been caught"],
+          "whyEs": "Con «yet», presente perfecto en pasiva negativa: «hasn't been» + participio (catch → caught)."
+        },
+        {
+          "id": "passive-perfect-modals-5",
+          "type": "order",
+          "words": ["have", "The", "should", "been", "reports", "sent", "yesterday"],
+          "answer": "The reports should have been sent yesterday",
+          "whyEs": "Modal en pasado y pasiva: should + have been + participio."
+        },
+        {
+          "id": "passive-perfect-modals-6",
+          "type": "choice",
+          "prompt": "When we arrived at the party, all the food ____.",
+          "options": ["had already been eaten", "has already been eaten", "had already eaten", "was already eating"],
+          "answer": 0,
+          "whyEs": "Algo anterior a otro momento del pasado, en pasiva: «had been» + participio.",
+          "trapsEs": ["", "Presente perfecto: no encaja con una historia en pasado («arrived»).", "Activa: diría que la comida había comido algo.", "Activa en continuo: la comida no estaba comiendo."]
+        },
+        {
+          "id": "passive-perfect-modals-7",
+          "type": "choice",
+          "prompt": "The window ____ open last night. Now the room is full of mosquitoes.",
+          "options": ["shouldn't have been left", "shouldn't be left", "shouldn't have left", "hasn't been left"],
+          "answer": 0,
+          "whyEs": "Crítica sobre el pasado en pasiva: «shouldn't have been» + participio.",
+          "trapsEs": ["", "Habla del presente o en general, no de anoche.", "Activa: diría que la ventana no debería haber dejado algo.", "Presente perfecto: no expresa la crítica («no debería»)."]
+        },
+        {
+          "id": "passive-perfect-modals-8",
+          "type": "gap",
+          "prompt": "Sorry, this item can't ____ (return).",
+          "answers": ["be returned"],
+          "whyEs": "Modal negativo + be + participio: «can't be returned» (no se puede devolver)."
+        }
+      ],
+      "speaking": [
+        { "promptEs": "Eres jefe de proyecto: di dos cosas que ya se han hecho y una que todavía no.", "modelEn": "The website has been designed and the texts have been translated, but the app hasn't been tested yet.", "checkEs": "«Has/have been + participio» y la negativa «hasn't been»." },
+        { "promptEs": "Explica dos normas de tu trabajo o de tu casa con pasiva y modales.", "modelEn": "Phones must be switched off in meetings, and the front door should be locked at night.", "checkEs": "Modal + be + participio." }
+      ],
+      "classFocusEn": "Practice the passive with perfect tenses, will and modals (has been done, must be done, should have been done). Correct missing 'been' or 'be' and base forms instead of past participles."
+    },
+    {
+      "id": "causative-have-something-done",
+      "name": "Causative: Have Something Done",
+      "nameEs": "Have something done (que te hagan algo)",
+      "level": "B2",
+      "summaryEs": "Cuando otra persona hace algo por ti: «Me corté el pelo» (en la peluquería) = «I had my hair cut».",
+      "keywords": ["have something done", "get something done", "causative", "causativa", "me corté el pelo", "hacerse algo", "I had my hair cut", "had my phone stolen"],
+      "categories": ["grammar"],
+      "explanationEs": [
+        "«Have + objeto + participio» significa que otra persona hace algo por ti, normalmente porque le pagas: «I had my hair cut» (me cortaron el pelo en la peluquería). En español decimos «me corté el pelo», pero en inglés «I cut my hair» significa que lo hiciste tú mismo.",
+        "Ojo al orden: primero el objeto y después el participio: «have my car repaired», no «have repaired my car». «Get» funciona igual y es más informal: «I need to get my car fixed».",
+        "También sirve para cosas malas que te hacen otros: «I had my wallet stolen» (me robaron la cartera). «Have» se conjuga en cualquier tiempo: «I'm having my kitchen painted», «I'll have it done tomorrow»."
+      ],
+      "forms": {
+        "affirmative": {
+          "pattern": "Sujeto + have/get (en cualquier tiempo) + objeto + participio",
+          "examples": [
+            { "en": "I had my hair cut last Saturday.", "es": "El sábado pasado me corté el pelo (en la peluquería)." },
+            { "en": "We're getting the kitchen painted next week.", "es": "La semana que viene nos pintan la cocina." }
+          ]
+        },
+        "negative": {
+          "pattern": "Sujeto + don't/doesn't/didn't + have/get + objeto + participio",
+          "examples": [
+            { "en": "I didn't have the car washed this week.", "es": "Esta semana no llevé el coche a lavar." },
+            { "en": "We don't get our groceries delivered.", "es": "No nos traen la compra a casa." }
+          ]
+        },
+        "question": {
+          "pattern": "(Wh-) + do/does/did + sujeto + have/get + objeto + participio?",
+          "examples": [
+            { "en": "Where do you have your hair cut?", "es": "¿Dónde te cortas el pelo?" },
+            { "en": "Did you get your phone screen fixed?", "es": "¿Te arreglaron la pantalla del móvil?" }
+          ]
+        }
+      },
+      "examples": [
+        { "en": "I need to get my eyes checked.", "es": "Tengo que ir a que me revisen la vista." },
+        { "en": "She had her dress made by a local designer.", "es": "Se hizo el vestido con una diseñadora de la zona.", "noteEs": "Con «by» dices quién lo hizo." },
+        { "en": "We had our roof repaired after the storm.", "es": "Nos arreglaron el tejado después de la tormenta." },
+        { "en": "He had his wallet stolen on the subway.", "es": "Le robaron la cartera en el metro.", "noteEs": "Algo malo que le hicieron: no lo pidió." },
+        { "en": "I'm going to get my car serviced tomorrow.", "es": "Mañana llevo el coche a revisión." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I cut my hair last Saturday. (en la peluquería)", "right": "I had my hair cut last Saturday.", "whyEs": "En español «me corté el pelo» vale aunque lo haga el peluquero. En inglés, «I cut my hair» significa que te lo cortaste tú." },
+        { "wrong": "I had cut my hair.", "right": "I had my hair cut.", "whyEs": "El objeto va antes del participio. «I had cut my hair» es pasado perfecto: «me había cortado el pelo (yo)»." },
+        { "wrong": "I had my car repair.", "right": "I had my car repaired.", "whyEs": "Después del objeto va el participio («repaired»), no el verbo base." }
+      ],
+      "related": ["passive-present-past", "passive-perfect-modals"],
+      "exercises": [
+        {
+          "id": "causative-have-something-done-1",
+          "type": "choice",
+          "prompt": "I don't paint my nails myself. I ____ at a salon.",
+          "options": ["have them painted", "have painted them", "paint them", "am painted them"],
+          "answer": 0,
+          "whyEs": "Otra persona lo hace por ti: have + objeto + participio.",
+          "trapsEs": ["", "Presente perfecto: diría que tú las has pintado.", "Diría que te las pintas tú, y acabas de decir que no.", "No existe: mezcla pasiva y objeto."]
+        },
+        {
+          "id": "causative-have-something-done-2",
+          "type": "gap",
+          "prompt": "We had the windows ____ (replace) last month.",
+          "answers": ["replaced"],
+          "whyEs": "Have + objeto + participio: «replaced»."
+        },
+        {
+          "id": "causative-have-something-done-3",
+          "type": "order",
+          "words": ["I'm", "my", "getting", "checked", "eyes", "tomorrow"],
+          "answer": "I'm getting my eyes checked tomorrow",
+          "whyEs": "Get + objeto + participio, en presente continuo para un plan."
+        },
+        {
+          "id": "causative-have-something-done-4",
+          "type": "choice",
+          "prompt": "Your hair looks great! Where do you ____?",
+          "options": ["get your hair cut", "get cut your hair", "have your hair cutting", "have cut your hair"],
+          "answer": 0,
+          "whyEs": "Get + objeto + participio: «get your hair cut».",
+          "trapsEs": ["", "El objeto va antes del participio.", "Después del objeto va el participio, no «-ing».", "El objeto («your hair») va antes del participio."]
+        },
+        {
+          "id": "causative-have-something-done-5",
+          "type": "gap",
+          "prompt": "My laptop screen broke, so I'm going to ____ it ____ (fix).",
+          "answers": ["have / fixed", "get / fixed"],
+          "whyEs": "Have/get + objeto + participio: «have it fixed» o «get it fixed»."
+        },
+        {
+          "id": "causative-have-something-done-6",
+          "type": "choice",
+          "prompt": "He ____ on vacation in Rome.",
+          "options": ["had his passport stolen", "stole his passport", "had stolen his passport", "was stolen his passport"],
+          "answer": 0,
+          "whyEs": "Algo malo que te hacen otros: have + objeto + participio («le robaron el pasaporte»).",
+          "trapsEs": ["", "Diría que él robó su propio pasaporte.", "Pasado perfecto: diría que él lo había robado.", "No existe en inglés: es un calco de «le fue robado»."]
+        },
+        {
+          "id": "causative-have-something-done-7",
+          "type": "choice",
+          "prompt": "Did you ____ or did you buy it in a shop?",
+          "options": ["have the dress made", "have made the dress", "make have the dress", "had the dress made"],
+          "answer": 0,
+          "whyEs": "«¿Te hiciste hacer el vestido?»: have + objeto + participio; tras «did», «have» en forma base.",
+          "trapsEs": ["", "El objeto va antes del participio.", "Orden imposible: «have» va primero.", "Después de «did» va el verbo base: «have», no «had»."]
+        }
+      ],
+      "speaking": [
+        { "promptEs": "Cuenta tres cosas que pagas para que te las hagan (pelo, coche, ropa…).", "modelEn": "I have my hair cut every month, I get my car washed at a car wash and I have my suits cleaned at the dry cleaner's.", "checkEs": "Have/get + objeto + participio." },
+        { "promptEs": "Cuenta algo malo que te pasó: algo que te robaron o te rompieron.", "modelEn": "Last year I had my phone stolen at a concert.", "checkEs": "«Had + objeto + participio» para algo que te hicieron otros." }
+      ],
+      "classFocusEn": "Practice 'have/get something done' for services and bad experiences. Correct 'I cut my hair' (when someone else did it) and the wrong order 'have repaired my car'."
+    }
+  ]
+}

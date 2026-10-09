@@ -1,0 +1,94 @@
+{
+  "id": "sample-tenses",
+  "order": 1,
+  "titleEn": "Verb Tenses (sample)",
+  "titleEs": "Tiempos verbales (muestra)",
+  "icon": "clock",
+  "descriptionEs": "Muestra de pruebas: no se carga en la app.",
+  "topics": [
+    {
+      "id": "sample-past-simple",
+      "name": "Past Simple",
+      "nameEs": "Pasado simple",
+      "level": "A2",
+      "summaryEs": "Acciones terminadas en un momento concreto del pasado.",
+      "keywords": ["yesterday", "ago", "last week", "did", "pasado", "ayer"],
+      "categories": ["tense", "auxiliary"],
+      "explanationEs": [
+        "Usa el pasado simple para algo que empezó y terminó en el pasado, sobre todo si dices cuándo: yesterday, last week, two days ago.",
+        "En negativa y pregunta el pasado lo lleva «did», y el verbo vuelve a su forma base: «I didn't go», no «I didn't went»."
+      ],
+      "forms": {
+        "affirmative": { "pattern": "Sujeto + verbo en pasado (-ed o irregular)", "examples": [{ "en": "We visited my aunt last Sunday.", "es": "Visitamos a mi tía el domingo pasado." }] },
+        "negative": { "pattern": "Sujeto + didn't + verbo base", "examples": [{ "en": "He didn't call me back.", "es": "No me devolvió la llamada." }] },
+        "question": { "pattern": "Did + sujeto + verbo base?", "examples": [{ "en": "Did you finish the report?", "es": "¿Terminaste el informe?" }] }
+      },
+      "examples": [
+        { "en": "I moved to Madrid in 2019.", "es": "Me mudé a Madrid en 2019." },
+        { "en": "The meeting started late.", "es": "La reunión empezó tarde." },
+        { "en": "She bought a new laptop last month.", "es": "Se compró un portátil nuevo el mes pasado.", "noteEs": "«buy» es irregular: bought." },
+        { "en": "We didn't have time for lunch.", "es": "No tuvimos tiempo para comer." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I didn't went to work.", "right": "I didn't go to work.", "whyEs": "Con «didn't» el verbo va en forma base: el pasado ya lo marca «did»." },
+        { "wrong": "Where you went yesterday?", "right": "Where did you go yesterday?", "whyEs": "En español basta la entonación; en inglés la pregunta necesita «did»." }
+      ],
+      "related": ["sample-present-perfect", "sample-past-continuous"],
+      "exercises": [
+        { "id": "sample-past-simple-1", "type": "choice", "prompt": "Last August my cousins ____ all the way to Lisbon.", "options": ["drove", "drive", "have driven", "did drove"], "answer": 0, "whyEs": "«Last August» es un momento terminado: pasado simple.", "trapsEs": ["", "Presente: no encaja con «last August».", "El presente perfecto no va con un momento terminado.", "«did» + pasado no existe en afirmativa."] },
+        { "id": "sample-past-simple-2", "type": "gap", "prompt": "My phone ____ (stop) working two days ago.", "answers": ["stopped"], "whyEs": "«two days ago»: pasado simple; «stop» dobla la p: stopped." },
+        { "id": "sample-past-simple-3", "type": "order", "words": ["you", "the", "Did", "email", "read"], "answer": "Did you read the email", "whyEs": "Pregunta en pasado: Did + sujeto + verbo base." },
+        { "id": "sample-past-simple-4", "type": "choice", "prompt": "She ____ the keys, so she couldn't open the door.", "options": ["lose", "lost", "losed", "has lose"], "answer": 1, "whyEs": "«lose» es irregular: lost.", "trapsEs": ["Forma base: falta el pasado.", "", "«lose» es irregular: no lleva -ed.", "No existe: sería «has lost», y aquí va pasado simple."] },
+        { "id": "sample-past-simple-5", "type": "gap", "prompt": "We ____ (not / see) the end of the film.", "answers": ["didn't see", "did not see"], "whyEs": "Negativa en pasado: didn't + verbo base." },
+        { "id": "sample-past-simple-6", "type": "order", "words": ["late", "train", "The", "arrived"], "answer": "The train arrived late", "whyEs": "Orden básico: sujeto + verbo + complemento." }
+      ],
+      "speaking": [
+        { "promptEs": "Cuéntale a tu profe qué hiciste el fin de semana.", "modelEn": "On Saturday I went to the beach with my friends.", "checkEs": "Verbos en pasado simple (went, had, saw)." },
+        { "promptEs": "Di algo que NO hiciste ayer.", "modelEn": "I didn't go to the gym yesterday.", "checkEs": "didn't + verbo base." }
+      ],
+      "classFocusEn": "Practise the past simple to talk about finished events (yesterday, last week, ago). Gently correct 'didn't went' and questions without 'did'."
+    },
+    {
+      "id": "sample-present-perfect",
+      "name": "Present Perfect",
+      "nameEs": "Presente perfecto",
+      "level": "B1",
+      "summaryEs": "Experiencias y cosas del pasado que importan ahora, sin decir cuándo.",
+      "keywords": ["have + participle", "ever", "never", "already", "yet", "he hecho"],
+      "categories": ["tense"],
+      "explanationEs": [
+        "El presente perfecto une el pasado con ahora: experiencias (I've been to Rome) o resultados que se notan hoy (I've lost my keys).",
+        "No lleva un momento terminado: «I've seen it yesterday» está mal; con yesterday, pasado simple."
+      ],
+      "forms": {
+        "affirmative": { "pattern": "Sujeto + have/has + participio", "examples": [{ "en": "I've already sent the invoice.", "es": "Ya he enviado la factura." }] },
+        "negative": { "pattern": "Sujeto + haven't/hasn't + participio", "examples": [{ "en": "She hasn't replied yet.", "es": "Todavía no ha contestado." }] },
+        "question": { "pattern": "Have/Has + sujeto + participio?", "examples": [{ "en": "Have you ever tried sushi?", "es": "¿Has probado alguna vez el sushi?" }] }
+      },
+      "examples": [
+        { "en": "I've worked here for three years.", "es": "Llevo tres años trabajando aquí." },
+        { "en": "Have you seen my charger?", "es": "¿Has visto mi cargador?" },
+        { "en": "We've never been to Japan.", "es": "Nunca hemos estado en Japón." },
+        { "en": "The price has gone up.", "es": "El precio ha subido." }
+      ],
+      "commonMistakes": [
+        { "wrong": "I have seen him yesterday.", "right": "I saw him yesterday.", "whyEs": "Con un momento terminado (yesterday) el inglés exige pasado simple, aunque en español digas «lo he visto»." },
+        { "wrong": "I live here since 2020.", "right": "I have lived here since 2020.", "whyEs": "Para algo que empezó en el pasado y sigue, inglés usa presente perfecto con «since»." }
+      ],
+      "related": ["sample-past-simple"],
+      "exercises": [
+        { "id": "sample-present-perfect-1", "type": "choice", "prompt": "____ you ever ____ a marathon?", "options": ["Have / run", "Did / ran", "Are / running", "Have / ran"], "answer": 0, "whyEs": "Experiencia con «ever»: Have + participio (run).", "trapsEs": ["", "«Did» va con el verbo base, y «ever» pide presente perfecto.", "Presente continuo: no expresa experiencia.", "El participio de «run» es «run», no «ran»."] },
+        { "id": "sample-present-perfect-2", "type": "gap", "prompt": "I ____ (not / finish) my homework yet.", "answers": ["haven't finished", "have not finished"], "whyEs": "«yet» en negativa: haven't + participio." },
+        { "id": "sample-present-perfect-3", "type": "order", "words": ["already", "has", "She", "left"], "answer": "She has already left", "whyEs": "«already» va entre have/has y el participio." },
+        { "id": "sample-present-perfect-4", "type": "choice", "prompt": "We ____ in this flat since March.", "options": ["live", "are living", "have lived", "lived"], "answer": 2, "whyEs": "«since» + algo que sigue: presente perfecto.", "trapsEs": ["Presente simple: el español lo permite, el inglés no con «since».", "Presente continuo: tampoco expresa «desde».", "", "Pasado simple: daría a entender que ya no vives ahí."] },
+        { "id": "sample-present-perfect-5", "type": "gap", "prompt": "How long ____ you ____ (know) Ana?", "answers": ["have / known"], "whyEs": "«How long» con verbo de estado: have + known." },
+        { "id": "sample-present-perfect-6", "type": "order", "words": ["never", "I've", "a", "seen", "whale"], "answer": "I've never seen a whale", "whyEs": "«never» va entre have y el participio." }
+      ],
+      "speaking": [
+        { "promptEs": "Cuenta una experiencia que hayas tenido alguna vez.", "modelEn": "I've climbed a volcano in Guatemala.", "checkEs": "have/has + participio, sin decir cuándo." },
+        { "promptEs": "Di cuánto tiempo llevas en tu trabajo actual.", "modelEn": "I've worked at my company for two years.", "checkEs": "have + participio con for o since." }
+      ],
+      "classFocusEn": "Practise the present perfect for experiences and unfinished time (ever, never, for, since). Correct 'I have seen him yesterday'."
+    }
+  ]
+}
