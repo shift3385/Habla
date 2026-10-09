@@ -116,7 +116,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
    - **El micrófono solo está abierto mientras grabas.** Al entrar a la clase se abre un instante para pedir el permiso y elegir el micro, y se cierra. El punto verde de Android ya no se queda encendido toda la clase.
    - **⌨️ Teclado** (a la derecha del micrófono): cambia a escribir tu respuesta. El icono del micrófono te devuelve a hablar. Las respuestas escritas también se corrigen, pero no cuentan para la velocidad ni las pausas, ni para tu nivel al hablar.
 3. Debajo de tu frase aparecen tus métricas de ese turno: palabras por minuto, número de palabras y pausas de más de 1 s.
-4. Si cometiste errores, debajo de tu frase aparecen **todas las correcciones**: tu frase tachada → la correcta, con una explicación corta. Con la **fonética** activa, ahí mismo ves también tu **nota de pronunciación** (ver abajo).
+4. Si cometiste errores, debajo de tu frase aparecen **todas las correcciones**: tu frase tachada → la correcta, con una explicación corta. Desde la 5.9.1, el botón ▶ junto a la correcta te dice cómo se pronuncia; mientras suena se convierte en ⏸ para pararla (igual que todos los botones de escuchar, salvo en el test de nivel). Con la **fonética** activa, ahí mismo ves también tu **nota de pronunciación** (ver abajo).
 5. El profe te responde por voz (1 a 3 frases) y siempre termina con una pregunta.
 
 Otros controles:
@@ -144,7 +144,7 @@ Gemini corrige **qué** dices; Azure Speech mide **cómo** lo pronuncias. Las do
 3. Marca el **plan** que tiene tu recurso: F0 (gratis), S0 Batch (≈ $0.18/h) o S0 Pago por uso (≈ $1.30/h). La app **no cambia el plan**: eso se hace en el portal de Azure.
 4. Activa **Usar corrector fonético**. Con el plan F0, al abrir la app se activa sola mientras queden horas.
 
-**Dónde funciona** (desde la 5.9): en la clase, las prácticas y los temas, en el **repaso** (comparando con la frase correcta) y en el **test** (solo informativa). En todos esos sitios hay un interruptor **Fonética** para encenderla o apagarla; es el mismo ajuste que aquí.
+**Dónde funciona** (desde la 5.9): en la clase, las prácticas y los temas, en el **repaso** (desde la 5.9.1, sobre lo que dijiste, no sobre la frase de la tarjeta) y en el **test** (solo informativa). En todos esos sitios hay un interruptor **Fonética** para encenderla o apagarla; es el mismo ajuste que aquí.
 
 **Límite de 60 s:** el servicio de Azure solo evalúa audios de hasta 60 s. Desde la 5.9, toda respuesta dura como mucho 60 s (con o sin fonética). La grabación se convierte en el teléfono a WAV 16 kHz (unos milisegundos).
 

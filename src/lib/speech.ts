@@ -10,6 +10,20 @@ export interface SpeechAnalysis {
 const FRAME_S = 0.02
 const PAUSE_S = 1.0
 
+// Una grabación real de voz pesa ~3 KB por segundo (Opus a 24 kbps). Por debajo de esto, sin poder decodificarla,
+// solo lleva la cabecera WebM.
+const MIN_AUDIO_BYTES = 1024
+
+/**
+ * Error 400 del repaso (2026-10-08): al desconectar los auriculares Bluetooth el micro seguía en ellos y cada
+ * grabación salía con solo la cabecera WebM (unos cientos de bytes). `blob.size === 0` no la detectaba y
+ * `analyzeSpeech` devolvía null (no se puede decodificar), así que se mandaba a Gemini sin audio: «Request contains
+ * an invalid argument». Con esto, la pantalla dice «No te he oído» y no se envía nada.
+ */
+export function isEmptyRecording(blob: Blob, analysis: SpeechAnalysis | null): boolean {
+  return blob.size === 0 || (analysis === null && blob.size < MIN_AUDIO_BYTES)
+}
+
 export async function analyzeSpeech(blob: Blob): Promise<SpeechAnalysis | null> {
   const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
   if (!Ctx) return null

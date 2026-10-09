@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { whenBackground } from '../lib/lifecycle'
 import { dictate } from '../lib/dictation'
 import { isAborted } from '../lib/gemini'
-import { MicError, Recorder } from '../lib/recorder'
+import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { fastModels, type Settings } from '../lib/settings'
-import { analyzeSpeech, blobToBase64 } from '../lib/speech'
+import { analyzeSpeech, blobToBase64, isEmptyRecording } from '../lib/speech'
 import { Icon } from '../ui/icons'
 import type { MascotElement } from '../ui/Mascot'
 import type { ThemeVars } from '../ui/theme'
@@ -100,7 +100,10 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
       if (!alive()) return
       const analysis = await analyzeSpeech(blob)
       if (!alive()) return
-      if (seconds < 0.7 || blob.size === 0 || (analysis && !analysis.hasSpeech)) {
+      // Error 400 del repaso (2026-10-08): una grabación con solo la cabecera tampoco se manda a Gemini.
+      const empty = isEmptyRecording(blob, analysis)
+      if (empty) distrustMic()
+      if (seconds < 0.7 || empty || (analysis && !analysis.hasSpeech)) {
         setMicHint('No te he oído. Toca el micrófono y dilo otra vez.')
         return
       }

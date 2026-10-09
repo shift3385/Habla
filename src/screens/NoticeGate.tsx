@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import MascotPage from '../components/MascotPage'
-import { APP_VERSION, RELEASES } from '../lib/changelog'
+import { APP_VERSION, findRelease, RELEASES } from '../lib/changelog'
 import type { Notice } from '../lib/notices'
 import type { SavedClass } from '../lib/savedClass'
 import type { Skill } from '../lib/db'
@@ -64,7 +64,9 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
   }
 
   if (notice === 'news') {
-    const r = RELEASES.find((x) => x.v === APP_VERSION) ?? RELEASES[0]
+    // Un parche (5.9.1) se busca dentro de su versión: antes no se encontraba y salían las novedades de la última.
+    const found = findRelease(APP_VERSION)
+    const r = found?.release ?? RELEASES[0]
     const items: [IconName, string][] = [
       ...(r.added ?? []).map((x) => ['spark', x] as [IconName, string]),
       ...(r.improved ?? []).map((x) => ['bolt', x] as [IconName, string]),
@@ -75,7 +77,7 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
         element={element}
         mood="happy"
         step={step}
-        title={`Novedades de la v${APP_VERSION}`}
+        title={found?.parent ? `Parche de seguridad ${APP_VERSION}` : `Novedades de la v${APP_VERSION}`}
         subtitle={r.title}
         primary={{
           label: last ? 'Entrar' : 'Siguiente',

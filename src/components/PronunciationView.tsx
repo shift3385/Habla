@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { pronunciationLine, weakWords, type PronResult } from '../lib/pronunciation'
+import { speakingKey } from '../lib/speaking'
+import { stopSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
+import SpeakIcon from './SpeakIcon'
 
 /** Qué mide cada nota de Azure, contado para el alumno. */
 const HELP: Record<string, string> = {
@@ -12,8 +15,12 @@ const HELP: Record<string, string> = {
 
 const verdict = (x: number) => (x >= 80 ? 'bien' : x >= 60 ? 'a mejorar' : 'a practicar')
 
-/** La pronunciación de tu respuesta (Azure): nota, cuatro medidas, una frase del coach y las palabras a cuidar. */
-export default function PronunciationView({ r, onSay }: { r: PronResult; onSay: (word: string) => void }) {
+/**
+ * La pronunciación de tu respuesta (Azure): nota, cuatro medidas, una frase del coach y las palabras a cuidar.
+ * `pausable` (v5.9): la palabra que suena muestra ⏸ y se para al tocarla otra vez. Es opcional porque en el test de
+ * nivel no se puede pausar ningún audio (decisión del dueño): allí se usa sin él y queda como antes.
+ */
+export default function PronunciationView({ r, onSay, pausable = false }: { r: PronResult; onSay: (word: string) => void; pausable?: boolean }) {
   const weak = weakWords(r)
   const tone = (x: number) => (x >= 80 ? 'var(--acc)' : x >= 60 ? 'var(--acc2)' : '#f59e0b')
   const items: [string, number | undefined][] = [
@@ -93,11 +100,11 @@ export default function PronunciationView({ r, onSay }: { r: PronResult; onSay: 
           {weak.map((w) => (
             <button
               key={w.word}
-              onClick={() => onSay(w.word)}
+              onClick={() => (pausable && speakingKey() === w.word ? stopSpeaking() : onSay(w.word))}
               className="glass flex min-h-7 max-w-full items-center gap-1 rounded-full px-2.5 py-0.5 text-[12.5px] break-words"
               title="Escúchala bien pronunciada"
             >
-              <Icon name="speaker" size={12} />
+              {pausable ? <SpeakIcon speakKey={w.word} size={12} /> : <Icon name="speaker" size={12} />}
               <b>{w.word}</b>
               {w.phoneme && <span className="txt-sub">/{w.phoneme}/</span>}
             </button>

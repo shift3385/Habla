@@ -1,6 +1,6 @@
 import { Share } from '@capacitor/share'
 import { useState } from 'react'
-import { APP_BUILD, APP_DATE, APP_VERSION, formatDate, RELEASES } from '../lib/changelog'
+import { APP_BUILD, APP_DATE, APP_VERSION, findRelease, formatDate, latestEntry, RELEASES, type Release } from '../lib/changelog'
 import type { Settings } from '../lib/settings'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot from '../ui/Mascot'
@@ -44,9 +44,14 @@ export default function AboutScreen({
   onBack: () => void
 }) {
   const [page, setPage] = useState<Page>(initialPage)
-  const [open, setOpen] = useState(0)
+  // Se abren solas la versión instalada y, si es un parche, ese parche.
+  const [open, setOpen] = useState(() => {
+    const f = findRelease(APP_VERSION)
+    return Math.max(0, RELEASES.indexOf(f?.parent ?? f?.release ?? RELEASES[0]))
+  })
+  const [openPatches, setOpenPatches] = useState<string[]>(() => (findRelease(APP_VERSION)?.parent ? [APP_VERSION] : []))
   const [taps, setTaps] = useState(0)
-  const latest = RELEASES[0]
+  const latest = latestEntry()
   const egg = taps >= 5
 
   const share = (subject: string) =>
@@ -139,11 +144,8 @@ export default function AboutScreen({
         <div className="anim-in flex flex-col gap-2.5">
           {RELEASES.map((r, i) => {
             const isOpen = open === i
-            const groups: [string, IconName, string[] | undefined][] = [
-              ['Nuevo', 'spark', r.added],
-              ['Mejorado', 'bolt', r.improved],
-              ['Corregido', 'wrench', r.fixed],
-            ]
+            const patches = r.patches ?? []
+            const installedPatch = patches.find((p) => p.v === APP_VERSION)
             return (
               <div key={r.v} className="glass overflow-hidden rounded-[26px]">
                 <button onClick={() => setOpen(isOpen ? -1 : i)} className="flex w-full items-center gap-3 px-4 py-3.5 text-left">
@@ -156,35 +158,54 @@ export default function AboutScreen({
                     <span className="block truncate text-[15px] font-semibold">{r.title}</span>
                     <span className="txt-sub block text-[12.5px]">
                       {formatDate(r.date)}
-                      {r.v === APP_VERSION ? ' · instalada' : ''}
+                      {r.v === APP_VERSION ? ' · instalada' : installedPatch ? ` · instalada (${installedPatch.v})` : ''}
+                      {patches.length ? ` · ${patches.length} ${patches.length === 1 ? 'parche' : 'parches'}` : ''}
                     </span>
                   </span>
-                  <span
-                    className="txt-sub grid h-[30px] w-[30px] flex-none place-items-center rounded-full transition-transform duration-300"
-                    style={{ border: '1px solid var(--gb)', transform: isOpen ? 'rotate(180deg)' : 'none' }}
-                  >
-                    <Icon name="chevD" size={15} stroke={2} />
-                  </span>
+                  <Chevron open={isOpen} />
                 </button>
                 {isOpen && (
                   <div className="anim-up flex flex-col gap-3 px-4 pb-4">
-                    {groups
-                      .filter(([, , items]) => items?.length)
-                      .map(([label, icon, items]) => (
-                        <div key={label}>
-                          <div className="txt-acc2 flex items-center gap-2 text-[11px] tracking-[1.2px] uppercase">
-                            <Icon name={icon} size={14} stroke={1.8} />
-                            {label}
-                          </div>
-                          <div className="mt-1.5 flex flex-col gap-1.5">
-                            {items!.map((it) => (
-                              <div key={it} className="field rounded-[14px] px-3 py-2 text-[13.5px] leading-snug" style={{ border: 0 }}>
-                                {it}
-                              </div>
-                            ))}
-                          </div>
+                    <ReleaseGroups r={r} />
+                    {patches.length > 0 && (
+                      // Parches de seguridad y corrección de esta versión: debajo de lo que trajo, cada uno en su
+                      // propio desplegable (petición del dueño, 2026-10-06).
+                      <div className="flex flex-col gap-2">
+                        <div className="txt-acc2 flex items-center gap-2 text-[11px] tracking-[1.2px] uppercase">
+                          <Icon name="shield" size={14} stroke={1.8} />
+                          Parches de seguridad y corrección
                         </div>
-                      ))}
+                        {patches.map((p) => {
+                          const pOpen = openPatches.includes(p.v)
+                          return (
+                            <div key={p.v} className="field overflow-hidden rounded-[18px]" style={{ border: 0 }}>
+                              <button
+                                onClick={() => setOpenPatches((l) => (pOpen ? l.filter((x) => x !== p.v) : [...l, p.v]))}
+                                className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left"
+                                aria-expanded={pOpen}
+                              >
+                                <span className="glass grid h-[26px] min-w-[50px] flex-none place-items-center rounded-[13px] px-2 text-[12px] font-semibold">
+                                  {p.v}
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                  <span className="block text-[13.5px] leading-snug font-semibold">Parche de seguridad {p.v}</span>
+                                  <span className="txt-sub block text-[12px]">
+                                    {formatDate(p.date)}
+                                    {p.v === APP_VERSION ? ' · instalado' : ''}
+                                  </span>
+                                </span>
+                                <Chevron open={pOpen} small />
+                              </button>
+                              {pOpen && (
+                                <div className="anim-up flex flex-col gap-3 px-3 pb-3">
+                                  <ReleaseGroups r={p} />
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -295,5 +316,47 @@ export default function AboutScreen({
         />
       )}
     </div>
+  )
+}
+
+/** Nuevo · Mejorado · Corregido de una versión o de un parche. */
+function ReleaseGroups({ r }: { r: Release }) {
+  const groups: [string, IconName, string[] | undefined][] = [
+    ['Nuevo', 'spark', r.added],
+    ['Mejorado', 'bolt', r.improved],
+    ['Corregido', 'wrench', r.fixed],
+  ]
+  return (
+    <>
+      {groups
+        .filter(([, , items]) => items?.length)
+        .map(([label, icon, items]) => (
+          <div key={label}>
+            <div className="txt-acc2 flex items-center gap-2 text-[11px] tracking-[1.2px] uppercase">
+              <Icon name={icon} size={14} stroke={1.8} />
+              {label}
+            </div>
+            <div className="mt-1.5 flex flex-col gap-1.5">
+              {items!.map((it) => (
+                <div key={it} className="field rounded-[14px] px-3 py-2 text-[13.5px] leading-snug" style={{ border: 0 }}>
+                  {it}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+    </>
+  )
+}
+
+function Chevron({ open, small = false }: { open: boolean; small?: boolean }) {
+  const size = small ? 26 : 30
+  return (
+    <span
+      className="txt-sub grid flex-none place-items-center rounded-full transition-transform duration-300"
+      style={{ width: size, height: size, border: '1px solid var(--gb)', transform: open ? 'rotate(180deg)' : 'none' }}
+    >
+      <Icon name="chevD" size={small ? 13 : 15} stroke={2} />
+    </span>
   )
 }

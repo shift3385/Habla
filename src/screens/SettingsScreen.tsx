@@ -19,7 +19,7 @@ import { APP_VERSION } from '../lib/changelog'
 import { levelAt, levelIdx, nextRetestAt, trajectoryOf } from '../lib/levels'
 import { getProfile } from '../lib/profile'
 import type { Settings } from '../lib/settings'
-import { englishVoices, speak, type VoiceOption } from '../lib/tts'
+import { englishVoices, toggleSpeak, useSpeaking, type VoiceOption } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import Switch from '../ui/Switch'
 import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars, teacherName } from '../ui/theme'
@@ -246,7 +246,9 @@ function Selected() {
 
 function VoicePage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   const [voices, setVoices] = useState<VoiceOption[]>([])
-  const [testing, setTesting] = useState(false)
+  // v5.9: «Probar voz» es ▶/⏸ como el resto: tocar otra vez la para, y el estado sale de lib/speaking.
+  const testPhrase = `Hi! I'm ${teacherName(settings.theme)}. What would you like to talk about today?`
+  const testing = useSpeaking(testPhrase)
   const teacher = TEACHERS[settings.teacher]
 
   useEffect(() => {
@@ -256,9 +258,7 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
   }, [settings.teacher])
 
   const test = async () => {
-    setTesting(true)
-    await speak(`Hi! I'm ${teacherName(settings.theme)}. What would you like to talk about today?`, settings.ttsRate, settings.voiceIndex).catch(() => {})
-    setTesting(false)
+    await toggleSpeak(testPhrase, settings.ttsRate, settings.voiceIndex)
   }
 
   return (
@@ -322,8 +322,8 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
           <Switch on={settings.earMode} />
         </button>
         <button onClick={test} className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
-          <Icon name="speakerWave" size={18} />
-          {testing ? `${teacherName(settings.theme)} hablando…` : 'Probar voz'}
+          <Icon name={testing ? 'pause' : 'speakerWave'} size={18} stroke={testing ? 2.2 : 1.7} />
+          {testing ? `${teacherName(settings.theme)} hablando… · parar` : 'Probar voz'}
         </button>
         <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
           <Icon name="headphones" size={18} />

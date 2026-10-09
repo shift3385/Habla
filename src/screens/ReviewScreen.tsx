@@ -9,12 +9,13 @@ import { friendlyError } from '../lib/errors'
 import MascotPage from '../components/MascotPage'
 import PhoneticsToggle from '../components/PhoneticsToggle'
 import PronunciationView from '../components/PronunciationView'
+import SpeakIcon from '../components/SpeakIcon'
 import { runPhonetics } from '../lib/phonetics'
 import type { PronResult } from '../lib/pronunciation'
 import { addPracticeSeconds } from '../lib/stats'
-import { MicError, Recorder } from '../lib/recorder'
+import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
-import { analyzeSpeech, blobToBase64 } from '../lib/speech'
+import { analyzeSpeech, blobToBase64, isEmptyRecording } from '../lib/speech'
 import {
   evaluateDrill,
   archiveCard,
@@ -26,7 +27,7 @@ import {
   syncCards,
   type DrillResult,
 } from '../lib/srs'
-import { speak, stopSpeaking } from '../lib/tts'
+import { speak, stopSpeaking, toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import { TEACHERS, THEME_INFO, type ThemeVars, teacherName } from '../ui/theme'
@@ -133,14 +134,24 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     // v5.9 (AUD-MIC-305): se suelta el micro; entre tarjetas ya no queda abierto.
     const { blob, seconds } = await recorder.current.finish()
     const analysis = await analyzeSpeech(blob)
+    // Error 400 del repaso (2026-10-08): una grabación sin audio (micro de unos auriculares ya desconectados) no se
+    // manda a Gemini, y la próxima vuelve a buscar un micro que funcione.
+    const empty = isEmptyRecording(blob, analysis)
+    if (empty) distrustMic()
+    const heard = seconds >= 0.8 && !empty && analysis?.hasSpeech !== false
     // v5.9: lo hablado en el repaso cuenta para la meta diaria y la racha.
-    if (analysis?.hasSpeech !== false) addPracticeSeconds(analysis?.speechSeconds ?? seconds)
-    // v5.9: con la fonética activa, Azure puntúa la frase en paralelo (referencia: la respuesta correcta).
-    const job = seconds >= 0.8 && analysis?.hasSpeech !== false ? runPhonetics(settings, update, blob, async () => card.answerEn) : null
+    if (heard) addPracticeSeconds(analysis?.speechSeconds ?? seconds)
+    // v5.9: con la fonética activa, Azure puntúa la frase en paralelo. La referencia es lo que DIJISTE (la
+    // transcripción de Gemini), como en la clase: con la respuesta de la tarjeta, Azure marcaba como «te la comiste»
+    // palabras que nunca dijiste («speaks about loyalty» contra «talks about the loyalty»: «the», «talks»).
+    let giveReference: (t: string) => void = () => {}
+    const reference = new Promise<string>((r) => (giveReference = r))
+    const job = heard ? runPhonetics(settings, update, blob, () => reference) : null
     const mine = ++pronTry.current
     setPron(job ? 'pending' : null)
     job?.then((r) => pronTry.current === mine && setPron(r))
-    if (seconds < 0.8 || (analysis && !analysis.hasSpeech)) {
+    if (!heard) {
+      giveReference('')
       setError('No te he oído. Inténtalo otra vez.')
       setStep('ask')
       return
@@ -152,10 +163,13 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
         card,
         { base64: await blobToBase64(blob), mimeType: blob.type.split(';')[0] || 'audio/webm' },
       )
+      giveReference(r.transcript)
       setResult(r)
       setStep('result')
       speak(card.answerEn, settings.ttsRate, settings.voiceIndex).catch(() => {})
     } catch (e) {
+      // Sin transcripción, Azure da su nota sin referencia (lo que entendió él).
+      giveReference('')
       setError(friendlyError(e))
       setStep('ask')
     }
@@ -296,9 +310,9 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
                 Dijiste: <i>"{result.transcript}"</i>
               </div>
             )}
-            <button onClick={() => speak(card.answerEn, settings.ttsRate, settings.voiceIndex)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left">
+            <button onClick={() => toggleSpeak(card.answerEn, settings.ttsRate, settings.voiceIndex)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left">
               <span className="btn-acc grid h-9 w-9 flex-none place-items-center rounded-full">
-                <Icon name="speaker" size={16} />
+                <SpeakIcon speakKey={card.answerEn} size={16} />
               </span>
               <span className="text-[16px] font-semibold">{card.answerEn}</span>
             </button>
@@ -306,7 +320,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
             {card.hintEs && <div className="txt-sub text-[13px] leading-snug">💡 {card.hintEs}</div>}
             {pron === 'pending' && <div className="txt-sub text-[12.5px]">Azure está puntuando tu pronunciación…</div>}
             {pron && pron !== 'pending' && typeof pron !== 'string' && (
-              <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} />
+              <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} pausable />
             )}
             {typeof pron === 'string' && pron !== 'pending' && <div className="txt-sub text-[12px]">Sin nota de pronunciación: {pron}</div>}
           </div>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import InfiniteList from '../components/InfiniteList'
 import ReportView from '../components/ReportView'
+import SpeakIcon from '../components/SpeakIcon'
 import TrendChart from '../components/TrendChart'
 import { db, turnCorrections, type Correction, type Session } from '../lib/db'
 import { getScenario } from '../lib/scenarios'
 import type { Settings } from '../lib/settings'
 import { errorSummary, loadDashboard, weekMinutes, wordsCollected, type Dashboard, type ErrorSummary } from '../lib/stats'
-import { speak } from '../lib/tts'
+import { toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Segmented from '../ui/Segmented'
 import { SmallRing } from './Home'
@@ -187,7 +188,7 @@ export default function ProgressScreen({
               render={(w) => (
                 <button
                   key={w.en}
-                  onClick={() => speak(w.en, settings.ttsRate, settings.voiceIndex)}
+                  onClick={() => toggleSpeak(w.en, settings.ttsRate, settings.voiceIndex)}
                   className="glass flex items-center gap-2.5 rounded-[20px] px-4 py-2.5 text-left"
                   aria-label={`Escuchar ${w.en}`}
                 >
@@ -201,7 +202,7 @@ export default function ProgressScreen({
                     )}
                   </div>
                   <span className="txt-acc2 flex-none">
-                    <Icon name="speaker" size={16} />
+                    <SpeakIcon speakKey={w.en} size={16} />
                   </span>
                 </button>
               )}

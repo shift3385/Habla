@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { applyAudioMode, type AudioMode } from '../lib/audioRoute'
 import type { Settings } from '../lib/settings'
-import { speak, stopSpeaking } from '../lib/tts'
+import { speak, stopSpeaking, useSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import { THEME_INFO, teacherName, type ThemeVars } from '../ui/theme'
 import MascotPage from './MascotPage'
@@ -42,18 +42,18 @@ type Step = 'hear' | 'notHeard' | 'talk' | 'notTalk' | 'micError' | 'passed'
 
 export default function SoundTest({ settings, t, mode, headsetName, onPassed, onUsePhoneMic, onChooseOther }: Props) {
   const [step, setStep] = useState<Step>('hear')
-  const [speaking, setSpeaking] = useState(false)
   const levelRef = useRef(0)
   const name = teacherName(settings.theme)
   const mascot = THEME_INFO[settings.theme].mascot
   const where = mode === 'none' || mode === 'phone' ? 'el altavoz del teléfono' : 'tus auriculares'
   const micWhere = mode === 'headset' ? 'el micrófono de tus auriculares' : 'el micrófono del teléfono'
 
+  // v5.9: «hablando» sale del estado común de la voz (lib/speaking): se apaga solo al terminar o si algo la para.
+  const phrase = `Hi! I'm ${name}. Can you hear me?`
+  const speaking = useSpeaking(phrase)
   const say = useCallback(async () => {
-    setSpeaking(true)
-    await speak(`Hi! I'm ${name}. Can you hear me?`, settings.ttsRate, settings.voiceIndex).catch(() => {})
-    setSpeaking(false)
-  }, [name, settings.ttsRate, settings.voiceIndex])
+    await speak(phrase, settings.ttsRate, settings.voiceIndex).catch(() => {})
+  }, [phrase, settings.ttsRate, settings.voiceIndex])
 
   // Paso 1: la frase suena al entrar (y al volver a este paso).
   useEffect(() => {
@@ -136,9 +136,12 @@ export default function SoundTest({ settings, t, mode, headsetName, onPassed, on
         primary={{ label: 'Sí, te oigo', onClick: () => setStep('talk') }}
         secondary={{ label: 'No te oigo', onClick: () => setStep('notHeard') }}
       >
-        <button onClick={say} disabled={speaking} className="field mx-auto flex h-12 items-center gap-2 rounded-3xl px-5 text-[15px] font-medium">
-          <Icon name="speakerWave" size={18} />
-          {speaking ? `${name} hablando…` : 'Repetir'}
+        <button
+          onClick={() => (speaking ? stopSpeaking().catch(() => {}) : say())}
+          className="field mx-auto flex h-12 items-center gap-2 rounded-3xl px-5 text-[15px] font-medium"
+        >
+          <Icon name={speaking ? 'pause' : 'speakerWave'} size={18} stroke={speaking ? 2.2 : 1.7} />
+          {speaking ? `${name} hablando… · parar` : 'Repetir'}
         </button>
       </MascotPage>
     )

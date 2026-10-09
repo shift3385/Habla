@@ -1,6 +1,7 @@
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import CorrectionView from '../components/CorrectionView'
+import SpeakIcon from '../components/SpeakIcon'
 import ReportView from '../components/ReportView'
 import LookupSheet from '../components/LookupSheet'
 import PrepareScreen, { type PrepareState } from '../components/PrepareScreen'
@@ -14,15 +15,16 @@ import { levelIdx, updateTrajectoryFromPractice, type TrajectoryChange } from '.
 import { generateReport, sessionMetrics, turnMetrics } from '../lib/fluency'
 import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/gemini'
 import { getProfile } from '../lib/profile'
-import { MicError, Recorder } from '../lib/recorder'
+import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
 import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
 import { fastModels, mainModels, type Settings } from '../lib/settings'
-import { analyzeSpeech, blobToBase64, type SpeechAnalysis } from '../lib/speech'
+import { analyzeSpeech, blobToBase64, isEmptyRecording, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
-import { speak, stopSpeaking } from '../lib/tts'
+import { speak, stopSpeaking, toggleSpeak } from '../lib/tts'
+import { speakingKey } from '../lib/speaking'
 import type { PronResult } from '../lib/pronunciation'
 import { phoneticsActive, runPhonetics } from '../lib/phonetics'
 import { MAX_SECONDS } from '../lib/wav'
@@ -492,7 +494,11 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
     try {
       // Análisis local: si no hay voz, ni siquiera se llama a Gemini.
       const analysis = await analyzeSpeech(blob)
-      if (analysis && !analysis.hasSpeech) {
+      // Error 400 del repaso (2026-10-08): una grabación con solo la cabecera (micro de unos auriculares
+      // desconectados) no se manda, y la próxima vuelve a buscar un micro que funcione.
+      const empty = isEmptyRecording(blob, analysis)
+      if (empty) distrustMic()
+      if (empty || (analysis && !analysis.hasSpeech)) {
         setHint('No te he oído. Habla un poco más fuerte o más cerca del micrófono.')
         setPhase('idle')
         return
@@ -860,11 +866,11 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                     {chips.map((v) => (
                       <button
                         key={v.en}
-                        onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}
+                        onClick={() => toggleSpeak(v.en, settings.ttsRate, settings.voiceIndex)}
                         className="field flex w-full items-start gap-2 rounded-[16px] px-3 py-2 text-left text-[13.5px] leading-snug"
                       >
                         <span className="txt-acc2 mt-0.5 flex-none">
-                          <Icon name="speaker" size={14} stroke={1.8} />
+                          <SpeakIcon speakKey={v.en} size={14} stroke={1.8} />
                         </span>
                         <span className="min-w-0 flex-1 break-words">
                           <b className="block font-semibold">{v.en}</b>
@@ -878,10 +884,10 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                     {chips.map((v) => (
                       <button
                         key={v.en}
-                        onClick={() => speak(v.en, settings.ttsRate, settings.voiceIndex)}
+                        onClick={() => toggleSpeak(v.en, settings.ttsRate, settings.voiceIndex)}
                         className="field flex min-h-8 max-w-full items-center gap-1.5 rounded-2xl px-2.5 py-1 text-left text-[13px] break-words"
                       >
-                        <Icon name="speaker" size={13} stroke={1.8} />
+                        <SpeakIcon speakKey={v.en} size={13} stroke={1.8} />
                         <span className="min-w-0">
                           <b className="font-semibold">{v.en}</b>
                           <span className="txt-sub"> · {v.es}</span>
@@ -971,7 +977,7 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
                     <CorrectionView key={k} c={c} />
                   ))}
                   {pron ? (
-                    <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} />
+                    <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} pausable />
                   ) : pronWaiting ? (
                     <div className="txt-sub flex items-center gap-1.5 text-[12px]">
                       <Icon name="ear" size={13} /> Revisando tu pronunciación…
@@ -985,11 +991,12 @@ export default function Conversation({ scenarioId, categoryId, customTopic, plan
               )}
               <div className="mt-2 flex gap-3.5">
                 <button
-                  onClick={() => say(m.text)}
+                  // v5.9: si este mensaje es el que suena (leído solo o con Repetir), tocar lo para.
+                  onClick={() => (speakingKey() === m.text ? stopSpeaking() : say(m.text))}
                   disabled={phase !== 'idle' && phase !== 'speaking'}
                   className="txt-sub flex items-center gap-1 text-[12.5px]"
                 >
-                  <Icon name="speaker" size={14} stroke={1.8} />
+                  <SpeakIcon speakKey={m.text} size={14} stroke={1.8} />
                   Repetir
                 </button>
                 {m.translation && (

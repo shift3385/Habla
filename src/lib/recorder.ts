@@ -64,6 +64,17 @@ export function trustDefaultMic() {
   defaultOk = true
 }
 
+/**
+ * Una grabación salió vacía (p. ej. auriculares Bluetooth desconectados sin que llegara el aviso): se olvida el
+ * micrófono elegido y la confianza en el de por defecto, así la próxima apertura vuelve a medir la señal y busca
+ * uno que funcione (normalmente el del teléfono) en vez de repetir el mismo micro muerto.
+ */
+export function distrustMic() {
+  chosen = null
+  defaultOk = false
+  recorders.forEach((r) => r.releaseIfIdle())
+}
+
 /** Cambia cómo se abre el micrófono (lo llama el selector de audio). Se aplica en la próxima grabación. */
 export function setMicMode(mode: MicMode) {
   if (mode === micMode) return

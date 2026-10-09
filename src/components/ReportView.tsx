@@ -1,8 +1,9 @@
 import type { Correction, SessionMetrics, SessionReport, Topic } from '../lib/db'
-import { speak } from '../lib/tts'
+import { toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import CorrectionView from './CorrectionView'
 import ScoreRing from './ScoreRing'
+import SpeakIcon from './SpeakIcon'
 
 interface Props {
   metrics: SessionMetrics
@@ -81,9 +82,9 @@ export default function ReportView(p: Props) {
             <p className="leading-snug">{p.report.homeworkEs}</p>
           </div>
           {p.report.phrase.en && (
-            <button onClick={() => speak(p.report!.phrase.en, p.ttsRate, p.voiceIndex)} className="glass rounded-[24px] p-4 text-left">
+            <button onClick={() => toggleSpeak(p.report!.phrase.en, p.ttsRate, p.voiceIndex)} className="glass rounded-[24px] p-4 text-left">
               <span className="txt-sub mb-1 flex items-center gap-1.5 text-xs">
-                <Icon name="speaker" size={13} /> Frase del día · toca para oírla
+                <SpeakIcon speakKey={p.report.phrase.en} size={13} /> Frase del día · toca para oírla
               </span>
               <span className="block text-lg font-semibold">"{p.report.phrase.en}"</span>
               <span className="txt-sub block text-sm">{p.report.phrase.es}</span>

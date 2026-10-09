@@ -13,7 +13,8 @@ import {
   type StudyPlan,
 } from '../lib/plan'
 import { mainModels, type Settings } from '../lib/settings'
-import { speak } from '../lib/tts'
+import { toggleSpeak } from '../lib/tts'
+import SpeakIcon from '../components/SpeakIcon'
 import { Icon } from '../ui/icons'
 
 interface Props {
@@ -175,11 +176,11 @@ export default function PlanScreen({ settings, plan, level, onPlanChange, onStar
                                     </span>
                                   </span>
                                   <button
-                                    onClick={() => speak(l.phrases[0]?.en ?? '', settings.ttsRate, settings.voiceIndex)}
+                                    onClick={() => toggleSpeak(l.phrases[0]?.en ?? '', settings.ttsRate, settings.voiceIndex)}
                                     className="txt-sub grid h-8 w-8 flex-none place-items-center"
                                     aria-label="Escuchar una frase de la lección"
                                   >
-                                    <Icon name="speaker" size={15} />
+                                    <SpeakIcon speakKey={l.phrases[0]?.en ?? ''} size={15} />
                                   </button>
                                   <button
                                     onClick={() => onStartLesson(l.id)}

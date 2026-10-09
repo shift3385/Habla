@@ -1,4 +1,7 @@
 import { TextToSpeech } from '@capacitor-community/text-to-speech'
+import { beginSpeaking, endSpeaking, speakingKey } from './speaking'
+
+export { speakingKey, useSpeaking } from './speaking'
 
 export type Gender = 'male' | 'female'
 
@@ -16,6 +19,16 @@ let voiceGender: Gender = 'female'
 export function setTeacherVoice(lang: string, gender: Gender) {
   voiceLang = lang
   voiceGender = gender
+}
+
+// Velocidad y voz elegidas por el usuario (settings.ttsRate / voiceIndex). También las fija App.tsx, igual que la voz
+// del profe: así un botón de reproducir en una pieza pequeña (p. ej. CorrectionView) no necesita recibirlas por props.
+let prefRate = 1
+let prefVoice: number | null = null
+
+export function setVoicePrefs(rate: number, voiceIndex: number | null) {
+  prefRate = rate
+  prefVoice = voiceIndex
 }
 
 // Códigos de las voces de Google TTS en Android (p. ej. "en-gb-x-gbb-network") con su género conocido.
@@ -106,19 +119,27 @@ function interruptCurrent() {
   finishCurrent = null
 }
 
-export async function speak(text: string, rate: number, voiceIndex: number | null): Promise<void> {
+/**
+ * Lee `text`. `key` identifica qué botón muestra ⏸ mientras suena (por defecto, la propia frase: así, cuando el profe
+ * lee un mensaje solo, su botón «Repetir» también pasa a ⏸).
+ */
+export async function speak(text: string, rate: number, voiceIndex: number | null, key: string = text): Promise<void> {
+  const turn = beginSpeaking(key)
   interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
   const auto = voiceIndex === null ? await autoVoice() : null
   const index = voiceIndex ?? auto?.index ?? null
   // Si el teléfono no tiene ninguna voz masculina, al menos bajamos el tono para Leo.
   const pitch = voiceIndex === null && !auto && voiceGender === 'male' ? 0.8 : 1
+  // Si la pararon (o empezó otra) mientras buscábamos la voz, no la lanzamos: sonaría con el botón ya en ▶.
+  if (!turn.active()) return
   return new Promise<void>((resolve, reject) => {
     let done = false
     const finish = () => {
       if (done) return
       done = true
       if (finishCurrent === finish) finishCurrent = null
+      turn.end()
       resolve()
     }
     finishCurrent = finish
@@ -136,12 +157,28 @@ export async function speak(text: string, rate: number, voiceIndex: number | nul
         if (done) return
         done = true
         if (finishCurrent === finish) finishCurrent = null
+        turn.end()
         reject(e)
       })
   })
 }
 
 export async function stopSpeaking(): Promise<void> {
+  endSpeaking()
   interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
+}
+
+/**
+ * Botón ▶/⏸: si esa clave ya suena, la para; si no, la lee (y corta lo que sonara). Sin velocidad ni voz, usa las del
+ * usuario (setVoicePrefs). Nunca rechaza: un fallo del motor de voz solo deja el botón en ▶.
+ */
+export function toggleSpeak(
+  text: string,
+  rate: number = prefRate,
+  voiceIndex: number | null = prefVoice,
+  key: string = text,
+): Promise<void> {
+  if (speakingKey() === key) return stopSpeaking()
+  return speak(text, rate, voiceIndex, key).catch(() => {})
 }

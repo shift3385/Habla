@@ -5,7 +5,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
 - **Dueño:** un ingeniero de software hispanohablante (nivel B1, habla A2) que aprende inglés. **Responde siempre en español.**
 - **Usuarios reales:** el dueño (teléfono POCO), su madre (Samsung Galaxy A11 con la pantalla dañada; usa horizontal forzado) y algunas amistades. Se distribuye **copiando el APK a mano**: no está en ninguna tienda.
 - **Alcance actual:** cada persona usa **su propia clave** de Gemini (y opcionalmente de Azure), que se guarda solo en su teléfono. No hay backend ni cuentas.
-- **Versión actual:** 5.8 (build 33) distribuida. En código: 5.8.1 «Micrófono seguro», 5.8.2 «Claves, datos y consumo» y 5.9 «Transparencia y control» (build 36), pendientes de prueba en el teléfono y APK (`docs/correccion/ESTADO.md`). Se entregan juntas como 5.9. Repo privado: `https://github.com/shift3385/Habla`.
+- **Versión actual:** 5.9.1 (build 37), «Actualización de parches de seguridad y corrección de la v5.9»: APK release en `apk/Habla-v5.9.1.apk` (2026-10-08). La 5.9 (build 36, que incluye la 5.8.1 y la 5.8.2) está instalada en el POCO del dueño; la 5.8 (build 33) sigue en los teléfonos de la madre y las amistades. Detalle de la 5.9.1 en `docs/correccion/NC-v5.9.1.md`. Repo privado: `https://github.com/shift3385/Habla`.
 
 ## Stack
 
@@ -110,7 +110,7 @@ Desde la 5.8.2, `npm run apk` y `npm run apk:debug` usan `--offline` (con intern
 - **Datos sensibles** (claves de Gemini y Azure, secreto de Azure Monitor): solo en Preferences, nunca en copias de seguridad ni en logs. Para ver o cambiar una clave ya guardada se llama a `confirmIdentity()` (deviceAuth).
 - **Pantallas explicativas con la mascota** del tema (`MascotPage`, `MascotSays`, globos): el dueño quiere que la mascota explique las cosas. Las burbujas de ayuda usan la clase `.tip-bubble` (se tiñen con el color del tema).
 - **Diseño:** sin scroll en el Inicio; listas largas dentro de `InfiniteList`; todo debe funcionar en **horizontal** y en pantallas pequeñas (320×640, Galaxy A11).
-- **Versiones:** cada entrega sube `version` y `build` en `version.json` y añade su entrada en `RELEASES` de `changelog.ts` (es lo que ve el usuario en «Novedades»). Semántica acordada el 2026-10-06: correcciones → PATCH (5.8.1), funciones visibles → MINOR (5.9), 6.0 reservada para abrir la app a otras personas.
+- **Versiones:** cada entrega sube `version` y `build` en `version.json` y añade su entrada en `RELEASES` de `changelog.ts` (es lo que ve el usuario en «Novedades»). Un parche (5.9.1) va **dentro de su versión**, en `patches` de la entrada 5.9, nunca como versión suelta: en Novedades sale en su propio desplegable bajo la versión. Semántica acordada el 2026-10-06: correcciones → PATCH (5.8.1), funciones visibles → MINOR (5.9), 6.0 reservada para abrir la app a otras personas.
 - **Commits:** uno por entrega o cambio coherente, en español, terminando con la línea de coautoría que indique el sistema. Push a `main`.
 
 ## Reglas importantes
@@ -121,7 +121,7 @@ Desde la 5.8.2, `npm run apk` y `npm run apk:debug` usan `--offline` (con intern
 4. **Prueba antes de compilar** y solo compila un entregable cuando lo cambiado pase las revisiones. El dueño es muy exigente y quiere evidencias (capturas, medidas).
 5. **No pierdas datos de los usuarios:** instala siempre con `adb install -r`. Antes de cualquier cosa arriesgada en un teléfono ajeno (p. ej. el de su madre), haz copia del estado.
 6. **Política de niveles:** las lecciones solo **proponen**; solo el re-test cambia el nivel (70 % test + 30 % trayectoria). El primer test fija el nivel. Ver `docs/decisiones.md`.
-7. **Siguiente trabajo previsto:** probar la 5.9 (que incluye 5.8.1 y 5.8.2) en el POCO con `docs/correccion/REVISOR-MOVIL.md` (R1–R24), compilar el APK release y que el dueño lo apruebe. Después, el backlog de la auditoría (INFORME §8.5). Estado y reglas en `docs/correccion/ESTADO.md` y `REGLAS.md`; plan en `docs/auditoria/resultados/INFORME.md` §8.
+7. **Siguiente trabajo previsto:** **pendiente E3 de la 5.9.1**: al desconectar los auriculares Bluetooth la app no vuelve al micro del teléfono; reproducirlo en el POCO con «Habla debug» y los auriculares del dueño (`NC-v5.9.1.md` §E3). Probar la 5.9.1 en el POCO con `docs/correccion/REVISOR-MOVIL.md` (R1–R24 más E1, E2, M1–M3) y que el dueño apruebe el APK. Después, el backlog de la auditoría (INFORME §8.5). Estado y reglas en `docs/correccion/ESTADO.md` y `REGLAS.md`; plan en `docs/auditoria/resultados/INFORME.md` §8.
 8. **Con varios teléfonos conectados**, usa siempre `adb -s <serie>` o `ANDROID_SERIAL`. No toques el teléfono de otra persona sin que el dueño lo pida.
 
 ## Documentación relacionada

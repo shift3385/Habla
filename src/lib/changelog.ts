@@ -13,6 +13,27 @@ export interface Release {
   added?: string[]
   fixed?: string[]
   improved?: string[]
+  /**
+   * Parches de seguridad y corrección de esta versión (5.8 → 5.8.1, 5.8.2), del más antiguo al más reciente.
+   * Siempre cuelgan de su versión: en Novedades se ven dentro de ella, cada uno en su propio desplegable.
+   */
+  patches?: Release[]
+}
+
+/** La versión o el parche `v` y, si es un parche, la versión a la que pertenece. */
+export function findRelease(v: string): { release: Release; parent: Release | null } | null {
+  for (const r of RELEASES) {
+    if (r.v === v) return { release: r, parent: null }
+    const p = r.patches?.find((x) => x.v === v)
+    if (p) return { release: p, parent: r }
+  }
+  return null
+}
+
+/** Lo último que salió: el parche más reciente de la última versión, o la versión si no tiene parches. */
+export function latestEntry(): Release {
+  const r = RELEASES[0]
+  return r.patches?.at(-1) ?? r
 }
 
 export const RELEASES: Release[] = [
@@ -52,36 +73,20 @@ export const RELEASES: Release[] = [
       'Prueba de sonido: cada vez que conectas unos auriculares, tu mascota te habla («¿Me oyes?») y luego te pide que digas algo; sigues cuando pasa. Si su micrófono no te oye, puedes hablarle al teléfono y seguir oyendo por los auriculares. También en Ajustes → Profe y voz → Prueba de sonido',
       'Con auriculares, la grabación empieza al momento al tocar el micro (antes tardaba unos 9 s en cada toque)',
     ],
-  },
-  {
-    v: '5.8.2',
-    date: '2026-10-07',
-    title: 'Tus claves y tus datos, más seguros, y menos batería',
-    fixed: [
-      'La app ya no deja leer tus claves desde un ordenador conectado por cable: ahora se instala la versión final, no la de pruebas',
-      'Si pegas una clave de Gemini mal copiada, primero se comprueba con Google: si no vale, sigues con la anterior y la app no se queda sin profe',
-      'Al restaurar una copia, se comprueba entera antes de tocar nada: si está dañada o no es de Habla, te lo explica y tus datos siguen como estaban. Antes de sustituir te dice cuántas sesiones y errores trae',
-      'Si algo falla al abrir la app, ya no se queda la pantalla en negro: te ofrece volver a intentar o exportar tus datos',
-      'Si Google falla al preparar tu plan, ya no lo vuelve a pedir cada vez que vuelves al Inicio: lo intentas tú con «Reintentar», así no gastas tu cuota',
-      'En el acceso a Azure Monitor se comprueban los datos que pegas, y cambiarlos pide tu patrón, PIN o huella',
-    ],
-    improved: [
-      'Menos batería y menos calor: el fondo ya no se mueve y tu mascota solo se anima a tope cuando hace algo; quieta, se dibuja a un ritmo mucho más bajo',
-      'Si tienes activado «Reducir movimiento» en Android, las animaciones que se repiten se paran',
-      'Textos más claros: qué pasa con tu clase a medias si empiezas otra, qué protege tu patrón o PIN, y qué hacer si una clave no es válida',
-    ],
-  },
-  {
-    v: '5.8.1',
-    date: '2026-10-06',
-    title: 'Actualización de parches de seguridad y corrección de la v5.8',
-    fixed: [
-      'Tu micrófono, a salvo: si tocas el micro dos veces seguidas, ya no se queda abierto un segundo micrófono escuchando a escondidas',
-      'Si sales de la app justo mientras se abre el micro, ya no se vuelve a abrir solo, ni en segundo plano ni al volver',
-      'En el Debate y en Tema libre, si vuelves atrás o cierras mientras dictas, el dictado se cancela: se apaga el micro y no se envía nada',
-      'Si apoyas un segundo dedo en el botón de hablar, ya no empieza otra grabación escondida',
-      'En una habitación en silencio, el micro abre en un par de segundos (antes podía tardar más de 10) y no pierde la cancelación de eco, así la voz de tu profe no se cuela en tus respuestas',
-      'Con la app en segundo plano, Android no deja que Habla vuelva a abrir el micrófono',
+    patches: [
+      {
+        v: '5.9.1',
+        date: '2026-10-08',
+        title: 'Actualización de parches de seguridad y corrección de la v5.9',
+        fixed: [
+          'Si desconectas los auriculares, el repaso ya no falla con «Gemini error 400»: una grabación sin sonido no se envía, te digo «No te he oído» y la siguiente vuelve a buscar un micrófono que funcione',
+          'Repaso: la nota de pronunciación se mide sobre lo que dijiste. Si tu frase es correcta aunque no sea la de la tarjeta, ya no te marco palabras que no dijiste',
+        ],
+        improved: [
+          'Junto a cada corrección de la clase y del informe hay un botón para oír cómo se dice la frase correcta',
+          'Todos los botones de escuchar se convierten en pausa mientras suenan: tócalo otra vez para pararlo (en el test de nivel no se puede pausar)',
+        ],
+      },
     ],
   },
   {
@@ -115,6 +120,39 @@ export const RELEASES: Release[] = [
       'Fonética más fiel: si Azure entiende otra palabra («jesterday» → «just stared»), se evalúa contra lo que querías decir',
       'Si Azure no puede evaluar una respuesta, la clase te dice por qué en lugar de callarlo',
       'Tus claves ya no aparecen en el registro interno del teléfono',
+    ],
+    patches: [
+      {
+        v: '5.8.1',
+        date: '2026-10-06',
+        title: 'Actualización de parches de seguridad y corrección de la v5.8',
+        fixed: [
+          'Tu micrófono, a salvo: si tocas el micro dos veces seguidas, ya no se queda abierto un segundo micrófono escuchando a escondidas',
+          'Si sales de la app justo mientras se abre el micro, ya no se vuelve a abrir solo, ni en segundo plano ni al volver',
+          'En el Debate y en Tema libre, si vuelves atrás o cierras mientras dictas, el dictado se cancela: se apaga el micro y no se envía nada',
+          'Si apoyas un segundo dedo en el botón de hablar, ya no empieza otra grabación escondida',
+          'En una habitación en silencio, el micro abre en un par de segundos (antes podía tardar más de 10) y no pierde la cancelación de eco, así la voz de tu profe no se cuela en tus respuestas',
+          'Con la app en segundo plano, Android no deja que Habla vuelva a abrir el micrófono',
+        ],
+      },
+      {
+        v: '5.8.2',
+        date: '2026-10-07',
+        title: 'Tus claves y tus datos, más seguros, y menos batería',
+        fixed: [
+          'La app ya no deja leer tus claves desde un ordenador conectado por cable: ahora se instala la versión final, no la de pruebas',
+          'Si pegas una clave de Gemini mal copiada, primero se comprueba con Google: si no vale, sigues con la anterior y la app no se queda sin profe',
+          'Al restaurar una copia, se comprueba entera antes de tocar nada: si está dañada o no es de Habla, te lo explica y tus datos siguen como estaban. Antes de sustituir te dice cuántas sesiones y errores trae',
+          'Si algo falla al abrir la app, ya no se queda la pantalla en negro: te ofrece volver a intentar o exportar tus datos',
+          'Si Google falla al preparar tu plan, ya no lo vuelve a pedir cada vez que vuelves al Inicio: lo intentas tú con «Reintentar», así no gastas tu cuota',
+          'En el acceso a Azure Monitor se comprueban los datos que pegas, y cambiarlos pide tu patrón, PIN o huella',
+        ],
+        improved: [
+          'Menos batería y menos calor: el fondo ya no se mueve y tu mascota solo se anima a tope cuando hace algo; quieta, se dibuja a un ritmo mucho más bajo',
+          'Si tienes activado «Reducir movimiento» en Android, las animaciones que se repiten se paran',
+          'Textos más claros: qué pasa con tu clase a medias si empiezas otra, qué protege tu patrón o PIN, y qué hacer si una clave no es válida',
+        ],
+      },
     ],
   },
   {

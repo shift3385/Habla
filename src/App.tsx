@@ -28,7 +28,7 @@ import NoticeGate from './screens/NoticeGate'
 import { pendingNotices, type Notice } from './lib/notices'
 import { hasValidFavorites } from './lib/topics'
 import { loadSettings, mainModels, saveSettings, type Settings } from './lib/settings'
-import { setTeacherVoice } from './lib/tts'
+import { setTeacherVoice, setVoicePrefs } from './lib/tts'
 import { applyOrientation } from './lib/orientation'
 import { onPhoneticsQuota, startupCheck } from './lib/phonetics'
 import { RecoveryScreen } from './components/Recovery'
@@ -227,6 +227,7 @@ export default function App() {
     SystemBars.setStyle({ style: settings.mode === 'dark' ? SystemBarsStyle.Dark : SystemBarsStyle.Light }).catch(() => {})
     const teacher = TEACHERS[settings.teacher]
     setTeacherVoice(teacher.lang, teacher.gender)
+    setVoicePrefs(settings.ttsRate, settings.voiceIndex) // v5.9: para los botones ▶ que no reciben los ajustes (CorrectionView)
   }, [settings, t])
 
   const phonChecked = useRef(false)

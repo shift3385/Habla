@@ -53,9 +53,9 @@ import {
 import { getProfile } from '../lib/profile'
 import { buildSummary } from '../lib/testSummary'
 import { clearDraft, clearProgress, loadDraft, loadProgress, saveDraft, saveProgress, type TestDraft, type TestProgress } from '../lib/testDraft'
-import { MicError, Recorder } from '../lib/recorder'
+import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
-import { analyzeSpeech, blobToBase64 } from '../lib/speech'
+import { analyzeSpeech, blobToBase64, isEmptyRecording } from '../lib/speech'
 import { englishVoices, speak, stopSpeaking } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotElement } from '../ui/Mascot'
@@ -593,9 +593,14 @@ export default function Calibration({ settings, update, onDone, onPause, registe
       // v5.9 (AUD-MIC-305): se suelta el micro; entre tareas ya no queda abierto.
       const { blob, seconds } = await recorder.current.finish()
       const analysis = await analyzeSpeech(blob)
-      if (seconds < 5 || blob.size === 0 || (analysis && !analysis.hasSpeech)) {
+      // Error 400 del repaso (2026-10-08): también una grabación con solo la cabecera cuenta como micro que falla.
+      const empty = isEmptyRecording(blob, analysis)
+      if (seconds < 5 || empty || (analysis && !analysis.hasSpeech)) {
         setHint('Necesito oírte un poco más. Inténtalo otra vez y habla al menos 20 segundos.')
-        if (blob.size === 0) setMicFailures((n) => n + 1)
+        if (empty) {
+          distrustMic()
+          setMicFailures((n) => n + 1)
+        }
         return
       }
       const answer: SpeakingAnswer = {

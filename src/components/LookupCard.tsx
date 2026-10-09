@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import type { Lookup } from '../lib/db'
 import { setSaved } from '../lib/lookup'
-import { speak } from '../lib/tts'
+import { speak, toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
+import SpeakIcon from './SpeakIcon'
 
 /** Resultado de una consulta: significado en contexto, por qué, otros significados, registro, ejemplo. */
 export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lookup; ttsRate: number; voiceIndex: number | null }) {
@@ -20,11 +21,11 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lo
       <div className="glass rounded-[24px] p-4">
         <div className="flex items-start gap-3">
           <button
-            onClick={() => speak(r.headword, ttsRate, voiceIndex)}
+            onClick={() => toggleSpeak(r.headword, ttsRate, voiceIndex)}
             className="btn-acc grid h-11 w-11 flex-none place-items-center rounded-full"
             aria-label="Escuchar la pronunciación"
           >
-            <Icon name="speakerWave" size={20} />
+            <SpeakIcon speakKey={r.headword} name="speakerWave" size={20} />
           </button>
           <div className="min-w-0 flex-1">
             <div className="text-[22px] leading-tight font-semibold break-words">{r.headword}</div>
@@ -62,9 +63,9 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lo
       )}
 
       {r.exampleEn && (
-        <button onClick={() => speak(r.exampleEn, ttsRate, voiceIndex)} className="glass rounded-[20px] px-4 py-3 text-left">
+        <button onClick={() => toggleSpeak(r.exampleEn, ttsRate, voiceIndex)} className="glass rounded-[20px] px-4 py-3 text-left">
           <span className="txt-sub mb-0.5 flex items-center gap-1.5 text-xs">
-            <Icon name="speaker" size={12} /> Ejemplo con este mismo sentido
+            <SpeakIcon speakKey={r.exampleEn} size={12} /> Ejemplo con este mismo sentido
           </span>
           <span className="block text-[15px]">{r.exampleEn}</span>
           <span className="txt-sub block text-[13px]">{r.exampleEs}</span>

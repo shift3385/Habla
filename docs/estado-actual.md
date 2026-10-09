@@ -1,4 +1,6 @@
-# Estado actual (2026-10-07, v5.9 build 36 en preparación)
+# Estado actual (2026-10-08, v5.9.1 build 37)
+
+> **v5.9.1 «Actualización de parches de seguridad y corrección de la v5.9»** (build 37, `apk/Habla-v5.9.1.apk`, sin probar aún en el teléfono): el repaso ya no manda grabaciones vacías a Gemini (error 400 al desconectar los auriculares), la fonética del repaso se mide sobre lo que dijiste, ▶ para oír cada corrección, ▶/⏸ en toda la app (salvo el test) y parches dentro de su versión en Novedades. **Pendiente:** E3, volver al micro del teléfono al desconectar los auriculares (reproducir en el POCO). Detalle en `docs/correccion/NC-v5.9.1.md`.
 
 > **v5.8.1 «Micrófono seguro» + v5.8.2 «Claves, datos y consumo»:** código hecho y probado en PC (tipos, lint, `npm test`), ya en `main` (commit `e5d9c1a` y el de cierre de la 5.8.2), **sin APK y sin probar en el teléfono**. Se entregarán juntas, con la 5.9, como 5.9 (build 36). Detalle de la 5.9 en `docs/correccion/NC-v5.9.md`. Seguimiento en `docs/correccion/ESTADO.md` y detalle en `docs/correccion/NC-v5.8.1.md` y `NC-v5.8.2.md`. Lo de abajo describe la v5.8 distribuida.
 
