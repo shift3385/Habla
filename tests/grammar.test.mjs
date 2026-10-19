@@ -241,6 +241,10 @@ test('clase centrada: el brief lleva el tema, el nivel, el foco y las formas', (
   assert.match(b, /OVERRIDES the "chatting with a friend" style/)
   assert.match(b, /How would you say in English/)
   assert.match(b, /What's missing in this sentence/)
+  // P3b (uso real, 2026-10-19): corrige TODOS los errores, no solo los de la regla, y no felicita una respuesta con fallos.
+  assert.match(b, /EVERY real error/)
+  assert.match(b, /Never call an answer "correct"/)
+  assert.doesNotMatch(b, /only if they block understanding/)
   if (t.commonMistakes.length) assert.ok(b.includes(t.commonMistakes[0].wrong), 'incluye los errores típicos')
 })
 
