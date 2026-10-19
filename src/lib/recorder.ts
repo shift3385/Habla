@@ -32,6 +32,8 @@
 //             la voz del profe sigue saliendo por los auriculares con calidad normal.
 //   phone   → todo por el teléfono (detección automática de arriba).
 
+import { releaseAudioFocus, takeAudioFocus } from './audioFocus'
+
 const MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4']
 
 export class MicError extends Error {}
@@ -344,6 +346,7 @@ export class Recorder {
     }
     this.recorder = rec
     rec.start()
+    takeAudioFocus('mic') // v5.10 (P2): la música de otras apps se pausa mientras grabas
     this.startedAt = performance.now()
     return true
   }
@@ -471,6 +474,7 @@ export class Recorder {
 
   /** Suelta el stream y sale del registro, sin cancelar (lo usa una apertura que falla). */
   private release(): void {
+    releaseAudioFocus('mic')
     this.closeMeter()
     stopTracks(this.stream)
     this.stream = null

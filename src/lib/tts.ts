@@ -1,4 +1,5 @@
 import { TextToSpeech } from '@capacitor-community/text-to-speech'
+import { releaseAudioFocus, takeAudioFocus } from './audioFocus'
 import { beginSpeaking, endSpeaking, speakingKey } from './speaking'
 
 export { speakingKey, useSpeaking } from './speaking'
@@ -141,6 +142,7 @@ export async function speak(
   const pitch = voiceIndex === null && !auto && voiceGender === 'male' ? 0.8 : 1
   // Si la pararon (o empezó otra) mientras buscábamos la voz, no la lanzamos: sonaría con el botón ya en ▶.
   if (!turn.active()) return
+  takeAudioFocus('tts') // v5.10 (P2): la música de otras apps baja mientras suena
   return new Promise<void>((resolve, reject) => {
     let done = false
     const finish = () => {
@@ -148,6 +150,7 @@ export async function speak(
       done = true
       if (finishCurrent === finish) finishCurrent = null
       turn.end()
+      releaseAudioFocus('tts')
       resolve()
     }
     finishCurrent = finish
@@ -166,6 +169,7 @@ export async function speak(
         done = true
         if (finishCurrent === finish) finishCurrent = null
         turn.end()
+        releaseAudioFocus('tts')
         reject(e)
       })
   })
@@ -175,6 +179,7 @@ export async function stopSpeaking(): Promise<void> {
   endSpeaking()
   interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
+  releaseAudioFocus('tts')
 }
 
 /**
