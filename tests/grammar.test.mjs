@@ -237,6 +237,11 @@ test('clase centrada: el brief lleva el tema, el nivel, el foco y las formas', (
   assert.match(b, /"Should and Ought To" \(level A2\)/)
   assert.ok(b.includes(t.classFocusEn))
   for (const k of ['affirmative', 'negative', 'question']) assert.ok(b.includes(`${k}: ${t.forms[k].pattern}`), k)
+  // P3 (uso real): clase dirigida a la regla, no conversación libre.
+  assert.match(b, /OVERRIDES the "chatting with a friend" style/)
+  assert.match(b, /How would you say in English/)
+  assert.match(b, /What's missing in this sentence/)
+  if (t.commonMistakes.length) assert.ok(b.includes(t.commonMistakes[0].wrong), 'incluye los errores típicos')
 })
 
 test('informe: temas de las correcciones en orden, sin repetir y sin ids desconocidos', () => {
