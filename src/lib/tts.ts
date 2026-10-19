@@ -123,11 +123,19 @@ function interruptCurrent() {
  * Lee `text`. `key` identifica qué botón muestra ⏸ mientras suena (por defecto, la propia frase: así, cuando el profe
  * lee un mensaje solo, su botón «Repetir» también pasa a ⏸).
  */
-export async function speak(text: string, rate: number, voiceIndex: number | null, key: string = text): Promise<void> {
+export async function speak(
+  text: string,
+  rate: number,
+  voiceIndex: number | null,
+  key: string = text,
+  // v5.10 (P4): otro idioma (p. ej. las explicaciones de Gramática, en español): voz del sistema para ese idioma.
+  lang?: string,
+): Promise<void> {
   const turn = beginSpeaking(key)
   interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
-  const auto = voiceIndex === null ? await autoVoice() : null
+  if (lang) voiceIndex = null
+  const auto = voiceIndex === null && !lang ? await autoVoice() : null
   const index = voiceIndex ?? auto?.index ?? null
   // Si el teléfono no tiene ninguna voz masculina, al menos bajamos el tono para Leo.
   const pitch = voiceIndex === null && !auto && voiceGender === 'male' ? 0.8 : 1
@@ -145,7 +153,7 @@ export async function speak(text: string, rate: number, voiceIndex: number | nul
     finishCurrent = finish
     TextToSpeech.speak({
       text,
-      lang: auto ? auto.lang : voiceLang,
+      lang: lang ?? (auto ? auto.lang : voiceLang),
       rate,
       pitch,
       volume: 1,
@@ -181,4 +189,10 @@ export function toggleSpeak(
 ): Promise<void> {
   if (speakingKey() === key) return stopSpeaking()
   return speak(text, rate, voiceIndex, key).catch(() => {})
+}
+
+/** v5.10 (P4): ▶/⏸ para textos en español (explicaciones de Gramática), con la voz española del teléfono. */
+export function toggleSpeakSpanish(text: string, key: string = text): Promise<void> {
+  if (speakingKey() === key) return stopSpeaking()
+  return speak(text, prefRate, null, key, 'es-ES').catch(() => {})
 }

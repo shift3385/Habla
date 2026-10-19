@@ -11,7 +11,7 @@
 | P6 | **GRAVE.** Tras «¿Qué digo?», al grabar, la transcripción sale igual a una de las ideas y no lo que dijo | Ver «P6 · diagnóstico». Arreglo defensivo en `Conversation.tsx` + instrucción en `teacher.ts` + prueba | **hecho** (sin probar en el teléfono) |
 | P3 | Clase de Gramática («Practicar en una clase») demasiado libre: debe centrarse en la regla, explicar, pedir «¿cómo dirías…?», «¿qué falta?», completar | Reescribir `grammarBrief()` (`src/lib/grammar.ts`) como guion de clase dirigida + test | **hecho** (probar una clase real) |
 | P5 | Una corrección puede tocar **varios temas** (p. ej. «in my breakfast» → «for breakfast»: preposiciones de tiempo y for/since/during/ago); solo enlazaba uno | Esquema del profe `grammar_topics` (lista, máx. 3) y `Correction.grammarTopics`; compatibilidad con `grammarTopic`; `CorrectionView` y el informe muestran todos; copias | **hecho** (probar con una clase real) |
-| P4 | Las burbujas de explicación de Gramática no tienen ▶ | Botón ▶/⏸ en las burbujas de «Explícame»; el texto es español → `speak` con voz española (`lang` es-ES) | pendiente |
+| P4 | Las burbujas de explicación de Gramática no tienen ▶ | Botón ▶/⏸ en las burbujas de «Explícame»; el texto es español → `speak` con voz española (`lang` es-ES) | **hecho** (oír en el POCO que la voz española existe) |
 | P2 | Bajar el volumen de la música de otras apps al reproducir audio o al grabar | Foco de audio de Android: `requestAudioFocus` (TRANSIENT_MAY_DUCK al hablar el profe; TRANSIENT al grabar) en `AudioRoutePlugin.java` + puente `audioRoute.ts`. **Java: solo se puede compilar y probar en el PC** | pendiente |
 
 ## P6 · diagnóstico (2026-10-19)
@@ -23,6 +23,7 @@
 - Pregunta pendiente al dueño (no bloquea): ¿tocaste la idea para oírla justo antes de grabar? ¿llevabas auriculares?
 
 ## Bitácora (lo último arriba)
+- 2026-10-19 · P4 hecho: `speak(…, lang)` y `toggleSpeakSpanish()` en `tts.ts`; botón ▶/⏸ arriba a la derecha de la burbuja de «Explícame» (`GrammarTopicScreen.tsx`) que lee resumen + explicación en español. Visto en Chromium. Si el teléfono no tiene voz española instalada, Android usa la que tenga.
 - 2026-10-19 · P5 hecho: esquema del profe `grammar_topics` (1–3, el más relevante primero; el prompt pone el ejemplo «in my breakfast»); `grammarFields()` valida y guarda `grammarTopics` + `grammarTopic` (compatibilidad); `topicIdsOf()`; `CorrectionView` enseña un «📘» por tema; informe y «Para ti» cuentan todos; copias aceptan `grammarTopics`. 67/67.
 - 2026-10-19 · P3 hecho: `grammarBrief()` = clase dirigida (anula el estilo «charla con un amigo»): recuerda la regla, rota tareas (¿cómo dirías…?, completa, ¿es correcta?, negativa/pregunta, y al final preguntas personales), explica el porqué de cada fallo con la regla. Incluye resumen, ejemplos y errores típicos del tema.
 - 2026-10-19 · P6 hecho: (a) `onPress` espera 400 ms tras parar la voz si sonaba algo; (b) `echoesIdea()` (`teacher.ts`): si la transcripción es solo una idea mostrada, no se corrige ni se guarda y se pide grabar otra vez; (c) `AUDIO_INSTRUCTION` pide ignorar voces sintéticas. `tests/teacher.test.mjs` (66/66). Falta comprobarlo en el POCO (tocar una idea y grabar en seguida).
