@@ -94,6 +94,9 @@ La app ya la usan otras personas.
 - [ ] Revisar textos y botones para quien no conoce la app: ayuda en la primera clase y mensajes de error más claros.
 - [ ] Cada persona necesita su propio perfil y nivel, lo que refuerza la prioridad del test de calibración (punto 1).
 
+### 4.5 Sección de fonemas del inglés (anotado 2026-10-19) 🟡
+Idea del dueño: una sección con **todos los fonemas del inglés** (sonido, símbolo IPA, ejemplos y cómo se articula), como en este reel: https://www.instagram.com/reel/DenIef3B8mf/ . Encaja con la fonética de Azure (las «palabras a cuidar» ya dicen el sonido que falló: se podría enlazar a su fonema). **No para la 5.10**: para más adelante.
+
 ## 3. Propuestas para debatir 🟡
 
 | # | Propuesta | Por qué | Esfuerzo |
