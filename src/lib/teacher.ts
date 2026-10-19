@@ -98,7 +98,37 @@ export const START_MESSAGE =
   '(A NEW lesson starts now. Greet the student in one short, energetic sentence and start the conversation as described in "Today\'s session".)'
 
 const AUDIO_INSTRUCTION =
-  'This audio is the student\'s answer. Fill "transcript" with exactly what they said, word by word, keeping their grammar mistakes, then correct and reply.'
+  'This audio is the student\'s answer. Fill "transcript" with exactly what they said, word by word, keeping their grammar mistakes, then correct and reply. ' +
+  // v5.10 (P6, uso real): la voz del teléfono leyendo una idea de «¿Qué digo?» se colaba en la grabación.
+  'Transcribe only the student\'s own voice: ignore any synthetic or text-to-speech voice, music or background speech. If only such a voice is audible, set heard_speech to false.'
+
+const fold = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9' ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+/**
+ * v5.10 (P6): ¿la transcripción es, casi palabra por palabra, una de las ideas de «¿Qué digo?» que se acaban de
+ * enseñar? Las ideas son comienzos de frase (6–12 palabras) para seguir con lo tuyo: si lo «dicho» es solo la idea,
+ * lo más probable es que el micro captara la voz del teléfono leyéndola (o una alucinación con audio pobre).
+ */
+export function echoesIdea(transcript: string, ideas: readonly { en: string }[]): boolean {
+  const said = fold(transcript)
+  if (!said) return false
+  return ideas.some((i) => {
+    const idea = fold(i.en)
+    if (!idea) return false
+    if (said === idea) return true
+    const w = said.split(' ')
+    const iw = idea.split(' ')
+    // Lo dicho no añade casi nada a la idea: como mucho 2 palabras más y empieza igual.
+    return said.startsWith(idea) && w.length - iw.length <= 2
+  })
+}
 
 /** v5.10 (D3): ids de los temas de Gramática, compactos (solo ids, ~1–2 KB), para que el profe marque cada corrección. */
 function grammarIds(): string {

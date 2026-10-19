@@ -22,7 +22,7 @@ import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLes
 import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
-import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
+import { answerIdeas, buildSystemPrompt, echoesIdea, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking, toggleSpeak } from '../lib/tts'
 import { speakingKey } from '../lib/speaking'
@@ -104,6 +104,8 @@ export default function Conversation({
   const [revealed, setRevealed] = useState<Set<number>>(new Set())
   const [translated, setTranslated] = useState<Set<number>>(new Set())
   const [ideas, setIdeas] = useState<Idea[] | null>(null)
+  // v5.10 (P6): las últimas ideas enseñadas en este turno (se ocultan al grabar, pero se recuerdan para comprobar).
+  const shownIdeas = useRef<Idea[]>([])
   const [lookupReq, setLookupReq] = useState<{ query: string; context: string } | null>(null)
   const [level, setLevel] = useState('B1')
   const [ideasLoading, setIdeasLoading] = useState(false)
@@ -265,6 +267,14 @@ export default function Conversation({
             setPhase('idle')
             return
           }
+          // v5.10 (P6): si lo «dicho» es solo una idea de «¿Qué digo?», no se corrige ni se guarda: casi seguro que el
+          // micro captó la voz del teléfono leyéndola. Se pide grabar de nuevo.
+          if (spoken && echoesIdea(said, shownIdeas.current)) {
+            setHint('Te entendí justo la idea de «¿Qué digo?», sin nada más. Si no la dijiste tú (a veces el micro capta la voz del teléfono), vuelve a grabar tu respuesta.')
+            setPhase('idle')
+            return
+          }
+          shownIdeas.current = []
           if (typed) setDraft('')
           const turn: Turn = {
             sessionId: sid,
@@ -481,7 +491,11 @@ export default function Conversation({
     setIdeas(null)
     haptic(ImpactStyle.Medium)
     starting.current = (async () => {
+      // v5.10 (P6): si sonaba algo (una idea, el profe), se para y se espera a que el altavoz calle antes de abrir el
+      // micro: si no, la voz del teléfono podía colarse en la grabación.
+      const wasSpeaking = speakingKey() !== null
       await stopSpeaking()
+      if (wasSpeaking) await new Promise((r) => setTimeout(r, 400))
       try {
         // AUD-MIC-301/304: false = se canceló la apertura (segundo plano, salir) o ya se estaba grabando.
         if (!(await recorder.current.begin())) {
@@ -585,7 +599,10 @@ export default function Conversation({
     setIdeasLoading(true)
     try {
       const list = await answerIdeas(settingsRef.current.geminiKey, quick(), lastTeacher.text, topic)
-      if (!gone()) setIdeas(list)
+      if (!gone()) {
+        setIdeas(list)
+        shownIdeas.current = list
+      }
     } catch (e) {
       if (!isAborted(e)) setHint((e as Error).message)
     } finally {

@@ -8,7 +8,7 @@
 | # | Punto del dueño | Plan | Estado |
 |---|---|---|---|
 | P1 | Sección de **fonemas del inglés** (referencia: reel de Instagram `DenIef3B8mf`) | No ahora: anotado en `BACKLOG.md` §4.5 | anotado |
-| P6 | **GRAVE.** Tras «¿Qué digo?», al grabar, la transcripción sale igual a una de las ideas y no lo que dijo | Ver «P6 · diagnóstico». Arreglo defensivo en `Conversation.tsx` + instrucción en `teacher.ts` + prueba | pendiente |
+| P6 | **GRAVE.** Tras «¿Qué digo?», al grabar, la transcripción sale igual a una de las ideas y no lo que dijo | Ver «P6 · diagnóstico». Arreglo defensivo en `Conversation.tsx` + instrucción en `teacher.ts` + prueba | **hecho** (sin probar en el teléfono) |
 | P3 | Clase de Gramática («Practicar en una clase») demasiado libre: debe centrarse en la regla, explicar, pedir «¿cómo dirías…?», «¿qué falta?», completar | Reescribir `grammarBrief()` (`src/lib/grammar.ts`) como guion de clase dirigida + test | pendiente |
 | P5 | Una corrección puede tocar **varios temas** (p. ej. «in my breakfast» → «for breakfast»: preposiciones de tiempo y for/since/during/ago); solo enlazaba uno | Esquema del profe `grammar_topics` (lista, máx. 3) y `Correction.grammarTopics`; compatibilidad con `grammarTopic`; `CorrectionView` y el informe muestran todos; copias | pendiente |
 | P4 | Las burbujas de explicación de Gramática no tienen ▶ | Botón ▶/⏸ en las burbujas de «Explícame»; el texto es español → `speak` con voz española (`lang` es-ES) | pendiente |
@@ -23,4 +23,5 @@
 - Pregunta pendiente al dueño (no bloquea): ¿tocaste la idea para oírla justo antes de grabar? ¿llevabas auriculares?
 
 ## Bitácora (lo último arriba)
+- 2026-10-19 · P6 hecho: (a) `onPress` espera 400 ms tras parar la voz si sonaba algo; (b) `echoesIdea()` (`teacher.ts`): si la transcripción es solo una idea mostrada, no se corrige ni se guarda y se pide grabar otra vez; (c) `AUDIO_INSTRUCTION` pide ignorar voces sintéticas. `tests/teacher.test.mjs` (66/66). Falta comprobarlo en el POCO (tocar una idea y grabar en seguida).
 - 2026-10-19 · Plan escrito. P1 anotado en `BACKLOG.md`.
