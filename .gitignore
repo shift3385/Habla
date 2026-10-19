@@ -35,3 +35,6 @@ android/build-log.txt
 
 # APKs generados (copia cómoda para pasar al teléfono)
 apk/
+
+# Bloqueo de sesión del teléfono (lo crean las pruebas; nunca a git)
+docs/auditoria/resultados/.telefono.lock
