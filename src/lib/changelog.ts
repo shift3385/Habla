@@ -48,7 +48,7 @@ export const RELEASES: Release[] = [
       'Practica cualquier tema en una clase con tu profe. En la clase, cada corrección te lleva a su tema de Gramática, y el informe te dice qué repasar',
       'Palabras: sinónimos y antónimos de cada palabra consultada. Toca uno para ver qué significa (y vuelve atrás paso a paso) o escúchalo con ▶',
       'Al terminar el Repaso, tu resumen: frases repasadas, aciertos, nota y qué te costó más',
-      'Explicaciones de Gramática con ▶/⏸: tu mascota te las lee en español',
+      'Explicaciones de Gramática con ▶/⏸: tu mascota te las lee en español, despacio, y las palabras en inglés con voz inglesa',
     ],
     improved: [
       'El Repaso graba como la clase: el mismo micro con el anillo de 60 s en cuenta atrás y la onda que sigue tu voz',
@@ -58,7 +58,7 @@ export const RELEASES: Release[] = [
       'Repaso: botón «Terminar» para acabar cuando quieras y ver tu resumen; las frases que falten siguen pendientes',
       'Gramática: más sitio para la lista de secciones y buscador «Buscar tema de gramática»',
       'Prueba de sonido y «Probar voz»: sin el texto «… hablando»; lo dicen tu mascota y el botón ▶/⏸',
-      'Las clases de un tema de Gramática van a la regla: te la recuerda y te pide traducir, completar o decir si una frase es correcta',
+      'Las clases de un tema de Gramática van a la regla: te la recuerda y te pide traducir, completar o decir si una frase es correcta. Y te corrige todos los errores, no solo los del tema',
       'Una corrección te lleva a todos sus temas de Gramática (hasta 3), no solo a uno',
       'La música de otras apps baja cuando habla tu profe y se pausa mientras grabas',
       'Al tocar el micro verás «Abriendo el micro… espera» y la grabación empieza cuando de verdad entra tu voz: ya no se pierden las primeras palabras',
