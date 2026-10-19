@@ -181,6 +181,8 @@ export class Recorder {
   private recorder: MediaRecorder | null = null
   private chunks: Blob[] = []
   private startedAt = 0
+  /** P7: se resuelve cuando el MediaRecorder avisa de que ya entra audio (evento `start`). */
+  private flowing: Promise<void> = Promise.resolve()
   /** Sube con cada `close()`: una apertura que ve otro número sabe que la cancelaron (AUD-MIC-301). */
   private gen = 0
   /** Apertura en curso, compartida por las llamadas simultáneas (AUD-MIC-302). */
@@ -345,6 +347,12 @@ export class Recorder {
       if (e.data.size > 0) chunks.push(e.data)
     }
     this.recorder = rec
+    // P7 (2026-10-19): «Toca para enviar» solo sale cuando de verdad entra audio; antes se mostraba al llamar a
+    // start() y lo que decías en ese instante se perdía.
+    this.flowing = new Promise<void>((resolve) => {
+      rec.onstart = () => resolve()
+      setTimeout(resolve, 600) // si el evento no llega, no se bloquea
+    })
     rec.start()
     takeAudioFocus('mic') // v5.10 (P2): la música de otras apps se pausa mientras grabas
     this.startedAt = performance.now()
@@ -367,10 +375,17 @@ export class Recorder {
 
   private async doBegin(): Promise<boolean> {
     const gen = this.gen
+    const t0 = performance.now()
     try {
       if (!(await this.open())) return false
       if (this.gen !== gen) return false
-      return this.start()
+      const t1 = performance.now()
+      if (!this.start()) return false
+      await this.flowing
+      if (this.gen !== gen) return false
+      // P7: tiempos de apertura en logcat (APK debug) para medir el retraso del micro en cada teléfono.
+      console.info(`[HABLA-MIC] abierto en ${Math.round(t1 - t0)} ms; grabando a los ${Math.round(performance.now() - t0)} ms (modo ${micMode})`)
+      return true
     } catch (e) {
       if (this.gen !== gen) return false // se cerró mientras tanto: no se reintenta
       if (e instanceof MicError && /permiso/i.test(e.message)) throw e
@@ -379,7 +394,9 @@ export class Recorder {
       if (!(await this.open())) return false
       if (this.gen !== retry) return false
       try {
-        return this.start()
+        if (!this.start()) return false
+        await this.flowing
+        return this.gen === retry
       } catch {
         this.close()
         throw new MicError('No se pudo grabar. Vuelve a intentarlo.')

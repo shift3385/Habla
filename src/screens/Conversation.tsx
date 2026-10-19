@@ -490,6 +490,7 @@ export default function Conversation({
     setHint(null)
     setIdeas(null)
     haptic(ImpactStyle.Medium)
+    setPhase('opening') // P7: que se vea que el micro aún no graba
     starting.current = (async () => {
       // v5.10 (P6): si sonaba algo (una idea, el profe), se para y se espera a que el altavoz calle antes de abrir el
       // micro: si no, la voz del teléfono podía colarse en la grabación.
@@ -502,6 +503,7 @@ export default function Conversation({
           setPhase((p) => (p === 'recording' ? p : 'idle'))
           return
         }
+        haptic(ImpactStyle.Light) // P7: la vibración corta avisa de que ya puedes hablar
         setRecordStart(performance.now())
         setElapsed(0)
         setPhase('recording')
@@ -1083,12 +1085,17 @@ export default function Conversation({
         {ideas && (
           <div className="anim-up flex w-full flex-col gap-2">
             {ideas.map((i) => (
+              // P6 (2026-10-19): tocar una idea la lee en voz alta; antes no se veía que sonaba, y al grabar encima el
+              // micro la captaba. Ahora muestra ▶/⏸ y se puede parar tocando otra vez (el micro también la corta).
               <button
                 key={i.en}
-                onClick={() => speak(i.en, settings.ttsRate, settings.voiceIndex)}
-                className="glass rounded-[19px] px-3.5 py-2 text-left text-[13.5px]"
+                onClick={() => toggleSpeak(i.en, settings.ttsRate, settings.voiceIndex)}
+                className="glass flex items-start gap-2 rounded-[19px] px-3.5 py-2 text-left text-[13.5px]"
               >
-                {i.en}…<span className="txt-sub block text-xs">{i.es}</span>
+                <SpeakIcon speakKey={i.en} size={14} stroke={1.8} className="txt-acc mt-[3px] shrink-0" />
+                <span>
+                  {i.en}…<span className="txt-sub block text-xs">{i.es}</span>
+                </span>
               </button>
             ))}
           </div>

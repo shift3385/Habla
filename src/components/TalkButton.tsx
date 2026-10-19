@@ -4,11 +4,13 @@ import { Icon } from '../ui/icons'
 import Wave from '../ui/Wave'
 import { tapAction } from './talkGesture'
 
-export type Phase = 'starting' | 'idle' | 'recording' | 'transcribing' | 'thinking' | 'speaking'
+export type Phase = 'starting' | 'idle' | 'opening' | 'recording' | 'transcribing' | 'thinking' | 'speaking'
 
 const LABELS: Record<Phase, string> = {
   starting: 'Preparando…',
   idle: 'Toca para hablar',
+  // P7: mientras Android abre el micro; lo que digas aquí aún no se graba.
+  opening: 'Abriendo el micro… espera',
   recording: 'Toca para enviar',
   transcribing: 'Procesando audio…',
   thinking: 'Tu profe está pensando…',
@@ -92,7 +94,7 @@ function ringColor(left: number) {
 }
 
 export default function TalkButton({ phase, elapsed, onPress, onRelease, onCancel, onKeyboard, level, maxSeconds = MAX_TALK_SECONDS }: Props) {
-  const busy = phase === 'starting' || phase === 'transcribing' || phase === 'thinking'
+  const busy = phase === 'starting' || phase === 'opening' || phase === 'transcribing' || phase === 'thinking'
   const recording = phase === 'recording'
 
   // Límite de duración: al llegar, se envía solo (una vez).
