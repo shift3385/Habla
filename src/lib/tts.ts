@@ -1,6 +1,7 @@
 import { TextToSpeech } from '@capacitor-community/text-to-speech'
 import { releaseAudioFocus, takeAudioFocus } from './audioFocus'
 import { beginSpeaking, endSpeaking, speakingKey } from './speaking'
+import { splitByLanguage } from './speechLang'
 
 export { speakingKey, useSpeaking } from './speaking'
 
@@ -132,6 +133,9 @@ export async function speak(
   // v5.10 (P4): otro idioma (p. ej. las explicaciones de Gramática, en español): voz del sistema para ese idioma.
   lang?: string,
 ): Promise<void> {
+  // Cualquier lectura que no sea un tramo de speakSpanish corta la lectura en tramos que estuviera sonando.
+  if (!segmentCall) mixedRun++
+  segmentCall = false
   const turn = beginSpeaking(key)
   interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
@@ -176,6 +180,7 @@ export async function speak(
 }
 
 export async function stopSpeaking(): Promise<void> {
+  mixedRun++
   endSpeaking()
   interruptCurrent()
   await TextToSpeech.stop().catch(() => {})
@@ -196,8 +201,30 @@ export function toggleSpeak(
   return speak(text, rate, voiceIndex, key).catch(() => {})
 }
 
-/** v5.10 (P4): ▶/⏸ para textos en español (explicaciones de Gramática), con la voz española del teléfono. */
+// Lectura en tramos en curso (speakSpanish): sube al parar o al empezar otra, y el bucle de tramos se corta.
+let mixedRun = 0
+let segmentCall = false
+
+/**
+ * v5.10 (P4b, uso real): lee un texto en español con inglés dentro: el español con la voz española y algo más
+ * despacio (a la velocidad normal «iba de carretilla»), y cada palabra o frase inglesa con la voz del profe, con su
+ * pronunciación de verdad. Todos los tramos comparten la clave, así el botón sigue en ⏸ hasta el final.
+ */
+async function speakSpanish(text: string, key: string): Promise<void> {
+  const run = ++mixedRun
+  for (const seg of splitByLanguage(text)) {
+    if (run !== mixedRun) return
+    segmentCall = true // speak() lo lee y lo apaga antes de su primer await
+    if (seg.lang === 'es') await speak(seg.text, prefRate * ES_RATE, null, key, 'es-ES')
+    else await speak(seg.text, prefRate * EN_IN_ES_RATE, prefVoice, key)
+  }
+}
+/** Velocidad del español respecto a la elegida por el usuario, y del inglés que va dentro (un poco más lento: es el modelo). */
+const ES_RATE = 0.85
+const EN_IN_ES_RATE = 0.9
+
+/** v5.10 (P4): ▶/⏸ para textos en español (explicaciones de Gramática): el inglés que llevan, con voz inglesa. */
 export function toggleSpeakSpanish(text: string, key: string = text): Promise<void> {
   if (speakingKey() === key) return stopSpeaking()
-  return speak(text, prefRate, null, key, 'es-ES').catch(() => {})
+  return speakSpanish(text, key).catch(() => {})
 }
