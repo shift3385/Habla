@@ -60,7 +60,7 @@ const shape =
     isObj(v) && Object.entries(fields).every(([k, r]) => r(v[k]))
 
 const LEVELS = shape({ overall: str, grammar: str, reading: str, listening: str, speaking: str })
-const CORRECTION = shape({ original: str, corrected: str, explanationEs: opt(str), category: opt(str), spanish: opt(str), grammarTopic: opt(str) })
+const CORRECTION = shape({ original: str, corrected: str, explanationEs: opt(str), category: opt(str), spanish: opt(str), grammarTopic: opt(str), grammarTopics: opt(strArr) })
 
 // Campo → regla. Solo lo que la app lee sin comprobar (lo que rompería una pantalla o el arranque).
 const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
@@ -101,6 +101,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     category: opt(str),
     spanish: opt(str),
     grammarTopic: opt(str), // v5.10
+    grammarTopics: opt(strArr), // v5.10 (P5)
   },
   profile: {
     id: oneOf('me'),

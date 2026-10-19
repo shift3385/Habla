@@ -53,7 +53,7 @@ export const TEACHER_SCHEMA: JsonSchema = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['original', 'corrected', 'explanation_es', 'category', 'spanish', 'grammar_topic'],
+        required: ['original', 'corrected', 'explanation_es', 'category', 'spanish', 'grammar_topics'],
         properties: {
           original: { type: 'string' },
           corrected: { type: 'string' },
@@ -61,7 +61,7 @@ export const TEACHER_SCHEMA: JsonSchema = {
           category: { type: 'string', enum: CATEGORIES },
           spanish: { type: 'string' },
           // v5.10 (D3): id del tema de Gramática de la corrección, o "" (sin enum: la lista de ids va en el prompt).
-          grammar_topic: { type: 'string' },
+          grammar_topics: { type: 'array', items: { type: 'string' } },
         },
       },
     },
@@ -79,7 +79,8 @@ interface RawTeacherResponse {
     explanation_es: string
     category: MistakeCategory
     spanish: string
-    grammar_topic?: string
+    grammar_topics?: string[]
+    grammar_topic?: string // respuestas antiguas o modelos que no sigan el esquema
   }[]
   reply: string
   reply_es: string
@@ -199,7 +200,7 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 - "corrected": that same fragment with the minimal change that makes it correct and natural.
 - "explanation_es": one short sentence in Spanish explaining the rule, e.g. "Software es incontable: no lleva plural ni 'a'."
 - "spanish": a natural Spanish translation of the corrected fragment (it will be used later as a translation drill).
-- "grammar_topic": the id of the grammar topic the error belongs to, chosen ONLY from the list below (the app links the correction to its explanation). Use "" for pure vocabulary or pronunciation errors, or when no topic clearly fits.
+- "grammar_topics": the ids of the grammar topics the error belongs to (1–3, the most relevant first), chosen ONLY from the list below (the app links the correction to their explanations). Include EVERY topic the correction involves: e.g. "in my breakfast" → "for breakfast" involves both prepositions of time and for/since/during/ago. Use [] for pure vocabulary or pronunciation errors, or when no topic clearly fits.
 ${grammarIds()}
 
 # Structures this student often gets wrong (create natural chances to practise them)
@@ -223,6 +224,13 @@ export interface TextInput {
  * Un turno del profe. Con `audio`, Gemini transcribe la respuesta del alumno, la corrige y contesta
  * en una sola llamada. El historial previo va como texto (transcripciones) para ahorrar tokens.
  */
+/** v5.10 (P5): temas válidos de una corrección (máx. 3, sin repetir); el primero también en `grammarTopic`. */
+export function grammarFields(c: { grammar_topics?: unknown; grammar_topic?: unknown }): { grammarTopic?: string; grammarTopics?: string[] } {
+  const raw = Array.isArray(c.grammar_topics) ? c.grammar_topics : [c.grammar_topic]
+  const ids = [...new Set(raw.map(validTopicId).filter((x): x is string => !!x))].slice(0, 3)
+  return ids.length ? { grammarTopic: ids[0], grammarTopics: ids } : {}
+}
+
 export async function teacherTurn(
   apiKey: string,
   models: Models,
@@ -255,7 +263,7 @@ export async function teacherTurn(
       category: CATEGORIES.includes(c.category) ? c.category : 'other',
       spanish: (c.spanish ?? '').trim(),
       // v5.10: solo ids que existen en el catálogo; uno inventado o vacío no se guarda.
-      ...(validTopicId(c.grammar_topic) ? { grammarTopic: validTopicId(c.grammar_topic) } : {}),
+      ...grammarFields(c),
     }))
   return {
     heardSpeech: raw.heard_speech !== false,

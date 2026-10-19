@@ -18,3 +18,14 @@ test('P6: la idea tal cual (o casi) se detecta; una respuesta propia que la cont
   assert.equal(echoesIdea('', ideas), false)
   assert.equal(echoesIdea('I think the best part of my weekend was', []), false)
 })
+
+test('P5: una corrección puede enlazar varios temas (máx. 3, sin repetir, solo ids que existen)', async () => {
+  const { grammarFields } = await loadFresh('/src/lib/teacher.ts')
+  const g = await loadFresh('/src/lib/grammar.ts')
+  const real = g.allTopicIds()
+  const [a, b, c, d] = real
+  assert.deepEqual(grammarFields({ grammar_topics: [a, 'inventado', b, a] }), { grammarTopic: a, grammarTopics: [a, b] })
+  assert.deepEqual(grammarFields({ grammar_topics: [a, b, c, d] }).grammarTopics, [a, b, c])
+  assert.deepEqual(grammarFields({ grammar_topics: [] }), {})
+  assert.deepEqual(grammarFields({ grammar_topic: b }), { grammarTopic: b, grammarTopics: [b] }, 'respuesta antigua')
+})

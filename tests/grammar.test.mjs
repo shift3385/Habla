@@ -253,6 +253,10 @@ test('informe: temas de las correcciones en orden, sin repetir y sin ids descono
     { grammarTopic: 'sample-should' },
   ]).map((t) => t.id)
   assert.deepEqual(ids, ['sample-should', 'sample-past-simple'])
+  // P5: varios temas en una corrección; las antiguas solo traen grammarTopic.
+  const many = g.topicsOfCorrections([{ grammarTopic: 'sample-should', grammarTopics: ['sample-should', 'sample-present-perfect'] }, { grammarTopic: 'sample-past-simple' }])
+  assert.deepEqual(many.map((t) => t.id), ['sample-should', 'sample-present-perfect', 'sample-past-simple'])
+  assert.equal(g.forYouTopics('A2', {}, 6, { mistakes: [{ grammarTopics: ['sample-should', 'sample-present-perfect'] }, { grammarTopics: ['sample-present-perfect'] }] })[0].id, 'sample-present-perfect')
 })
 
 test('«Para ti» con señales: errores con tema, tema del plan, categorías de respaldo y sin dominados', () => {

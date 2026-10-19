@@ -280,7 +280,7 @@ const levelIdx = (l: string) => Math.max(0, GRAMMAR_LEVELS.indexOf(l.slice(0, 2)
 
 /** Señales para «Para ti» (D3): tus errores recientes de clase y el tema de la lección del plan de hoy. */
 export interface ForYouSignals {
-  mistakes?: { grammarTopic?: string; category?: string }[]
+  mistakes?: { grammarTopic?: string; grammarTopics?: string[]; category?: string }[]
   planTopic?: string | null
 }
 
@@ -301,7 +301,8 @@ export function forYouTopics(level: string, progress: Record<string, TopicProgre
   const exact = new Map<string, number>()
   const cats = new Map<string, number>()
   for (const m of signals.mistakes ?? []) {
-    if (m.grammarTopic && catalog.topicById.has(m.grammarTopic)) exact.set(m.grammarTopic, (exact.get(m.grammarTopic) ?? 0) + 1)
+    const ids = topicIdsOf(m).filter((id) => catalog.topicById.has(id))
+    if (ids.length) for (const id of ids) exact.set(id, (exact.get(id) ?? 0) + 1)
     else if (m.category && !VAGUE.includes(m.category)) cats.set(m.category, (cats.get(m.category) ?? 0) + 1)
   }
   return catalog.topics
@@ -430,12 +431,24 @@ export function topicForLesson(week: { focusEn: string }, lesson: { targetEn: st
   return undefined
 }
 
-/** Temas de Gramática de unas correcciones (informe de la clase), en orden de aparición y sin repetir. */
-export function topicsOfCorrections(cs: { grammarTopic?: string }[]): GrammarTopic[] {
+/**
+ * Ids de tema de una corrección o error. v5.10 (P5, uso real): una corrección puede tocar varios temas
+ * (`grammarTopics`, p. ej. «in my breakfast» → «for breakfast»: preposiciones de tiempo y for/since/during/ago);
+ * las guardadas antes solo tienen `grammarTopic`.
+ */
+export function topicIdsOf(c: { grammarTopic?: string; grammarTopics?: string[] }): string[] {
+  const ids = c.grammarTopics?.length ? c.grammarTopics : c.grammarTopic ? [c.grammarTopic] : []
+  return [...new Set(ids)]
+}
+
+/** Temas de Gramática de unas correcciones (informe de la clase, una corrección), en orden de aparición y sin repetir. */
+export function topicsOfCorrections(cs: { grammarTopic?: string; grammarTopics?: string[] }[]): GrammarTopic[] {
   const out: GrammarTopic[] = []
   for (const c of cs) {
-    const t = findTopic(c.grammarTopic)
-    if (t && !out.includes(t)) out.push(t)
+    for (const id of topicIdsOf(c)) {
+      const t = findTopic(id)
+      if (t && !out.includes(t)) out.push(t)
+    }
   }
   return out
 }
