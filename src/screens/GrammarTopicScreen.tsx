@@ -7,7 +7,7 @@ import type { GrammarProgress } from '../lib/db'
 import { findTopic, sectionOf, type GrammarExample, type GrammarForm } from '../lib/grammar'
 import { markTopicSeen } from '../lib/grammarProgress'
 import type { Settings } from '../lib/settings'
-import { toggleSpeak } from '../lib/tts'
+import { toggleSpeak, toggleSpeakSpanish } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import Segmented from '../ui/Segmented'
@@ -142,6 +142,16 @@ export default function GrammarTopicScreen({
           <div className="flex items-start gap-2.5">
             <Mascot element={info.mascot} size={64} mood="speaking" />
             <div className="tip-bubble relative min-w-0 flex-1 rounded-[20px] px-4 py-3 text-[14.5px] leading-snug">
+              {/* v5.10 (P4, uso real): la explicación también se puede escuchar (en español). */}
+              <button
+                type="button"
+                onClick={() => toggleSpeakSpanish([topic.summaryEs, ...topic.explanationEs].join(' '), `explain:${topic.id}`)}
+                className="txt-acc2 float-right -mt-1 -mr-2 ml-1 grid h-9 w-9 place-items-center rounded-full"
+                aria-label="Escuchar la explicación"
+                title="Escúchala"
+              >
+                <SpeakIcon speakKey={`explain:${topic.id}`} size={17} stroke={1.8} />
+              </button>
               <div className="mb-1.5 font-semibold">{topic.summaryEs}</div>
               {topic.explanationEs.map((p, k) => (
                 <p key={k} className={k ? 'mt-1.5' : ''}>

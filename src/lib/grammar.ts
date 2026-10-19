@@ -280,7 +280,7 @@ const levelIdx = (l: string) => Math.max(0, GRAMMAR_LEVELS.indexOf(l.slice(0, 2)
 
 /** Señales para «Para ti» (D3): tus errores recientes de clase y el tema de la lección del plan de hoy. */
 export interface ForYouSignals {
-  mistakes?: { grammarTopic?: string; category?: string }[]
+  mistakes?: { grammarTopic?: string; grammarTopics?: string[]; category?: string }[]
   planTopic?: string | null
 }
 
@@ -301,7 +301,8 @@ export function forYouTopics(level: string, progress: Record<string, TopicProgre
   const exact = new Map<string, number>()
   const cats = new Map<string, number>()
   for (const m of signals.mistakes ?? []) {
-    if (m.grammarTopic && catalog.topicById.has(m.grammarTopic)) exact.set(m.grammarTopic, (exact.get(m.grammarTopic) ?? 0) + 1)
+    const ids = topicIdsOf(m).filter((id) => catalog.topicById.has(id))
+    if (ids.length) for (const id of ids) exact.set(id, (exact.get(id) ?? 0) + 1)
     else if (m.category && !VAGUE.includes(m.category)) cats.set(m.category, (cats.get(m.category) ?? 0) + 1)
   }
   return catalog.topics
@@ -384,16 +385,38 @@ export const topicIdsForPrompt = () => allTopicIds().join(',')
 /** Tema válido devuelto por Gemini (o undefined): nunca se guarda un id inventado. */
 export const validTopicId = (id: unknown): string | undefined => (typeof id === 'string' && catalog.topicById.has(id.trim()) ? id.trim() : undefined)
 
-/** Instrucciones para el profe en una clase centrada en un tema («Practicar en una clase»). */
+/**
+ * Instrucciones para el profe en una clase centrada en un tema («Practicar en una clase»).
+ * v5.10 (P3, uso real): antes pedía «una conversación real, no un ejercicio» y la clase acababa en preguntas libres.
+ * Ahora es una clase DIRIGIDA a la regla: explica brevemente, pide traducir («¿cómo dirías…?»), completar o corregir
+ * frases, transformar (afirmativa → negativa → pregunta) y solo después preguntas abiertas que obliguen a usarla.
+ */
 export function grammarBrief(t: GrammarTopic): string {
   const forms = (['affirmative', 'negative', 'question'] as const)
     .map((k) => (t.forms[k] ? `${k}: ${t.forms[k]!.pattern} (e.g. "${t.forms[k]!.examples[0]?.en ?? ''}")` : ''))
     .filter(Boolean)
     .join('; ')
-  return `Grammar-focused speaking lesson on "${t.name}" (level ${t.level}). ${t.classFocusEn}
+  const traps = t.commonMistakes
+    .slice(0, 4)
+    .map((m) => `"${m.wrong}" → "${m.right}"`)
+    .join('; ')
+  const examples = t.examples
+    .slice(0, 4)
+    .map((e) => `"${e.en}" (${e.es})`)
+    .join('; ')
+  return `GRAMMAR LESSON on "${t.name}" (level ${t.level}). This session is a focused grammar class: it OVERRIDES the "chatting with a friend" style. Every turn must practise THIS rule; never drift to free conversation about other things.
+Goal: ${t.classFocusEn}
+Rule summary for you (the student already read the explanation in Spanish): ${t.summaryEs}
 Forms (patterns written in Spanish for the student): ${forms}.
-Create everyday situations and questions that make the student use this structure many times (affirmative, negative and questions). Keep it a real conversation, not a drill. When the student makes a mistake with this structure, give that correction priority. Do not explain grammar at length: the app already showed the explanation.
-Start with one friendly question that naturally requires the structure.`
+Model sentences: ${examples}.
+Typical mistakes of Spanish speakers to target: ${traps || '(none listed)'}.
+
+How to teach (vary the activity every 1–2 turns, one task per turn, short and clear):
+1. Start: in 1–2 short sentences, remind the key rule with one example, then give the FIRST task.
+2. Tasks to rotate: (a) "How would you say in English: «…»?" (give a short Spanish sentence that needs the rule); (b) "What's missing in this sentence? …" or "Complete: …" (a sentence with a gap); (c) "Is this correct? «…»" (one of the typical mistakes); (d) "Now say it in the negative / as a question"; (e) only after several correct answers, a short personal question that forces the structure (e.g. "Tell me two things you … yesterday").
+3. After each answer: say clearly if the structure was right or wrong; if wrong, explain WHY with the rule in one short sentence (you may add a few Spanish words for the key point) and give the correct sentence, then a similar new task. If right, praise briefly and make the next task a bit harder.
+4. Corrections: give priority to mistakes with THIS structure; mention others only if they block understanding.
+Keep each reply short (it is read aloud). Always end with the next task or question.`
 }
 
 /**
@@ -408,12 +431,24 @@ export function topicForLesson(week: { focusEn: string }, lesson: { targetEn: st
   return undefined
 }
 
-/** Temas de Gramática de unas correcciones (informe de la clase), en orden de aparición y sin repetir. */
-export function topicsOfCorrections(cs: { grammarTopic?: string }[]): GrammarTopic[] {
+/**
+ * Ids de tema de una corrección o error. v5.10 (P5, uso real): una corrección puede tocar varios temas
+ * (`grammarTopics`, p. ej. «in my breakfast» → «for breakfast»: preposiciones de tiempo y for/since/during/ago);
+ * las guardadas antes solo tienen `grammarTopic`.
+ */
+export function topicIdsOf(c: { grammarTopic?: string; grammarTopics?: string[] }): string[] {
+  const ids = c.grammarTopics?.length ? c.grammarTopics : c.grammarTopic ? [c.grammarTopic] : []
+  return [...new Set(ids)]
+}
+
+/** Temas de Gramática de unas correcciones (informe de la clase, una corrección), en orden de aparición y sin repetir. */
+export function topicsOfCorrections(cs: { grammarTopic?: string; grammarTopics?: string[] }[]): GrammarTopic[] {
   const out: GrammarTopic[] = []
   for (const c of cs) {
-    const t = findTopic(c.grammarTopic)
-    if (t && !out.includes(t)) out.push(t)
+    for (const id of topicIdsOf(c)) {
+      const t = findTopic(id)
+      if (t && !out.includes(t)) out.push(t)
+    }
   }
   return out
 }

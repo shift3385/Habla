@@ -94,10 +94,12 @@ export function installMic(opts = {}) {
       this.ondataavailable = null
       this.onstop = null
       this.onerror = null
+      this.onstart = null
       mic.recorders.push(this)
     }
     start() {
       this.state = 'recording'
+      queueMicrotask(() => this.onstart?.())
     }
     stop() {
       if (this.state === 'inactive') return

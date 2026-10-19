@@ -23,6 +23,8 @@ export interface Correction {
   spanish: string // la frase correcta traducida al español (para el ejercicio oral)
   /** v5.10: tema de Gramática de la corrección (id de src/grammar). Las correcciones antiguas no lo tienen. */
   grammarTopic?: string
+  /** v5.10 (P5): todos los temas de la corrección (1–3); `grammarTopic` es el primero, por compatibilidad. */
+  grammarTopics?: string[]
 }
 
 export interface VocabItem {

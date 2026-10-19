@@ -2,8 +2,10 @@ package com.shift.habla;
 
 import android.Manifest;
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
@@ -39,6 +41,10 @@ import java.util.List;
     permissions = { @Permission(alias = "bluetooth", strings = { Manifest.permission.BLUETOOTH_CONNECT }) }
 )
 public class AudioRoutePlugin extends Plugin {
+    // v5.10 (P2, uso real): foco de audio. Mientras habla el profe, la música de otras apps baja de volumen (duck); al
+    // grabar, se pausa (para que no se cuele en el micro). Al terminar se devuelve el foco y la música sigue.
+    private AudioFocusRequest focusReq;
+    private final AudioManager.OnAudioFocusChangeListener focusListener = change -> { };
 
     private AudioManager am;
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -271,6 +277,51 @@ public class AudioRoutePlugin extends Plugin {
             call.resolve(r);
         } catch (Exception e) {
             call.reject("No se pudo cambiar el audio: " + e.getMessage());
+        }
+    }
+
+    @PluginMethod
+    public void requestFocus(PluginCall call) {
+        boolean pause = "pause".equals(call.getString("kind", "duck"));
+        try {
+            releaseFocus();
+            int gain = pause ? AudioManager.AUDIOFOCUS_GAIN_TRANSIENT : AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK;
+            int res;
+            if (Build.VERSION.SDK_INT >= 26) {
+                AudioAttributes attrs = new AudioAttributes.Builder()
+                    .setUsage(pause ? AudioAttributes.USAGE_VOICE_COMMUNICATION : AudioAttributes.USAGE_ASSISTANT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build();
+                focusReq = new AudioFocusRequest.Builder(gain).setAudioAttributes(attrs).setOnAudioFocusChangeListener(focusListener).build();
+                res = am.requestAudioFocus(focusReq);
+            } else {
+                res = am.requestAudioFocus(focusListener, AudioManager.STREAM_MUSIC, gain);
+            }
+            JSObject r = new JSObject();
+            r.put("granted", res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+            call.resolve(r);
+        } catch (Exception e) {
+            call.reject("No se pudo pedir el foco de audio: " + e.getMessage());
+        }
+    }
+
+    @PluginMethod
+    public void abandonFocus(PluginCall call) {
+        try {
+            releaseFocus();
+        } catch (Exception e) {
+            Log.w("HablaAudio", "abandonFocus: " + e.getMessage());
+        }
+        call.resolve();
+    }
+
+    private void releaseFocus() {
+        if (am == null) return;
+        if (Build.VERSION.SDK_INT >= 26) {
+            if (focusReq != null) am.abandonAudioFocusRequest(focusReq);
+            focusReq = null;
+        } else {
+            am.abandonAudioFocus(focusListener);
         }
     }
 }

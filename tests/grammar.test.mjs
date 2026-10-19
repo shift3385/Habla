@@ -237,6 +237,11 @@ test('clase centrada: el brief lleva el tema, el nivel, el foco y las formas', (
   assert.match(b, /"Should and Ought To" \(level A2\)/)
   assert.ok(b.includes(t.classFocusEn))
   for (const k of ['affirmative', 'negative', 'question']) assert.ok(b.includes(`${k}: ${t.forms[k].pattern}`), k)
+  // P3 (uso real): clase dirigida a la regla, no conversación libre.
+  assert.match(b, /OVERRIDES the "chatting with a friend" style/)
+  assert.match(b, /How would you say in English/)
+  assert.match(b, /What's missing in this sentence/)
+  if (t.commonMistakes.length) assert.ok(b.includes(t.commonMistakes[0].wrong), 'incluye los errores típicos')
 })
 
 test('informe: temas de las correcciones en orden, sin repetir y sin ids desconocidos', () => {
@@ -248,6 +253,10 @@ test('informe: temas de las correcciones en orden, sin repetir y sin ids descono
     { grammarTopic: 'sample-should' },
   ]).map((t) => t.id)
   assert.deepEqual(ids, ['sample-should', 'sample-past-simple'])
+  // P5: varios temas en una corrección; las antiguas solo traen grammarTopic.
+  const many = g.topicsOfCorrections([{ grammarTopic: 'sample-should', grammarTopics: ['sample-should', 'sample-present-perfect'] }, { grammarTopic: 'sample-past-simple' }])
+  assert.deepEqual(many.map((t) => t.id), ['sample-should', 'sample-present-perfect', 'sample-past-simple'])
+  assert.equal(g.forYouTopics('A2', {}, 6, { mistakes: [{ grammarTopics: ['sample-should', 'sample-present-perfect'] }, { grammarTopics: ['sample-present-perfect'] }] })[0].id, 'sample-present-perfect')
 })
 
 test('«Para ti» con señales: errores con tema, tema del plan, categorías de respaldo y sin dominados', () => {

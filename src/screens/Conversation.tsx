@@ -22,7 +22,7 @@ import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLes
 import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
-import { answerIdeas, buildSystemPrompt, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
+import { answerIdeas, buildSystemPrompt, echoesIdea, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, stopSpeaking, toggleSpeak } from '../lib/tts'
 import { speakingKey } from '../lib/speaking'
@@ -104,6 +104,8 @@ export default function Conversation({
   const [revealed, setRevealed] = useState<Set<number>>(new Set())
   const [translated, setTranslated] = useState<Set<number>>(new Set())
   const [ideas, setIdeas] = useState<Idea[] | null>(null)
+  // v5.10 (P6): las últimas ideas enseñadas en este turno (se ocultan al grabar, pero se recuerdan para comprobar).
+  const shownIdeas = useRef<Idea[]>([])
   const [lookupReq, setLookupReq] = useState<{ query: string; context: string } | null>(null)
   // v5.10 (punto 3): Atrás dentro de la hoja de consulta (vuelve del sinónimo/antónimo antes de cerrarla).
   const lookupBack = useRef<(() => boolean) | null>(null)
@@ -267,6 +269,14 @@ export default function Conversation({
             setPhase('idle')
             return
           }
+          // v5.10 (P6): si lo «dicho» es solo una idea de «¿Qué digo?», no se corrige ni se guarda: casi seguro que el
+          // micro captó la voz del teléfono leyéndola. Se pide grabar de nuevo.
+          if (spoken && echoesIdea(said, shownIdeas.current)) {
+            setHint('Te entendí justo la idea de «¿Qué digo?», sin nada más. Si no la dijiste tú (a veces el micro capta la voz del teléfono), vuelve a grabar tu respuesta.')
+            setPhase('idle')
+            return
+          }
+          shownIdeas.current = []
           if (typed) setDraft('')
           const turn: Turn = {
             sessionId: sid,
@@ -482,14 +492,20 @@ export default function Conversation({
     setHint(null)
     setIdeas(null)
     haptic(ImpactStyle.Medium)
+    setPhase('opening') // P7: que se vea que el micro aún no graba
     starting.current = (async () => {
+      // v5.10 (P6): si sonaba algo (una idea, el profe), se para y se espera a que el altavoz calle antes de abrir el
+      // micro: si no, la voz del teléfono podía colarse en la grabación.
+      const wasSpeaking = speakingKey() !== null
       await stopSpeaking()
+      if (wasSpeaking) await new Promise((r) => setTimeout(r, 400))
       try {
         // AUD-MIC-301/304: false = se canceló la apertura (segundo plano, salir) o ya se estaba grabando.
         if (!(await recorder.current.begin())) {
           setPhase((p) => (p === 'recording' ? p : 'idle'))
           return
         }
+        haptic(ImpactStyle.Light) // P7: la vibración corta avisa de que ya puedes hablar
         setRecordStart(performance.now())
         setElapsed(0)
         setPhase('recording')
@@ -587,7 +603,10 @@ export default function Conversation({
     setIdeasLoading(true)
     try {
       const list = await answerIdeas(settingsRef.current.geminiKey, quick(), lastTeacher.text, topic)
-      if (!gone()) setIdeas(list)
+      if (!gone()) {
+        setIdeas(list)
+        shownIdeas.current = list
+      }
     } catch (e) {
       if (!isAborted(e)) setHint((e as Error).message)
     } finally {
@@ -1068,12 +1087,17 @@ export default function Conversation({
         {ideas && (
           <div className="anim-up flex w-full flex-col gap-2">
             {ideas.map((i) => (
+              // P6 (2026-10-19): tocar una idea la lee en voz alta; antes no se veía que sonaba, y al grabar encima el
+              // micro la captaba. Ahora muestra ▶/⏸ y se puede parar tocando otra vez (el micro también la corta).
               <button
                 key={i.en}
-                onClick={() => speak(i.en, settings.ttsRate, settings.voiceIndex)}
-                className="glass rounded-[19px] px-3.5 py-2 text-left text-[13.5px]"
+                onClick={() => toggleSpeak(i.en, settings.ttsRate, settings.voiceIndex)}
+                className="glass flex items-start gap-2 rounded-[19px] px-3.5 py-2 text-left text-[13.5px]"
               >
-                {i.en}…<span className="txt-sub block text-xs">{i.es}</span>
+                <SpeakIcon speakKey={i.en} size={14} stroke={1.8} className="txt-acc mt-[3px] shrink-0" />
+                <span>
+                  {i.en}…<span className="txt-sub block text-xs">{i.es}</span>
+                </span>
               </button>
             ))}
           </div>

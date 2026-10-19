@@ -85,5 +85,5 @@ export async function loadForYouSignals(): Promise<ForYouSignals> {
   ])
   const today = profile?.plan ? todayLesson(profile.plan) : null
   const planTopic = today?.lesson ? (topicForLesson(today.week, today.lesson)?.id ?? null) : null
-  return { mistakes: mistakes.map((m) => ({ grammarTopic: m.grammarTopic, category: m.category })), planTopic }
+  return { mistakes: mistakes.map((m) => ({ grammarTopic: m.grammarTopic, grammarTopics: m.grammarTopics, category: m.category })), planTopic }
 }
