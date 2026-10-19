@@ -7,8 +7,9 @@ import GrammarTopicRow from './GrammarTopicRow'
 import InfiniteList from './InfiniteList'
 
 /**
- * v5.10: pestaña «Gramática» del Inicio. Buscador arriba, fila «⭐ Para ti» (si hay) y la lista de secciones con
- * scroll propio (InfiniteList, sin scroll de página). Con texto en el buscador, la lista pasa a ser de temas.
+ * v5.10: pestaña «Gramática» del Inicio. Buscador arriba y la lista de secciones con scroll propio (InfiniteList, sin
+ * scroll de página). Con texto en el buscador, la lista pasa a ser de temas. Sin fila «Para ti» (decisión del dueño: los
+ * chips se veían cortados y quitaban sitio a la lista); los temas recomendados llevan su ⭐ en las listas.
  */
 export default function GrammarPanel({
   level,
@@ -61,7 +62,7 @@ export default function GrammarPanel({
         <input
           value={query}
           onChange={(e) => onQuery(e.target.value)}
-          placeholder="Busca: «wish», «pasado», «debería»…"
+          placeholder="Buscar tema de gramática"
           className="input h-[44px] w-full min-w-0 pr-10 pl-10 text-[14.5px]"
           autoCapitalize="none"
           autoCorrect="off"
@@ -78,21 +79,6 @@ export default function GrammarPanel({
           </button>
         )}
       </div>
-
-      {!results && forYou.length > 0 && (
-        // Fila de una línea con scroll horizontal propio: no empuja la lista de secciones.
-        <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto" aria-label="Para ti">
-          <span className="txt-acc flex flex-none items-center gap-1 pr-0.5 text-[12.5px] font-semibold">
-            <Icon name="star" size={13} stroke={2} />
-            Para ti
-          </span>
-          {forYou.map((t) => (
-            <button key={t.id} onClick={() => onOpenTopic(t.id)} className="field h-8 max-w-[220px] flex-none truncate rounded-[16px] px-3 text-[12.5px] whitespace-nowrap">
-              {t.nameEs}
-            </button>
-          ))}
-        </div>
-      )}
 
       {results && onAsk && (
         // D2: si el buscador no basta, la duda va a la mascota con lo que escribiste.

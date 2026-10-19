@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { whenBackground } from '../lib/lifecycle'
 import type { Grade } from 'ts-fsrs'
 import PrepareScreen from '../components/PrepareScreen'
-import { MAX_TALK_SECONDS } from '../components/TalkButton'
+import ReviewSummaryView from '../components/ReviewSummaryView'
+import TalkButton, { type Phase } from '../components/TalkButton'
 import { MIN_SEND_MS } from '../components/talkGesture'
 import type { SrsCard } from '../lib/db'
 import { friendlyError } from '../lib/errors'
@@ -12,6 +13,7 @@ import PronunciationView from '../components/PronunciationView'
 import SpeakIcon from '../components/SpeakIcon'
 import { runPhonetics } from '../lib/phonetics'
 import type { PronResult } from '../lib/pronunciation'
+import { summarizeReview, type ReviewAttempt } from '../lib/reviewSummary'
 import { addPracticeSeconds } from '../lib/stats'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
@@ -30,10 +32,12 @@ import {
 import { speak, stopSpeaking, toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
-import { TEACHERS, THEME_INFO, type ThemeVars, teacherName } from '../ui/theme'
-import Wave from '../ui/Wave'
+import { THEME_INFO, type ThemeVars, teacherName } from '../ui/theme'
 
 type Step = 'ask' | 'recording' | 'checking' | 'result'
+
+/** Estado del botón de hablar (el mismo de la clase) en cada paso de la tarjeta. */
+const PHASE: Record<Exclude<Step, 'result'>, Phase> = { ask: 'idle', recording: 'recording', checking: 'thinking' }
 
 /** Al aparecer los botones de elegir, se desplazan a la vista (en horizontal quedaban debajo). Estable: solo al montar. */
 const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest' })
@@ -61,7 +65,6 @@ const VERDICT = {
 
 /** Repaso espaciado: frase en español → la dices en inglés → Gemini la evalúa → nota FSRS. */
 export default function ReviewScreen({ settings, t, update, onExit, registerBack }: Props) {
-  const teacher = TEACHERS[settings.teacher]
   const [queue, setQueue] = useState<SrsCard[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [i, setI] = useState(0)
@@ -70,7 +73,16 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   const [result, setResult] = useState<DrillResult | 'unknown' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [elapsed, setElapsed] = useState(0)
-  const [stats, setStats] = useState({ done: 0, correct: 0 })
+  const [hint, setHint] = useState<string | null>(null)
+  // v5.10 (punto 4): lo hecho en este repaso, para la evaluación del final (reviewSummary.ts).
+  const [attempts, setAttempts] = useState<(ReviewAttempt & { tryId?: number })[]>([])
+  // Notas de Azure por número de intento: la de la última frase puede llegar con el resumen ya en pantalla.
+  const [pronScores, setPronScores] = useState<Record<number, number>>({})
+  const [spokenSeconds, setSpokenSeconds] = useState(0)
+  // Intento cuya grabación evaluó Gemini en la tarjeta actual (su nota de Azure es la que cuenta en el resumen).
+  const cardTry = useRef<number | undefined>(undefined)
+  // Saliste a mitad con alguna frase hecha: se muestra la evaluación de lo hecho en vez de salir directamente.
+  const [ended, setEnded] = useState(false)
   // v5.9: nota de Azure de la frase (la referencia es la respuesta correcta). null = sin fonética.
   const [pron, setPron] = useState<PronResult | string | 'pending' | null>(null)
   // Cada intento tiene su número: una nota de Azure que llega tarde (de la frase anterior) no se pinta en esta.
@@ -90,10 +102,12 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     }
   }, [])
 
+  // Atrás de Android hace lo mismo que la flecha de salir (`leave`, más abajo); con la referencia no se registra en cada pintado.
+  const leaveRef = useRef(onExit)
   useEffect(() => {
-    registerBack(onExit)
+    registerBack(() => leaveRef.current())
     return () => registerBack(null)
-  }, [onExit, registerBack])
+  }, [registerBack])
 
   useEffect(() => {
     if (step !== 'recording') return
@@ -110,30 +124,54 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     })
   }, [step])
 
-  // v5.9: como en la clase, una respuesta dura como mucho 60 s; al llegar se envía sola.
-  const toggleRef = useRef<(() => void) | null>(null)
-  useEffect(() => {
-    if (step === 'recording' && elapsed >= MAX_TALK_SECONDS) toggleRef.current?.()
-  }, [step, elapsed])
-
-  const toggleRecord = async () => {
-    const card = queue?.[i]
-    if (!card) return
+  // v5.10 (punto 5): el micro es el mismo TalkButton de la clase (toca para hablar / toca para enviar, anillo de 60 s,
+  // barras con la voz real, papelera). El envío automático a los 60 s lo hace el propio TalkButton con `elapsed`.
+  const onPress = async () => {
+    if (!queue?.[i] || step !== 'ask') return
     setError(null)
-    if (step === 'ask') {
-      await stopSpeaking()
-      try {
-        // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
-        if (!(await recorder.current.begin())) return
-        recStart.current = performance.now()
-        setElapsed(0)
-        setStep('recording')
-      } catch (e) {
-        setError(e instanceof MicError ? e.message : 'No se pudo grabar.')
-      }
-      return
+    setHint(null)
+    await stopSpeaking()
+    try {
+      // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
+      if (!(await recorder.current.begin())) return
+      recStart.current = performance.now()
+      setElapsed(0)
+      setStep('recording')
+    } catch (e) {
+      setError(e instanceof MicError ? e.message : 'No se pudo grabar.')
     }
-    if (step !== 'recording') return
+  }
+
+  // Como en la clase: un segundo toque (o el envío automático) mientras se cierra la grabación no vuelve a enviar.
+  const sending = useRef(false)
+  const onRelease = async () => {
+    if (sending.current) return
+    sending.current = true
+    try {
+      await send()
+    } finally {
+      sending.current = false
+    }
+  }
+
+  /** Papelera: descarta la grabación y suelta el micro (como en la clase). */
+  const onCancel = async () => {
+    if (step !== 'recording' || sending.current) return
+    sending.current = true
+    try {
+      await recorder.current.finish()
+    } finally {
+      sending.current = false
+    }
+    setStep('ask')
+    setHint('Grabación descartada')
+  }
+
+  const send = async () => {
+    const card = queue?.[i]
+    if (!card || step !== 'recording') return
+    setError(null)
+    setHint(null)
     // Rebote de un doble toque justo al empezar: no se envía una grabación vacía (talkGesture.ts).
     if (performance.now() - recStart.current < MIN_SEND_MS) return
     setStep('checking')
@@ -146,7 +184,10 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     if (empty) distrustMic()
     const heard = seconds >= 0.8 && !empty && analysis?.hasSpeech !== false
     // v5.9: lo hablado en el repaso cuenta para la meta diaria y la racha.
-    if (heard) addPracticeSeconds(analysis?.speechSeconds ?? seconds)
+    if (heard) {
+      addPracticeSeconds(analysis?.speechSeconds ?? seconds)
+      setSpokenSeconds((x) => x + (analysis?.speechSeconds ?? seconds))
+    }
     // v5.9: con la fonética activa, Azure puntúa la frase en paralelo. La referencia es lo que DIJISTE (la
     // transcripción de Gemini), como en la clase: con la respuesta de la tarjeta, Azure marcaba como «te la comiste»
     // palabras que nunca dijiste («speaks about loyalty» contra «talks about the loyalty»: «the», «talks»).
@@ -155,7 +196,10 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     const job = heard ? runPhonetics(settings, update, blob, () => reference) : null
     const mine = ++pronTry.current
     setPron(job ? 'pending' : null)
-    job?.then((r) => pronTry.current === mine && setPron(r))
+    job?.then((r) => {
+      if (typeof r !== 'string') setPronScores((m) => ({ ...m, [mine]: r.pron }))
+      if (pronTry.current === mine) setPron(r)
+    })
     if (!heard) {
       giveReference('')
       setError('No te he oído. Inténtalo otra vez.')
@@ -170,6 +214,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
         { base64: await blobToBase64(blob), mimeType: blob.type.split(';')[0] || 'audio/webm' },
       )
       giveReference(r.transcript)
+      cardTry.current = mine
       setResult(r)
       setStep('result')
       speak(card.answerEn, settings.ttsRate, settings.voiceIndex).catch(() => {})
@@ -181,9 +226,22 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     }
   }
 
-  // La referencia se actualiza después de cada pintado (no durante él) para el envío automático de los 60 s.
+  /** Salir: con alguna frase hecha, primero la evaluación de lo hecho (v5.10, punto 4); si no, fuera directamente. */
+  const leave = () => {
+    // Si terminas viendo el resultado de una frase (sin elegir cuándo vuelve), también cuenta en la evaluación; como no se
+    // eligió, la frase sigue pendiente para el próximo repaso.
+    const current = step === 'result' && !!result
+    if (ended || (!attempts.length && !current) || !queue?.[i]) return onExit()
+    if (current) record()
+    pronTry.current++ // un resultado que llegue tarde ya no se pinta en la tarjeta
+    recorder.current.close()
+    stopSpeaking()
+    setStep('ask')
+    setEnded(true)
+  }
+  // La referencia se actualiza después de cada pintado (no durante él) para el Atrás de Android.
   useEffect(() => {
-    toggleRef.current = toggleRecord
+    leaveRef.current = leave
   })
 
   const pad = 'relative z-[2] flex h-full flex-col px-6 pt-[calc(env(safe-area-inset-top)+14px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
@@ -195,18 +253,32 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
   const card = queue[i]
 
-  // ---- Sin tarjetas o sesión terminada
+  // ---- Repaso terminado (o dejado a medias): evaluación de lo hecho (v5.10, punto 4)
+  if ((!card || ended) && attempts.length > 0) {
+    const done = attempts.map(({ tryId, ...a }) => ({ ...a, pron: tryId === undefined ? null : (pronScores[tryId] ?? null) }))
+    // La frase en pantalla no cuenta como «sin repasar» si se respondió antes de terminar (se anotó al salir).
+    const left = card ? queue.length - i - (attempts.at(-1)?.cardId === card.id ? 1 : 0) : 0
+    return (
+      <ReviewSummaryView
+        s={summarizeReview(done, spokenSeconds, left)}
+        element={THEME_INFO[settings.theme].mascot}
+        partial={left > 0}
+        ttsRate={settings.ttsRate}
+        voiceIndex={settings.voiceIndex}
+        onBack={onExit}
+      />
+    )
+  }
+
+  // ---- Sin tarjetas pendientes
   if (!card) {
-    const empty = queue.length === 0
     return (
       <div className={pad}>
         <div className="anim-up flex flex-1 flex-col items-center justify-center gap-4 text-center">
-          <Mascot element={THEME_INFO[settings.theme].mascot} size={170} mood={empty ? 'happy' : 'idle'} />
-          <h1 className="text-[28px] font-semibold tracking-[-.6px]">{empty ? '¡Todo repasado!' : '¡Repaso terminado!'}</h1>
+          <Mascot element={THEME_INFO[settings.theme].mascot} size={170} mood="happy" />
+          <h1 className="text-[28px] font-semibold tracking-[-.6px]">¡Todo repasado!</h1>
           <p className="txt-sub max-w-[300px] text-[15px] leading-snug">
-            {empty
-              ? 'No tienes frases pendientes. Cuando el profe te corrija o guardes palabras, aparecerán aquí para repasarlas en el momento justo.'
-              : `Has repasado ${stats.done} ${stats.done === 1 ? 'frase' : 'frases'} y acertaste ${stats.correct}. Volverán cuando estés a punto de olvidarlas.`}
+            No tienes frases pendientes. Cuando el profe te corrija o guardes palabras, aparecerán aquí para repasarlas en el momento justo.
           </p>
         </div>
         <button onClick={onExit} className="btn-acc h-[56px] rounded-full text-[16px]">
@@ -222,6 +294,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
   const dontKnow = () => {
     pronTry.current++
+    cardTry.current = undefined
     setPron(null)
     // AUD-MIC-302: «No lo sé» durante la apertura del micro la cancela; si no, al abrir pisaría el resultado.
     if (recorder.current.isOpening) recorder.current.close()
@@ -231,12 +304,22 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     speak(card.answerEn, settings.ttsRate, settings.voiceIndex).catch(() => {})
   }
 
+  /** Anota la frase para la evaluación del final: el veredicto de Gemini (o «No lo sé») y su intento de Azure. */
+  const record = () => {
+    const outcome = !result || result === 'unknown' ? 'unknown' : result.verdict
+    const tryId = outcome === 'unknown' ? undefined : cardTry.current
+    cardTry.current = undefined
+    setAttempts((a) => [
+      ...a,
+      { cardId: card.id ?? -1 - i, source: card.source, promptEs: card.promptEs, answerEn: card.answerEn, outcome, tryId },
+    ])
+  }
+
   const grade = async (g: Grade) => {
     pronTry.current++
     setPron(null)
     await reviewCard(card, g)
-    const ok = result !== 'unknown' && result?.verdict === 'correct'
-    setStats((s) => ({ done: s.done + 1, correct: s.correct + (ok ? 1 : 0) }))
+    record()
     // "Otra vez": vuelve al final de esta misma sesión.
     if (g === GRADES[0].grade) setQueue((q) => (q ? [...q, card] : q))
     setResult(null)
@@ -251,7 +334,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     pronTry.current++
     setPron(null)
     await archiveCard(card)
-    setStats((s) => ({ done: s.done + 1, correct: s.correct + (result !== 'unknown' && result?.verdict === 'correct' ? 1 : 0) }))
+    record()
     setResult(null)
     setShowHint(false)
     setError(null)
@@ -278,7 +361,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   return (
     <div className={pad}>
       <div className="flex items-center gap-3">
-        <button onClick={onExit} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Salir del repaso">
+        <button onClick={leave} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Salir del repaso">
           <Icon name="back" size={20} stroke={1.8} />
         </button>
         <div className="flex-1">
@@ -290,8 +373,18 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
         <PhoneticsToggle settings={settings} update={update} />
         <Mascot element={THEME_INFO[settings.theme].mascot} size={52} mood={step === 'checking' ? 'thinking' : 'idle'} />
       </div>
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--gb)' }}>
-        <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${(i / queue.length) * 100}%`, background: 'var(--acc)' }} />
+      <div className="mt-3 flex items-center gap-3">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full" style={{ background: 'var(--gb)' }}>
+          <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${(i / queue.length) * 100}%`, background: 'var(--acc)' }} />
+        </div>
+        {/* v5.10 (petición del dueño): el repaso se puede terminar cuando quieras, sin agotar las frases. Con al menos una
+            respondida (antes no hay nada que evaluar) lleva a la evaluación de lo hecho; las que faltan siguen pendientes. */}
+        {(attempts.length > 0 || (step === 'result' && !!result)) && (
+          <button onClick={leave} className="field flex h-8 flex-none items-center gap-1.5 rounded-full px-3 text-[13px] font-medium" style={{ border: 0 }}>
+            <Icon name="check" size={14} stroke={2} />
+            Terminar
+          </button>
+        )}
       </div>
 
       {/* En horizontal (Galaxy A11) la tarjeta y los botones no caben: el contenido se desplaza (antes quedaban fuera). */}
@@ -367,28 +460,15 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
                 {error}
               </div>
             )}
-            <div className="flex items-center gap-5">
-              <Wave on={step === 'recording'} />
-              <button
-                onClick={toggleRecord}
-                disabled={step === 'checking'}
-                className="grid h-[88px] w-[88px] place-items-center rounded-full disabled:opacity-60"
-                style={{
-                  border: '1px solid rgba(255,255,255,.35)',
-                  background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 45%), var(--acc)',
-                  color: 'var(--ink)',
-                  boxShadow: step === 'recording' ? '0 0 0 14px var(--glow), 0 0 60px var(--glow)' : '0 0 0 6px var(--g), 0 14px 40px var(--glow)',
-                  transition: 'all .25s ease',
-                }}
-                aria-label={step === 'recording' ? 'Parar' : 'Responder'}
-              >
-                {step === 'recording' ? <span className="h-7 w-7 rounded-md" style={{ background: 'var(--ink)' }} /> : <Icon name="mic" size={32} stroke={1.8} />}
-              </button>
-              <Wave on={step === 'recording'} />
-            </div>
-            <div className="txt-sub text-[13px] tabular-nums">
-              {step === 'recording' ? `${Math.floor(elapsed)} s de ${MAX_TALK_SECONDS} · toca para enviar` : step === 'checking' ? `${teacher.name} está escuchando…` : 'Toca y di la frase en inglés'}
-            </div>
+            {hint && !error && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+            <TalkButton
+              phase={PHASE[step]}
+              elapsed={elapsed}
+              onPress={onPress}
+              onRelease={onRelease}
+              onCancel={onCancel}
+              level={() => recorder.current.level()}
+            />
             {step === 'ask' && (
               <button onClick={dontKnow} className="txt-sub mt-1 h-10 rounded-[20px] px-4 text-[14px]" style={{ border: '1.5px dashed var(--sub)' }}>
                 No lo sé, muéstrame la respuesta

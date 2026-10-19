@@ -321,9 +321,14 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
           </span>
           <Switch on={settings.earMode} />
         </button>
-        <button onClick={test} className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
+        {/* v5.10: el estado lo indica el icono ▶/⏸, sin «<mascota> hablando… · parar». */}
+        <button
+          onClick={test}
+          className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium"
+          aria-label={testing ? 'Parar la prueba de voz' : 'Probar voz'}
+        >
           <Icon name={testing ? 'pause' : 'speakerWave'} size={18} stroke={testing ? 2.2 : 1.7} />
-          {testing ? `${teacherName(settings.theme)} hablando… · parar` : 'Probar voz'}
+          Probar voz
         </button>
         <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
           <Icon name="headphones" size={18} />

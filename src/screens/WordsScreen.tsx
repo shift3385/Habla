@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import LookupCard from '../components/LookupCard'
+import { useCallback, useEffect, useState } from 'react'
+import LookupStack from '../components/LookupStack'
+import { useLookupStack } from '../components/useLookupStack'
 import { db, type Lookup, type SrsCard } from '../lib/db'
 import { archivedCards, unarchiveCard } from '../lib/srs'
 import { lookupWord } from '../lib/lookup'
@@ -18,6 +19,8 @@ interface Props {
 export default function WordsScreen({ settings, registerBack }: Props) {
   const [query, setQuery] = useState('')
   const [context, setContext] = useState('')
+  const [showContext, setShowContext] = useState(false)
+  const [showInfo, setShowInfo] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hint, setHint] = useState<string | null>(null)
@@ -28,21 +31,21 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   const [known, setKnown] = useState<SrsCard[]>([])
   const [level, setLevel] = useState('B1')
 
-  const reload = () => {
+  const reload = useCallback(() => {
     db.lookups.orderBy('createdAt').reverse().limit(60).toArray().then(setHistory)
     archivedCards().then(setKnown)
-  }
+  }, [])
 
   useEffect(() => {
     reload()
     getProfile().then((p) => setLevel(p.levels.overall))
-  }, [])
+  }, [reload])
 
-  // Atrás (Android) desde un resultado vuelve a la lista.
-  useEffect(() => {
-    registerBack(current ? () => (setCurrent(null), reload()) : null)
-    return () => registerBack(null)
-  }, [current, registerBack])
+  // Vuelve a la lista (y la recarga: los sinónimos/antónimos consultados entran en el Historial).
+  const close = useCallback(() => {
+    setCurrent(null)
+    reload()
+  }, [reload])
 
   const ask = async () => {
     if (!query.trim() || loading) return
@@ -55,6 +58,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
       setCurrent(l)
       setQuery('')
       setContext('')
+      setShowContext(false)
     } catch (e) {
       setError((e as Error).message)
     } finally {
@@ -64,24 +68,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   }
 
   if (current) {
-    return (
-      <div className="anim-in flex flex-col gap-3">
-        <div className="flex h-[54px] items-center gap-3">
-          <button
-            onClick={() => {
-              setCurrent(null)
-              reload()
-            }}
-            className="glass grid h-11 w-11 flex-none place-items-center rounded-full"
-            aria-label="Atrás"
-          >
-            <Icon name="back" size={20} stroke={1.8} />
-          </button>
-          <div className="text-2xl font-semibold tracking-[-.4px]">Palabras</div>
-        </div>
-        <LookupCard lookup={current} ttsRate={settings.ttsRate} voiceIndex={settings.voiceIndex} />
-      </div>
-    )
+    return <WordView key={current.id} root={current} settings={settings} level={level} registerBack={registerBack} onClose={close} />
   }
 
   const list = seg === 'saved' ? history.filter((h) => h.saved) : history
@@ -89,38 +76,74 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   return (
     <div className="anim-up flex flex-col gap-3">
       <div className="flex h-[54px] items-center text-[28px] font-semibold tracking-[-.6px]">Palabras</div>
-      <div className="glass min-w-0 rounded-[28px] p-4">
-        <div className="txt-sub text-[13px] leading-snug">
-          No es un traductor literal: te explica qué significa <b>en la frase donde la viste</b>. También al revés: escribe una palabra en español y
-          te dice cómo se diría en inglés ahí.
+      {/* v5.10 (petición del dueño): buscador compacto. Una sola línea; la frase donde la viste se añade si la quieres y
+          la explicación sale solo al tocar ⓘ. Así la lista de palabras tiene más sitio. */}
+      <div className="glass min-w-0 rounded-[26px] p-2.5">
+        <div className="flex items-center justify-between gap-2 pr-0.5 pl-2">
+          <span className="txt-acc2 text-[11px] tracking-[1.2px] uppercase">Buscador de palabras</span>
+          <button onClick={() => setShowInfo((v) => !v)} className="txt-sub grid h-7 w-7 place-items-center rounded-full" aria-label="Cómo funciona">
+            <Icon name="info" size={15} />
+          </button>
         </div>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && ask()}
-          placeholder='Palabra o expresión (p. ej. "run into")'
-          className="input mt-3 w-full min-w-0"
-          autoCapitalize="none"
-        />
-        <textarea
-          value={context}
-          onChange={(e) => setContext(e.target.value)}
-          placeholder="¿En qué frase la viste? (opcional, pero mejora mucho la respuesta)"
-          rows={2}
-          className="input mt-2 h-auto w-full min-w-0 resize-none py-3 leading-snug"
-        />
-        <button onClick={ask} disabled={!query.trim() || loading} className="btn-acc mt-2.5 h-[50px] w-full rounded-[25px] text-[15px]">
-          {loading ? 'Consultando…' : 'Consultar'}
-        </button>
-        {hint && <p className="txt-sub mt-2 text-[13px]">{hint}</p>}
+        <div className="mt-1 flex items-center gap-2">
+          <div className="relative min-w-0 flex-1">
+            <span className="txt-sub pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2">
+              <Icon name="search" size={16} />
+            </span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && ask()}
+              placeholder="Palabra o expresión"
+              className="input h-[46px] w-full min-w-0 pr-3 pl-10"
+              autoCapitalize="none"
+              enterKeyHint="search"
+              aria-label="Palabra o expresión"
+            />
+          </div>
+          <button
+            onClick={ask}
+            disabled={!query.trim() || loading}
+            className="btn-acc grid h-[46px] w-[46px] flex-none place-items-center rounded-full"
+            aria-label={loading ? 'Consultando…' : 'Consultar'}
+          >
+            <Icon name={loading ? 'spark' : 'arrowR'} size={18} stroke={2} />
+          </button>
+        </div>
+        {showContext && (
+          <textarea
+            value={context}
+            onChange={(e) => setContext(e.target.value)}
+            placeholder="¿En qué frase la viste? (mejora mucho la respuesta)"
+            rows={2}
+            autoFocus
+            className="input mt-2 h-auto w-full min-w-0 resize-none py-3 leading-snug"
+          />
+        )}
+        <div className="mt-1.5 flex items-center gap-2 px-1.5">
+          <button
+            onClick={() => {
+              if (showContext) setContext('')
+              setShowContext((v) => !v)
+            }}
+            className="txt-acc2 flex h-8 items-center gap-1 text-[13px] font-medium"
+          >
+            <Icon name={showContext ? 'close' : 'pencil'} size={13} stroke={2} />
+            {showContext ? 'Quitar la frase' : 'Añadir la frase donde la viste'}
+          </button>
+        </div>
+        {showInfo && (
+          <p className="txt-sub px-1.5 pb-1 text-[12.5px] leading-snug">
+            No es un traductor literal: te explica qué significa <b>en la frase donde la viste</b>. También al revés: escribe una palabra en
+            español y te dice cómo se diría en inglés ahí. En una clase, toca cualquier palabra del profe para consultarla al momento.
+          </p>
+        )}
+        {hint && <p className="txt-sub px-1.5 text-[13px]">{hint}</p>}
         {error && (
-          <p className="mt-2 text-sm" style={{ color: '#f87171' }}>
+          <p className="px-1.5 text-sm" style={{ color: '#f87171' }}>
             {error}
           </p>
         )}
-        <p className="txt-sub mt-2.5 text-[12px] leading-snug">
-          Consejo: en una clase, toca cualquier palabra del profe para consultarla al momento.
-        </p>
       </div>
 
       {(history.length > 0 || known.length > 0) && (
@@ -185,6 +208,44 @@ export default function WordsScreen({ settings, registerBack }: Props) {
           )}
         </>
       )}
+    </div>
+  )
+}
+
+/**
+ * v5.10 (punto 3): una consulta abierta en Palabras, con su pila de sinónimos/antónimos. Atrás (Android) quita un paso
+ * de la pila; con la palabra de partida arriba, vuelve a la lista. La flecha de la cabecera vuelve a la lista directamente.
+ */
+function WordView({
+  root,
+  settings,
+  level,
+  registerBack,
+  onClose,
+}: {
+  root: Lookup
+  settings: Settings
+  level: string
+  registerBack: (h: (() => void) | null) => void
+  onClose: () => void
+}) {
+  const s = useLookupStack(root, { apiKey: settings.geminiKey, models: fastModels(settings), level })
+  const { canPop, pop } = s
+
+  useEffect(() => {
+    registerBack(canPop ? pop : onClose)
+    return () => registerBack(null)
+  }, [canPop, pop, onClose, registerBack])
+
+  return (
+    <div className="anim-in flex flex-col gap-3">
+      <div className="flex h-[54px] items-center gap-3">
+        <button onClick={onClose} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Atrás">
+          <Icon name="back" size={20} stroke={1.8} />
+        </button>
+        <div className="text-2xl font-semibold tracking-[-.4px]">Palabras</div>
+      </div>
+      <LookupStack s={s} ttsRate={settings.ttsRate} voiceIndex={settings.voiceIndex} />
     </div>
   )
 }

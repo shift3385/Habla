@@ -136,6 +136,8 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
       falseFriendEs: opt(str),
       exampleEn: opt(str),
       exampleEs: opt(str),
+      synonyms: opt(strArr), // v5.10: faltan en las consultas anteriores
+      antonyms: opt(strArr),
     }),
     saved: bool,
     createdAt: num,

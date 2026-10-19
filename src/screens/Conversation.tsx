@@ -105,6 +105,8 @@ export default function Conversation({
   const [translated, setTranslated] = useState<Set<number>>(new Set())
   const [ideas, setIdeas] = useState<Idea[] | null>(null)
   const [lookupReq, setLookupReq] = useState<{ query: string; context: string } | null>(null)
+  // v5.10 (punto 3): Atrás dentro de la hoja de consulta (vuelve del sinónimo/antónimo antes de cerrarla).
+  const lookupBack = useRef<(() => boolean) | null>(null)
   const [level, setLevel] = useState('B1')
   const [ideasLoading, setIdeasLoading] = useState(false)
   const [recordStart, setRecordStart] = useState(0)
@@ -654,7 +656,7 @@ export default function Conversation({
   // Botón "atrás" de Android: en el chat sale guardando la clase (Terminar, con informe, está en la cabecera);
   // en el informe vuelve al inicio.
   useEffect(() => {
-    registerBack(lookupReq ? () => setLookupReq(null) : view === 'report' ? onExit : bye ? () => {} : () => leave())
+    registerBack(lookupReq ? () => lookupBack.current?.() || setLookupReq(null) : view === 'report' ? onExit : bye ? () => {} : () => leave())
     return () => registerBack(null)
   }, [view, leave, onExit, registerBack, lookupReq, bye])
 
@@ -1139,6 +1141,7 @@ export default function Conversation({
           ttsRate={settings.ttsRate}
           voiceIndex={settings.voiceIndex}
           onClose={() => setLookupReq(null)}
+          backRef={lookupBack}
         />
       )}
     </div>

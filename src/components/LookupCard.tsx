@@ -1,18 +1,32 @@
 import { useState } from 'react'
 import type { Lookup } from '../lib/db'
 import { setSaved } from '../lib/lookup'
+import { relatedWords, type LookupRelation } from '../lib/lookupStack'
 import { speak, toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import SpeakIcon from './SpeakIcon'
 
+interface Props {
+  lookup: Lookup
+  ttsRate: number
+  voiceIndex: number | null
+  /** v5.10: tocar un sinónimo/antónimo abre su consulta en la misma vista (pila de LookupStack). */
+  onRelated?: (word: string, kind: LookupRelation['kind']) => void
+  onSavedChange?: (saved: boolean) => void
+}
+
 /** Resultado de una consulta: significado en contexto, por qué, otros significados, registro, ejemplo. */
-export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lookup; ttsRate: number; voiceIndex: number | null }) {
+export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onSavedChange }: Props) {
   const r = lookup.result
   const [saved, setSavedState] = useState(lookup.saved)
+  // Las consultas guardadas antes de la 5.10 no traen sinónimos ni antónimos: entonces no se pinta la sección.
+  const synonyms = relatedWords(r.synonyms, r.headword)
+  const antonyms = relatedWords(r.antonyms, r.headword)
 
   const toggleSave = async () => {
     const next = !saved
     setSavedState(next)
+    onSavedChange?.(next)
     if (lookup.id) await setSaved(lookup.id, next)
   }
 
@@ -72,6 +86,13 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lo
         </button>
       )}
 
+      {synonyms.length > 0 && (
+        <RelatedWords title="Sinónimos" words={synonyms} kind="synonym" onOpen={onRelated} ttsRate={ttsRate} voiceIndex={voiceIndex} />
+      )}
+      {antonyms.length > 0 && (
+        <RelatedWords title="Antónimos" words={antonyms} kind="antonym" onOpen={onRelated} ttsRate={ttsRate} voiceIndex={voiceIndex} />
+      )}
+
       {r.otherMeanings.length > 0 && (
         <div className="glass rounded-[20px] px-4 py-3">
           <div className="mb-1.5 text-sm font-semibold">Otros significados</div>
@@ -107,6 +128,53 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex }: { lookup: Lo
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+/**
+ * v5.10 (punto 3): chips de sinónimos o antónimos. Cada chip tiene dos zonas: el texto abre su consulta (con el contexto
+ * de la palabra original) y ▶/⏸ lee la palabra con la voz común (toggleSpeak + SpeakIcon, como el resto de la app).
+ */
+function RelatedWords({
+  title,
+  words,
+  kind,
+  onOpen,
+  ttsRate,
+  voiceIndex,
+}: {
+  title: string
+  words: string[]
+  kind: LookupRelation['kind']
+  onOpen?: (word: string, kind: LookupRelation['kind']) => void
+  ttsRate: number
+  voiceIndex: number | null
+}) {
+  return (
+    <div className="glass rounded-[20px] px-4 py-3">
+      <div className="mb-2 text-sm font-semibold">{title}</div>
+      <div className="flex flex-wrap gap-1.5">
+        {words.map((w) => (
+          <span key={w} className="field flex min-h-9 max-w-full items-stretch overflow-hidden rounded-[18px] text-[13.5px]">
+            <button
+              onClick={() => onOpen?.(w, kind)}
+              disabled={!onOpen}
+              className="min-w-0 py-1 pr-1.5 pl-3 text-left break-words"
+              aria-label={`Consultar ${w}`}
+            >
+              {w}
+            </button>
+            <button
+              onClick={() => toggleSpeak(w, ttsRate, voiceIndex)}
+              className="txt-acc2 grid w-9 flex-none place-items-center"
+              aria-label={`Escuchar ${w}`}
+            >
+              <SpeakIcon speakKey={w} size={15} />
+            </button>
+          </span>
+        ))}
+      </div>
     </div>
   )
 }

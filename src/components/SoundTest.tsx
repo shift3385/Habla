@@ -136,12 +136,13 @@ export default function SoundTest({ settings, t, mode, headsetName, onPassed, on
         primary={{ label: 'Sí, te oigo', onClick: () => setStep('talk') }}
         secondary={{ label: 'No te oigo', onClick: () => setStep('notHeard') }}
       >
+        {/* v5.10: sin texto de estado: lo cuentan la mascota (habla con la boca) y el icono ▶/⏸. */}
         <button
           onClick={() => (speaking ? stopSpeaking().catch(() => {}) : say())}
-          className="field mx-auto flex h-12 items-center gap-2 rounded-3xl px-5 text-[15px] font-medium"
+          className="field mx-auto grid h-14 w-14 place-items-center rounded-full"
+          aria-label={speaking ? 'Parar' : 'Repetir'}
         >
-          <Icon name={speaking ? 'pause' : 'speakerWave'} size={18} stroke={speaking ? 2.2 : 1.7} />
-          {speaking ? `${name} hablando… · parar` : 'Repetir'}
+          <Icon name={speaking ? 'pause' : 'speakerWave'} size={22} stroke={speaking ? 2.2 : 1.7} />
         </button>
       </MascotPage>
     )

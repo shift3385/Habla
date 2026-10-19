@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
-import type { Lookup } from '../lib/db'
+import { useEffect, type MutableRefObject } from 'react'
 import type { Models } from '../lib/gemini'
-import { lookupWord } from '../lib/lookup'
 import { Icon } from '../ui/icons'
-import LookupCard from './LookupCard'
+import LookupStack from './LookupStack'
+import { useLookupStack } from './useLookupStack'
 
 interface Props {
   query: string
@@ -14,24 +13,27 @@ interface Props {
   ttsRate: number
   voiceIndex: number | null
   onClose: () => void
+  /**
+   * v5.10 (punto 3): Atrás de Android. La pantalla que abre la hoja llama a `backRef.current()`: si había un sinónimo
+   * o un antónimo abierto vuelve un paso y devuelve true; con la pila en la palabra original devuelve false y la
+   * pantalla cierra la hoja.
+   */
+  backRef?: MutableRefObject<(() => boolean) | null>
 }
 
 /** Hoja inferior que se abre al tocar una palabra: consulta en contexto sin salir de la clase. */
-export default function LookupSheet({ query, context, apiKey, models, level, ttsRate, voiceIndex, onClose }: Props) {
-  const [lookup, setLookup] = useState<Lookup | null>(null)
-  const [error, setError] = useState<string | null>(null)
+export default function LookupSheet({ query, context, apiKey, models, level, ttsRate, voiceIndex, onClose, backRef }: Props) {
+  // Una consulta por apertura; los sinónimos/antónimos se apilan dentro de la misma hoja.
+  const s = useLookupStack({ query, context }, { apiKey, models, level })
+  const { canPop, pop } = s
 
   useEffect(() => {
-    let alive = true
-    lookupWord(apiKey, models, query, context, level)
-      .then((l) => alive && setLookup(l))
-      .catch((e) => alive && setError((e as Error).message))
+    if (!backRef) return
+    backRef.current = () => (canPop ? (pop(), true) : false)
     return () => {
-      alive = false
+      backRef.current = null
     }
-    // Una consulta por apertura.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [backRef, canPop, pop])
 
   return (
     <div className="fixed inset-0 z-50 flex items-end" onClick={onClose}>
@@ -48,13 +50,7 @@ export default function LookupSheet({ query, context, apiKey, models, level, tts
             <Icon name="back" size={16} className="rotate-[-90deg]" />
           </button>
         </div>
-        {!lookup && !error && (
-          <div className="glass txt-sub animate-pulse rounded-[24px] p-5 text-center">
-            Buscando qué significa <b>"{query}"</b> aquí…
-          </div>
-        )}
-        {error && <div className="glass rounded-[24px] p-4 text-sm" style={{ color: '#f87171' }}>{error}</div>}
-        {lookup && <LookupCard lookup={lookup} ttsRate={ttsRate} voiceIndex={voiceIndex} />}
+        <LookupStack s={s} ttsRate={ttsRate} voiceIndex={voiceIndex} />
       </div>
     </div>
   )

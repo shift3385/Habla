@@ -2,7 +2,7 @@ import type { Correction, SessionMetrics, SessionReport, Topic } from '../lib/db
 import { topicsOfCorrections } from '../lib/grammar'
 import { openGrammarTopic } from '../lib/grammarLink'
 import { toggleSpeak } from '../lib/tts'
-import { Icon } from '../ui/icons'
+import { Icon, type IconName } from '../ui/icons'
 import CorrectionView from './CorrectionView'
 import ScoreRing from './ScoreRing'
 import SpeakIcon from './SpeakIcon'
@@ -122,7 +122,8 @@ export default function ReportView(p: Props) {
   )
 }
 
-function Stat({ value, label, hint }: { value: string | number; label: string; hint?: string }) {
+/** Tarjeta de una cifra (también la usa el resumen del Repaso, v5.10). */
+export function Stat({ value, label, hint }: { value: string | number; label: string; hint?: string }) {
   return (
     <div className="glass rounded-[20px] px-2 py-3">
       <div className="text-xl font-semibold tabular-nums">{value}</div>
@@ -132,7 +133,8 @@ function Stat({ value, label, hint }: { value: string | number; label: string; h
   )
 }
 
-function Card({ title, icon, children }: { title: string; icon: 'spark' | 'check' | 'target'; children: React.ReactNode }) {
+/** Tarjeta con título e icono (también la usa el resumen del Repaso, v5.10). */
+export function Card({ title, icon, children }: { title: string; icon: IconName; children: React.ReactNode }) {
   return (
     <div className="glass rounded-[24px] p-4 text-[15px] leading-snug">
       <h3 className="mb-2 flex items-center gap-2 font-semibold">

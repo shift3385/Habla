@@ -172,3 +172,71 @@ la app no baraja las opciones, así que conviene repartir la posición de la cor
 | Plan con «present perfect» en el objetivo de hoy | Chip «📘 Presente perfecto…» junto a Empezar → abre el tema; «Para ti» pone ese tema primero |
 
 **Para el teléfono:** la voz real del profe (en Chromium headless no hay motor de voz), el micro real en «Dilo tú», Atrás de Android con la hoja abierta encima de la clase, y la fonética real en «Dilo tú» (con permiso del dueño, gasta F0).
+
+---
+
+## Punto 3 · Sinónimos y antónimos (2026-10-09, dev)
+
+**Qué:** cada consulta de palabra trae ahora **sinónimos** y **antónimos** (0–6 cada uno, en inglés y del mismo sentido que en el contexto; vacío si no hay antónimo natural). En la tarjeta salen dos secciones, «Sinónimos» y «Antónimos», con chips. Cada chip tiene dos zonas: el **texto** abre la consulta de esa palabra y el **▶/⏸** la lee con la voz común (`toggleSpeak` + `SpeakIcon`).
+
+**Navegación sin modal sobre modal:** la consulta del sinónimo se abre **dentro de la misma hoja o vista** y se apila (palabra original → sinónimo → antónimo de ese…). Arriba sale «‹ palabra anterior» y «Sinónimo/Antónimo de X». El **Atrás de Android** quita un paso; solo con la palabra original arriba cierra la hoja (clase) o vuelve a la lista (Palabras). Al apilar o volver, la vista sube al principio. Mientras carga se ve «Buscando qué significa…» en la misma vista; si falla, el error pasa por `friendlyError` y hay un botón «Reintentar». Cada consulta así se guarda en el Historial como cualquier otra y se puede «Guardar» (la marca se conserva al volver por la pila).
+
+**Dónde:**
+- `src/lib/lookup.ts`: `synonyms`/`antonyms` en el esquema JSON y en el prompt. Nuevo parámetro `relation`: cuando se toca un chip, el prompt dice «lo tocó como sinónimo/antónimo de X (que allí significaba …)» y se envía **el contexto de la palabra original** (se hereda por toda la cadena).
+- `src/lib/db.ts`: `LookupResult.synonyms?` y `antonyms?` **opcionales** (las consultas guardadas antes no los tienen y se ven igual, sin secciones vacías).
+- `src/lib/lookupStack.ts` (nuevo, lógica pura): pila (`rootEntry`, `pushRelated`, `popEntry`, `canPop`, `backLabel`, `patchEntry`) y `relatedWords` (limpia: sin vacíos, sin repetidos, sin la propia palabra, máx. 6).
+- `src/components/useLookupStack.ts` (nuevo): hook que lanza la consulta del elemento de arriba (una sola vez aunque StrictMode repita el efecto; una respuesta tardía de un elemento ya quitado no pisa nada).
+- `src/components/LookupStack.tsx` (nuevo): «‹ atrás», carga, error con Reintentar y la tarjeta. Lo usan las dos entradas.
+- `src/components/LookupCard.tsx`: secciones «Sinónimos»/«Antónimos» (`RelatedWords`), props `onRelated` y `onSavedChange`.
+- `src/components/LookupSheet.tsx` (clase) usa la pila; `backRef` para el Atrás de Android. `src/screens/Conversation.tsx`: el Atrás con la hoja abierta llama primero a `lookupBack.current()` y solo si no había a dónde volver cierra la hoja.
+- `src/screens/WordsScreen.tsx`: la consulta abierta (historial o guardadas) es `WordView` con la misma pila; Atrás quita un paso y, al final, vuelve a la lista (que se recarga con las consultas nuevas). La flecha de la cabecera vuelve a la lista directamente.
+- `src/lib/backupCheck.ts`: `synonyms`/`antonyms` como `opt(strArr)`: se aceptan copias con y sin ellos.
+
+**Cómo se probó:**
+- `npx tsc -b` OK · `npm run lint` 0 errores · `npm test` **74/74** (nuevo `tests/lookupStack.test.mjs`: palabra → sinónimo → antónimo → atrás → atrás, contexto heredado, raíz por hacer, casos que no apilan, respuesta tardía, `relatedWords` con `undefined`/repetidos/máx. 6; `tests/backupCheck.test.mjs`: consultas con y sin los campos se aceptan, y con un tipo erróneo se rechazan) · `node scripts/validate-bank.mjs` OK · `node scripts/validate-grammar.mjs` 0 errores, 0 avisos.
+- **Navegador:** Chrome headless por CDP contra Vite (`preview_start habla-dev`), origen aislado `lex.localhost:5173`, perfil «Lex» y clave falsa; Gemini simulado que devuelve `synonyms`/`antonyms` (big → large/huge/…; large → …; small → …) y guarda el prompt; voz simulada (3 s) para ver ▶/⏸. **0 llamadas reales.** Arneses en `docs/v5.10/evidencia-510b/arnes-sinonimos-*.{js,mjs}`; capturas `sin-*.png` en la misma carpeta.
+
+| Caso | Resultado (390×844, 780×360 y 320×640) |
+|---|---|
+| Palabras → «big» con frase | Secciones Sinónimos (6, sin «Big» repetido) y Antónimos; sin «‹» en la original; sin scroll horizontal |
+| Chip «large» → chip «small» | Carga en la misma vista; «‹ big · Sinónimo de big», luego «‹ large · Antónimo de large» |
+| ▶ de «tiny» y otra vez | `speakingKey = tiny` y el icono pasa a ⏸; al tocar otra vez, se para (▶) |
+| «‹ large», Atrás de Android, Atrás | small → large → big → lista; big, large y small están en el Historial |
+| Consulta antigua (sin campos) | Se ve completa, sin «Sinónimos» ni «Antónimos» |
+| Prompt enviado | El esquema lleva los dos campos; large lleva «a synonym of "big"» y small «an antonym of "large"», ambos con el contexto «It was a big house.» |
+| Clase (390×844): tocar «big» en el profe | Hoja; large → small dentro de **una sola hoja**; Atrás de Android: small → large → big → cierra la hoja y la clase sigue |
+| Clase: error de red | Mensaje en la hoja + «Reintentar», que carga la consulta |
+
+**Para el teléfono:** la voz real del ▶ de los chips (en headless la voz es simulada), el Atrás físico de Android con la hoja abierta en la clase y en Palabras (en el navegador se lanzó el evento `backButton` del plugin App), el tacto de los chips en el Galaxy A11 (320×640, horizontal forzado) y una consulta real a Gemini para ver la calidad de los sinónimos/antónimos (con permiso del dueño).
+
+---
+
+## Puntos 4 y 5 · Repaso (2026-10-09)
+
+### Punto 5 · Micro igual que en la clase
+- **Qué cambia:** el Repaso (`src/screens/ReviewScreen.tsx`) ya no tiene su botón propio con `Wave` y «N s de 60»: usa el **mismo `TalkButton`** que la clase (`talkGesture.ts`): «Toca para hablar / Toca para enviar», anillo de 60 s en cuenta atrás (naranja los últimos 10 s, rojo los últimos 5, con el tiempo en el texto), barras que siguen la voz real (`level={() => recorder.current.level()}`), **papelera** para descartar («Grabación descartada», suelta el micro y no llama a Gemini) y **envío automático a los 60 s** (lo hace el propio TalkButton; se quitó el `toggleRef` del Repaso para no enviar dos veces).
+- **Pasos → fases:** `ask` → `idle`, `recording` → `recording`, `checking` → `thinking` (constante `PHASE`).
+- **Se conserva todo:** `begin()`/`finish()` (AUD-MIC-302/305), `MIN_SEND_MS`, `isEmptyRecording` + `distrustMic`, `addPracticeSeconds`, fonética con la transcripción como referencia (`giveReference`), «No lo sé» (cancela la apertura del micro), cierre en segundo plano (`whenBackground`), «Ya me la sé», tarjetas de Gramática. El toque doble y el envío automático no envían dos veces: guarda `sending` como en la clase.
+
+### Punto 4 · Evaluación al terminar
+- **Lógica** en `src/lib/reviewSummary.ts` (sin Gemini, todo en el teléfono) y vista en `src/components/ReviewSummaryView.tsx`, con `MascotPage` (mascota del tema, dos columnas en horizontal), `ScoreRing`, y `Stat`/`Card` **exportadas de `ReportView.tsx`** (no se copian estilos; `Card` acepta cualquier icono).
+- **Precisión 0–100** = `round(100 × puntos / intentos)` con **Correcto = 1, Casi = 0,5, Aún no = 0, No lo sé = 0** (`OUTCOME_POINTS`; la fórmula se ve bajo el anillo). Cuenta cada intento: con «No me salió» una frase vuelve y cuenta otra vez.
+- **Se muestra:** título y feedback de la mascota, anillo de precisión, Correcto / Casi / Aún no / No lo sé, frases, tiempo hablado en el repaso (los mismos segundos que suman a la meta), media de pronunciación de Azure («—, sin fonética» si no hubo; la nota que llega tarde también cuenta) y **«Las que más te costaron»** (máx. 5, agrupadas por tarjeta, primero «No lo sé», luego «Aún no», «Casi»; «×2» si falló dos veces) con ▶/⏸ (`toggleSpeak` + `SpeakIcon`) de la respuesta correcta. Botón «Volver».
+- **Feedback:** banda por precisión (≥ 90 «¡Repaso redondo!», ≥ 70 «¡Buen repaso!», ≥ 40 «Vas por buen camino», < 40 «Hoy costó, y eso también cuenta»; la mascota sonríe en las dos primeras y «habla» en las otras) + **un solo consejo** según lo que falló (≥ 1/3 «No lo sé» → intenta decir algo; muchos «Casi» → palabras pequeñas; Gramática → repasa el tema; si no, escucha las difíciles) + pronunciación (≥ 85 elogio, < 60 consejo) + frases que quedaron (si saliste a mitad).
+- **«¡Todo repasado!»** (sin frases) queda igual.
+- **Salir a mitad con ≥ 1 frase hecha → se muestra el resumen** (flecha y Atrás de Android, vía `leave`). Por qué: las notas FSRS de esas frases ya están guardadas y es justo cuando más sirve ver qué costó; sale «Repaso a medias · N frases repasadas» y el feedback dice cuántas quedan («volverán en el próximo repaso»). Se cierra el micro si estaba grabando y se para la voz. Desde el resumen, «Volver» o Atrás salen del todo. Sin ninguna frase hecha, se sale directamente como antes.
+
+### Cómo se probó
+- `npx tsc -b` OK · `npm run lint` 0 errores (sin avisos nuevos) · `npm test` **74/74** (5 nuevas en `tests/reviewSummary.test.mjs`: fórmula, recuento y media de pronunciación, «las que más costaron», feedback por banda y por fallo, salida a mitad) · `validate-bank` OK · `validate-grammar` 0 errores, 0 avisos.
+- **Navegador** (rep.localhost, `seed7.js` con `__seedN = 1` + `docs/v5.10/evidencia-510b/arnes-repaso.js`: micro falso de oscilador con registro de aperturas, Gemini y Azure simulados con veredictos y notas variados, 4 tarjetas: 3 de correcciones y 1 de Gramática). Capturas en `docs/v5.10/evidencia-510b/` (`01`–`17`).
+
+| Caso | Resultado |
+|---|---|
+| 390×844: grabar, dejar correr | Anillo, papelera y barras (02); **envío automático a los 60,4 s** y micro cerrado (03) |
+| Gramática, últimos segundos | Anillo naranja y «Toca para enviar · 0:06» en naranja (05); 320×640 rojo «0:01» (09, reloj adelantado con `performance.now`) |
+| Papelera | «Grabación descartada», micro cerrado, 0 llamadas nuevas a Gemini (06) |
+| 390×844 completo (Correcto, Casi, Aún no→«No me salió» vuelve, Correcto, No lo sé) | 5 frases, precisión **50**, 2/1/1/1, pronunciación 80 (media de 4), «I'm interested in music · No lo sé ×2» primero (07, 08) |
+| 320×640 salir a mitad grabando (Aún no, No lo sé) | Micro cerrado; «Repaso a medias · 2 frases», precisión 0, «Te quedaron 2 frases…»; sin scroll horizontal (10, 11) |
+| 780×360 (Casi, Correcto + «Ya me la sé», 2 × No lo sé) | Tarjeta y grabación en horizontal (12–14); resumen en dos columnas: precisión 38, «Tu pronunciación fue muy clara (93 de media)» (15, 16) |
+
+**Para el teléfono:** micro real (las barras con la voz, auriculares Bluetooth), Atrás de Android a mitad de repaso (debe mostrar el resumen y, otra vez Atrás, salir), ▶/⏸ en «Las que más te costaron» con la voz del sistema (en el navegador `speechSynthesis` arrancó, pero el icono no se pudo capturar), horizontal del Galaxy A11 (en 780×360 el micro y «No lo sé» quedan bajo la tarjeta y se llega desplazando, como antes del cambio).

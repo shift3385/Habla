@@ -91,6 +91,26 @@ test('REV-U3-1: copias antiguas legítimas se aceptan (v4.1 sin consultas ni tar
   assert.equal(checkBackup(mutate((b) => (b.tables.profile = []))).ok, true)
 })
 
+// v5.10 (punto 3): consultas con sinónimos/antónimos y consultas antiguas sin ellos; ambas se aceptan.
+test('Consultas con y sin synonyms/antonyms se aceptan; con un tipo erróneo se rechazan', async () => {
+  const { checkBackup } = await loadFresh('/src/lib/backupCheck.ts')
+  const nuevas = mutate((b) => {
+    b.tables.lookups[0].result.synonyms = ['execute', 'operate']
+    b.tables.lookups[0].result.antonyms = []
+    b.tables.lookups.push({ ...b.tables.lookups[0], id: 2, result: { ...b.tables.lookups[0].result, synonyms: undefined, antonyms: undefined } })
+  })
+  const r = checkBackup(nuevas)
+  assert.equal(r.ok, true, r.error)
+  assert.deepEqual(r.backup.tables.lookups[0].result.synonyms, ['execute', 'operate'])
+  assert.equal(checkBackup(goodBackup()).ok, true, 'copia anterior a la 5.10 (sin los campos)')
+  for (const bad of [{ a: 1 }, 'execute', [1, 2]]) {
+    const x = checkBackup(mutate((b) => (b.tables.lookups[0].result.synonyms = bad)))
+    assert.equal(x.ok, false, JSON.stringify(bad))
+    const y = checkBackup(mutate((b) => (b.tables.lookups[0].result.antonyms = bad)))
+    assert.equal(y.ok, false, JSON.stringify(bad))
+  }
+})
+
 // v5.10: progreso de Gramática (tabla `grammar`, clave = id del tema) y tarjetas de ejercicios fallados (source 'grammar').
 const gram = { id: 'past-simple', seenAt: now, lastAt: now, correct: 5, attempts: 6, rounds: 1, lastRound: { correct: 5, total: 6, at: now }, mastered: true, masteredAt: now }
 const withGrammar = (fn = () => {}) =>

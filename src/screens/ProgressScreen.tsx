@@ -127,8 +127,11 @@ export default function ProgressScreen({
                 className="w-full max-w-[26px] rounded-[10px] transition-[height] duration-500"
                 style={{
                   height: Math.max(6, (m / maxW) * 70),
-                  background: i === todayIdx ? 'var(--acc)' : 'var(--gb)',
-                  boxShadow: i === todayIdx ? '0 6px 16px var(--glow)' : 'none',
+                  // v5.10: los días con práctica llevan el color del tema (se ve la racha de un vistazo); sin práctica, gris.
+                  // Hoy, además, brilla.
+                  background: m > 0 ? 'var(--acc)' : 'var(--gb)',
+                  opacity: m > 0 || i === todayIdx ? 1 : 0.7,
+                  boxShadow: i === todayIdx && m > 0 ? '0 6px 16px var(--glow)' : 'none',
                 }}
               />
               <div className="txt-sub text-xs">{'LMXJVSD'[i]}</div>

@@ -300,7 +300,7 @@ export default function Home({
         </button>
       )}
 
-      {/* Bloque principal: cambia según el tema, como en el diseño. El globo de la mascota flota encima. */}
+      {/* Bloque principal (igual en todos los temas desde la 5.10). El globo de la mascota flota encima. */}
       <div ref={mainRef} className="relative mt-4">
         <MascotBubble
           tips={tips}
@@ -313,58 +313,22 @@ export default function Home({
           onSpeaking={onSpeaking}
           onShown={onTipShown}
         />
-        {settings.theme === 'ember' && (
-          <div className="glass flex items-center gap-1.5 rounded-full py-1 pr-2 pl-0.5">
-            {mascot(64)}
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-[15px] font-semibold">
-                Hoy {minsLabel}/{goal} min
-              </div>
-              <div className="txt-sub truncate text-[13px]">con {teacherName(settings.theme)}</div>
+        {/* v5.10 (decisión del dueño): la misma tarjeta en todos los temas: «<mascota> te espera», barra de la meta y ✦. */}
+        <div className="glass flex items-center gap-2.5 rounded-[30px] py-1.5 pr-3 pl-1.5">
+          {mascot(80)}
+          <div className="min-w-0 flex-1">
+            <div className="text-base font-semibold">{teacherName(settings.theme)} te espera</div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-[3px]" style={{ background: 'var(--gb)' }}>
+              <div className="h-full rounded-[3px] transition-[width] duration-500" style={{ width: `${pct * 100}%`, background: 'var(--acc)' }} />
             </div>
-            <button ref={surpriseRef} onClick={surprise} className="btn-acc flex h-[46px] flex-none items-center gap-1.5 rounded-[23px] px-3.5 text-[14px]">
-              <Icon name="spark" size={16} stroke={1.8} />
-              Sorpréndeme
-            </button>
-          </div>
-        )}
-        {settings.theme === 'lumi' && (
-          <div className="grid gap-2.5" style={{ gridTemplateColumns: '1.45fr 1fr' }}>
-            <button
-              onClick={() => start('open')}
-              className="glass flex h-[86px] items-center gap-1.5 rounded-[26px] pr-3.5 pl-1 text-left"
-            >
-              {mascot(70)}
-              <span className="min-w-0">
-                <span className="block text-base font-semibold">Charla libre</span>
-                <span className="txt-sub block text-[13px]">
-                  Hoy {minsLabel} de {goal} min
-                </span>
-              </span>
-            </button>
-            <button ref={surpriseRef} onClick={surprise} className="btn-acc flex h-[86px] flex-col items-center justify-center gap-1.5 rounded-[26px] text-[15px]">
-              <Icon name="spark" size={16} stroke={1.8} />
-              Sorpréndeme
-            </button>
-          </div>
-        )}
-        {(settings.theme === 'marea' || settings.theme === 'nimbo') && (
-          <div className="glass flex items-center gap-2.5 rounded-[30px] py-1.5 pr-3 pl-1.5">
-            {mascot(80)}
-            <div className="min-w-0 flex-1">
-              <div className="text-base font-semibold">{teacherName(settings.theme)} te espera</div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-[3px]" style={{ background: 'var(--gb)' }}>
-                <div className="h-full rounded-[3px] transition-[width] duration-500" style={{ width: `${pct * 100}%`, background: 'var(--acc)' }} />
-              </div>
-              <div className="txt-sub mt-1.5 text-xs">
-                {minsLabel}/{goal} min hoy
-              </div>
+            <div className="txt-sub mt-1.5 text-xs">
+              {minsLabel}/{goal} min hoy
             </div>
-            <button ref={surpriseRef} onClick={surprise} className="btn-acc grid h-[54px] w-[54px] flex-none place-items-center rounded-full" title="Sorpréndeme" aria-label="Sorpréndeme">
-              <Icon name="spark" size={18} stroke={1.8} />
-            </button>
           </div>
-        )}
+          <button ref={surpriseRef} onClick={surprise} className="btn-acc grid h-[54px] w-[54px] flex-none place-items-center rounded-full" title="Sorpréndeme" aria-label="Sorpréndeme">
+            <Icon name="spark" size={18} stroke={1.8} />
+          </button>
+        </div>
       </div>
 
       {savedClass && (

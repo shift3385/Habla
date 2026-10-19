@@ -38,6 +38,28 @@ export function latestEntry(): Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.10',
+    date: '2026-10-09',
+    title: 'Gramática: cada tema explicado por tu mascota, con ejercicios y para decirlo en voz alta',
+    added: [
+      'Nueva pestaña «Gramática» en el Inicio: 12 secciones y 90 temas (tiempos verbales, negaciones y preguntas, modales, «debería, podría, desearía», condicionales, pasiva, estilo indirecto, artículos, preposiciones, orden y conectores, falsos amigos y pronombres), con su nombre técnico y en español',
+      'Buscador de temas («wish», «pasado», «debería»…). Los temas de tus errores en clase y de la lección de hoy llevan una ⭐',
+      'Cada tema: explicación de tu mascota con fórmulas, ejemplos para oír y los errores típicos de quien habla español; ejercicios (lo que fallas va al Repaso); «Dilo tú» para practicarlo en voz alta (suma a tu meta diaria) y «Pregúntale» a tu mascota cualquier duda',
+      'Practica cualquier tema en una clase con tu profe. En la clase, cada corrección te lleva a su tema de Gramática, y el informe te dice qué repasar',
+      'Palabras: sinónimos y antónimos de cada palabra consultada. Toca uno para ver qué significa (y vuelve atrás paso a paso) o escúchalo con ▶',
+      'Al terminar el Repaso, tu resumen: frases repasadas, aciertos, nota y qué te costó más',
+    ],
+    improved: [
+      'El Repaso graba como la clase: el mismo micro con el anillo de 60 s en cuenta atrás y la onda que sigue tu voz',
+      'Inicio: la tarjeta de tu mascota es igual en todos los temas («Gota te espera», tu meta de hoy y ✦ Sorpréndeme)',
+      'Progreso: los días que practicaste se ven con el color de tu tema; los días sin práctica, en gris',
+      'Palabras: buscador más compacto. Una sola línea; la frase donde viste la palabra se añade si quieres y la explicación está en ⓘ',
+      'Repaso: botón «Terminar» para acabar cuando quieras y ver tu resumen; las frases que falten siguen pendientes',
+      'Gramática: más sitio para la lista de secciones y buscador «Buscar tema de gramática»',
+      'Prueba de sonido y «Probar voz»: sin el texto «… hablando»; lo dicen tu mascota y el botón ▶/⏸',
+    ],
+  },
+  {
     v: '5.9',
     date: '2026-10-07',
     title: 'Toca para hablar, tú decides el repaso y tu fonética en todas partes',

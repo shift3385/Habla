@@ -179,6 +179,9 @@ export interface LookupResult {
   falseFriendEs: string // aviso si es falso amigo (vacío si no)
   exampleEn: string
   exampleEs: string
+  // v5.10 (punto 3): del MISMO sentido que en el contexto. Opcionales: las consultas guardadas antes no los tienen.
+  synonyms?: string[]
+  antonyms?: string[]
 }
 
 export interface Lookup {
