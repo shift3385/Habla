@@ -12,3 +12,12 @@ Python 3.13) renderiza con Cycles en CPU y exporta **vídeo MP4 H.264** (el que 
 - Velocidad (4 núcleos, sin GPU): ~4 s por fotograma a 320×400 y 8 muestras.
 - `proto1.py`: escena (piel semitransparente + anatomía) y una imagen fija. `video-test.py`: 12 fotogramas abriendo la
   mandíbula → MP4. Las rutas apuntan al scratchpad de la sesión: ajustarlas al reutilizarlos.
+
+## Avance (2026-10-21)
+- `proto3.py` (prototipo 1): corte sagital, relleno de carne con el perfil, vías respiratorias, materiales de resina.
+- `proto4.py` (prototipo 2): cabeza cerrada por fuera (piel de las regiones del atlas, pelo pintado, oreja) y una ventana
+  solo sobre la zona del habla (petición del dueño: que no impresione). El exterior del atlas parece un maniquí.
+- `proto5.py` (prototipo 3): exterior = escaneo de **Lee Perry-Smith** (Infinite-Realities, CC BY 3.0; `LeePerrySmith.glb`
+  y texturas de `github.com/mrdoob/three.js/tree/dev/examples/models/gltf/LeePerrySmith`), encajado por la nariz y lo alto de
+  la cabeza. **Pendiente:** conectar `Map-COL.jpg` (sale gris) y decidir el pelo. El dueño pidió no gastar en vano:
+  máximo 2 renders por paso y su visto bueno antes de seguir.
