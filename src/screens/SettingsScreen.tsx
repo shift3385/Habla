@@ -525,7 +525,7 @@ function EffectsPage({ settings, update }: { settings: Settings; update: (p: Par
       )}
       <Card>
         <div className="txt-sub text-sm">A medida</div>
-        {(['blur', 'mascot', 'motion', 'background', 'glow'] as EffectKey[]).map((k) => (
+        {(['mascot', 'blur', 'glow', 'motion', 'background'] as EffectKey[]).map((k) => (
           <button
             key={k}
             onClick={() => update({ effects: { ...fx, [k]: !fx[k] } })}

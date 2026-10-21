@@ -13,7 +13,17 @@ Evidencias en [`evidencia/`](evidencia/): arnés de medida (`perf.html`, `medir.
 
 ## 0. Resumen para el dueño
 
-<!--RESUMEN-->
+- **Hecho:** «Modo ligero» en **Ajustes → Apariencia → Rendimiento** (5.11, build 43): un interruptor que apaga todo y
+  cinco opciones sueltas, de más a menos ahorro: **mascota en movimiento** (en ligero, imagen fija; sus consejos siguen
+  saliendo), **cristal desenfocado**, **brillos y sombras**, **animaciones** y **fondo de colores**. Nada deja de funcionar.
+- **Cuánto ahorra** (navegador del contenedor, sin GPU, §2): en reposo, de **10–20 %** de CPU a **0,7–2,8 %** en Inicio,
+  clase y Sonidos; al desplazar con la CPU ralentizada 6×, el hilo principal baja de **~50–60 %** a **5–12 %**.
+- **Lo más caro es la mascota animada** (y el cristal desenfocado que la rodea, que se repinta con ella); luego el
+  cristal y los brillos. El fondo y las animaciones apenas cuentan en reposo.
+- **Apariencia era la pantalla más cara de la app** (6 mascotas animándose a la vez: ~88 % de CPU en reposo). Ahora es
+  un **menú** (Tema y mascota · Tamaño de letra · Rendimiento · Pantalla y globos) y gasta **~0,5 %**, con o sin ligero.
+- **No se activa solo:** se recomienda en teléfonos modestos (≤ 3 GB o ≤ 4 núcleos, como el A11).
+- **Falta:** medirlo en el POCO y en el A11 (en `docs/pruebas/PENDIENTES.md`).
 
 ---
 
@@ -100,14 +110,106 @@ un efecto que **cambia en cada fotograma** (o que se mueve al desplazar) cuesta 
 
 ## 2. Medidas
 
-<!--MEDIDAS-->
+### 2.1 Cómo se midió
+`evidencia/medir-pw.mjs` (Playwright; el `medir.mjs` original, para Edge en Windows, se colgaba al cargar con CDP crudo
+en Linux y solo dejó 5 filas en `evidencia/medidas/medidas.json`). App desde `perf.html` (red de IA falsa), 360×780 dpr 2,
+perfil con una clase larga guardada, tema Marea claro. Por escenario y configuración: 6 s de reposo con la mascota
+despierta (tras mover el dedo), 6 s en descanso, y desplazamientos con la CPU ralentizada 4× y 6× (en el Inicio, también
+cambiar de pestaña). CPU = tiempo de CPU de los procesos *renderer* + *GPU* / tiempo real; hilo = `TaskDuration` del
+hilo principal. Datos en `evidencia/medidas-linux/` (`medidas.json`, `medidas-real.json`, capturas `*.jpg`);
+tablas con `node evidencia/resumen-pw.mjs …`.
+
+> **Ojo:** el contenedor **no tiene GPU** (composición por software, como un teléfono flojo). Las cifras absolutas no son
+> las del POCO ni las del A11; lo que vale es la **comparación** entre configuraciones. Con la CPU ralentizada casi todo
+> llega a 60 fps (el cuello de botella aquí es la composición, que no se ralentiza): mirar el % del hilo y de la GPU.
+> Las filas de Apariencia de §2.2 son del menú **antiguo** (todo en una página con 6 mascotas); §2.3 ya es el menú nuevo.
+### 2.2 Por grupos (CSS inyectado, como el estudio original; «sin mascota» la oculta)
+
+#### inicio
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % | Cambiar pestañas 6×: fps · fotogramas > 50 ms |
+|---|---|---|---|---|---|
+| Todo activado | 19.4 · 1.9 | 8.3 · 0.9 | 36 · 65 | 60 · 39 | 41 · 10 |
+| sin cristal desenfocado | 6.5 · 2.0 | 3.7 · 1.4 | 38 · 6 | 60 · 52 | 41 · 9 |
+| sin fondo de manchas | 16.8 · 1.9 | 8.8 · 1.1 | 34 · 56 | 60 · 42 | 41 · 9 |
+| sin brillos ni sombras | 8.2 · 2.3 | 4.7 · 1.2 | 35 · 14 | 60 · 57 | 45 · 7 |
+| sin animaciones | 16.5 · 2.1 | 6.5 · 1.1 | 46 · 48 | 58 · 63 | 43 · 10 |
+| sin mascota animada | 2.3 · 0.7 | 0.9 · 0.1 | 8 · 4 | 60 · 7 | 42 · 6 |
+| **todo apagado (CSS)** | 1.0 · 0.1 | 1.2 · 0.1 | 5 · 1 | 60 · 8 | 43 · 11 |
+
+#### clase
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % |
+|---|---|---|---|---|
+| Todo activado | 11.3 · 2.5 | 7.1 · 1.8 | 40 · 24 | 60 · 63 |
+| sin cristal desenfocado | 6.2 · 2.2 | 4.3 · 1.7 | 64 · 8 | 60 · 67 |
+| sin fondo de manchas | 9.9 · 2.1 | 6.5 · 1.5 | 44 · 24 | 59 · 66 |
+| sin brillos ni sombras | 7.0 · 3.0 | 4.3 · 1.5 | 58 · 9 | 59 · 76 |
+| sin animaciones | 9.5 · 2.4 | 5.7 · 1.5 | 47 · 20 | 60 · 67 |
+| sin mascota animada | 1.1 · 0.2 | 0.7 · 0.1 | 9 · 2 | 60 · 8 |
+| **todo apagado (CSS)** | 1.2 · 0.1 | 0.8 · 0.1 | 9 · 1 | 60 · 6 |
+
+#### sonidos
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % |
+|---|---|---|---|---|
+| Todo activado | 17.2 · 1.9 | 9.9 · 1.6 | 34 · 52 | 60 · 62 |
+| sin cristal desenfocado | 6.2 · 1.9 | 4.2 · 1.4 | 41 · 8 | 59 · 59 |
+| sin fondo de manchas | 16.6 · 2.1 | 9.5 · 1.3 | 45 · 55 | 60 · 50 |
+| sin brillos ni sombras | 7.7 · 2.2 | 4.3 · 1.1 | 38 · 13 | 60 · 56 |
+| sin animaciones | 12.3 · 2.3 | 9.2 · 1.7 | 52 · 51 | 60 · 79 |
+| sin mascota animada | 2.7 · 0.7 | 0.9 · 0.1 | 4 · 3 | 60 · 6 |
+| **todo apagado (CSS)** | 1.2 · 0.2 | 0.8 · 0.1 | 5 · 1 | 58 · 16 |
+
+#### apariencia
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % |
+|---|---|---|---|---|
+| Todo activado | 88.5 · 11.2 | 88.1 · 10.0 | 79 · 68 | 49 · 98 |
+| sin cristal desenfocado | 25.4 · 12.0 | 24.3 · 11.4 | 88 · 3 | 43 · 99 |
+| sin fondo de manchas | 86.8 · 11.0 | 82.4 · 9.7 | 83 · 65 | 50 · 98 |
+| sin brillos ni sombras | 52.9 · 9.3 | 55.5 · 9.4 | 80 · 56 | 51 · 98 |
+| sin animaciones | 81.3 · 11.4 | 80.3 · 10.7 | 92 · 56 | 39 · 99 |
+| sin mascota animada | 3.3 · 1.2 | 1.3 · 0.2 | 5 · 2 | 60 · 7 |
+| **todo apagado (CSS)** | 1.5 · 0.3 | 1.0 · 0.3 | 11 · 2 | 60 · 10 |
+
+### 2.3 La implementación real (ajuste `effects`, mascota fija visible), 5.11 build 43
+
+#### inicio
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % | Cambiar pestañas 6×: fps · fotogramas > 50 ms |
+|---|---|---|---|---|---|
+| Todo activado | 19.7 · 2.0 | 8.4 · 1.0 | 33 · 59 | 60 · 55 | 43 · 9 |
+| **Modo ligero (ajuste real)** | 1.7 · 0.4 | 0.7 · 0.0 | 8 · 1 | 60 · 12 | 43 · 8 |
+
+#### clase
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % |
+|---|---|---|---|---|
+| Todo activado | 10.0 · 2.3 | 6.0 · 1.3 | 42 · 21 | 60 · 59 |
+| **Modo ligero (ajuste real)** | 0.7 · 0.0 | 0.5 · 0.0 | 4 · 2 | 60 · 5 |
+
+#### sonidos
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % |
+|---|---|---|---|---|
+| Todo activado | 20.2 · 2.6 | 9.5 · 1.3 | 38 · 54 | 60 · 49 |
+| **Modo ligero (ajuste real)** | 2.8 · 0.8 | 0.7 · 0.0 | 6 · 1 | 60 · 7 |
+
+#### apariencia
+
+| Configuración | Reposo, mascota despierta: CPU % (render + GPU) · hilo % | Reposo, descanso: CPU % · hilo % | Desplazar 4×: hilo % · GPU % | Desplazar 6×: fps · hilo % |
+|---|---|---|---|---|
+| Todo activado | 0.5 · 0.0 | 0.3 · 0.0 | 7 · 2 | 60 · 5 |
+| **Modo ligero (ajuste real)** | 0.9 · 0.0 | 0.7 · 0.0 | 7 · 1 | 60 · 5 |
 
 ---
 
 ## 3. Propuesta de grupos
 
 Cinco grupos, cada uno con su interruptor, y un **preajuste «Modo ligero»** que los apaga todos. Se agrupan por lo
-que el usuario ve (no por técnica) y se ordenan de más a menos ahorro según §2:
+que el usuario ve (no por técnica). En Ajustes van de más a menos ahorro según §2: mascota, cristal, brillos,
+animaciones y fondo.
 
 | Grupo (Ajustes) | Qué apaga (§1) | Qué queda | Funcional, no se toca |
 |---|---|---|---|

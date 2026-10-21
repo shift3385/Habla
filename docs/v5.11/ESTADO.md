@@ -107,9 +107,12 @@ Motivación: P-03 (M-03), P-04 (M-04), P-06 (M-06), P-07 (M-07), P-08 (M-08), P-
 | I-4 | `PlanCard.onAltTopic` desde `Home` | D4 (pide D1) | para revisar | 2 | Ronda 1 aprobada por R. Ronda 2: `newTipRound()` al montar el Inicio (M-09 / REV-11-D1-05), con test en m4-sounds |
 | PAU | Pausas naturales al leer (petición del dueño): 200/400/500 ms por puntuación, 600 antes de un ejemplo, ejemplos al 85 % | D4 | aprobada | 2 | R: REV-11-PAU-01 cerrada (P5 muere); test de Leo independiente del orden (P9 muere). npm test 358: 357 ✔, 0 ✖ |
 | REG | Regresión final en el navegador (3 tamaños, 2 temas) | R | aprobada | — | **GO** para APK debug y Tel: 350 tests ×3 en verde, Inicio 0 px en vertical (Normal y Muy grande), 12/12 lecciones, 44/44 fichas, Repaso con cuenta atrás, migración real v4→v5; arranque +14,7 KB gzip. Pausas de voz (PAU): bloque aparte |
+| LIG | **Modo ligero** + Apariencia en menú (build 43) | Orq. | hecho (navegador) | — | `rendimiento/EVALUACION.md` completo; mascota fija en ligero (decisión del dueño), consejos intactos; 361 tests. Falta medir en el POCO/A11 |
+| BOCA | Debate: boca, lengua y vibración en Sonidos | Orq. | debate escrito | — | `sonidos-boca/DEBATE.md`: recomienda maqueta SVG propia; 7–8 preguntas al dueño. Sin código |
 | MOV | Prueba en el POCO (`MOVIL.md`) y aprobación del dueño | Orq. + dueño | pendiente | — | |
 
 ## Bitácora (lo último arriba)
+- 2026-10-21 (tarde) · Orq.: pruebas en el teléfono aparcadas (`docs/pruebas/PENDIENTES.md`). **Modo ligero hecho** (build 43): `lib/effects.ts`, clases `fx-*` en `<html>`, mascota fija, Apariencia en 4 secciones; medido en Linux (`rendimiento/evidencia/medir-pw.mjs`): reposo 10–20 % → 0,7–2,8 %; Apariencia 88 % → 0,5 % por el menú. Debate de la boca en `sonidos-boca/DEBATE.md`.
 - 2026-10-21 · R: **retoques de la regresión final verificados** → S-07 y PAU **aprobadas**. REV-11-PAU-01 cerrada; celda /ɝ ɚ/ sin «…» (con Muy grande, «teach/er» en dos líneas: observación). Inicio 0 px en 390×844 con Normal y Muy grande. `npm test` 358: 357 ✔, 0 ✖, 1 `todo`.
 - 2026-10-21 · D4: retoques de la regresión final → para revisar: REV-11-PAU-01 (test ⏸ en el hueco del deletreo), celda /ɝ ɚ/ sin cortar «teacher», test de la voz con Leo independiente del orden. tsc OK, lint 0 errores, npm test 3 veces: 357 + 1 todo, 0 fallos.
 - 2026-10-21 · R: **PAU (pausas al leer) → GO** con REV-11-PAU-01 (BAJA, test del ⏸ en el hueco del deletreo). `d2-audioFocus` sigue probando lo mismo (9/9 mutantes de la 5.10.1 mueren). `npm test` 357: 356 ✔, 0 ✖, 1 `todo`.
