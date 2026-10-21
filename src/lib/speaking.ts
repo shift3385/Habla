@@ -50,5 +50,7 @@ export function endSpeaking() {
 
 /** true mientras suena la frase con esa clave; el componente se vuelve a pintar solo al cambiar. */
 export function useSpeaking(key: string): boolean {
-  return useSyncExternalStore(subscribeSpeaking, () => current === key)
+  // 5.11 (D4, aprobado por el orquestador): instantánea de servidor para poder pintar pantallas con react-dom/server en
+  // los tests (tests/m4-sounds: recorrido de las fichas). En la app no cambia nada.
+  return useSyncExternalStore(subscribeSpeaking, () => current === key, () => current === key)
 }

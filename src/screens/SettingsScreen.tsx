@@ -612,6 +612,20 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
           </p>
         )}
       </Card>
+      <Card>
+        {/* 5.11 (M-10, UX-08): apagado por defecto; con él, el repaso aplica la nota sugerida y pasa solo (un toque lo cancela). */}
+        <button
+          onClick={() => update({ reviewAutoGrade: !settings.reviewAutoGrade })}
+          className="flex w-full items-center justify-between gap-3 text-left fs-15"
+          data-setting="reviewAutoGrade"
+        >
+          <span>
+            Repaso: que decida Habla
+            <span className="txt-sub block text-xs">Aplico la nota que te sugiero y paso a la siguiente frase a los 3 s. Un toque lo cancela y eliges tú</span>
+          </span>
+          <Switch on={settings.reviewAutoGrade} />
+        </button>
+      </Card>
     </>
   )
 }

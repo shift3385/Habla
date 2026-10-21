@@ -1,0 +1,49 @@
+pares comprobados: 430 · fuera de «una sustitución»: 24
+  l↔r: collect/correct → 99 (undefined | undefined)
+  r↔l: correct/collect → 99 (undefined | undefined)
+  lección A2 A2-2: I/Y → 99 (undefined | undefined)
+  lección A2 A2-2: U/W → 99 (undefined | undefined)
+  lección A2 A2-2: R/A → 99 (undefined | undefined)
+  lección A2 A2-2: O/U → 99 (undefined | undefined)
+  lección A3 A3-2: A/H → 99 (undefined | undefined)
+  lección A3 A3-2: Y/I → 99 (undefined | undefined)
+  lección E1 E1-1: state/estate → 99 (undefined | undefined)
+  lección E1 E1-1: steam/esteem → 99 (undefined | undefined)
+  lección E4 E4-1: work/worked → 99 (undefined | undefined)
+  lección E4 E4-1: play/played → 99 (undefined | undefined)
+  lección E4 E4-1: want/wanted → 99 (undefined | undefined)
+  lección E4 E4-1: clean/cleaned → 99 (undefined | undefined)
+  lección E4 E4-1: watch/watched → 99 (undefined | undefined)
+  lección E4 E4-1: need/needed → 99 (undefined | undefined)
+  lección E4 E4-1: cook/cooked → 99 (undefined | undefined)
+  lección E3 E3-1: cat/cats → 99 (undefined | undefined)
+  lección E3 E3-1: book/books → 99 (undefined | undefined)
+  lección E3 E3-1: dog/dogs → 99 (undefined | undefined)
+  lección E3 E3-1: bus/buses → 99 (undefined | undefined)
+  lección E3 E3-1: watch/watches → 99 (undefined | undefined)
+  lección E3 E3-1: page/pages → 99 (undefined | undefined)
+  lección E3 E3-1: work/works → 99 (undefined | undefined)
+pares cuyo cambio no es el de la ficha/grupo: 0
+Clasifica / intrusa:
+  S0-1 intrusa: go, no, show, now → now · go=[G OW] no=[N OW] show=[SH OW] now=[N AW]
+  S0-2 intrusa: cat, hat, father, bag → father · cat=[K AE T] hat=[HH AE T] father=[F AA DH ER] bag=[B AE G]
+  S0-3 sort: busy → columna ih (tiene ih: true; tiene otra: iy)
+  S0-4 intrusa: love, money, come, home → home · love=[L AH V] money=[M AH N IY] come=[K AH M] home=[HH OW M]
+  A1-1 sort (columnas ey/iy, revisar a mano): A→ey, H→ey, J→ey, B→iy, E→iy, G→iy
+  A2-1 sort (columnas eh/ay/uw, revisar a mano): F→eh, M→eh, I→ay, Y→ay, U→uw, Q→uw
+  V1-2 sort: busy → columna ih (tiene ih: true; tiene otra: iy)
+  V1-3 intrusa: fish, this, sheep, milk → sheep · fish=[F IH SH] this=[DH IH S] sheep=[SH IY P] milk=[M IH L K]
+  C1-3 intrusa: voice, video, river, rabbit → rabbit · voice=[V OY S] video=[V IH D IY OW] river=[R IH V ER] rabbit=[R AE B AH T]
+  E1-2 sort: school → columna s-cluster (tiene s-cluster: false; tiene otra: s)
+  E1-2 sort: star → columna s-cluster (tiene s-cluster: false; tiene otra: s)
+  E1-2 sort: small → columna s-cluster (tiene s-cluster: false; tiene otra: s)
+  E1-3 intrusa: school, Spain, sun, star → sun · school=[S K UW L] Spain=[S P EY N] sun=[S AH N] star=[S T AA R]
+  V3a-2 sort: apple → columna ae (tiene ae: true; tiene otra: ah)
+  V3a-3 intrusa: cup, sun, bag, love → bag · cup=[K AH P] sun=[S AH N] bag=[B AE G] love=[L AH V]
+  V3b-3 intrusa: hot, stop, box, no → no · hot=[HH AA T] stop=[S T AA P] box=[B AA K S] no=[N OW]
+  E4-2 sort: needed → columna ed (tiene ed: false; tiene otra: d)
+  E4-2 sort: started → columna ed (tiene ed: false; tiene otra: t,d)
+  E4-3 intrusa: worked, cooked, wanted, washed → wanted · worked=[W ER K T] cooked=[K UH K T] wanted=[W AO N T IH D] washed=[W AA SH T]
+  E3-2 sort: watches → columna s-ending (tiene s-ending: false; tiene otra: z)
+  E3-2 sort: pages → columna s-ending (tiene s-ending: false; tiene otra: z)
+  E3-3 intrusa: dogs, bags, buses, plays → buses · dogs=[D AA G Z] bags=[B AE G Z] buses=[B AH S IH Z] plays=[P L EY Z]

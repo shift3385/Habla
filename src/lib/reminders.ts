@@ -55,6 +55,25 @@ export interface ReminderInfo {
 
 const PROBE_ID = 99
 
+/**
+ * 5.11 (M-09): el recordatorio diario ya no dice siempre lo mismo. El primero lleva la lección que toca (si la hay);
+ * los demás rotan por la FECHA del aviso, así dos días seguidos nunca traen el mismo texto.
+ * REV-11-D1-01: antes rotaba por la posición del aviso, y como `syncReminders` reprograma en cada arranque, quien abre
+ * Habla a diario recibía siempre el primero (el mismo texto, como en la 5.10.1).
+ */
+export const DAILY_BODIES = [
+  'Unos minutos hablando cada día marcan la diferencia. ¡Te espero!',
+  '¿Charlamos un rato en inglés? Con unos minutos ya sumas a tu meta.',
+  'Tu racha te espera: un poco de inglés hoy y sigue creciendo.',
+  'Hoy es buen día para soltar la lengua. ¿Hablamos?',
+]
+export function dailyBody(at: Date, first: boolean, lessonTitle?: string): string {
+  if (first && lessonTitle) return `Hoy toca: ${lessonTitle}. ¿Hablamos 10 minutos?`
+  // Número de día local (mediodía: sin saltos por el cambio de hora).
+  const day = Math.round(new Date(at.getFullYear(), at.getMonth(), at.getDate(), 12).getTime() / 864e5)
+  return DAILY_BODIES[day % DAILY_BODIES.length]
+}
+
 /** Aviso de prueba en unos segundos, con la mascota elegida, para comprobar que llegan. */
 export async function testReminder(theme: ThemeKey, lessonTitle?: string): Promise<boolean> {
   if (!(await askNotificationPermission())) return false
@@ -101,10 +120,7 @@ export async function syncReminders(info: ReminderInfo): Promise<void> {
         notifications.push({
           id,
           title: `${look.name}: tu lección de inglés te espera`,
-          body:
-            i === 0 && info.lessonTitle
-              ? `Hoy toca: ${info.lessonTitle}. ¿Hablamos 10 minutos?`
-              : 'Unos minutos hablando cada día marcan la diferencia. ¡Te espero!',
+          body: dailyBody(at, i === 0, info.lessonTitle),
           smallIcon: look.smallIcon,
           largeIcon: look.largeIcon,
           schedule: { at, allowWhileIdle: true },

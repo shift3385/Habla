@@ -1,0 +1,271 @@
+{
+  "credits": [
+    {
+      "id": "iy",
+      "file": "iy.ogg",
+      "phoneme": "iy",
+      "title": "Close front unrounded vowel.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Close_front_unrounded_vowel.ogg",
+      "author": "Denelson83",
+      "license": "CC BY-SA 3.0 (doble licencia con GFDL; se usa la CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "ih",
+      "file": "ih.ogg",
+      "phoneme": "ih",
+      "title": "Near-close near-front unrounded vowel.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Near-close_near-front_unrounded_vowel.ogg",
+      "author": "Denelson83",
+      "license": "CC BY-SA 3.0 (doble licencia con GFDL; se usa la CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "eh",
+      "file": "eh.ogg",
+      "phoneme": "eh",
+      "title": "Open-mid front unrounded vowel(ɛ).ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Open-mid_front_unrounded_vowel(%C9%9B).ogg",
+      "author": "Denelson83 (subido por Benbenben6)",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "ao",
+      "file": "ao.ogg",
+      "phoneme": "ao",
+      "title": "Open-mid back rounded vowel.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Open-mid_back_rounded_vowel.ogg",
+      "author": "Denelson83 (Marlin Setia1 quitó en 2019 una copia repetida del audio dentro del archivo)",
+      "license": "CC BY-SA 3.0 (doble licencia con GFDL; se usa la CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "uh",
+      "file": "uh.ogg",
+      "phoneme": "uh",
+      "title": "Near-close near-back rounded vowel.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Near-close_near-back_rounded_vowel.ogg",
+      "author": "Denelson83",
+      "license": "CC BY-SA 3.0 (doble licencia con GFDL; se usa la CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "uw",
+      "file": "uw.ogg",
+      "phoneme": "uw",
+      "title": "Close back rounded vowel.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Close_back_rounded_vowel.ogg",
+      "author": "Denelson83",
+      "license": "CC BY-SA 3.0 (doble licencia con GFDL; se usa la CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "ax",
+      "file": "ax.ogg",
+      "phoneme": "ax",
+      "title": "Mid-central vowel.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Mid-central_vowel.ogg",
+      "author": "Denelson83 (Trlkly añadió en 2021 un silencio corto al principio)",
+      "license": "CC BY-SA 3.0 (doble licencia con GFDL; se usa la CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "f",
+      "file": "f.ogg",
+      "phoneme": "f",
+      "title": "Voiceless labiodental fricative.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiceless_labiodental_fricative.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "v",
+      "file": "v.ogg",
+      "phoneme": "v",
+      "title": "Voiced labiodental fricative.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiced_labiodental_fricative.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "th",
+      "file": "th.ogg",
+      "phoneme": "th",
+      "title": "Voiceless dental fricative.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiceless_dental_fricative.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "dh",
+      "file": "dh.ogg",
+      "phoneme": "dh",
+      "title": "Voiced dental fricative.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiced_dental_fricative.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "s",
+      "file": "s.ogg",
+      "phoneme": "s",
+      "title": "Voiceless alveolar sibilant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiceless_alveolar_sibilant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false,
+      "versionEs": "Versión del 2005-05-02 del mismo autor (la actual pesa más de 120 KB)."
+    },
+    {
+      "id": "z",
+      "file": "z.ogg",
+      "phoneme": "z",
+      "title": "Voiced alveolar sibilant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiced_alveolar_sibilant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "sh",
+      "file": "sh.ogg",
+      "phoneme": "sh",
+      "title": "Voiceless palato-alveolar sibilant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiceless_palato-alveolar_sibilant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false,
+      "versionEs": "Versión del 2005-05-02 del mismo autor (la actual pesa más de 120 KB)."
+    },
+    {
+      "id": "zh",
+      "file": "zh.ogg",
+      "phoneme": "zh",
+      "title": "Voiced palato-alveolar sibilant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiced_palato-alveolar_sibilant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false,
+      "versionEs": "Versión del 2005-05-02 del mismo autor (la actual pesa más de 120 KB)."
+    },
+    {
+      "id": "hh",
+      "file": "hh.ogg",
+      "phoneme": "hh",
+      "title": "Voiceless glottal fricative.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiceless_glottal_fricative.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "ch",
+      "file": "ch.ogg",
+      "phoneme": "ch",
+      "title": "Voiceless palato-alveolar affricate.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiceless_palato-alveolar_affricate.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "jh",
+      "file": "jh.ogg",
+      "phoneme": "jh",
+      "title": "Voiced palato-alveolar affricate.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiced_palato-alveolar_affricate.ogg",
+      "author": "Octane (Wikipedia en inglés)",
+      "license": "Dominio público",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "modified": false
+    },
+    {
+      "id": "m",
+      "file": "m.ogg",
+      "phoneme": "m",
+      "title": "Bilabial nasal.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Bilabial_nasal.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "n",
+      "file": "n.ogg",
+      "phoneme": "n",
+      "title": "Alveolar nasal.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Alveolar_nasal.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "ng",
+      "file": "ng.ogg",
+      "phoneme": "ng",
+      "title": "Velar nasal.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Velar_nasal.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "l",
+      "file": "l.ogg",
+      "phoneme": "l",
+      "title": "Alveolar lateral approximant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Alveolar_lateral_approximant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "w",
+      "file": "w.ogg",
+      "phoneme": "w",
+      "title": "Voiced labio-velar approximant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Voiced_labio-velar_approximant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    },
+    {
+      "id": "y",
+      "file": "y.ogg",
+      "phoneme": "y",
+      "title": "Palatal approximant.ogg",
+      "page": "https://commons.wikimedia.org/wiki/File:Palatal_approximant.ogg",
+      "author": "Peter Isotalo",
+      "license": "CC BY-SA 3.0 (publicado con GFDL y migrado a CC BY-SA 3.0)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "modified": false
+    }
+  ]
+}

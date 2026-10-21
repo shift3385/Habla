@@ -25,6 +25,7 @@ import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
 import { answerIdeas, buildSystemPrompt, echoesIdea, replySegments, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
+import { turnNoteFor } from '../lib/turnStyle'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
 import { speak, speakSegments, stopSpeaking, toggleSpeak } from '../lib/tts'
 import { speakingKey } from '../lib/speaking'
@@ -268,12 +269,18 @@ export default function Conversation({
       const reference = new Promise<string>((r) => (giveReference = r))
       const pron = spoken ? startPronunciation(spoken, reference) : null
       try {
+        // 5.11 (M-06): ~30 % de los turnos del profe son reacción + mini-reto en vez de pregunta, decidido en código por el
+        // nº de turno (respuestas del profe ya dadas) y la sesión. Nunca en la clase de Gramática (manda GRAMMAR_OVERRIDES).
+        const turnIndex = history.current.filter((m) => m.role === 'assistant').length
+        const note = turnNoteFor({ grammarClass: grammarClass.current, turnIndex, seed: sessionId.current ?? 0 })
         const res = await teacherTurn(
           settingsRef.current.geminiKey,
           models(),
           system.current,
           history.current,
           spoken ? { base64: spoken.base64, mimeType: spoken.mimeType } : typed ? { text: typed } : undefined,
+          undefined,
+          note,
         )
         giveReference(typed ?? res.transcript) // por si Azure necesita el texto como referencia
         if (gone()) return
@@ -844,6 +851,7 @@ export default function Conversation({
             }
             corrections={userTurns.flatMap(turnCorrections)}
             topic={session.topic}
+            session={session}
             ttsRate={settings.ttsRate}
             voiceIndex={settings.voiceIndex}
           />

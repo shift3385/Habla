@@ -1,0 +1,10 @@
+R · REV-11-D4-04 tras el arreglo (FillPanel + panelHeight) · r11.localhost:5173, Gemini falso 503, 0 peticiones reales
+Secuencia REAL: abrir la app → pestaña Sonidos mientras la tarjeta dice «Creando tu plan…» → la tarjeta pasa al error.
+(Panel del navegador oculto: tras cada cambio, una captura para que se pinten fotogramas.)
+
+390x844  Creando:  Inicio 844/844
+         Error:    Inicio 888/844 justo al cambiar (sin fotograma) → tras la captura: Inicio 844/844, panel 370/198
+         Reintentar (vuelve a «Creando»): Inicio 844/844, panel crece a 370/222
+320x640  Creando:  Inicio 800/800 (px CSS, zoom 0,8), panel 645/158
+         Error:    Inicio 800/800, panel 645/164 → 645/158
+Antes del arreglo (ronda 2), 390x844 Error: 888/844 y no se corregía hasta un resize o cambiar de pestaña.

@@ -10,17 +10,22 @@ export const BACKUP_VERSION = 1
  * 5.10.1 (REG-A1-07): la versión más alta que esta app sabe leer. Una copia con cosas que una app anterior no conoce
  * (tarjetas de Gramática, progreso de Gramática) se exporta como 2 ('backupVersionFor'): así la 5.10.1+ la lee, y una
  * app futura que suba otra vez el número hace que esta diga «versión más nueva» en vez de «archivo dañado».
+ * 5.11 (S-01): sube a 3. Con progreso de Sonidos o con logros (tablas `sounds` y `milestones`) la copia es 3, y la
+ * 5.10.1 (máx. 2) dice «versión más nueva». Sin ellas sigue siendo 1 o 2, legible por las apps anteriores
+ * (`exportTables` no escribe esas tablas si están vacías, para que no las tomen por «tabla desconocida»).
  */
-export const BACKUP_MAX_VERSION = 2
+export const BACKUP_MAX_VERSION = 3
 /** Tamaño máximo del archivo: una copia real de un año de uso ocupa unos pocos MB. */
 export const MAX_BACKUP_BYTES = 20 * 1024 * 1024
 
-export const BACKUP_TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar'] as const
+export const BACKUP_TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones'] as const
 export type BackupTable = (typeof BACKUP_TABLES)[number]
 // REV-U3-1: tablas que no existían en copias antiguas y son legítimas sin ellas (si faltan, se importan vacías):
 // `lookups` llegó en la v4.2 y `cards` en la v4.7; hasta la v4.1 las copias tenían 4 tablas. `grammar` (progreso de
-// Gramática) llegó en la v5.10: las copias anteriores no la traen y se aceptan.
-const OPTIONAL_TABLES: readonly BackupTable[] = ['lookups', 'cards', 'grammar']
+// Gramática) llegó en la v5.10: las copias anteriores no la traen y se aceptan. 5.11 (S-01): `sounds` y `milestones`, igual.
+const OPTIONAL_TABLES: readonly BackupTable[] = ['lookups', 'cards', 'grammar', 'sounds', 'milestones']
+/** 5.11 (S-01): tablas posteriores a la 5.10.1 (que no las conoce). Vacías, no se escriben en la copia (`exportTables`). */
+export const NEW_IN_511: readonly BackupTable[] = ['sounds', 'milestones']
 
 export interface CheckedBackup {
   format: typeof BACKUP_FORMAT
@@ -37,6 +42,8 @@ const NAMES: Record<BackupTable, string> = {
   lookups: 'consultas de palabras',
   cards: 'tarjetas de repaso',
   grammar: 'progreso de Gramática',
+  sounds: 'progreso de Sonidos',
+  milestones: 'logros',
 }
 
 type Row = Record<string, unknown>
@@ -72,6 +79,15 @@ const shape =
   (fields: Record<string, Rule>): Rule =>
   (v) =>
     isObj(v) && Object.entries(fields).every(([k, r]) => r(v[k]))
+
+// 5.11 (S-01): opcional que también crece con las versiones.
+const optGrowing = (r: Rule): Rule => {
+  const o = opt(r)
+  GROWING.add(o)
+  return o
+}
+// 5.11 (S-01): mapa día → { ok, total } de Sonidos. Se mira por dentro: con un valor raro la pantalla mostraría NaN.
+const dayScores: Rule = (v) => isObj(v) && Object.values(v).every(shape({ ok: num, total: num }))
 
 const LEVELS = shape({ overall: str, grammar: str, reading: str, listening: str, speaking: str })
 const CORRECTION = shape({ original: str, corrected: str, explanationEs: opt(str), category: opt(str), spanish: opt(str), grammarTopic: opt(str), grammarTopics: opt(strArr) })
@@ -182,6 +198,29 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     mastered: bool,
     masteredAt: opt(num),
   },
+  // 5.11 (S-01): progreso de Sonidos (db.ts, `SoundProgress`).
+  sounds: {
+    id: textId, // id de la ficha o `lesson:<id>`
+    kind: optGrowing(growingOneOf('lesson')), // otra clase de fila (de una versión más nueva) no es un archivo dañado
+    seenAt: opt(num),
+    lastAt: num,
+    state: growingOneOf('new', 'seen', 'practiced', 'mastered'),
+    listen: opt(dayScores),
+    azure: opt(dayScores),
+    bestScore: opt(num),
+    days: opt(strArr),
+    mastered: bool,
+    masteredAt: opt(num),
+    earOnly: opt(bool),
+    completedAt: opt(num),
+    seconds: opt(num),
+  },
+  // 5.11 (S-01, para M-03): hitos conseguidos.
+  milestones: {
+    id: textId,
+    at: num,
+    celebratedAt: opt(num),
+  },
 }
 
 const NEWER = 'La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada.'
@@ -233,8 +272,39 @@ export function checkBackup(data: unknown): BackupCheck {
  * (su comprobación rechaza 'version > 1') en vez de «archivo dañado» o de perder el progreso de Gramática sin avisar.
  */
 export function backupVersionFor(tables: Partial<Record<BackupTable, readonly Record<string, unknown>[]>>): number {
+  // 5.11 (S-01): con progreso de Sonidos o con logros, 3 (la 5.10.1 no conoce esas tablas).
+  // REV-11-D2-06: la marca `_since` de los logros no cuenta como contenido.
+  if (NEW_IN_511.some((t) => contentRows(t, tables[t] ?? []).length > 0)) return 3
   const grammarCards = (tables.cards ?? []).some((c) => c?.source === 'grammar')
   return grammarCards || (tables.grammar ?? []).length > 0 ? 2 : BACKUP_VERSION
+}
+
+/**
+ * 5.11 (S-01): tablas que se escriben en la copia. Las nuevas de la 5.11 (`sounds`, `milestones`) solo si tienen algo:
+ * así una copia sin Sonidos ni logros la sigue leyendo la 5.10.1, que rechaza cualquier tabla que no conoce.
+ */
+export function exportTables<T>(tables: Record<string, T[]>): Record<string, T[]> {
+  const out: Record<string, T[]> = {}
+  for (const [k, all] of Object.entries(tables)) {
+    // REV-11-D2-06 (D2): la marca de logros `_since` no se exporta; sin ella, una copia de la 5.11 sin logros ni Sonidos
+    // sigue sin la tabla `milestones` y la lee la 5.10.1. Al restaurarla, la tabla queda vacía y milestones.ts guarda en
+    // silencio lo ya conseguido (como con una copia antigua) y pone una marca nueva.
+    const rows = contentRows(k, all)
+    if (rows.length > 0 || !(NEW_IN_511 as readonly string[]).includes(k)) out[k] = rows
+  }
+  return out
+}
+
+/**
+ * REV-11-D2-06 (D2): id de la marca de la primera mirada a los logros (milestones.ts › `SINCE_ID`; aquí copiado para no
+ * importar milestones.ts en la comprobación de copias). No es un logro.
+ */
+export const MILESTONES_SINCE_ID = '_since'
+
+/** Filas de una tabla que son contenido de verdad (en `milestones`, todas menos la marca). */
+function contentRows<T>(table: string, rows: readonly T[]): T[] {
+  if (table !== 'milestones') return [...rows]
+  return rows.filter((r) => (r as { id?: unknown } | null)?.id !== MILESTONES_SINCE_ID)
 }
 
 /** Interpreta el texto de la copia y la comprueba entera. */

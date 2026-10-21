@@ -1,12 +1,13 @@
 import { Share } from '@capacitor/share'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { APP_BUILD, APP_DATE, APP_VERSION, findRelease, formatDate, latestEntry, RELEASES, type Release } from '../lib/changelog'
 import type { Settings } from '../lib/settings'
+import { loadAudioCredits, loadSounds, type AudioCredit } from '../lib/sounds'
 import { Icon, type IconName } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import { THEME_INFO, type ThemeVars } from '../ui/theme'
 
-type Page = 'main' | 'news' | 'credits' | 'privacy' | 'help' | 'licenses'
+type Page = 'main' | 'news' | 'credits' | 'privacy' | 'help' | 'licenses' | 'audio'
 
 const TITLES: Record<Page, string> = {
   main: 'Acerca de',
@@ -15,6 +16,7 @@ const TITLES: Record<Page, string> = {
   privacy: 'Privacidad',
   help: 'Ayuda y contacto',
   licenses: 'Licencias',
+  audio: 'Audios de los sonidos',
 }
 
 const AUTHOR = 'Shift'
@@ -60,7 +62,8 @@ export default function AboutScreen({
       text: `${subject} — Habla v${APP_VERSION} (build ${APP_BUILD}) · modelo ${settings.geminiModel} · ${navigator.userAgent}\n\nCuéntanos aquí qué pasó o qué te gustaría:\n`,
     }).catch(() => {})
 
-  const back = () => (page === 'main' || initialPage !== 'main' ? onBack() : setPage('main'))
+  // 5.11 (S-04): desde «Audios de los sonidos» se vuelve a Créditos, no al principio.
+  const back = () => (page === 'audio' ? setPage('credits') : page === 'main' || initialPage !== 'main' ? onBack() : setPage('main'))
 
   return (
     <div className="flex flex-col gap-3">
@@ -245,6 +248,17 @@ export default function AboutScreen({
               ['Test de nivel', 'Banco propio de 450 preguntas (estilo IELTS y Cambridge)'],
             ]}
           />
+          {/* 5.11 (S-04): los sonidos sueltos de Wikimedia Commons, con su autor y su licencia (CC BY-SA pide atribución). */}
+          <button onClick={() => setPage('audio')} className="glass flex min-h-[62px] items-center gap-3 rounded-[31px] px-3 py-2 text-left">
+            <span className="field txt-acc2 grid h-10 w-10 flex-none place-items-center rounded-full">
+              <Icon name="soundwave" size={18} stroke={1.6} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block fs-15 font-semibold">Audios de los sonidos</span>
+              <span className="txt-sub block fs-12.5 leading-snug">Grabaciones de Wikimedia Commons: autor y licencia de cada una</span>
+            </span>
+            <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
+          </button>
           <div className="txt-sub px-4 text-center fs-12 leading-snug">Versión {APP_VERSION} · build {APP_BUILD}</div>
           <div className="txt-sub px-4 text-center fs-13 leading-snug">
             Las noticias de los temas vienen de fuentes públicas y se resumen con IA.
@@ -302,6 +316,8 @@ export default function AboutScreen({
         </div>
       )}
 
+      {page === 'audio' && <AudioCredits />}
+
       {page === 'licenses' && (
         <Rows
           items={[
@@ -315,6 +331,57 @@ export default function AboutScreen({
           ]}
         />
       )}
+    </div>
+  )
+}
+
+/**
+ * 5.11 (S-04): «Créditos de audio». Un registro por sonido suelto (src/sounds/credits.json): autor, licencia con enlace
+ * y el archivo original en Wikimedia Commons. Los JSON se cargan al abrir esta página (no en el arranque).
+ */
+function AudioCredits() {
+  const [rows, setRows] = useState<{ credit: AudioCredit; ipa?: string }[] | null>(null)
+  const [failed, setFailed] = useState(false)
+  useEffect(() => {
+    let alive = true
+    Promise.all([loadAudioCredits(), loadSounds().catch(() => null)])
+      .then(([credits, cat]) => {
+        if (alive) setRows(credits.map((credit) => ({ credit, ipa: cat?.phonemes.find((p) => p.id === credit.phoneme)?.ipa })))
+      })
+      .catch(() => alive && setFailed(true))
+    return () => {
+      alive = false
+    }
+  }, [])
+  return (
+    <div className="anim-in flex flex-col gap-2.5">
+      <div className="glass rounded-3xl px-4 py-3.5 fs-13.5 leading-snug">
+        Los sonidos sueltos de la pestaña Sonidos son grabaciones de <b>Wikimedia Commons</b>. Siguen bajo su licencia: se
+        pueden copiar y compartir citando al autor y con la misma licencia.
+      </div>
+      {failed && <div className="txt-sub px-2 fs-13">No se pudieron cargar los créditos. Vuelve a abrir esta página.</div>}
+      {!rows && !failed && <div className="txt-sub px-2 fs-13">Cargando…</div>}
+      {rows?.map(({ credit: c, ipa }) => (
+        <div key={c.id} className="glass flex gap-3 rounded-3xl px-4 py-3">
+          <span className="field txt-acc2 grid h-10 min-w-10 flex-none place-items-center rounded-full px-1.5 fs-15 font-semibold">{ipa ? `/${ipa}/` : '♪'}</span>
+          <span className="min-w-0 flex-1 fs-13 leading-snug">
+            <span className="block font-semibold break-words">{c.title}</span>
+            <span className="txt-sub block">Autor: {c.author}</span>
+            <span className="txt-sub block">
+              Licencia:{' '}
+              <a href={c.licenseUrl} className="txt-acc2 underline">
+                {c.license}
+              </a>
+            </span>
+            {c.modified && c.modifiedEs && <span className="txt-sub block">Modificado: {c.modifiedEs}</span>}
+            {c.versionEs && <span className="txt-sub block">{c.versionEs}</span>}
+            <a href={c.page} className="txt-acc2 mt-0.5 inline-flex items-center gap-1 underline">
+              Archivo original en Commons
+              <Icon name="arrowUR" size={12} />
+            </a>
+          </span>
+        </div>
+      ))}
     </div>
   )
 }

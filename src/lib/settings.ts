@@ -42,6 +42,8 @@ export interface Settings {
   phoneticsOn: boolean
   reviewHelpSeen: boolean // v5.9: la mascota ya explicó cómo se elige cuándo volver a ver una frase
   grammarIntroSeen: boolean // v5.10: la mascota ya explicó la pestaña Gramática (la primera vez que entras)
+  soundsIntroSeen: boolean // 5.11 (S-07): la mascota ya explicó la pestaña Sonidos (la primera vez que entras)
+  reviewAutoGrade: boolean // 5.11 (M-10): «Que decida Habla» en el Repaso (aplica la nota sugerida y pasa sola a los 3 s)
   phoneticsUserOff: boolean // la apagaste tú: no se reactiva sola
   f0ExhaustedMonth: string // AAAA-MM en que Azure dijo que el F0 se agotó
   phoneticsAlertMonth: string // AAAA-MM del último aviso de la mascota
@@ -84,6 +86,8 @@ const DEFAULTS: Settings = {
   phoneticsOn: false,
   reviewHelpSeen: false,
   grammarIntroSeen: false,
+  soundsIntroSeen: false,
+  reviewAutoGrade: false, // apagado por defecto: decide el alumno (autonomía, M-10)
   phoneticsUserOff: false,
   f0ExhaustedMonth: '',
   phoneticsAlertMonth: '',

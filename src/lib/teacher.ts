@@ -267,7 +267,13 @@ export async function teacherTurn(
   history: ChatMessage[],
   answer?: AudioInput | TextInput,
   onRetry?: (info: RetryInfo) => void,
+  /**
+   * 5.11 (M-06): instrucción de ESTE turno (turnStyle.ts › turnInstruction), o ''. Va al final del prompt de sistema
+   * solo en esta petición: no entra en el historial ni en la clase guardada, y con '' el prompt es el de siempre.
+   */
+  turnNote = '',
 ): Promise<TeacherResponse> {
+  const sys = turnNote ? `${system}\n\n${turnNote}` : system
   const contents: GeminiContent[] = toContents(history)
   if (answer && 'base64' in answer) {
     contents.push({
@@ -280,7 +286,7 @@ export async function teacherTurn(
 
   const raw = await withRetry(
     models,
-    (model) => askGemini<RawTeacherResponse>(apiKey, model, { system, contents, schema: TEACHER_SCHEMA }),
+    (model) => askGemini<RawTeacherResponse>(apiKey, model, { system: sys, contents, schema: TEACHER_SCHEMA }),
     onRetry,
   )
   // 5.10.1 (REG-A2-05): tipos defensivos. Con el esquema Gemini respeta los tipos, pero un modelo de respaldo o un

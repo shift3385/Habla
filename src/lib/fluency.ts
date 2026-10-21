@@ -178,3 +178,88 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
     phrase: { en: raw.phrase_en ?? '', es: raw.phrase_es ?? '' },
   }
 }
+
+// ---------------------------------------------------------------------------
+// 5.11 (M-07, P-07 de A5 / UX-03): el informe te compara contigo mismo, no con una meta lejana.
+
+/** Cuántas clases anteriores forman «tu media». */
+export const BASELINE_CLASSES = 5
+
+/** Tu media de las últimas clases terminadas (antes de esta). `null` en velocidad y pausas si ninguna fue hablada. */
+export interface MetricBaseline {
+  classes: number
+  wpm: number | null
+  pausesPerMin: number | null
+  avgWords: number
+  score: number
+}
+
+const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length
+/** Clase con respuestas habladas (las anteriores a la v5.7 no guardaban `spokenTurns`: eran todas habladas). */
+const spokenIn = (m: SessionMetrics) => (m.spokenTurns ?? m.turns) > 0
+
+/**
+ * Media de las `BASELINE_CLASSES` clases terminadas con métricas más recientes ANTES de `current` (por fecha de inicio;
+ * la propia clase no cuenta). Con menos de 2 clases previas no hay media: «Esta es tu primera referencia». Las clases
+ * escritas no cuentan para la velocidad ni las pausas.
+ */
+export function baselineFrom(
+  sessions: readonly { id?: number; startedAt: number; metrics?: SessionMetrics }[],
+  current: { id?: number; startedAt: number },
+): MetricBaseline | null {
+  const prev = sessions
+    .filter((s) => s.metrics && s.metrics.turns > 0 && s.id !== current.id && s.startedAt < current.startedAt)
+    .sort((a, b) => b.startedAt - a.startedAt)
+    .slice(0, BASELINE_CLASSES)
+    .map((s) => s.metrics!)
+  if (prev.length < 2) return null
+  const spoken = prev.filter(spokenIn)
+  return {
+    classes: prev.length,
+    wpm: spoken.length ? Math.round(mean(spoken.map((m) => m.wpm))) : null,
+    pausesPerMin: spoken.length ? Math.round(mean(spoken.map((m) => m.pausesPerMin)) * 10) / 10 : null,
+    avgWords: Math.round(mean(prev.map((m) => m.avgWords))),
+    score: Math.round(mean(prev.map((m) => m.score))),
+  }
+}
+
+export interface Trend {
+  /** ▲ sube, ▼ baja, = igual. */
+  arrow: '▲' | '▼' | '='
+  /** Mejor que tu media (en pausas, mejor es bajar). */
+  better: boolean
+  /** «+8 frente a tu media», «−0,5/min frente a tu media» (REV-11-D2-05: las pausas se comparan por minuto), «igual que tu media». */
+  text: string
+}
+
+/** Cifra de hoy frente a tu media. `decimals` 1 para las pausas/min. Sin media (null) no hay flecha. */
+export function trend(today: number, avg: number | null, opts: { lowerIsBetter?: boolean; decimals?: number; unit?: string } = {}): Trend | null {
+  if (avg == null || !Number.isFinite(today) || !Number.isFinite(avg)) return null
+  const f = 10 ** (opts.decimals ?? 0)
+  const d = Math.round((today - avg) * f) / f
+  if (d === 0) return { arrow: '=', better: false, text: 'igual que tu media' }
+  const abs = Math.abs(d).toLocaleString('es', { maximumFractionDigits: opts.decimals ?? 0 })
+  return { arrow: d > 0 ? '▲' : '▼', better: opts.lowerIsBetter ? d < 0 : d > 0, text: `${d > 0 ? '+' : '−'}${abs}${opts.unit ?? ''} frente a tu media` }
+}
+
+/** Flechas del informe: velocidad y pausas solo si hoy hablaste (y hay media hablada). */
+export function reportTrends(m: SessionMetrics, base: MetricBaseline | null) {
+  const spokeToday = spokenIn(m)
+  return {
+    wpm: spokeToday ? trend(m.wpm, base?.wpm ?? null) : null,
+    pausesPerMin: spokeToday ? trend(m.pausesPerMin, base?.pausesPerMin ?? null, { lowerIsBetter: true, decimals: 1, unit: '/min' }) : null,
+    avgWords: trend(m.avgWords, base?.avgWords ?? null),
+    score: trend(m.score, base?.score ?? null),
+  }
+}
+
+/**
+ * 5.11 (M-07, UX-09): «Hoy has sonado como un B1+» en vez de «Nivel al hablar hoy» (sale de la nota de fluidez, no del
+ * MCER: tu nivel solo lo cambia el re-test). Oculto para A1–A2 y mientras no se sepa tu nivel: a un principiante una
+ * etiqueta B2 le confunde más de lo que le ayuda.
+ */
+export function soundedLike(scoreLevelToday: string, studentLevel: string | undefined): string | null {
+  const lv = (studentLevel ?? '').trim().toUpperCase()
+  if (!lv || lv.startsWith('A')) return null
+  return `Hoy has sonado como un ${scoreLevelToday}`
+}

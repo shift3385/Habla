@@ -1,0 +1,10 @@
+P01 [src/lib/soundGame.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico
+P02 [src/lib/soundGame.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico
+P03 [src/lib/soundGame.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico
+P04 [src/lib/soundGame.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico
+P05 [src/lib/soundGame.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico
+P06 [src/lib/soundGame.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico
+P07 [src/lib/soundGame.ts] SOBREVIVE · ℹ pass 17 ℹ fail 0  · restaurado=idéntico
+P08 [src/lib/tts.ts] muere · ℹ pass 15 ℹ fail 2  · restaurado=idéntico
+P09 [src/lib/tts.ts] SOBREVIVE · ℹ pass 17 ℹ fail 0  · restaurado=idéntico
+P10 [src/lib/soundLink.ts] muere · ℹ pass 16 ℹ fail 1  · restaurado=idéntico

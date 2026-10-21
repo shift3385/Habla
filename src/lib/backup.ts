@@ -1,7 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
-import { BACKUP_FORMAT, backupVersionFor, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
+import { BACKUP_FORMAT, backupVersionFor, exportTables, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
 import { db, TABLES } from './db'
 import { clearSavedClass } from './savedClass'
 import { resetPracticeSeconds } from './stats'
@@ -19,8 +19,10 @@ interface Backup {
 }
 
 export async function buildBackup(): Promise<Backup> {
-  const tables: Record<string, unknown[]> = {}
-  for (const t of TABLES) tables[t] = await db.table(t).toArray()
+  const all: Record<string, unknown[]> = {}
+  for (const t of TABLES) all[t] = await db.table(t).toArray()
+  // 5.11 (S-01): Sonidos y logros solo si tienen algo (sin ellos, la copia la lee igual la 5.10.1); con algo, versión 3.
+  const tables = exportTables(all)
   // 5.10.1 (REG-A1-07, decisión del dueño): con Gramática la copia es versión 2, así una app 5.8/5.9 dice «Actualiza la
   // app» en vez de «archivo dañado» (o de perder el progreso de Gramática sin avisar). Sin Gramática sigue siendo 1.
   return { format: BACKUP_FORMAT, version: backupVersionFor(tables as Parameters<typeof backupVersionFor>[0]), exportedAt: new Date().toISOString(), tables }

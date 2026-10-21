@@ -9,6 +9,9 @@ import { closeServer, loadFresh } from './helpers/vite.mjs'
 after(closeServer)
 
 const tick = () => new Promise((r) => setImmediate(r))
+// 5.11 (pausas, dueño): entre tramos hay pausas de 200–600 ms (tts.ts › pauseIn): los bucles que dejan sonar una
+// lectura entera avanzan con temporizadores, no solo con setImmediate, para llegar al tramo de después de la pausa.
+const step = () => new Promise((r) => setTimeout(r, 1))
 const wait = (ms) => new Promise((r) => setTimeout(r, ms))
 const LINGER = 700 // > RELEASE_DELAY_MS (600)
 
@@ -47,8 +50,8 @@ function fakeVoice() {
 async function playThrough(p) {
   let done = false
   p.then(() => (done = true))
-  for (let i = 0; i < 200 && !done; i++) {
-    await tick()
+  for (let i = 0; i < 4000 && !done; i++) {
+    await step()
     if (synth.current) synth.end()
   }
   await p
@@ -141,8 +144,8 @@ test('REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fij
   // Durante toda la lectura la clave no vuelve a null (antes, ▶ un instante entre tramos).
   let done = false
   p.then(() => (done = true))
-  for (let i = 0; i < 200 && !done; i++) {
-    await tick()
+  for (let i = 0; i < 4000 && !done; i++) {
+    await step()
     keys.push(tts.speakingKey())
     if (s.current) s.end()
   }
@@ -238,8 +241,8 @@ test('REG-A3-04: speakSegments lee la respuesta del profe por idiomas como UNA l
   assert.equal(tts.speakingKey(), key, 'clave por defecto: el texto entero (sin tramos vacíos)')
   let done = false
   p.then(() => (done = true))
-  for (let i = 0; i < 200 && !done; i++) {
-    await tick()
+  for (let i = 0; i < 4000 && !done; i++) {
+    await step()
     keys.push(tts.speakingKey())
     if (s.current) s.end()
   }

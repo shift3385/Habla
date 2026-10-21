@@ -627,3 +627,48 @@ html[data-fs='xl'] .plan-week {
     -webkit-line-clamp: 1;
   }
 }
+
+/* 5.11 (S-07): cuatro segmentos en el Inicio (Temas · Prácticas · Gramática · Sonidos). El plan pedía ocultar los
+   números por debajo de 360 px, pero medido en 390×844 «Gramática 12» ya se salía de su píldora (85 px por segmento):
+   se ocultan por debajo de 420 px de ancho real (la media query mira la pantalla, no el zoom de viewport.ts). */
+@media (max-width: 419px) {
+  .home-seg .seg-count {
+    display: none;
+  }
+}
+/* Con letra grande, las cuatro etiquetas («Prácticas», «Gramática») se tocaban: en el Inicio crecen algo menos. */
+html[data-fs] .home-seg button {
+  font-size: calc(13px * var(--fs, 1));
+}
+
+/* 5.11 (S-07): tabla fonémica (PhonemeChart). Los altos mínimos van en línea (px reales: soundGame.ts › chartSizing). */
+.ph-cell-empty {
+  display: block;
+}
+/* En horizontal, vocales (con diptongos) y consonantes lado a lado, para que la tabla quepa sin desplazar. */
+html[data-landscape] .ph-chart {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  column-gap: 12px;
+  row-gap: 6px;
+}
+html[data-landscape] .ph-chart .ph-legend {
+  grid-column: 1 / -1;
+}
+html[data-landscape] .ph-vowel .ph-word {
+  display: none;
+}
+
+/* En horizontal, «Sigue la ruta», «Ruta» y «Abecedario» en una sola fila (52 px menos de alto: la pestaña Sonidos no
+   desplaza más que Gramática). */
+html[data-landscape] .snd-top {
+  flex-direction: row;
+}
+html[data-landscape] .snd-top > :first-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+html[data-landscape] .snd-top > :last-child {
+  flex: 0 0 auto;
+  width: 46%;
+}

@@ -13,6 +13,9 @@ export type LangSegment = { lang: 'es' | 'en'; text: string }
 // las que se escriben igual en español y suenan bien con la voz española (base, normal, simple, modal…).
 // 5.10.1 (REG-A3-14): + and, although, despite, already, nobody, old, answer, refuse, needn't… (se leían en español:
 // «María and her husband» cambiaba de voz en «and»).
+// 5.11 (pausas, D4): + or, but, nor, with, from, into, there, here, these, those, also, only, very, some: palabras cortas
+// inglesas que ninguna palabra española escribe igual («Con he, she or it el verbo…» leía «or» con la voz española).
+// Las que sí coinciden con el español («a», «no», «son»…) siguen en BOTH y deciden por las vecinas.
 const EN = new Set(
   `'d 'll 'm 're 's 've -d -ed -er -es -est -ied -ier -iest -ing -s -y about actually advice afford after ago agree
   airport always am an any any- anybody anyone anything anywhere are aren't as asked assist at ate attend avoid back bad
@@ -36,7 +39,8 @@ const EN = new Set(
   understand until up us use used usually verb wait wake wall want wanted was watched watches we week well went were
   wh- what when where whether which while who why will won't wondering wooden work worked works worry worse worst would
   write written wrote years yes yesterday yet you you'll you're your yours yourself yourselves
-  and although though even despite spite already nobody old answer refuse continue husband wife needn't too hour`.split(/\s+/),
+  and although though even despite spite already nobody old answer refuse continue husband wife needn't too hour
+  or but nor with from into there here these those also only very some`.split(/\s+/),
 )
 
 // Se escriben igual en los dos idiomas: toman el idioma de las palabras de al lado («Con he, she e it» → inglés;
@@ -101,7 +105,7 @@ export function ordinalWord(n: number): string | null {
 /** «May 5th» → «May fifth» (dentro de un tramo inglés). */
 const ordinalsToWords = (t: string) => t.replace(/\b(\d+)(st|nd|rd|th)\b/g, (m, d: string) => ordinalWord(Number(d)) ?? m)
 
-type Tok = { text: string; lang: 'es' | 'en' | 'both' | 'num' | 'none' }
+type Tok = { text: string; lang: 'es' | 'en' | 'both' | 'num' | 'none'; quote?: boolean }
 
 /** Trocea un texto (fuera de comillas, o una cita en español) en palabras con idioma y separadores sin idioma. */
 function tokenize(text: string, out: Tok[]) {
@@ -124,14 +128,22 @@ function tokenize(text: string, out: Tok[]) {
  * transcripción fonética (/kən/), que ninguna voz lee bien, y las comillas « ».
  */
 export function splitByLanguage(text: string): LangSegment[] {
+  return splitForReading(text).map(({ lang, text }) => ({ lang, text }))
+}
+
+/** Como splitByLanguage, pero cada tramo dice si empieza en una cita «…» (para la pausa de antes de un ejemplo). */
+export function splitForReading(text: string): ReadSegment[] {
   // Solo /…/ con símbolos fonéticos: «he/she/it» o «do/does» no son fonética.
   const clean = text.replace(/\/[^/\s]*[əɪʊæʌɜɑɔθðŋʃʒːˈˌɚɝ][^/\s]*\//g, '').replace(/\(\s*\)/g, '')
   const toks: Tok[] = []
   let last = 0
   for (const m of clean.matchAll(/«([^»]*)»/g)) {
     tokenize(clean.slice(last, m.index), toks)
+    const first = toks.length
     if (quoteIsSpanish(m[1])) tokenize(m[1], toks)
     else toks.push({ text: ordinalsToWords(m[1]), lang: 'en' })
+    // 5.11 (pausas): se recuerda dónde empieza cada cita (un tramo que empieza en una cita es un ejemplo).
+    if (toks[first]) toks[first].quote = true
     last = m.index! + m[0].length
   }
   tokenize(clean.slice(last), toks)
@@ -163,14 +175,57 @@ export function splitByLanguage(text: string): LangSegment[] {
 
   // Une los tramos seguidos del mismo idioma; los separadores (espacios, comas) se quedan con el tramo en curso,
   // salvo la puntuación final, que ayuda a la voz a hacer la pausa.
-  const segs: LangSegment[] = []
+  const segs: ReadSegment[] = []
   for (const t of toks) {
     const lang = t.lang === 'none' ? (segs.at(-1)?.lang ?? 'es') : (t.lang as 'es' | 'en')
     const cur = segs.at(-1)
     if (cur && cur.lang === lang) cur.text += t.text
-    else segs.push({ lang, text: t.text })
+    else segs.push(t.quote ? { lang, text: t.text, quoted: true } : { lang, text: t.text })
   }
   // «he/she/it» se lee «he, she, it» (no «slash») y «-s» como «s».
   const speakable = (t: string) => t.replace(/\s*\/\s*/g, ', ').replace(/(^|[\s(])-(?=\p{L})/gu, '$1').replace(/\s+/g, ' ')
   return segs.map((s) => ({ ...s, text: speakable(s.text).replace(/[¿¡(]+$/, '').trim() })).filter((s) => /[\p{L}\p{N}]/u.test(s.text))
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// 5.11 (pausas, dueño): al leer por tramos (explicaciones en español con inglés dentro, respuestas del profe con citas en
+// español) los tramos iban de corrido: «…para horarios fijos, ejemplo: I work from home» sonaba sin respirar. Entre un
+// tramo y el siguiente se espera según cómo acaba el anterior, y algo más antes de un ejemplo. Sin SSML: tts.ts espera
+// entre llamadas a la voz (cancelable al instante con ⏸ o stop) y sin soltar el foco de audio (sigue siendo una lectura).
+
+/** Un tramo para leer; `quoted`: empieza en una cita «…» (un ejemplo). */
+export type ReadSegment = LangSegment & { quoted?: boolean }
+
+/** 5.11 (pausas, dueño): espera entre tramos, en ms, según la puntuación con la que acaba el anterior. */
+export const PAUSE_MS = {
+  /** coma o punto y coma */
+  comma: 200,
+  /** dos puntos */
+  colon: 400,
+  /** punto, ¿?, ¡!, puntos suspensivos */
+  stop: 500,
+  /** antes de un ejemplo: de español a inglés, tras «ejemplo:», «por ejemplo», «como», o antes de una cita «…» */
+  example: 600,
+} as const
+
+// Fin de tramo que anuncia un ejemplo: «… ejemplo:», «por ejemplo,», «como» (con o sin puntuación detrás).
+const EXAMPLE_LEAD = /(?:^|\s)(?:por\s+)?(?:ejemplos?|como|p\.\s*ej\.?)[\s:,;.]*$/i
+
+/** Milisegundos de pausa entre el tramo `prev` y el `next` (0 = seguido). Puro: tests/m4-pausas.test.mjs. */
+export function pauseBetween(prev: ReadSegment | undefined, next: ReadSegment): number {
+  if (!prev) return 0
+  const end = prev.text.trimEnd().replace(/["'»”’)\]]+$/, '')
+  const byMark = (m: string) => (/[.!?…]/.test(m) ? PAUSE_MS.stop : m === ':' ? PAUSE_MS.colon : /[,;]/.test(m) ? PAUSE_MS.comma : 0)
+  // El tramo que sigue a una cita puede empezar por su puntuación («…casa», using…»): esa es la pausa, y no la de un
+  // ejemplo (ya se dijo).
+  const lead = next.text.trimStart().match(/^[,;:.!?…]/)?.[0]
+  if (lead) return byMark(lead)
+  const punct = byMark(end.slice(-1))
+  // De español a inglés, pausa de ejemplo solo si el inglés es una frase acabada (punto, ¿?, ¡!) o el español la anuncia
+  // con dos puntos (las citas y «ejemplo:», «por ejemplo», «como» ya cuentan arriba). Las palabras inglesas metidas en la
+  // frase («Con he, she or it el verbo…», «termina en -s») van seguidas: con la regla de «3 palabras o más» sonaba
+  // «Con · 614 ms · he, she or it» (decisión del orquestador y del dueño, 2026-10-21).
+  const toEnglish = prev.lang === 'es' && next.lang === 'en' && (/[.!?]$/.test(next.text.trimEnd()) || end.endsWith(':'))
+  const example = toEnglish || !!next.quoted || EXAMPLE_LEAD.test(end)
+  return Math.max(punct, example ? PAUSE_MS.example : 0)
 }

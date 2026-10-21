@@ -1,0 +1,4 @@
+Q01 [src/lib/reminders.ts] muere · ℹ pass 50 ℹ fail 2  · restaurado=idéntico
+Q02 [src/lib/pronunciation.ts] muere · ℹ pass 50 ℹ fail 2  · restaurado=idéntico
+M04b [src/lib/stats.ts] muere · ℹ pass 12 ℹ fail 2  · restaurado=idéntico
+D1-05 [src/lib/mascotTips.ts] muere · ℹ pass 9 ℹ fail 5  · restaurado=idéntico

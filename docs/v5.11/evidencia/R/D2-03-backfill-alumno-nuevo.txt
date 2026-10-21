@@ -1,0 +1,4 @@
+isBackfill = true · guardados = [ 'streak-3' ] · por celebrar = NINGUNO
+ℹ pass 0
+ℹ fail 1
+  AssertionError [ERR_ASSERTION]: su primer hito debería celebrarse

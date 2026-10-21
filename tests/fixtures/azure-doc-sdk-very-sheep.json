@@ -1,0 +1,53 @@
+{
+  "_nota": "Ejemplo con el formato del SDK de la documentación de Microsoft (notas anidadas en PronunciationAssessment, NBestPhonemes dentro): «very» como «berry», «sheep» como «ship» y «go» con /ɡ/ que Azure da como «g» (mismo sonido). NO es una respuesta real de F0.",
+  "Id": "0c3a6b3e1f0a4f8c9a5b2d7e6f1a2b3c",
+  "RecognitionStatus": "Success",
+  "Offset": 1800000,
+  "Duration": 14200000,
+  "DisplayText": "Very sheep go.",
+  "NBest": [
+    {
+      "Confidence": 0.74,
+      "Lexical": "very sheep go",
+      "ITN": "very sheep go",
+      "MaskedITN": "very sheep go",
+      "Display": "Very sheep go.",
+      "PronunciationAssessment": { "AccuracyScore": 61, "FluencyScore": 88, "CompletenessScore": 100, "PronScore": 70 },
+      "Words": [
+        {
+          "Word": "very",
+          "Offset": 1800000,
+          "Duration": 4200000,
+          "PronunciationAssessment": { "AccuracyScore": 48, "ErrorType": "Mispronunciation" },
+          "Phonemes": [
+            { "Phoneme": "v", "PronunciationAssessment": { "AccuracyScore": 22, "NBestPhonemes": [{ "Phoneme": "b", "Score": 79 }, { "Phoneme": "v", "Score": 22 }, { "Phoneme": "f", "Score": 6 }, { "Phoneme": "p", "Score": 2 }, { "Phoneme": "w", "Score": 1 }] } },
+            { "Phoneme": "ɛ", "PronunciationAssessment": { "AccuracyScore": 85, "NBestPhonemes": [{ "Phoneme": "ɛ", "Score": 85 }, { "Phoneme": "eɪ", "Score": 20 }, { "Phoneme": "æ", "Score": 9 }, { "Phoneme": "ɪ", "Score": 4 }, { "Phoneme": "ə", "Score": 2 }] } },
+            { "Phoneme": "ɹ", "PronunciationAssessment": { "AccuracyScore": 70, "NBestPhonemes": [{ "Phoneme": "ɹ", "Score": 70 }, { "Phoneme": "l", "Score": 18 }, { "Phoneme": "d", "Score": 6 }, { "Phoneme": "w", "Score": 3 }, { "Phoneme": "ɚ", "Score": 2 }] } },
+            { "Phoneme": "i", "PronunciationAssessment": { "AccuracyScore": 90, "NBestPhonemes": [{ "Phoneme": "i", "Score": 90 }, { "Phoneme": "ɪ", "Score": 30 }, { "Phoneme": "eɪ", "Score": 4 }, { "Phoneme": "ɛ", "Score": 2 }, { "Phoneme": "j", "Score": 1 }] } }
+          ]
+        },
+        {
+          "Word": "sheep",
+          "Offset": 6400000,
+          "Duration": 4300000,
+          "PronunciationAssessment": { "AccuracyScore": 55, "ErrorType": "Mispronunciation" },
+          "Phonemes": [
+            { "Phoneme": "ʃ", "PronunciationAssessment": { "AccuracyScore": 92, "NBestPhonemes": [{ "Phoneme": "ʃ", "Score": 92 }, { "Phoneme": "s", "Score": 20 }, { "Phoneme": "tʃ", "Score": 11 }, { "Phoneme": "ʒ", "Score": 2 }, { "Phoneme": "z", "Score": 1 }] } },
+            { "Phoneme": "i", "PronunciationAssessment": { "AccuracyScore": 35, "NBestPhonemes": [{ "Phoneme": "ɪ", "Score": 80 }, { "Phoneme": "i", "Score": 35 }, { "Phoneme": "eɪ", "Score": 5 }, { "Phoneme": "ɛ", "Score": 3 }, { "Phoneme": "ə", "Score": 1 }] } },
+            { "Phoneme": "p", "PronunciationAssessment": { "AccuracyScore": 88, "NBestPhonemes": [{ "Phoneme": "p", "Score": 88 }, { "Phoneme": "b", "Score": 9 }, { "Phoneme": "t", "Score": 4 }, { "Phoneme": "k", "Score": 2 }, { "Phoneme": "f", "Score": 1 }] } }
+          ]
+        },
+        {
+          "Word": "go",
+          "Offset": 11000000,
+          "Duration": 3000000,
+          "PronunciationAssessment": { "AccuracyScore": 62, "ErrorType": "None" },
+          "Phonemes": [
+            { "Phoneme": "ɡ", "PronunciationAssessment": { "AccuracyScore": 55, "NBestPhonemes": [{ "Phoneme": "g", "Score": 74 }, { "Phoneme": "k", "Score": 20 }, { "Phoneme": "ŋ", "Score": 3 }, { "Phoneme": "d", "Score": 2 }, { "Phoneme": "ɣ", "Score": 1 }] } },
+            { "Phoneme": "oʊ", "PronunciationAssessment": { "AccuracyScore": 68, "NBestPhonemes": [{ "Phoneme": "oʊ", "Score": 68 }, { "Phoneme": "ɔ", "Score": 30 }, { "Phoneme": "ʌ", "Score": 8 }, { "Phoneme": "u", "Score": 3 }, { "Phoneme": "ə", "Score": 1 }] } }
+          ]
+        }
+      ]
+    }
+  ]
+}

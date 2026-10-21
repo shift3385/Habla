@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { pronunciationLine, weakWords, type PronResult } from '../lib/pronunciation'
+import { practiceLabel, practiceSheet, pronunciationLine, weakWords, type PronResult } from '../lib/pronunciation'
+import { openSound } from '../lib/soundLink'
+import { loadSounds, phonemeByAzure, type Phoneme } from '../lib/sounds'
 import { speakingKey } from '../lib/speaking'
 import { stopSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
@@ -19,9 +21,34 @@ const verdict = (x: number) => (x >= 80 ? 'bien' : x >= 60 ? 'a mejorar' : 'a pr
  * La pronunciación de tu respuesta (Azure): nota, cuatro medidas, una frase del coach y las palabras a cuidar.
  * `pausable` (v5.9): la palabra que suena muestra ⏸ y se para al tocarla otra vez. Es opcional porque en el test de
  * nivel no se puede pausar ningún audio (decisión del dueño): allí se usa sin él y queda como antes.
+ * `practiceLink` (5.11, S-11): enlace «🔊 Practicar el sonido /θ/ en Sonidos», que abre la ficha encima (`openSound`).
+ * Por defecto va con `pausable`: sale en la clase, el Repaso y «Dilo tú», y no en el test de nivel (que no se interrumpe).
  */
-export default function PronunciationView({ r, onSay, pausable = false }: { r: PronResult; onSay: (word: string) => void; pausable?: boolean }) {
+export default function PronunciationView({
+  r,
+  onSay,
+  pausable = false,
+  practiceLink = pausable,
+}: {
+  r: PronResult
+  onSay: (word: string) => void
+  pausable?: boolean
+  practiceLink?: boolean
+}) {
   const weak = weakWords(r)
+  // 5.11 (S-11): las fichas se cargan aparte (import perezoso) y solo si hay enlace; hasta entonces no sale nada.
+  const [sounds, setSounds] = useState<Phoneme[] | null>(null)
+  useEffect(() => {
+    if (!practiceLink) return
+    let live = true
+    loadSounds()
+      .then((c) => live && setSounds(c.phonemes))
+      .catch(() => {}) // sin contenido de Sonidos, sin enlace
+    return () => {
+      live = false
+    }
+  }, [practiceLink])
+  const sheet = practiceLink && sounds ? practiceSheet(weak, (x) => phonemeByAzure(sounds, x.phoneme, x.word)) : undefined
   const tone = (x: number) => (x >= 80 ? 'var(--acc)' : x >= 60 ? 'var(--acc2)' : '#f59e0b')
   const items: [string, number | undefined][] = [
     ['Precisión', r.accuracy],
@@ -104,15 +131,33 @@ export default function PronunciationView({ r, onSay, pausable = false }: { r: P
               onClick={() => (pausable && speakingKey() === w.word ? stopSpeaking() : onSay(w.word))}
               className="glass flex min-h-7 max-w-full items-center gap-1 rounded-full px-2.5 py-0.5 fs-12.5 break-words"
               // 5.10.1 (REG-A3-19): el consejo en español también en el chip (el IPA solo, un A2 no lo lee).
-              title={w.tip ? `${w.tip}. Toca para oírla bien pronunciada` : 'Escúchala bien pronunciada'}
-              aria-label={`Escuchar «${w.word}» bien pronunciada${w.tip ? `: ${w.tip}` : ''}`}
+              title={`${w.heard ? `Te salió /${w.heard}/ en vez de /${w.phoneme}/. ` : ''}${w.tip ? `${w.tip}. Toca para oírla bien pronunciada` : 'Escúchala bien pronunciada'}`}
+              aria-label={`Escuchar «${w.word}» bien pronunciada${w.heard ? `. Te salió /${w.heard}/ en vez de /${w.phoneme}/` : ''}${w.tip ? `: ${w.tip}` : ''}`}
             >
               {pausable ? <SpeakIcon speakKey={w.word} size={12} /> : <Icon name="speaker" size={12} />}
               <b>{w.word}</b>
-              {w.phoneme && <span className="txt-sub">/{w.phoneme}/</span>}
+              {/* 5.11 (M-11): con NBest de Azure, «/θ/ 45 · te salió /s/». Sin él, el chip queda como en la 5.10.1. */}
+              {w.phoneme && !w.heard && <span className="txt-sub">/{w.phoneme}/</span>}
+              {w.phoneme && w.heard && (
+                <span className="txt-sub">
+                  /{w.phoneme}/ {w.phonemeAccuracy} · te salió <b style={{ color: 'var(--acc2)' }}>/{w.heard}/</b>
+                </span>
+              )}
             </button>
           ))}
         </div>
+      )}
+      {sheet && (
+        // 5.11 (S-11): una sola línea (en 320×640 la tarjeta crece como mucho una línea); toque de 36 px con margen negativo.
+        <button
+          onClick={() => openSound(sheet.id)}
+          className="txt-acc2 -mb-1.5 flex min-h-9 w-full min-w-0 items-center gap-1.5 text-left fs-12.5 font-semibold"
+          aria-label={`${practiceLabel(sheet)}: abre la ficha sin salir de aquí`}
+        >
+          <span aria-hidden>🔊</span>
+          <span className="truncate">{practiceLabel(sheet)}</span>
+          <Icon name="chevR" size={13} stroke={2} />
+        </button>
       )}
     </div>
   )

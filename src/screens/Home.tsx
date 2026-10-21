@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
 import { doneToday, todayLesson, type StudyPlan } from '../lib/plan'
 import { nextRetestAt } from '../lib/levels'
-import { buildAdvice, buildTips, interleave, rotate, type Tip } from '../lib/mascotTips'
+import { buildAdvice, buildTips, interleave, newTipRound, noteTipShown, rotate, type Tip } from '../lib/mascotTips'
 import { hasAzure } from '../lib/phonetics'
 import MascotBubble from '../components/MascotBubble'
 import type { Settings } from '../lib/settings'
@@ -21,6 +21,7 @@ import MascotPage from '../components/MascotPage'
 import GrammarRoutes, { type GramRoute } from '../components/GrammarRoutes'
 import { grammarSections } from '../lib/grammar'
 import TopicAskPage, { type AskKind } from '../components/TopicAskPage'
+import type { SoundRoute } from '../components/SoundRoutes'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import Segmented from '../ui/Segmented'
@@ -49,6 +50,12 @@ interface Props {
   onFinishClass?: () => void
 }
 
+// 5.11 (Sonidos): las pantallas de Sonidos se cargan al abrir la pestaña (React.lazy): no pesan en el arranque.
+const SoundsPanel = lazy(() => import('../components/SoundsPanel'))
+const SoundRoutes = lazy(() => import('../components/SoundRoutes'))
+/** Mientras llega el código de Sonidos (una vez por sesión, desde el propio APK): un aviso discreto, sin saltos. */
+const soundsLoading = <div className="txt-sub mt-3 p-5 text-center text-sm">Cargando sonidos…</div>
+
 function greeting() {
   const h = new Date().getHours()
   return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'
@@ -76,14 +83,21 @@ export default function Home({
   onResumeClass,
   onFinishClass,
 }: Props) {
+  // 5.11 (M-09, REV-11-D1-05): cada vez que se monta el Inicio (al volver de una clase, del Repaso, de otra pestaña…)
+  // empieza otra ronda de redacciones de los globos. En el inicializador: antes de calcular los avisos de esta visita.
+  useState(() => newTipRound())
   const [dash, setDash] = useState<Dashboard | null>(null)
-  const [seg, setSeg] = useState<'topics' | 'practices' | 'grammar'>('topics')
+  const [seg, setSeg] = useState<'topics' | 'practices' | 'grammar' | 'sounds'>('topics')
   // v5.10 «Gramática»: pila de pantallas (sección → tema → relacionado…) y búsqueda (se conserva al volver).
   const [gram, setGram] = useState<GramRoute[]>([])
   const [gramQuery, setGramQuery] = useState('')
   const [gramLevel, setGramLevel] = useState('A2')
   const pushGram = useCallback((r: GramRoute) => setGram((g) => [...g, r]), [])
   const popGram = useCallback(() => setGram((g) => g.slice(0, -1)), [])
+  // 5.11 (S-07) «Sonidos»: su propia pila (tabla → ficha → lección…), como Gramática.
+  const [snd, setSnd] = useState<SoundRoute[]>([])
+  const pushSnd = useCallback((r: SoundRoute) => setSnd((x) => [...x, r]), [])
+  const popSnd = useCallback(() => setSnd((x) => x.slice(0, -1)), [])
   // Tus 3 temas (5.4): el Inicio solo muestra esos; el resto está en "Más temas".
   const [favs, setFavs] = useState<string[]>([])
   const [allOpen, setAllOpen] = useState(false)
@@ -106,11 +120,13 @@ export default function Home({
   // v5.10: dentro de Gramática, Atrás vuelve a la pantalla anterior (tema → sección → pestaña Gramática).
   const gramOpen = gram.length > 0
   const gramIntro = seg === 'grammar' && !settings.grammarIntroSeen
+  const sndOpen = snd.length > 0
+  const sndIntro = seg === 'sounds' && !settings.soundsIntroSeen
   useEffect(() => {
-    if (!ask && !allOpen && !gramOpen && !gramIntro) return
-    registerBack(ask ? () => setAsk(null) : allOpen ? () => setAllOpen(false) : gramOpen ? popGram : () => setSeg('topics'))
+    if (!ask && !allOpen && !gramOpen && !gramIntro && !sndOpen && !sndIntro) return
+    registerBack(ask ? () => setAsk(null) : allOpen ? () => setAllOpen(false) : gramOpen ? popGram : sndOpen ? popSnd : () => setSeg('topics'))
     return () => registerBack(null)
-  }, [ask, allOpen, gramOpen, gramIntro, registerBack, popGram])
+  }, [ask, allOpen, gramOpen, gramIntro, sndOpen, sndIntro, registerBack, popGram, popSnd])
   const keysReady = settings.geminiKey.trim().length > 0
   const info = THEME_INFO[settings.theme]
   // La mascota habla en globos flotantes (MascotBubble); tocarla pasa al siguiente.
@@ -173,6 +189,7 @@ export default function Home({
     }
   })
   const onTipShown = useCallback((tip: Tip) => {
+    noteTipShown(tip) // 5.11 (M-09, I-4): los consejos «de temporada» se jubilan tras verse 2 veces
     if (!tip.id.startsWith('a-')) return
     try {
       localStorage.setItem('habla.adviceCursor', String((Number(localStorage.getItem('habla.adviceCursor')) || 0) + 1))
@@ -206,12 +223,13 @@ export default function Home({
           liveTopics: favCats.some((c) => c.live),
           retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
           remindersBlocked,
+          restedYesterday: dash?.restedYesterday, // 5.11 (M-04, I-4): «Ayer descansaste; tu racha sigue a salvo»
         })
       : []
     const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn, wpmGoal: speakLevel ? speakingGoal(speakLevel) : undefined }), adviceCursor) : []
     return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel])
+  }, [mins, goal, dash?.streak, dash?.restedYesterday, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel])
   const onTip = (tip: Tip) => {
     if (tip.action === 'notif') onOpenGoal?.()
     else if (tip.action === 'resume') onResumeClass?.()
@@ -250,6 +268,14 @@ export default function Home({
       />
     )
   }
+
+  const sndTop = snd[snd.length - 1]
+  if (sndTop)
+    return (
+      <Suspense fallback={soundsLoading}>
+        <SoundRoutes route={sndTop} settings={settings} update={update} push={pushSnd} pop={popSnd} />
+      </Suspense>
+    )
 
   if (allOpen) {
     return (
@@ -366,6 +392,9 @@ export default function Home({
         onStartLesson={(id) => (keysReady ? onStartLesson(id) : onGoSettings())}
         onOpenPlan={onOpenPlan}
         onOpenGrammar={(id) => pushGram({ kind: 'topic', id })}
+        // 5.11 (M-08, I-4): si falla el plan, la mascota propone charlar de un tema (favorito del día o «Sorpréndeme»).
+        favorites={favs}
+        onAltTopic={(id) => (id ? start('free', id) : surprise())}
       />
 
       {due && due.total > 0 && (
@@ -381,7 +410,7 @@ export default function Home({
         </button>
       )}
 
-      <div className="mt-3.5">
+      <div className="home-seg mt-3.5">
         <Segmented
           value={seg}
           onChange={setSeg}
@@ -389,6 +418,8 @@ export default function Home({
             { value: 'topics', label: 'Temas', count: FAV_COUNT },
             { value: 'practices', label: 'Prácticas', count: PRACTICES.length },
             { value: 'grammar', label: 'Gramática', count: grammarSections().length },
+            // 5.11 (S-07): cuarta pestaña. En teléfonos (< 420 px) los números se ocultan (index.css › .home-seg).
+            { value: 'sounds', label: 'Sonidos' },
           ]}
         />
       </div>
@@ -413,6 +444,29 @@ export default function Home({
               title="Gramática, cuando la necesites"
               subtitle={`Aquí está la gramática de inglés explicada en español: cada tema con su fórmula, ejemplos que puedes escuchar, los errores típicos de quien habla español y ejercicios. Busca lo que quieras («pasado», «wish», «debería») o mira lo que te marco con ⭐ para tu nivel. Los ejercicios que falles irán a tu Repaso. Funciona sin internet y no gasta tu clave.`}
               primary={{ label: '¡Vamos!', onClick: () => update({ grammarIntroSeen: true }) }}
+              secondary={{ label: 'Ahora no', onClick: () => setSeg('topics') }}
+            />
+          )}
+        </div>
+      ) : seg === 'sounds' ? (
+        <div key="sounds" className="anim-up">
+          <Suspense fallback={soundsLoading}>
+            <SoundsPanel
+              onOpenSound={(id) => pushSnd({ kind: 'sound', id })}
+              onOpenLesson={(id) => pushSnd({ kind: 'lesson', id })}
+              onOpenRoute={() => pushSnd({ kind: 'route' })}
+              onOpenAlphabet={() => pushSnd({ kind: 'alphabet' })}
+            />
+          </Suspense>
+          {/* 5.11 (S-07): la primera vez, la mascota explica Sonidos (DISENO §7.3). */}
+          {sndIntro && (
+            <MascotPage
+              overlay={{ t }}
+              element={info.mascot}
+              mood="speaking"
+              title="Sonidos del inglés"
+              subtitle="El español tiene 5 vocales; el inglés, unas 15. Aquí aprendes a oírlas y a decirlas, con inglés americano: cada sonido tiene su ficha con palabras para escuchar, y la ruta te lleva paso a paso. Empieza por el abecedario o toca cualquier sonido de la tabla. Funciona sin internet; si tienes Azure, además te pongo nota."
+              primary={{ label: '¡Vamos!', onClick: () => update({ soundsIntroSeen: true }) }}
               secondary={{ label: 'Ahora no', onClick: () => setSeg('topics') }}
             />
           )}

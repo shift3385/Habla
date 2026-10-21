@@ -1,0 +1,4 @@
+filas milestones = ["_since"] · tablas exportadas = sessions,turns,mistakes,profile,lookups,cards,grammar,milestones · versión = 3
+ℹ pass 0
+ℹ fail 1
+  AssertionError [ERR_ASSERTION]: sin logros reales, la copia debería seguir siendo legible por la 5.10.1

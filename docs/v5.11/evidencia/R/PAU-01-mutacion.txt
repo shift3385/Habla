@@ -1,0 +1,14 @@
+M1 [src/lib/audioFocus.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+M2 [src/lib/audioFocus.ts] muere · ℹ pass 33 ℹ fail 5  · restaurado=idéntico
+M3 [src/lib/audioFocus.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+M4 [src/lib/tts.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+M5 [src/lib/tts.ts] muere · ℹ pass 35 ℹ fail 3  · restaurado=idéntico
+M6 [src/lib/tts.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+M7 [src/lib/speechLang.ts] muere · ℹ pass 35 ℹ fail 3  · restaurado=idéntico
+M8 [src/lib/tts.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+M9 [src/lib/speechLang.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+P1 [src/lib/tts.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+P2 [src/lib/tts.ts] muere · ℹ pass 35 ℹ fail 3  · restaurado=idéntico
+P3 [src/lib/tts.ts] muere · ℹ pass 37 ℹ fail 1  · restaurado=idéntico
+P4 [src/lib/speechLang.ts] muere · ℹ pass 33 ℹ fail 5  · restaurado=idéntico
+P5 [src/lib/tts.ts] SOBREVIVE · ℹ pass 38 ℹ fail 0  · restaurado=idéntico

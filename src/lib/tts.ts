@@ -1,7 +1,7 @@
 import { TextToSpeech } from '@capacitor-community/text-to-speech'
 import { focusOwnerFor, releaseAudioFocus, takeAudioFocus } from './audioFocus'
-import { beginSpeaking, endSpeaking, speakingKey } from './speaking'
-import { splitByLanguage, type LangSegment } from './speechLang'
+import { beginSpeaking, endSpeaking, speakingKey, subscribeSpeaking } from './speaking'
+import { pauseBetween, splitForReading, type ReadSegment } from './speechLang'
 
 export { speakingKey, useSpeaking } from './speaking'
 // Para los tests (la misma instancia del módulo que usa la voz).
@@ -251,22 +251,46 @@ export function toggleSpeak(
  * entre tramos) y un solo foco que pausa la música para todos los tramos. Otra lectura o stopSpeaking() la cortan.
  */
 async function speakSpanish(text: string, key: string): Promise<void> {
-  const segs = splitByLanguage(text)
+  const segs = splitForReading(text)
   return readSegments(segs, key, prefRate * EN_IN_ES_RATE, segs.length > 1 ? 'read' : focusOwnerFor(text, prefRate * ES_RATE))
+}
+
+/**
+ * 5.11 (pausas, dueño): espera `ms` dentro de la lectura `turn`, sin soltar el foco ni la clave ⏸. Termina al
+ * instante si la lectura deja de ser la activa (⏸, stopSpeaking, otra lectura): parar nunca espera a la pausa.
+ */
+function pauseIn(turn: Turn, ms: number): Promise<void> {
+  if (ms <= 0 || !turn.active()) return Promise.resolve()
+  return new Promise<void>((resolve) => {
+    let unsub = () => {}
+    const done = () => {
+      clearTimeout(t)
+      unsub()
+      resolve()
+    }
+    const t = setTimeout(done, ms)
+    unsub = subscribeSpeaking(() => {
+      if (!turn.active()) done()
+    })
+  })
 }
 
 /**
  * Lee tramos ya partidos como UNA lectura: una clave ▶/⏸ y un foco de audio para todos. El español, con la voz
  * española a su ritmo (ES_RATE); el inglés, con la voz y el tono del profe a `enRate`.
+ * 5.11 (pausas, dueño): entre tramo y tramo, la pausa de pauseBetween() (coma, dos puntos, punto, antes de un ejemplo).
  */
-async function readSegments(segs: LangSegment[], key: string, enRate: number, owner: 'tts' | 'read'): Promise<void> {
+async function readSegments(segs: ReadSegment[], key: string, enRate: number, owner: 'tts' | 'read', us = false): Promise<void> {
   const turn = await beginRead(key)
   try {
     if (!segs.length || !turn.active()) return
     holdFocus(owner)
-    for (const seg of segs) {
+    for (let i = 0; i < segs.length; i++) {
+      const seg = segs[i]
+      if (i) await pauseIn(turn, pauseBetween(segs[i - 1], seg))
       if (!turn.active()) return
       if (seg.lang === 'es') await utter(turn, seg.text, prefRate * ES_RATE, null, 'es-ES')
+      else if (us) await utterUS(turn, seg.text, enRate)
       else await utter(turn, seg.text, enRate, prefVoice)
     }
   } finally {
@@ -281,19 +305,107 @@ async function readSegments(segs: LangSegment[], key: string, enRate: number, ow
  * rechaza; vuelve al acabar o al cortarse.
  */
 export function speakSegments(segments: { lang: 'es' | 'en'; text: string }[], key?: string): Promise<void> {
-  const segs = segments.filter((x) => /[\p{L}\p{N}]/u.test(x.text))
+  // 5.11 (pausas, dueño): en la respuesta del profe, el español son citas («¿cómo dirías «…»?»): pausa de ejemplo delante.
+  const segs: ReadSegment[] = segments.filter((x) => /[\p{L}\p{N}]/u.test(x.text)).map((x) => (x.lang === 'es' ? { ...x, quoted: true } : x))
   const all = segs.map((x) => x.text).join(' ')
   return readSegments(segs, key ?? all, prefRate, focusOwnerFor(all, prefRate)).catch(() => {})
 }
 
 /** Velocidad del español respecto a la elegida por el usuario, y del inglés que va dentro (un poco más lento: es el modelo). */
 const ES_RATE = 0.85
-const EN_IN_ES_RATE = 0.9
+// 5.11 (pausas, dueño): los ejemplos en inglés dentro de una explicación en español, al 85 % (antes 0,9): se oían deprisa.
+export const EN_IN_ES_RATE = 0.85
 
 /** v5.10 (P4): ▶/⏸ para textos en español (explicaciones de Gramática): el inglés que llevan, con voz inglesa. */
 export function toggleSpeakSpanish(text: string, key: string = text): Promise<void> {
   if (speakingKey() === key) return stopSpeaking()
   return speakSpanish(text, key).catch(() => {})
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// 5.11 (S-08): en «Sonidos» la voz es SIEMPRE americana, aunque el profe sea Leo (en-GB): se enseña el inglés americano
+// y las notas británicas van en texto. Se elige una voz en-US (mejor «network»; del género del profe si la hay) y, si el
+// teléfono no tiene ninguna, se pide el idioma en-US al motor. No cambia la voz del profe para el resto de la app.
+
+/** Velocidad «lenta» de la palabra clave (🐢), respecto a la del usuario (DISENO §5.3: rate 0,6). */
+export const SLOW_RATE = 0.6
+
+const isUS = (v: VoiceOption) => norm(v.lang) === 'en-us'
+
+/** La voz americana de Sonidos (null: no hay ninguna en-US instalada; entonces se pide el idioma). */
+export async function usVoice(): Promise<VoiceOption | null> {
+  const list = (await allEnglishVoices()).filter(isUS)
+  const score = (v: VoiceOption) => (/network/i.test(v.name) ? 2 : 0) + (v.gender === voiceGender ? 1 : 0)
+  return [...list].sort((a, b) => score(b) - score(a))[0] ?? null
+}
+
+/** Una frase con la voz americana dentro de la lectura `turn` (como utter, sin el tono de Leo). */
+async function utterUS(turn: Turn, text: string, rate: number): Promise<void> {
+  // La voz que eligió el usuario vale si es americana; si no (p. ej. una en-GB para Leo), se busca otra.
+  const mine = prefVoice !== null ? (await allEnglishVoices()).find((v) => v.index === prefVoice && isUS(v)) : undefined
+  const v = mine ?? (await usVoice())
+  if (!turn.active()) return
+  return new Promise<void>((resolve, reject) => {
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      if (finishCurrent === finish) finishCurrent = null
+      resolve()
+    }
+    finishCurrent = finish
+    TextToSpeech.speak({ text, lang: 'en-US', rate, pitch: 1, volume: 1, category: 'playback', ...(v ? { voice: v.index } : {}) })
+      .then(finish)
+      .catch((e) => {
+        if (done) return
+        done = true
+        if (finishCurrent === finish) finishCurrent = null
+        reject(e)
+      })
+  })
+}
+
+
+/**
+ * 5.11 (S-08/S-09): lee con voz americana una o varias piezas (`texts`) como UNA lectura (una clave ▶/⏸, un foco). Entre
+ * pieza y pieza espera `gapMs` (deletreo de `spell-listen`: «G… A… R…», o un par mínimo: «ship … sheep»). `slow` = 🐢.
+ * Nunca rechaza.
+ */
+export async function speakUS(texts: string | string[], opts: { key?: string; slow?: boolean; gapMs?: number } = {}): Promise<void> {
+  const list = (Array.isArray(texts) ? texts : [texts]).filter((x) => /[\p{L}\p{N}]/u.test(x))
+  const key = opts.key ?? list.join(' ')
+  const rate = prefRate * (opts.slow ? SLOW_RATE : 1)
+  try {
+    const turn = await beginRead(key)
+    try {
+      if (!list.length || !turn.active()) return
+      holdFocus(focusOwnerFor(list.join(' '), rate))
+      for (let i = 0; i < list.length; i++) {
+        if (!turn.active()) return
+        if (i && opts.gapMs) await pauseIn(turn, opts.gapMs)
+        if (!turn.active()) return
+        await utterUS(turn, list[i], rate)
+      }
+    } finally {
+      endRead(turn)
+    }
+  } catch {
+    // sin motor de voz: el botón vuelve a ▶
+  }
+}
+
+/** 5.11 (S-08): como toggleSpeakSpanish, pero el inglés de dentro con la voz americana (explicaciones de Sonidos). */
+export function toggleSpeakSpanishUS(text: string, key: string = text): Promise<void> {
+  if (speakingKey() === key) return stopSpeaking()
+  const segs = splitForReading(text)
+  return readSegments(segs, key, prefRate * EN_IN_ES_RATE, segs.length > 1 ? 'read' : focusOwnerFor(text, prefRate * ES_RATE), true).catch(() => {})
+}
+
+/** ▶/⏸ con voz americana (Sonidos): si esa clave ya suena, la para. */
+export function toggleSpeakUS(texts: string | string[], opts: { key?: string; slow?: boolean; gapMs?: number } = {}): Promise<void> {
+  const key = opts.key ?? (Array.isArray(texts) ? texts.join(' ') : texts)
+  if (speakingKey() === key) return stopSpeaking()
+  return speakUS(texts, { ...opts, key })
 }
 
 /**

@@ -1,0 +1,608 @@
+[
+ {
+  "sc": "inicio",
+  "cfg": "todo",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 1.3,
+   "renderer": -4.3,
+   "gpu": 6.8,
+   "pintar": 4.1,
+   "raster": 0.8,
+   "estilo": 2.3,
+   "script": 5.9,
+   "paints": 16.3
+  },
+  "descanso": {
+   "main": 1.5,
+   "renderer": 2.1,
+   "gpu": 6.3,
+   "pintar": 4,
+   "raster": 0.8,
+   "estilo": 2.2,
+   "script": 5.8,
+   "paints": 16.3
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 144.2,
+     "p95": 7.1,
+     "largos": 0,
+     "n": 285,
+     "main": 84.3,
+     "renderer": 131.7,
+     "gpu": 81.3
+    },
+    "tap": {
+     "fps": 124.3,
+     "p95": 7.2,
+     "largos": 3,
+     "n": 414,
+     "main": 61.2,
+     "renderer": 119.4,
+     "gpu": 42.6
+    },
+    "tabs": {
+     "fps": 100.1,
+     "p95": 13.8,
+     "largos": 9,
+     "n": 393,
+     "main": 51,
+     "renderer": 116.9,
+     "gpu": 33.9
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 94.1,
+     "p95": 13.9,
+     "largos": 0,
+     "n": 192,
+     "main": 99,
+     "renderer": 123,
+     "gpu": 54.3
+    },
+    "tap": {
+     "fps": 81.6,
+     "p95": 20.8,
+     "largos": 3,
+     "n": 295,
+     "main": 79,
+     "renderer": 115.6,
+     "gpu": 33.3
+    },
+    "tabs": {
+     "fps": 82.9,
+     "p95": 27.7,
+     "largos": 11,
+     "n": 339,
+     "main": 66.1,
+     "renderer": 114.7,
+     "gpu": 29.4
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "blur",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 2,
+   "renderer": 4.4,
+   "gpu": 5.2,
+   "pintar": 4.8,
+   "raster": 0.7,
+   "estilo": 3.2,
+   "script": 6.6,
+   "paints": 20
+  },
+  "descanso": {
+   "main": 1.4,
+   "renderer": 3.2,
+   "gpu": 4.6,
+   "pintar": 4,
+   "raster": 0.6,
+   "estilo": 2,
+   "script": 5.8,
+   "paints": 16.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 143.7,
+     "p95": 7,
+     "largos": 0,
+     "n": 283,
+     "main": 81.1,
+     "renderer": 130.1,
+     "gpu": 34.7
+    },
+    "tap": {
+     "fps": 127.8,
+     "p95": 7.1,
+     "largos": 3,
+     "n": 423,
+     "main": 56.1,
+     "renderer": 119.7,
+     "gpu": 18.7
+    },
+    "tabs": {
+     "fps": 104.1,
+     "p95": 13.9,
+     "largos": 9,
+     "n": 408,
+     "main": 51.8,
+     "renderer": 117.8,
+     "gpu": 17.8
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 95.8,
+     "p95": 14,
+     "largos": 0,
+     "n": 194,
+     "main": 98.6,
+     "renderer": 122,
+     "gpu": 25.3
+    },
+    "tap": {
+     "fps": 80.2,
+     "p95": 20.8,
+     "largos": 3,
+     "n": 291,
+     "main": 81.3,
+     "renderer": 116.7,
+     "gpu": 15.9
+    },
+    "tabs": {
+     "fps": 82.6,
+     "p95": 20.8,
+     "largos": 11,
+     "n": 340,
+     "main": 64.5,
+     "renderer": 113.9,
+     "gpu": 13.3
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "fondo",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 1.8,
+   "renderer": 4,
+   "gpu": 8.4,
+   "pintar": 4,
+   "raster": 0.9,
+   "estilo": 4.4,
+   "script": 5.7,
+   "paints": 17.5
+  },
+  "descanso": {
+   "main": 1.4,
+   "renderer": 2.9,
+   "gpu": 7.2,
+   "pintar": 3.8,
+   "raster": 0.8,
+   "estilo": 2.2,
+   "script": 5.7,
+   "paints": 17.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 143.2,
+     "p95": 7.1,
+     "largos": 0,
+     "n": 281,
+     "main": 84.3,
+     "renderer": 133.7,
+     "gpu": 76.9
+    },
+    "tap": {
+     "fps": 125,
+     "p95": 7.2,
+     "largos": 3,
+     "n": 417,
+     "main": 60.6,
+     "renderer": 121.7,
+     "gpu": 41.1
+    },
+    "tabs": {
+     "fps": 104.8,
+     "p95": 13.9,
+     "largos": 8,
+     "n": 408,
+     "main": 50.7,
+     "renderer": 118,
+     "gpu": 35.6
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 92.5,
+     "p95": 14,
+     "largos": 0,
+     "n": 190,
+     "main": 98.7,
+     "renderer": 121.9,
+     "gpu": 55.6
+    },
+    "tap": {
+     "fps": 82,
+     "p95": 14.1,
+     "largos": 3,
+     "n": 294,
+     "main": 79.8,
+     "renderer": 117.3,
+     "gpu": 33.2
+    },
+    "tabs": {
+     "fps": 81,
+     "p95": 20.9,
+     "largos": 10,
+     "n": 336,
+     "main": 66.2,
+     "renderer": 115.2,
+     "gpu": 30.3
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "sombras",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 1.6,
+   "renderer": 3.6,
+   "gpu": 5.1,
+   "pintar": 4.5,
+   "raster": 0.8,
+   "estilo": 2.4,
+   "script": 6.2,
+   "paints": 17.8
+  },
+  "descanso": {
+   "main": 1.4,
+   "renderer": 3.2,
+   "gpu": 4.6,
+   "pintar": 3.8,
+   "raster": 0.7,
+   "estilo": 2.2,
+   "script": 5.4,
+   "paints": 17.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 140.9,
+     "p95": 7.1,
+     "largos": 0,
+     "n": 276,
+     "main": 87,
+     "renderer": 133.6,
+     "gpu": 42.1
+    },
+    "tap": {
+     "fps": 112.7,
+     "p95": 13.9,
+     "largos": 3,
+     "n": 383,
+     "main": 68.5,
+     "renderer": 124.7,
+     "gpu": 24.4
+    },
+    "tabs": {
+     "fps": 101.2,
+     "p95": 13.8,
+     "largos": 8,
+     "n": 398,
+     "main": 54.6,
+     "renderer": 120.4,
+     "gpu": 29.1
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 52.4,
+     "p95": 56.3,
+     "largos": 9,
+     "n": 116,
+     "main": 98.8,
+     "renderer": 117.2,
+     "gpu": 21
+    },
+    "tap": {
+     "main": -1086.3,
+     "renderer": 120.7,
+     "gpu": 11.5
+    },
+    "tabs": {
+     "fps": 139.5,
+     "p95": 7.1,
+     "largos": 1,
+     "n": 511,
+     "main": 40.5,
+     "renderer": 110.7,
+     "gpu": 18.8
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "anim",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 1.6,
+   "renderer": 3.7,
+   "gpu": 3.5,
+   "pintar": 3,
+   "raster": 0.5,
+   "estilo": 2.9,
+   "script": 5.9,
+   "paints": 13.5
+  },
+  "descanso": {
+   "main": 0.4,
+   "renderer": 0.8,
+   "gpu": 0.9,
+   "pintar": 0.8,
+   "raster": 0.1,
+   "estilo": 0.7,
+   "script": 1.3,
+   "paints": 3.8
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 79.7,
+     "p95": 27.7,
+     "largos": 0,
+     "n": 168,
+     "main": 97.1,
+     "renderer": 127.3,
+     "gpu": 34.7
+    },
+    "tap": {
+     "fps": 121,
+     "p95": 13.9,
+     "largos": 2,
+     "n": 382,
+     "main": 61.6,
+     "renderer": 119.9,
+     "gpu": 22.8
+    },
+    "tabs": {
+     "fps": 142.8,
+     "p95": 7.1,
+     "largos": 0,
+     "n": 517,
+     "main": 12,
+     "renderer": 103.1,
+     "gpu": 4.2
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 89.7,
+     "p95": 14,
+     "largos": 0,
+     "n": 181,
+     "main": 98.8,
+     "renderer": 120.7,
+     "gpu": 25.2
+    },
+    "tap": {
+     "fps": 82.3,
+     "p95": 20.9,
+     "largos": 3,
+     "n": 267,
+     "main": 81.3,
+     "renderer": 116,
+     "gpu": 18.3
+    },
+    "tabs": {
+     "main": -323.9,
+     "renderer": 112.9,
+     "gpu": 5
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "mascota",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 1.7,
+   "renderer": 4.5,
+   "gpu": 4.7,
+   "pintar": 2.1,
+   "raster": 0.5,
+   "estilo": 2.5,
+   "script": 2.4,
+   "paints": 25.3
+  },
+  "descanso": {
+   "main": 2.3,
+   "renderer": 5.4,
+   "gpu": 7.5,
+   "pintar": 5.9,
+   "raster": 0.9,
+   "estilo": 4.4,
+   "script": 7,
+   "paints": 39.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 144.2,
+     "p95": 7,
+     "largos": 0,
+     "n": 288,
+     "main": 67.8,
+     "renderer": 125.2,
+     "gpu": 33.7
+    },
+    "tap": {
+     "fps": 135.1,
+     "p95": 7.1,
+     "largos": 2,
+     "n": 419,
+     "main": 57.5,
+     "renderer": 118.2,
+     "gpu": 21.3
+    },
+    "tabs": {
+     "fps": 142.8,
+     "p95": 7.1,
+     "largos": 0,
+     "n": 518,
+     "main": 13.1,
+     "renderer": 103.4,
+     "gpu": 4
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 95.9,
+     "p95": 14,
+     "largos": 0,
+     "n": 191,
+     "main": 99,
+     "renderer": 122.2,
+     "gpu": 23.4
+    },
+    "tap": {
+     "fps": 98,
+     "p95": 14,
+     "largos": 3,
+     "n": 321,
+     "main": 74.4,
+     "renderer": 115.1,
+     "gpu": 16.1
+    },
+    "tabs": {
+     "fps": 141.7,
+     "p95": 7.1,
+     "largos": 1,
+     "n": 518,
+     "main": 20.7,
+     "renderer": 103.6,
+     "gpu": 4.1
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "ligero",
+  "dom": {
+   "glass": 11,
+   "mascotas": 1,
+   "desenfoque": 12,
+   "alto": 995
+  },
+  "despierta": {
+   "main": 0.2,
+   "renderer": 0.7,
+   "gpu": 1.9,
+   "pintar": 0,
+   "raster": 0,
+   "estilo": 0,
+   "script": 0.5,
+   "paints": 0
+  },
+  "descanso": {
+   "main": 0.1,
+   "renderer": 0.2,
+   "gpu": 1.6,
+   "pintar": 0,
+   "raster": 0,
+   "estilo": 0,
+   "script": 0.5,
+   "paints": 0
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 144.2,
+     "p95": 7,
+     "largos": 0,
+     "n": 276,
+     "main": 8.4,
+     "renderer": 103.1,
+     "gpu": 2
+    },
+    "tap": null,
+    "tabs": {
+     "fps": 144.2,
+     "p95": 7,
+     "largos": 0,
+     "n": 525,
+     "main": 5.4,
+     "renderer": 101.1,
+     "gpu": 1.9
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 144.2,
+     "p95": 7,
+     "largos": 0,
+     "n": 277,
+     "main": 20.9,
+     "renderer": 104.6,
+     "gpu": 2.9
+    },
+    "tap": null,
+    "tabs": {
+     "fps": 144.2,
+     "p95": 7,
+     "largos": 0,
+     "n": 526,
+     "main": 13.1,
+     "renderer": 103.1,
+     "gpu": 2.4
+    }
+   }
+  }
+ }
+]

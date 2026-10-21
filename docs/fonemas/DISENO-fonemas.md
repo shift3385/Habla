@@ -324,6 +324,10 @@ Tocar una celda abre la **ficha** (pantalla de la pila, como un tema de Gramáti
   hitos de la 5.11 «Motivación»).
 
 ### 7.4 Diagrama de la boca: sí, pero sencillo y en fase 2
+> **Petición del dueño (2026-10-21), para más adelante, no para la 5.11:** le gusta cómo está hoy la ficha (labios, lengua
+> y cómo fluye la voz en texto), pero quiere **verlo de forma visual y animada**: una animación correcta de cómo se
+> colocan la lengua y los labios y por dónde sale la voz al decir cada sonido. Encaja con los perfiles de abajo,
+> ampliados a **animación** (de la posición de reposo a la del sonido, y el aire o la vibración). Anotado en `BACKLOG.md`.
 - Un diagrama malo confunde más que ayuda, y dibujar 40 perfiles bien es mucho trabajo. **MVP: tres pictogramas por
   sonido** (labios: estirados / neutros / redondos; lengua: dónde toca, en texto corto; voz: vibra / no vibra) y la
   explicación de la mascota.

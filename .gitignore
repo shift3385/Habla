@@ -38,3 +38,6 @@ apk/
 
 # Bloqueo de sesión del teléfono (lo crean las pruebas; nunca a git)
 docs/auditoria/resultados/.telefono.lock
+
+# 5.11 (S-03): CMUdict para validate-sounds (solo en el PC: nunca a git ni al APK)
+scripts/data/

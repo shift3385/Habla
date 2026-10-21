@@ -223,3 +223,33 @@ The audio is their spoken English answer.
 export function suggestedGrade(v: Verdict | 'unknown'): Grade {
   return v === 'correct' ? Rating.Good : v === 'almost' ? Rating.Hard : Rating.Again
 }
+
+// ---------------------------------------------------------------------------
+// 5.11 (M-10, P-10 de A5 / UX-08, R-04): repaso más variado y «Que decida Habla».
+
+/** 1 de cada 4 tarjetas (posiciones 4, 8, 12… de la sesión) se hace en modo «Escucha y repite». */
+export const LISTEN_EVERY = 4
+
+export type ReviewMode = 'say' | 'listen'
+
+/**
+ * Modo de la tarjeta en la posición `index` (0 = primera) de la sesión. «Escucha y repite»: suena el inglés (TTS) y lo
+ * repites; la evaluación (evaluateDrill) y la nota FSRS son las mismas. Nunca en las de Gramática: su ejercicio (hueco o
+ * palabras desordenadas) dejaría de tener sentido si la voz te dice la respuesta.
+ */
+export function reviewMode(index: number, card: Pick<SrsCard, 'source'>): ReviewMode {
+  return card.source !== 'grammar' && (index + 1) % LISTEN_EVERY === 0 ? 'listen' : 'say'
+}
+
+/** Segundos de la cuenta atrás de «Que decida Habla». */
+export const AUTO_GRADE_SECONDS = 3
+
+/**
+ * «Que decida Habla» (ajuste `reviewAutoGrade`, apagado por defecto): con un veredicto de Gemini se aplica EXACTAMENTE la
+ * nota sugerida (`suggestedGrade`) al acabar la cuenta atrás. Con «No lo sé» (`unknown`) o el ajuste apagado, null:
+ * eliges tú, como siempre. REV-11-D2-04: mientras la mascota explica cómo se elige (la primera vez, `waitingHelp`), tampoco.
+ */
+export function autoGrade(result: DrillResult | 'unknown' | null, enabled: boolean, waitingHelp = false): Grade | null {
+  if (!enabled || waitingHelp || !result || result === 'unknown') return null
+  return suggestedGrade(result.verdict)
+}

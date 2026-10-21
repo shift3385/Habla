@@ -1,0 +1,31 @@
+{
+  "_nota": "Respuesta como las de la 5.10.1 (sin NBestPhonemeCount): formato REST de la documentación de Microsoft. Sin el campo, la vista queda igual que hoy.",
+  "RecognitionStatus": "Success",
+  "Offset": 3000000,
+  "Duration": 6100000,
+  "DisplayText": "Think.",
+  "NBest": [
+    {
+      "Confidence": 0.82,
+      "Lexical": "think",
+      "Display": "Think.",
+      "AccuracyScore": 52,
+      "FluencyScore": 100,
+      "CompletenessScore": 100,
+      "PronScore": 64,
+      "Words": [
+        {
+          "Word": "think",
+          "AccuracyScore": 52,
+          "ErrorType": "Mispronunciation",
+          "Phonemes": [
+            { "Phoneme": "θ", "AccuracyScore": 18 },
+            { "Phoneme": "ɪ", "AccuracyScore": 88 },
+            { "Phoneme": "ŋ", "AccuracyScore": 91 },
+            { "Phoneme": "k", "AccuracyScore": 95 }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+ "solo marca _since": {
+  "version": 1,
+  "tablas": "sessions,turns,mistakes,profile,lookups,cards,grammar",
+  "la 5.10.1 dice": "OK"
+ },
+ "marca + Gramática": {
+  "version": 2,
+  "tablas": "sessions,turns,mistakes,profile,lookups,cards,grammar",
+  "la 5.10.1 dice": "OK"
+ },
+ "marca + logro real": {
+  "version": 3,
+  "tablas": "sessions,turns,mistakes,profile,lookups,cards,grammar,milestones",
+  "la 5.10.1 dice": "La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada."
+ }
+}
+✔ R: copia 5.11 → backupCheck real de la 5.10.1 (111.5125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+R01 [src/lib/backupCheck.ts] muere · ℹ pass 14 ℹ fail 2  · restaurado=idéntico
+R02 [src/lib/backupCheck.ts] muere · ℹ pass 15 ℹ fail 1  · restaurado=idéntico
+R03 [src/lib/backupCheck.ts] muere · ℹ pass 14 ℹ fail 2  · restaurado=idéntico

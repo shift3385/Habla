@@ -1,0 +1,15 @@
+Paquetes del chunk principal (KB de fuente):
+  dexie                                    5.10.1     94.7  5.11      0.0  Δ -94.7
+  src                                      5.10.1   1056.5  5.11   1141.0  Δ 84.5
+
+Módulos SOLO en la 5.10.1 (3):
+  - nm:dexie/dist/dexie.min.js (93.9 KB)
+  - nm:dexie/import-wrapper-prod.mjs (0.8 KB)
+  - src/lib/db.ts (8.9 KB)
+
+Módulos SOLO en la 5.11 (5):
+  + src/lib/sounds.ts (18.4 KB)
+  + src/lib/milestones.ts (15.1 KB)
+  + src/lib/turnStyle.ts (5.4 KB)
+  + src/components/MilestoneGate.tsx (5.2 KB)
+  + src/lib/soundLink.ts (0.7 KB)

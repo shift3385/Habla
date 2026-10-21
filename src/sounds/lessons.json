@@ -1,0 +1,228 @@
+{
+  "lessons": [
+    {
+      "id": "S0",
+      "order": 1,
+      "unit": 0,
+      "titleEs": "Por qué el inglés no se lee como se escribe",
+      "level": "A1",
+      "minutes": 5,
+      "phonemes": [],
+      "introEs": "En español casi siempre sabes cómo suena una palabra al leerla. En inglés, no: una misma letra suena de varias formas y un mismo sonido se escribe de muchas. Por eso aquí aprendes sonidos, no letras.",
+      "exercises": [
+        { "id": "S0-1", "type": "odd-one-out", "words": ["go", "no", "show", "now"], "answer": 3, "whyEs": "Now suena «au»; go, no y show suenan «ou», aunque todas se escriben con o." },
+        { "id": "S0-2", "type": "odd-one-out", "words": ["cat", "hat", "father", "bag"], "answer": 2, "whyEs": "Father lleva la «a» abierta de hot; cat, hat y bag, la /æ/, casi «e»." },
+        { "id": "S0-3", "type": "sort", "columns": ["iy", "ih"], "words": [["sheep", "iy"], ["team", "iy"], ["key", "iy"], ["build", "ih"], ["gym", "ih"], ["women", "ih"]] },
+        { "id": "S0-4", "type": "odd-one-out", "words": ["love", "money", "come", "home"], "answer": 3, "whyEs": "Home suena «ou»; en love, money y come la o suena como una «a» corta." }
+      ],
+      "closingEs": "¿Lo ves? La letra no basta: hay que escuchar. Ahora empezamos por el abecedario, que también tiene trampas."
+    },
+    {
+      "id": "A1",
+      "order": 2,
+      "unit": 1,
+      "titleEs": "Letras con «ei» y con «i»",
+      "level": "A1",
+      "minutes": 6,
+      "phonemes": ["ey", "iy"],
+      "introEs": "Las letras en inglés se agrupan por su sonido. A, H, J y K suenan con «ei»; B, C, D, E, G, P, T, V y Z, con «i». Ojo: la E se dice «i».",
+      "exercises": [
+        { "id": "A1-1", "type": "sort", "columns": ["ey", "iy"], "letters": true, "words": [["A", "ey"], ["H", "ey"], ["J", "ey"], ["B", "iy"], ["E", "iy"], ["G", "iy"]] },
+        { "id": "A1-2", "type": "listen-choose", "letters": true, "pairs": [["E", "I"], ["A", "E"], ["G", "J"], ["B", "V"], ["C", "Z"], ["P", "B"]], "rounds": 8, "hintEs": "La E se dice «i» y la A, «ei»; la G es «yi» y la J, «yei»; la B cierra los labios y la V, no." },
+        { "id": "A1-3", "type": "odd-one-out", "letters": true, "words": ["A", "K", "J", "E"], "answer": 3, "whyEs": "La E se dice «i»; A, K y J llevan «ei»." },
+        { "id": "A1-4", "type": "spell-listen", "items": ["bed", "cage", "Jake", "deep"], "hintEs": "Escucha las letras y escribe la palabra." }
+      ],
+      "closingEs": "¡Bien! Recuerda las dos trampas: la E es «i» y la G y la J se cambian fácil."
+    },
+    {
+      "id": "A2",
+      "order": 3,
+      "unit": 1,
+      "titleEs": "Letras con «e», «ai», «ou», «iu» y la R",
+      "level": "A1",
+      "minutes": 7,
+      "phonemes": ["eh", "ay", "ow", "uw"],
+      "introEs": "F, L, M, N, S y X empiezan con «e». I e Y suenan con «ai»; O, «ou»; Q, U y W terminan en «iu». Y la R es «ar», sin vibrar.",
+      "exercises": [
+        { "id": "A2-1", "type": "sort", "columns": ["eh", "ay", "uw"], "letters": true, "words": [["F", "eh"], ["M", "eh"], ["I", "ay"], ["Y", "ay"], ["U", "uw"], ["Q", "uw"]] },
+        { "id": "A2-2", "type": "listen-choose", "letters": true, "pairs": [["M", "N"], ["I", "Y"], ["U", "W"], ["I", "E"], ["R", "A"], ["O", "U"]], "rounds": 8, "hintEs": "M termina con los labios cerrados; N, con la lengua arriba. I es «ai» e Y, «uai». W es «double u»." },
+        { "id": "A2-3", "type": "odd-one-out", "letters": true, "words": ["F", "L", "S", "I"], "answer": 3, "whyEs": "La I se dice «ai»; F, L y S empiezan con «e»." },
+        { "id": "A2-4", "type": "odd-one-out", "letters": true, "words": ["Q", "U", "W", "O"], "answer": 3, "whyEs": "La O se dice «ou»; Q, U y W terminan en «iu»." },
+        { "id": "A2-5", "type": "spell-listen", "items": ["six", "milk", "only", "menu", "fly"], "hintEs": "Escucha las letras y escribe la palabra." }
+      ],
+      "closingEs": "¡Ya tienes las 26 letras! Ahora vamos a deletrear nombres de verdad."
+    },
+    {
+      "id": "A3",
+      "order": 4,
+      "unit": 1,
+      "titleEs": "Deletrear: tu nombre y tu apellido",
+      "level": "A1",
+      "minutes": 6,
+      "phonemes": [],
+      "introEs": "En inglés te van a pedir mucho «Could you spell that?». Vamos a practicar con nombres y apellidos en español, que son los que tendrás que deletrear tú.",
+      "exercises": [
+        { "id": "A3-1", "type": "spell-listen", "items": ["Garcia", "Lopez", "Maria", "Jorge", "Yolanda"], "hintEs": "Escribe el nombre que deletrea la voz. Las mayúsculas no cuentan." },
+        { "id": "A3-2", "type": "listen-choose", "letters": true, "pairs": [["G", "J"], ["E", "I"], ["B", "V"], ["M", "N"], ["A", "H"], ["Y", "I"]], "rounds": 8, "hintEs": "Son las parejas que más se confunden al deletrear por teléfono." },
+        { "id": "A3-3", "type": "spell-listen", "items": ["Ramirez", "Gutierrez", "Valeria", "Hernandez"], "hintEs": "Apellidos largos: escucha letra a letra." }
+      ],
+      "closingEs": "¡Muy bien! Si te piden deletrear, dilo despacio y aclara las letras difíciles: «B as in boy, V as in Victor»."
+    },
+    {
+      "id": "V1",
+      "order": 5,
+      "unit": 2,
+      "titleEs": "Ship o sheep: la «i» corta y la «i» larga",
+      "level": "A1",
+      "minutes": 7,
+      "phonemes": ["ih", "iy"],
+      "introEs": "En inglés hay dos «i»: una corta y floja (ship) y otra larga y tensa (sheep). Si las mezclas, cambias la palabra. Vamos a oírlas y a decirlas.",
+      "exercises": [
+        { "id": "V1-1", "type": "listen-choose", "pairs": [["ship", "sheep"], ["sit", "seat"], ["fill", "feel"], ["chip", "cheap"], ["hit", "heat"], ["bit", "beat"], ["it", "eat"], ["grin", "green"]], "rounds": 8, "hintEs": "La «i» larga dura más y suena con sonrisa; la corta es floja, casi «e»." },
+        { "id": "V1-2", "type": "sort", "columns": ["ih", "iy"], "words": [["big", "ih"], ["green", "iy"], ["sit", "ih"], ["team", "iy"], ["kid", "ih"], ["field", "iy"]] },
+        { "id": "V1-3", "type": "odd-one-out", "words": ["fish", "this", "sheep", "milk"], "answer": 2, "whyEs": "Sheep lleva la «i» larga; las otras, la corta." },
+        { "id": "V1-4", "type": "say-word", "target": "ih", "words": ["ship", "sit", "big", "this", "busy"] },
+        { "id": "V1-5", "type": "say-pair", "pairs": [["ship", "sheep"], ["fill", "feel"]] },
+        { "id": "V1-6", "type": "say-sentence", "en": "This is a big ship.", "es": "Este es un barco grande.", "targets": ["ih"] }
+      ],
+      "closingEs": "¡Bien! Ya distingues ship de sheep. Repite la lección otro día para dominar la «i» corta.",
+      "classFocusEn": "Practice the contrast /ɪ/–/iː/ (ship/sheep, fill/feel). Use many everyday words with both vowels and model the word when the student merges them."
+    },
+    {
+      "id": "C1",
+      "order": 6,
+      "unit": 3,
+      "titleEs": "Very, no berry: la b y la v",
+      "level": "A1",
+      "minutes": 7,
+      "phonemes": ["v", "b"],
+      "introEs": "En español la b y la v suenan igual; en inglés son dos sonidos. En la b cierras los labios; en la v, los dientes de arriba tocan el labio de abajo y vibra.",
+      "exercises": [
+        { "id": "C1-1", "type": "listen-choose", "pairs": [["very", "berry"], ["vote", "boat"], ["van", "ban"], ["vest", "best"], ["vet", "bet"], ["curve", "curb"]], "rounds": 8, "hintEs": "En la v se oye un roce suave con zumbido; la b es un golpe de labios." },
+        { "id": "C1-2", "type": "sort", "columns": ["v", "b"], "words": [["very", "v"], ["seven", "v"], ["love", "v"], ["big", "b"], ["about", "b"], ["job", "b"]] },
+        { "id": "C1-3", "type": "odd-one-out", "words": ["voice", "video", "river", "rabbit"], "answer": 3, "whyEs": "Rabbit lleva b; voice, video y river, v." },
+        { "id": "C1-4", "type": "say-word", "target": "v", "words": ["very", "voice", "seven", "river", "have"] },
+        { "id": "C1-5", "type": "say-pair", "pairs": [["very", "berry"], ["vote", "boat"]] },
+        { "id": "C1-6", "type": "say-sentence", "en": "I have seven very good videos.", "es": "Tengo siete videos muy buenos.", "targets": ["v"] }
+      ],
+      "closingEs": "¡Bien! Si notas cosquillas en el labio, tu v va por buen camino.",
+      "classFocusEn": "Practice the contrast /b/–/v/ (berry/very, boat/vote, best/vest). Use many everyday words with v and model the word when the student says b."
+    },
+    {
+      "id": "E1",
+      "order": 7,
+      "unit": 4,
+      "titleEs": "School, no «eschool»: s + consonante",
+      "level": "A1",
+      "minutes": 5,
+      "phonemes": ["s-cluster", "s"],
+      "introEs": "En español ninguna palabra empieza por s + consonante, así que se nos escapa una «e»: «Espain», «eschool». En inglés esa «e» no existe. Vamos a quitarla.",
+      "exercises": [
+        { "id": "E1-1", "type": "listen-choose", "pairs": [["state", "estate"], ["steam", "esteem"]], "rounds": 4, "hintEs": "Escucha el principio: ¿empieza directamente con s o con una vocal?" },
+        { "id": "E1-2", "type": "sort", "columns": ["s-cluster", "s"], "columnLabels": ["s + consonante", "s + vocal"], "words": [["school", "s-cluster"], ["star", "s-cluster"], ["small", "s-cluster"], ["sun", "s"], ["city", "s"], ["sister", "s"]] },
+        { "id": "E1-3", "type": "odd-one-out", "words": ["school", "Spain", "sun", "star"], "answer": 2, "whyEs": "Sun empieza con s + vocal; las otras, con s + consonante, y ahí no va ninguna «e»." },
+        { "id": "E1-4", "type": "say-word", "target": "s-cluster", "words": ["school", "Spain", "study", "star", "speak"] },
+        { "id": "E1-5", "type": "say-sentence", "en": "Students speak Spanish at school.", "es": "Los estudiantes hablan español en la escuela.", "targets": ["s-cluster"] }
+      ],
+      "closingEs": "¡Muy bien! Truco para siempre: alarga la s y empieza ahí, «sss-chool».",
+      "classFocusEn": "Practice words that start with s + consonant (school, Spain, study, speak, star). If the student adds a vowel before the s, model the word."
+    },
+    {
+      "id": "V3a",
+      "order": 8,
+      "unit": 2,
+      "titleEs": "Cat o cut: dos «a» distintas",
+      "level": "A1",
+      "minutes": 7,
+      "phonemes": ["ae", "ah"],
+      "introEs": "Donde el español tiene una «a», el inglés tiene varias. La de cat abre mucho la boca, casi «e»; la de cup es corta y floja. Vamos a separarlas.",
+      "exercises": [
+        { "id": "V3a-1", "type": "listen-choose", "pairs": [["cat", "cut"], ["cap", "cup"], ["bag", "bug"], ["ban", "bun"], ["match", "much"], ["bat", "but"], ["hat", "hut"], ["fan", "fun"]], "rounds": 8, "hintEs": "La /æ/ de cat abre mucho la boca, casi «e»; la /ʌ/ de cut es una «a» corta y floja." },
+        { "id": "V3a-2", "type": "sort", "columns": ["ae", "ah"], "words": [["black", "ae"], ["apple", "ae"], ["man", "ae"], ["love", "ah"], ["money", "ah"], ["bus", "ah"]] },
+        { "id": "V3a-3", "type": "odd-one-out", "words": ["cup", "sun", "bag", "love"], "answer": 2, "whyEs": "Bag lleva la /æ/ de cat; las otras, la «a» corta de cup." },
+        { "id": "V3a-4", "type": "say-word", "target": "ae", "words": ["cat", "bag", "black", "apple", "man"] },
+        { "id": "V3a-5", "type": "say-pair", "pairs": [["cat", "cut"], ["bag", "bug"]] },
+        { "id": "V3a-6", "type": "say-sentence", "en": "My dad has a black bag.", "es": "Mi papá tiene una bolsa negra.", "targets": ["ae"] }
+      ],
+      "closingEs": "¡Bien! Para la /æ/, abre la boca más de lo que crees.",
+      "classFocusEn": "Practice the contrast /æ/–/ʌ/ (cat/cut, cap/cup, bag/bug). Use everyday words with both vowels and model the word when the student merges them."
+    },
+    {
+      "id": "V3b",
+      "order": 9,
+      "unit": 2,
+      "titleEs": "Hot: la «o» que suena «a»",
+      "level": "A1",
+      "minutes": 7,
+      "phonemes": ["aa", "ae", "ow"],
+      "introEs": "En americano, hot, stop y box se escriben con o pero suenan con una «a» muy abierta. Y no es la «ou» de go: want (quiero) y won’t (no lo haré) son casi opuestas.",
+      "exercises": [
+        { "id": "V3b-1", "type": "listen-choose", "pairs": [["hot", "hat"], ["cop", "cap"], ["block", "black"], ["sock", "sack"], ["not", "note"], ["want", "won't"], ["cost", "coast"], ["top", "tap"]], "rounds": 8, "hintEs": "La de hot es una «a» abierta desde atrás; la de hat, casi «e»; la de note cierra los labios: «ou»." },
+        { "id": "V3b-2", "type": "sort", "columns": ["aa", "ow"], "words": [["hot", "aa"], ["stop", "aa"], ["box", "aa"], ["go", "ow"], ["home", "ow"], ["phone", "ow"]] },
+        { "id": "V3b-3", "type": "odd-one-out", "words": ["hot", "stop", "box", "no"], "answer": 3, "whyEs": "No suena «ou»; hot, stop y box se escriben con o pero suenan «a»." },
+        { "id": "V3b-4", "type": "say-word", "target": "aa", "words": ["hot", "stop", "box", "father", "October"] },
+        { "id": "V3b-5", "type": "say-pair", "pairs": [["want", "won't"], ["hot", "hat"]] },
+        { "id": "V3b-6", "type": "say-sentence", "en": "Stop! The pot is hot.", "es": "¡Para! La olla está caliente.", "targets": ["aa"] }
+      ],
+      "closingEs": "¡Muy bien! Cuando veas una o entre consonantes (hot, stop), piensa en «a».",
+      "classFocusEn": "Practice /ɑ/ in words spelled with o (hot, stop, box, job) and the contrast with /oʊ/ (want/won’t). Model the word when the student says a Spanish o."
+    },
+    {
+      "id": "E4",
+      "order": 10,
+      "unit": 4,
+      "titleEs": "Worked, played, wanted: la -ed",
+      "level": "A1",
+      "minutes": 7,
+      "phonemes": ["ed", "t", "d"],
+      "introEs": "La -ed del pasado casi nunca es una sílaba: worked suena «workt». Solo después de t o d se oye una sílaba más: wanted. Vamos a oírlo y a decirlo.",
+      "exercises": [
+        { "id": "E4-1", "type": "listen-choose", "pairs": [["work", "worked"], ["play", "played"], ["want", "wanted"], ["clean", "cleaned"], ["watch", "watched"], ["need", "needed"], ["cook", "cooked"]], "rounds": 8, "hintEs": "¿Presente o pasado? Escucha la /t/ o /d/ del final, o la sílaba de más en wanted." },
+        { "id": "E4-2", "type": "sort", "columns": ["t", "d", "ed"], "columnLabels": ["/t/ worked", "/d/ played", "/ɪd/ wanted"], "words": [["stopped", "t"], ["watched", "t"], ["called", "d"], ["loved", "d"], ["needed", "ed"], ["started", "ed"]] },
+        { "id": "E4-3", "type": "odd-one-out", "words": ["worked", "cooked", "wanted", "washed"], "answer": 2, "whyEs": "Wanted tiene una sílaba más (/ɪd/); en las otras, la -ed suena /t/." },
+        { "id": "E4-4", "type": "say-word", "target": "ed", "words": ["worked", "played", "watched", "cleaned", "stopped"] },
+        { "id": "E4-5", "type": "say-sentence", "en": "I walked home and cooked dinner.", "es": "Caminé a casa y preparé la cena.", "targets": ["ed"] }
+      ],
+      "closingEs": "¡Bien! Recuerda: worked es una sola sílaba.",
+      "classFocusEn": "Practice regular past tense endings: /t/ (worked), /d/ (played) and /ɪd/ (wanted). If the student adds an extra syllable or drops the ending, model the word."
+    },
+    {
+      "id": "E3",
+      "order": 11,
+      "unit": 4,
+      "titleEs": "Cats, dogs, buses: la -s final",
+      "level": "A1",
+      "minutes": 6,
+      "phonemes": ["s-ending", "s", "z"],
+      "introEs": "La -s del plural y de he works suena de tres formas: /s/ en cats, /z/ en dogs y una sílaba más en buses. Y sobre todo: no te la comas.",
+      "exercises": [
+        { "id": "E3-1", "type": "listen-choose", "pairs": [["cat", "cats"], ["book", "books"], ["dog", "dogs"], ["bus", "buses"], ["watch", "watches"], ["page", "pages"], ["work", "works"]], "rounds": 8, "hintEs": "Escucha el final: ¿hay /s/, /z/ o una sílaba más?" },
+        { "id": "E3-2", "type": "sort", "columns": ["s", "z", "s-ending"], "columnLabels": ["/s/ cats", "/z/ dogs", "/ɪz/ buses"], "words": [["books", "s"], ["cups", "s"], ["plays", "z"], ["cars", "z"], ["watches", "s-ending"], ["pages", "s-ending"]] },
+        { "id": "E3-3", "type": "odd-one-out", "words": ["dogs", "bags", "buses", "plays"], "answer": 2, "whyEs": "Buses tiene una sílaba más (/ɪz/); en las otras, la -s suena /z/." },
+        { "id": "E3-4", "type": "say-word", "target": "s-ending", "words": ["cats", "dogs", "buses", "books", "watches"] },
+        { "id": "E3-5", "type": "say-sentence", "en": "She works and watches movies.", "es": "Ella trabaja y ve películas.", "targets": ["s-ending"] }
+      ],
+      "closingEs": "¡Muy bien! Una -s bien dicha cambia el sentido: cat no es cats.",
+      "classFocusEn": "Practice plural and third-person -s endings: /s/ (cats), /z/ (dogs) and /ɪz/ (buses). If the student drops the ending, model the word."
+    },
+    {
+      "id": "C2a",
+      "order": 26,
+      "unit": 3,
+      "titleEs": "Think, no tink ni sink: la th sorda",
+      "level": "A2",
+      "minutes": 7,
+      "phonemes": ["th", "s", "t"],
+      "introEs": "La th de think no existe en el español de Latinoamérica. Es fácil de hacer si sacas un poquito la lengua. Vamos a distinguirla de la «t» y de la «s».",
+      "exercises": [
+        { "id": "C2a-1", "type": "listen-choose", "pairs": [["think", "sink"], ["three", "tree"], ["thank", "tank"], ["mouth", "mouse"], ["thick", "sick"], ["both", "boat"], ["path", "pass"], ["thought", "taught"]], "rounds": 8, "hintEs": "La th suena como un soplo suave entre los dientes; la «s» silba y la «t» golpea." },
+        { "id": "C2a-2", "type": "sort", "columns": ["th", "t"], "words": [["three", "th"], ["tree", "t"], ["math", "th"], ["mat", "t"], ["thank", "th"], ["tank", "t"]] },
+        { "id": "C2a-3", "type": "say-word", "target": "th", "words": ["think", "three", "thank", "math", "birthday"] },
+        { "id": "C2a-4", "type": "say-pair", "pairs": [["think", "sink"], ["three", "tree"]] },
+        { "id": "C2a-5", "type": "say-sentence", "en": "I think it's Thursday.", "es": "Creo que es jueves.", "targets": ["th"] }
+      ],
+      "closingEs": "¡Muy bien! La lengua entre los dientes ya sabe el camino. Si te sale «s» o «t», vuelve a la ficha de /θ/.",
+      "classFocusEn": "Practice /θ/ in everyday words (think, three, thank, Thursday, birthday, math). If the student says /t/, /s/ or /f/, model the word with the tongue between the teeth."
+    }
+  ]
+}

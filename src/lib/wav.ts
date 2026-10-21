@@ -41,19 +41,39 @@ function toBase64(bytes: Uint8Array): string {
   return btoa(s)
 }
 
-/** Convierte una grabación (WebM/Opus u otra que el navegador sepa leer) a WAV 16 kHz mono, hasta 60 s. */
-export async function toWav16k(blob: Blob): Promise<Wav> {
+/**
+ * 5.11 (S-06, DISENO §6.2): silencio delante y detrás de las palabras sueltas de Sonidos (muy cortas: Azure corta el
+ * principio o el final si la voz empieza justo al grabar). La clase no lo usa: allí el audio queda como en la 5.10.1.
+ */
+export const WORD_PAD_MS = 300
+
+/** Silencio de `padMs` delante y detrás de las muestras (las del medio, sin tocar). */
+export function padSamples(samples: Float32Array, rate: number, padMs: number): Float32Array {
+  const pad = Math.max(0, Math.round((padMs / 1000) * rate))
+  if (!pad) return samples
+  const out = new Float32Array(samples.length + pad * 2)
+  out.set(samples, pad)
+  return out
+}
+
+/**
+ * Convierte una grabación (WebM/Opus u otra que el navegador sepa leer) a WAV 16 kHz mono, hasta 60 s.
+ * 5.11 (S-06): con `padMs`, añade ese silencio delante y detrás (cuenta en `seconds`, que es lo que factura Azure).
+ */
+export async function toWav16k(blob: Blob, opts: { padMs?: number } = {}): Promise<Wav> {
   const ctx = new AudioContext()
   try {
     const decoded = await ctx.decodeAudioData(await blob.arrayBuffer())
-    const seconds = Math.min(decoded.duration, MAX_SECONDS)
+    const padS = Math.max(0, opts.padMs ?? 0) / 1000
+    const seconds = Math.min(decoded.duration, MAX_SECONDS - padS * 2)
     const off = new OfflineAudioContext(1, Math.max(1, Math.ceil(seconds * AZURE_RATE)), AZURE_RATE)
     const src = off.createBufferSource()
     src.buffer = decoded
     src.connect(off.destination) // varios canales → mono al mezclar en 1 canal
     src.start()
     const rendered = await off.startRendering()
-    return { base64: toBase64(encodeWav(rendered.getChannelData(0), AZURE_RATE)), seconds }
+    const samples = padSamples(rendered.getChannelData(0), AZURE_RATE, opts.padMs ?? 0)
+    return { base64: toBase64(encodeWav(samples, AZURE_RATE)), seconds: seconds + padS * 2 }
   } finally {
     ctx.close().catch(() => {})
   }

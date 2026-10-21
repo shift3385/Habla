@@ -1,0 +1,15 @@
+R · ronda 2 de D4 · medidas en el navegador (r11.localhost:5173, tema Marea claro, letra Normal, 8 fichas reales de D3)
+px reales = getBoundingClientRect con el zoom de viewport.ts aplicado
+
+360x780 (zoom 0,923): compacto · consonante min 75,2 x 36,9 · vocal min 74,7 x 44,3 · Inicio 0 · horiz 0
+390x844 (zoom 1):     completa · consonante min 39 x 40   · vocal min 81 x 46     · horiz 0
+780x360 (zoom 1):     completa · consonante min 41,6 x 40 · vocal min 68,3 x 46   · Inicio 204 (horizontal: ya desplazaba en la 5.10.1) · horiz 0
+320x640 (zoom 0,8):   compacto · consonante min 67,1 x 36 · vocal min 66,7 x 44   · Inicio 0 · horiz 0
+
+REV-11-D4-04 (Inicio con scroll en la pestaña Sonidos):
+390x844, pestaña Sonidos abierta mientras la tarjeta del plan dice «Creando tu plan…» (corta):
+  Inicio 844/844, panel de la tabla 370/270
+  la tarjeta pasa a «No he podido preparar…» (más alta) → Inicio 888/844 (44 px de scroll), panel sigue 370/270
+  tras un evento resize → Inicio 844/844, panel 370/198
+Misma secuencia en la pestaña Gramática → Inicio 844/844 siempre (su lista sí se reajusta).
+Antes, tras girar 360→390→780→320→390 con el mismo cambio de tarjeta: Inicio 939/844 (95 px).

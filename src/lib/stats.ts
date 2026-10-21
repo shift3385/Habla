@@ -7,11 +7,67 @@ export interface Dashboard {
   lastHomework: { text: string; date: number } | null
   history: Session[] // sesiones con métricas, de más antigua a más reciente (máx. 20)
   totalSessions: number
+  /** 5.11 (M-04): día de descanso (comodín) usado esta semana dentro de la racha, como `dayKey`. */
+  restDay?: string
+  /** 5.11 (M-04): ayer fue el día de descanso: la mascota lo cuenta («Ayer descansaste; tu racha sigue a salvo»). */
+  restedYesterday?: boolean
 }
 
-function dayKey(ts: number): string {
+export function dayKey(ts: number): string {
   const d = new Date(ts)
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
+
+/** Lunes de la semana natural (lunes–domingo) del día, como `dayKey`. */
+const weekKey = (d: Date) => dayKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime())
+
+export interface StreakResult {
+  streak: number
+  /** Días de descanso (comodines) dentro de la racha, del más reciente al más antiguo. */
+  restDays: string[]
+}
+
+/**
+ * 5.11 (M-04, P-04 de A5): racha con comodín. Un día sin práctica por semana natural (lunes–domingo) no la rompe, pero
+ * ese día no suma. Dos días sin práctica en la misma semana, o dos seguidos (aunque caigan en semanas distintas), la
+ * rompen. Hoy sin practicar se trata como hasta ahora: la racha cuenta hasta ayer.
+ * Sin días de descanso da exactamente lo mismo que la 5.10.1 (test `m1-streak`).
+ */
+export function computeStreak(days: Set<string>, now: Date): StreakResult {
+  const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  if (!days.has(dayKey(cursor.getTime()))) cursor.setDate(cursor.getDate() - 1)
+  let streak = 0
+  const restDays: string[] = []
+  const restWeeks = new Set<string>()
+  for (;;) {
+    const k = dayKey(cursor.getTime())
+    if (days.has(k)) {
+      streak++
+    } else {
+      // Comodín: solo si la semana aún no lo usó y el día anterior sí practicaste (si no, son dos seguidos).
+      const before = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 1)
+      const week = weekKey(cursor)
+      if (restWeeks.has(week) || !days.has(dayKey(before.getTime()))) break
+      restWeeks.add(week)
+      restDays.push(k)
+    }
+    cursor.setDate(cursor.getDate() - 1)
+  }
+  return { streak, restDays }
+}
+
+/**
+ * 5.11 (M-04, REV-11-D1-03): de los comodines de la racha, el de ESTA semana (lunes–domingo) y si fue ayer (lo que cuenta
+ * la mascota). Puro, para probarlo sin Dexie.
+ */
+export function restInfo(restDays: string[], today: Date): { restDay?: string; restedYesterday: boolean } {
+  const thisWeek = weekKey(today)
+  const restDay = restDays.find((k) => {
+    const [y, m, d] = k.split('-').map(Number)
+    return weekKey(new Date(y, m - 1, d)) === thisWeek
+  })
+  const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+  return { ...(restDay ? { restDay } : {}), restedYesterday: restDays.includes(dayKey(yesterday.getTime())) }
 }
 
 // v5.9: lo que hablas FUERA de una clase (el repaso de frases) también cuenta para la meta diaria y la racha.
@@ -80,14 +136,9 @@ export async function loadDashboard(): Promise<Dashboard> {
   const secondsToday = (await classSecondsToday(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime())) + (practice[todayKey] ?? 0)
   if (secondsToday > 0) days.add(todayKey)
   const practicedToday = days.has(dayKey(today.getTime()))
-  // La racha cuenta hasta hoy, o hasta ayer si hoy aún no has practicado.
-  const cursor = new Date(today)
-  if (!practicedToday) cursor.setDate(cursor.getDate() - 1)
-  let streak = 0
-  while (days.has(dayKey(cursor.getTime()))) {
-    streak++
-    cursor.setDate(cursor.getDate() - 1)
-  }
+  // La racha cuenta hasta hoy, o hasta ayer si hoy aún no has practicado. 5.11 (M-04): con un comodín por semana.
+  const { streak, restDays } = computeStreak(days, today)
+  const { restDay, restedYesterday } = restInfo(restDays, today)
 
   const withHomework = [...done].reverse().find((s) => s.report?.homeworkEs)
   return {
@@ -97,6 +148,8 @@ export async function loadDashboard(): Promise<Dashboard> {
     lastHomework: withHomework ? { text: withHomework.report!.homeworkEs, date: withHomework.startedAt } : null,
     history: done.slice(-20),
     totalSessions: done.length,
+    restDay,
+    restedYesterday,
   }
 }
 

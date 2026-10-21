@@ -38,6 +38,26 @@ export function latestEntry(): Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.11',
+    date: '2026-10-21',
+    title: 'Sonidos del inglés y más ganas de practicar',
+    added: [
+      'Nueva pestaña «Sonidos»: los 40 sonidos del inglés americano en una tabla, cada uno con cómo se pone la boca, ejemplos, pares de palabras y el error típico de quien habla español. Muchos se oyen también sueltos',
+      'El abecedario en inglés y 12 lecciones cortas para oír, distinguir y decir los sonidos. Con «Dilo tú» te digo qué sonido te salió; sin Azure, «Escúchate» te deja comparar tu voz con el modelo',
+      'Debajo de tu nota de pronunciación, «Practicar el sonido» te lleva a su ficha',
+      'Tu mascota celebra tus logros: rachas, frases repasadas, tu primer tema dominado… Y en Progreso, «Tus logros»',
+      'Comodín de racha: un día de descanso a la semana no rompe tu racha',
+    ],
+    improved: [
+      'Tu informe te compara contigo: cada cifra con una flecha frente a tu media de las últimas clases',
+      'Tu profe varía: a veces, en vez de preguntarte, te propone un mini-reto',
+      'Repaso: de vez en cuando, «Escucha y repite»; y la opción «Que decida Habla» para pasar sola a la siguiente',
+      'Tu mascota dice las cosas de varias formas y retira los consejos que ya viste',
+      'Si no se puede preparar tu lección, tu mascota te propone charlar de uno de tus temas favoritos',
+      'Pronunciación: si Azure lo detecta, te digo qué sonido te salió («te salió /s/ en vez de /θ/»), con consejos pensados para Latinoamérica',
+    ],
+  },
+  {
     v: '5.10',
     date: '2026-10-18',
     title: 'Gramática: cada tema explicado por tu mascota, con ejercicios y para decirlo en voz alta',

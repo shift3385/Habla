@@ -1,0 +1,25 @@
+# Mutantes de D2 en copia (scratchpad/mut). N17 no aplicable (cadena de prueba). N06 y N23 rehechos abajo (el primer intento no aplicó / dejaba el texto en un comentario).
+N01 [src/lib/turnStyle.ts] muere · ℹ pass 4 ℹ fail 1  · restaurado=idéntico
+N02 [src/lib/turnStyle.ts] muere · ℹ pass 4 ℹ fail 1  · restaurado=idéntico
+N03 [src/lib/turnStyle.ts] muere · ℹ pass 4 ℹ fail 1  · restaurado=idéntico
+N04 [src/lib/turnStyle.ts] muere · ℹ pass 4 ℹ fail 1  · restaurado=idéntico
+N05 [src/lib/teacher.ts] muere · ℹ pass 4 ℹ fail 1  · restaurado=idéntico
+N07 [src/lib/fluency.ts] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N08 [src/lib/fluency.ts] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N09 [src/lib/fluency.ts] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N10 [src/lib/fluency.ts] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N11 [src/lib/fluency.ts] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N12 [src/lib/fluency.ts] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N13 [src/lib/milestones.ts] muere · ℹ pass 6 ℹ fail 1  · restaurado=idéntico
+N14 [src/lib/milestones.ts] muere · ℹ pass 6 ℹ fail 1  · restaurado=idéntico
+N15 [src/lib/milestones.ts] muere · ℹ pass 4 ℹ fail 3  · restaurado=idéntico
+N16 [src/lib/milestones.ts] muere · ℹ pass 6 ℹ fail 1  · restaurado=idéntico
+N18 [src/lib/milestones.ts] SOBREVIVE · ℹ pass 7 ℹ fail 0  · restaurado=idéntico
+N19 [src/lib/milestones.ts] SOBREVIVE · ℹ pass 7 ℹ fail 0  · restaurado=idéntico
+N20 [src/lib/srs.ts] muere · ℹ pass 3 ℹ fail 1  · restaurado=idéntico
+N21 [src/lib/srs.ts] muere · ℹ pass 3 ℹ fail 1  · restaurado=idéntico
+N22 [src/lib/srs.ts] muere · ℹ pass 3 ℹ fail 1  · restaurado=idéntico
+N24 [src/screens/ReviewScreen.tsx] SOBREVIVE · ℹ pass 4 ℹ fail 0  · restaurado=idéntico
+N25 [src/components/MilestoneGate.tsx] muere · ℹ pass 6 ℹ fail 1  · restaurado=idéntico
+N06 [src/screens/Conversation.tsx] SOBREVIVE · ℹ pass 5 ℹ fail 0  · restaurado=idéntico
+N23 [src/screens/ReviewScreen.tsx] muere · ℹ pass 3 ℹ fail 1  · restaurado=idéntico

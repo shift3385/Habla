@@ -1,0 +1,83 @@
+{
+  "_nota": "Ejemplo con el formato REST de la documentación de Microsoft (format=detailed, NBestPhonemeCount=5, IPA): «think» dicho como «sink». NO es una respuesta real de F0; las reales irán en azure-f0-*.json.",
+  "RecognitionStatus": "Success",
+  "Offset": 3000000,
+  "Duration": 6100000,
+  "DisplayText": "Think.",
+  "NBest": [
+    {
+      "Confidence": 0.82,
+      "Lexical": "think",
+      "ITN": "think",
+      "MaskedITN": "think",
+      "Display": "Think.",
+      "AccuracyScore": 52,
+      "FluencyScore": 100,
+      "CompletenessScore": 100,
+      "PronScore": 64,
+      "Words": [
+        {
+          "Word": "think",
+          "Offset": 3000000,
+          "Duration": 6100000,
+          "AccuracyScore": 52,
+          "ErrorType": "Mispronunciation",
+          "Phonemes": [
+            {
+              "Phoneme": "θ",
+              "Offset": 3000000,
+              "Duration": 1500000,
+              "AccuracyScore": 18,
+              "NBestPhonemes": [
+                { "Phoneme": "s", "Score": 86 },
+                { "Phoneme": "θ", "Score": 18 },
+                { "Phoneme": "f", "Score": 9 },
+                { "Phoneme": "t", "Score": 4 },
+                { "Phoneme": "ʃ", "Score": 1 }
+              ]
+            },
+            {
+              "Phoneme": "ɪ",
+              "Offset": 4600000,
+              "Duration": 1700000,
+              "AccuracyScore": 88,
+              "NBestPhonemes": [
+                { "Phoneme": "ɪ", "Score": 88 },
+                { "Phoneme": "i", "Score": 31 },
+                { "Phoneme": "ɛ", "Score": 12 },
+                { "Phoneme": "ə", "Score": 5 },
+                { "Phoneme": "eɪ", "Score": 2 }
+              ]
+            },
+            {
+              "Phoneme": "ŋ",
+              "Offset": 6400000,
+              "Duration": 1300000,
+              "AccuracyScore": 91,
+              "NBestPhonemes": [
+                { "Phoneme": "ŋ", "Score": 91 },
+                { "Phoneme": "n", "Score": 22 },
+                { "Phoneme": "m", "Score": 3 },
+                { "Phoneme": "ɡ", "Score": 2 },
+                { "Phoneme": "k", "Score": 1 }
+              ]
+            },
+            {
+              "Phoneme": "k",
+              "Offset": 7800000,
+              "Duration": 1300000,
+              "AccuracyScore": 95,
+              "NBestPhonemes": [
+                { "Phoneme": "k", "Score": 95 },
+                { "Phoneme": "ɡ", "Score": 8 },
+                { "Phoneme": "t", "Score": 4 },
+                { "Phoneme": "p", "Score": 1 },
+                { "Phoneme": "h", "Score": 1 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

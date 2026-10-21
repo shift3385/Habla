@@ -1,0 +1,10 @@
+N06b [src/screens/Conversation.tsx] muere · ℹ pass 5 ℹ fail 1  · restaurado=idéntico
+N18b [src/lib/milestones.ts] muere · ℹ pass 8 ℹ fail 1  · restaurado=idéntico
+N19b [src/lib/milestones.ts] muere · ℹ pass 8 ℹ fail 1  · restaurado=idéntico
+N24b no válido (cambió el comentario, no el código): rehecho como N24c
+N26 [src/lib/milestones.ts] SOBREVIVE (equivalente: con la marca la tabla ya no está vacía) · ℹ pass 9 ℹ fail 0  · restaurado=idéntico
+N27 [src/lib/milestones.ts] muere · ℹ pass 6 ℹ fail 3  · restaurado=idéntico
+P09b [src/lib/tts.ts] muere · ℹ pass 18 ℹ fail 1  · restaurado=idéntico
+P11 [src/components/SoundSay.tsx] muere · ℹ pass 18 ℹ fail 1  · restaurado=idéntico
+P12 [src/components/SoundSay.tsx] muere · ℹ pass 18 ℹ fail 1  · restaurado=idéntico
+N24c [src/lib/srs.ts] muere · ℹ pass 3 ℹ fail 1  · restaurado=idéntico

@@ -1,0 +1,45 @@
+
+> habla@0.0.0 lint
+> oxlint
+
+docs/auditoria/resultados/B8/arnes/nav8.js:3:25: warning eslint(no-eval): eval can be harmful. help: Avoid eval(). For JSON parsing use JSON.parse(); for dynamic property access use bracket notation (obj[key]); for other cases refactor to avoid evaluating strings as code.
+docs/correccion/arnes-movil/helpers.js:6:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-movil/helpers.js:9:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/auditoria/resultados/B6/arnes/b6nav.js:17:28: warning eslint(no-unused-vars): Parameter 'c' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+docs/auditoria/resultados/B6/arnes/b6nav.js:114:31: warning eslint(no-unused-vars): Parameter 'stack' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+docs/pruebas/regresion-5.10/arnes/helpers.js:6:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/pruebas/regresion-5.10/arnes/helpers.js:9:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/auditoria/resultados/B7/arnes/anim7.js:5:5: warning eslint(no-unused-vars): Variable 'n' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+docs/pruebas/regresion-5.10/arnes/f0-azure.js:110:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-rev/rev-mic.js:255:32: warning eslint(no-unused-vars): Parameter 'ctx' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+docs/pruebas/regresion-5.10/arnes/voz-spy.js:16:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-movil/test-hasta-habla.js:38:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-movil/test-final.js:28:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/pruebas/regresion-5.10/arnes/spy.js:10:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-movil/r9.js:5:7: warning eslint(no-unused-vars): Variable 'turns0' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+docs/pruebas/regresion-5.10/evidencia/R/final.js:16:28: warning eslint(no-eval): eval can be harmful. help: Avoid eval(). For JSON parsing use JSON.parse(); for dynamic property access use bracket notation (obj[key]); for other cases refactor to avoid evaluating strings as code.
+docs/pruebas/regresion-5.10/evidencia/R/final.js:71:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-movil/r13.js:15:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/auditoria/resultados/B4/arnes/net.js:47:22: warning eslint(no-unused-vars): Parameter 'body' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+docs/pruebas/regresion-5.10/evidencia/R/d2-nav.js:10:10: warning eslint(no-eval): eval can be harmful. help: Avoid eval(). For JSON parsing use JSON.parse(); for dynamic property access use bracket notation (obj[key]); for other cases refactor to avoid evaluating strings as code.
+docs/pruebas/regresion-5.10/evidencia/R/d2-nav.js:42:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/correccion/arnes-movil/mov4-exp.js:18:21: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/auditoria/resultados/B3/arnes/helpers.js:6:1: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/auditoria/resultados/B6/arnes/tel6.js:23:48: warning eslint(no-unused-vars): Parameter 'c' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+docs/pruebas/regresion-5.10/evidencia/A4/arnes-a4.js:86:83: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/pruebas/regresion-5.10/evidencia/A4/arnes-a4.js:86:178: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/v5.10/evidencia-510b/arnes-sinonimos-palabras.mjs:82:7: warning eslint(no-unused-vars): Variable 'heading' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+docs/v5.10/evidencia-510b/arnes-sinonimos-red.js:36:73: warning eslint(no-unused-expressions): Expected expression to be used help: Consider using this expression or removing it
+docs/v5.10/evidencia-510b/arnes-sinonimos-clase.mjs:80:7: warning eslint(no-unused-vars): Variable 'noHScroll' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+docs/v5.10/evidencia-510b/arnes-sinonimos-clase.mjs:82:7: warning eslint(no-unused-vars): Variable 'heading' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+docs/v5.10/evidencia-510b/arnes-sinonimos-clase.mjs:112:16: warning eslint(no-unused-vars): Function 'openWords' is declared but never used. help: Consider removing this declaration.
+docs/v5.10/evidencia-510b/arnes-sinonimos-clase.mjs:124:16: warning eslint(no-unused-vars): Function 'ask' is declared but never used. help: Consider removing this declaration.
+src/components/PhoneticsAlert.tsx:8:15: warning react(purity): Cannot call impure function during render help: `Date` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component re-renders
+docs/auditoria/resultados/B7/arnes/tiempos7.js:3:56: warning eslint(no-unused-vars): Variable 'v' is assigned a value but never used. Unused variables should start with a '_'. help: Did you mean to use this variable?
+src/screens/Conversation.tsx:270:29: warning react-hooks(exhaustive-deps): React Hook useCallback has missing dependencies: 'startPronunciation', and 'persist' help: Either include it or remove the dependency array.
+src/screens/SettingsScreen.tsx:168:49: warning react(purity): Cannot call impure function during render help: `Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component re-renders
+src/screens/Calibration.tsx:337:24: warning react(immutability): Cannot access variable while it is being initialized help: `resumable` is read while its declaration is still being initialized. Move the access after initialization. For a recursive callback, use a named function expression or restructure the callback so it does not capture itself during initialization
+src/screens/Calibration.tsx:337:41: warning react(immutability): Cannot access variable while it is being initialized help: `restore` is read while its declaration is still being initialized. Move the access after initialization. For a recursive callback, use a named function expression or restructure the callback so it does not capture itself during initialization
+src/screens/Calibration.tsx:335:14: warning react(immutability): Cannot access variable while it is being initialized help: `runEval` is read while its declaration is still being initialized. Move the access after initialization. For a recursive callback, use a named function expression or restructure the callback so it does not capture itself during initialization
+src/screens/Calibration.tsx:343:7: warning react-hooks(exhaustive-deps): The ref's value `.current` is accessed directly in the effect cleanup function. help: The ref value will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by react, copy it to a variable inside the effect and use that variable in the cleanup function.
+src/screens/Calibration.tsx:335:14: warning react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'runEval' help: Either include it or remove the dependency array.

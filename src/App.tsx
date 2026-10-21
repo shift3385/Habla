@@ -1,6 +1,6 @@
 import { App as CapApp } from '@capacitor/app'
 import { SystemBars, SystemBarsStyle } from '@capacitor/core'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { APP_VERSION } from './lib/changelog'
 import AboutScreen from './screens/AboutScreen'
 import Calibration from './screens/Calibration'
@@ -41,9 +41,14 @@ import { discardSavedClass, getSavedClass, type SavedClass } from './lib/savedCl
 import MascotPage from './components/MascotPage'
 import GrammarSheet from './components/GrammarSheet'
 import { onOpenGrammarTopic } from './lib/grammarLink'
+import MilestoneGate from './components/MilestoneGate'
+import { onOpenSound } from './lib/soundLink'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, THEME_INFO, themeVars } from './ui/theme'
 import { applyFontScale } from './lib/fontScale'
+
+// 5.11 (Sonidos): la hoja de Sonidos se carga la primera vez que se abre (no pesa en el arranque).
+const SoundSheet = lazy(() => import('./components/SoundSheet'))
 
 type Tab = 'home' | 'words' | 'progress' | 'settings'
 
@@ -86,6 +91,9 @@ export default function App() {
   const [gramSheet, setGramSheet] = useState<string | null>(null)
   const sheetBack = useRef<(() => void) | null>(null)
   useEffect(() => onOpenGrammarTopic(setGramSheet), [])
+  // 5.11 (S-11, I-3): hoja de Sonidos encima de todo («🔊 Practicar el sonido /θ/ en Sonidos» de la nota de pronunciación).
+  const [soundSheet, setSoundSheet] = useState<string | null>(null)
+  useEffect(() => onOpenSound(setSoundSheet), [])
   const registerSheetBack = useCallback((h: (() => void) | null) => {
     sheetBack.current = h
   }, [])
@@ -333,6 +341,19 @@ export default function App() {
           onClose={() => setGramSheet(null)}
           registerBack={registerSheetBack}
         />
+      )}
+      {soundSheet && (
+        <Suspense fallback={null}>
+          <SoundSheet
+            key={soundSheet}
+            soundId={soundSheet}
+            settings={settings}
+            t={t}
+            update={update}
+            onClose={() => setSoundSheet(null)}
+            registerBack={registerSheetBack}
+          />
+        </Suspense>
       )}
       {phonAlert && settings.onboarded && (
         <PhoneticsAlert
@@ -717,6 +738,8 @@ export default function App() {
         )}
       </div>
       {dialogs}
+      {/* 5.11 (M-03, I-1): al volver al Inicio, la mascota celebra un hito nuevo (uno por vez; sin hitos no pinta nada). */}
+      {tab === 'home' && !about && !planOpen && <MilestoneGate settings={settings} onDone={() => {}} />}
       <TabBar
         tab={tab}
         onChange={(k) => {

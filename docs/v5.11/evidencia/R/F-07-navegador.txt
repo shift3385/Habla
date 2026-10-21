@@ -1,0 +1,32 @@
+R · regresión final 5.11 · navegador (2026-10-21)
+Orígenes aislados: r11.localhost:5173 (habla-dev), r11b.localhost:4180 y mig.localhost:4181 (vite preview del build
+congelado del scratchpad; el árbol se recargaba por los cambios del orquestador y de D4). Gemini/Azure falsos (r11-nav.js):
+0 peticiones reales en todo momento.
+
+Inicio, 4 pestañas (scroll vertical en px CSS; 0 = sin scroll), plan con lección:
+ Normal (--fs 1):
+  390x844  Temas 0 · Prácticas 0 · Gramática 0 · Sonidos 0
+  320x640  (zoom 0,8) 0 · 0 · 0 · 0
+  360x780  (zoom 0,923) 0 · 0 · 0 · 0
+  780x360  213 · 309 · 269 · 269 (horizontal: el Inicio ya desplazaba en la 5.10.1)
+  806x387  186 · 282 · 242 · 242
+ Muy grande (fontScale 1,3; Lumi oscuro):
+  390x844  (--fs 1.3) 0 · 0 · 0 · 0     ← en la 5.10.1 había 26 px en Prácticas (REV-F-01)
+  320x640  (--fs 1.15) 0 · 0 · 0 · 0    ← en la 5.10.1, 227/323/283 (REV-F-02)
+  360x780  (--fs 1.3) 0 · 0 · 0 · 0
+  780x360  (--fs 1.15) 223 · 319 · 279 · 279
+  806x387  (--fs 1.15) 196 · 292 · 252 · 252
+ Segmentos cortados: 0 en todos. Scroll horizontal: 0 en todos.
+
+REV-11-D4-04 «Creando → lección» con Sonidos abierto (390x844): Inicio 844/844 antes y después.
+Repaso (320x640, «Que decida Habla» encendido, micro falso): 1.ª tarjeta → cuenta atrás «3 Paso a la siguiente…» y pasa
+sola; micro cerrado tras enviar (0 pistas vivas); 2.ª tarjeta: un toque cancela y se queda; 4.ª tarjeta en «Escucha y
+repite» (data-review-mode=listen, inglés oculto, «Significa: …»).
+Sonidos: 44/44 fichas abren en la hoja sin error; las 12 lecciones de principio a fin (15–44 pasos cada una; «Dilo tú»
+saltado: sin micro) → «12 de 12 lecciones», 12 lecciones completadas y 10 sonidos «practicado» en Dexie; 41 celdas.
+Abecedario: 26 letras, 7 familias, G «yi» con su trampa, 3 lecciones del abecedario enlazadas.
+Acerca de → Créditos → Audios de los sonidos: 24 audios con autor y licencia, 48 enlaces (Commons y licencia).
+Migración: base v4 de la 5.10.1 (build 307ecd7, perfil A2 «Madre», 5 clases, 1 error, 1 tema de Gramática dominado) →
+build 5.11 en el mismo origen: Dexie 40 → 50, las 7 tablas con sus filas, `sounds` y `milestones` nuevas. Hitos de
+«quien actualiza»: class-5min y grammar-first guardados ya celebrados (+ `_since`): 0 celebraciones al entrar.
+Informe (A2): flechas «▲ +2 frente a tu media», sin «Hoy has sonado como» (A2) y sin «meta B2».

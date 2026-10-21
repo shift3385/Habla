@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Habla · medida de rendimiento</title>
+    <!--
+      Arnés de medida de rendimiento (docs/v5.11/rendimiento). NO es parte de la app ni del APK.
+      Carga la app de src/ igual que index.html, pero ANTES instala una red de IA falsa: ninguna petición a Gemini
+      ni a Azure sale a internet (responde en local), y la voz del sistema queda muda. Solo en http://perf.localhost.
+    -->
+    <script>
+      ;(() => {
+        if (location.hostname !== 'perf.localhost') throw new Error('perf.html: usa http://perf.localhost:5173')
+        const isAI = (u) => /generativelanguage|googleapis|microsoft\.com|cognitive|azure/.test(String(u))
+        const P = (window.__PERF = { net: [], blocked: 0 })
+        const of = window.fetch.bind(window)
+        window.fetch = async (u, o) => {
+          const url = typeof u === 'string' ? u : u && u.url
+          if (!isAI(url)) return of(u, o)
+          P.net.push(String(url).replace(/key=[^&]+/, 'key=***').slice(0, 90))
+          await new Promise((r) => setTimeout(r, 150))
+          if (/generativelanguage/.test(url)) {
+            const text = JSON.stringify({
+              heard_speech: true, transcript: 'I like pizza with cheese.', corrections: [], reply: 'Nice! What is your favorite pizza topping?',
+              reply_es: '¡Bien! ¿Cuál es tu ingrediente favorito?', title: 'Pizza around the world', title_es: 'Pizza por el mundo', summary: 'Pizza styles.',
+              question: 'Do you like pizza?', vocab: [{ en: 'cheese', es: 'queso' }], ideas: [], verdict: 'correct', feedback_es: '¡Muy bien dicho!',
+              weeks: Array.from({ length: 12 }, (_, i) => ({ title_es: `Semana ${i + 1}: hablar de tu día`, focus_en: 'daily routines', focus_es: 'rutinas', can_do_es: 'Podrás contar tu día.', theme_en: 'daily life' })),
+              lessons: Array.from({ length: 5 }, (_, i) => ({ title_es: `Pedir en una cafetería (${i + 1})`, kind: 'roleplay', situation_en: 'A café.', target_en: 'Can I have…', phrases: [{ en: 'Can I have a coffee?', es: '¿Me das un café?' }], mission_es: 'Pide un café.', opener_en: 'Hi! What can I get you?' })),
+            })
+            return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text }] }, finishReason: 'STOP' }], usageMetadata: { promptTokenCount: 1, candidatesTokenCount: 1 } }), { status: 200, headers: { 'content-type': 'application/json' } })
+          }
+          return new Response(JSON.stringify({ error: { code: 503, message: 'perf: simulado' } }), { status: 503, headers: { 'content-type': 'application/json' } })
+        }
+        const xo = XMLHttpRequest.prototype.open
+        XMLHttpRequest.prototype.open = function (m, u, ...r) {
+          if (isAI(u)) { P.blocked++; u = 'about:blank' }
+          return xo.call(this, m, u, ...r)
+        }
+        if (window.speechSynthesis) window.speechSynthesis.speak = () => {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

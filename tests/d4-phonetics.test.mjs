@@ -60,21 +60,25 @@ test('REG-A3-19: consejo en español por sonido típico del hispanohablante', ()
   // Casos que se deducen de la palabra.
   assert.match(P.soundTipEs('Spain', 's'), /no digas «es-»/)
   assert.match(P.soundTipEs('school', 's'), /no digas «es-»/)
-  assert.equal(P.soundTipEs('sun', 's'), undefined, '«s» sola: sin consejo de la «e»')
+  // 5.11 (M-12b): la /s/ ya tiene ficha (su propio consejo); lo que importa es que no salga el de la «e».
+  assert.doesNotMatch(P.soundTipEs('sun', 's') ?? '', /es-/, '«s» sola: sin consejo de la «e»')
   assert.match(P.soundTipEs('worked', 't'), /-ed/)
   assert.match(P.soundTipEs('played', 'd'), /-ed/)
-  assert.equal(P.soundTipEs('needed', 'd'), undefined, '-ded sí lleva sílaba')
+  // 5.11 (M-12b): la /d/ ya tiene ficha (su propio consejo); lo que importa es que no salga el de la -ed.
+  assert.doesNotMatch(P.soundTipEs('needed', 'd') ?? '', /-ed/, '-ded sí lleva sílaba')
   assert.match(P.soundTipEs('last', undefined, 'Omission'), /te la comiste/)
   assert.equal(P.soundTipEs('cat', undefined), undefined)
 })
 
 test('REG-A3-19: la frase del coach da el consejo en español (sin IPA si hay consejo) y no lo repite', () => {
-  const line = P.pronunciationLine(result([w('think', 40, 'Mispronunciation', [['θ', 20]]), w('three', 45, 'Mispronunciation', [['θ', 25]]), w('cat', 50, 'Mispronunciation', [['k', 30]])], 55))
+  const line = P.pronunciationLine(result([w('think', 40, 'Mispronunciation', [['θ', 20]]), w('three', 45, 'Mispronunciation', [['θ', 25]]), w('cat', 50, 'Mispronunciation', [['ʔ', 30]])], 55))
   assert.match(line, /^Vamos a pulir unos sonidos\./)
-  assert.match(line, /«think» \(lengua entre los dientes/)
+  // 5.11 (M-12): el consejo de /θ/ ya no habla de España.
+  assert.match(line, /«think» \(punta de la lengua entre los dientes/)
   assert.equal(line.match(/lengua entre los dientes/g).length, 1, 'el consejo repetido sale una vez')
   assert.match(line, /«three»/)
-  assert.match(line, /«cat» \(el sonido \/k\/\)/, 'sin consejo, el sonido como antes')
+  // 5.11 (M-12b): con las 41 fichas casi todo sonido tendrá consejo; un símbolo sin ficha (ʔ) sigue saliendo como antes.
+  assert.match(line, /«cat» \(el sonido \/ʔ\/\)/, 'sin consejo, el sonido como antes')
   assert.doesNotMatch(line, /\/θ\//)
   assert.equal(P.pronunciationLine(result([], 92)), '¡Muy buena pronunciación! No encontré palabras con problemas.')
   // Cada palabra floja lleva su consejo para el chip.

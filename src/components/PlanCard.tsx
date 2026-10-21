@@ -13,7 +13,11 @@ import {
   type StudyPlan,
 } from '../lib/plan'
 import { mainModels, type Settings } from '../lib/settings'
+import { planErrorMessage, pickOfTheDay } from '../lib/mascotTips'
+import { favoriteCategories } from '../lib/topics'
 import { Icon } from '../ui/icons'
+import Mascot from '../ui/Mascot'
+import { THEME_INFO } from '../ui/theme'
 
 interface Props {
   settings: Settings
@@ -24,6 +28,13 @@ interface Props {
   /** v5.10 (D3): la lección del día enlaza a su tema de Gramática (si lo nombra con claridad). */
   onOpenGrammar?: (topicId: string) => void
   onOpenPlan: () => void
+  /**
+   * 5.11 (M-08, integración I-4): si el plan falla, la mascota propone charlar de otro tema en un toque. Recibe el id
+   * de la categoría (uno de tus temas favoritos) o `undefined` para «Sorpréndeme». Opcional: sin él solo hay «Reintentar».
+   */
+  onAltTopic?: (categoryId?: string) => void
+  /** 5.11 (M-08): tus temas favoritos (ids de `TOPIC_CATEGORIES`) para elegir la alternativa. */
+  favorites?: string[]
 }
 
 // AUD-RES-703 (v5.8.2): el error se recuerda fuera del componente. Antes vivía en su estado y se perdía al cambiar de
@@ -41,8 +52,9 @@ let forgetTimer = 0
  * "Lección de hoy" en el Inicio (fase 4). Si aún no hay plan lo crea, y si la semana que toca no tiene
  * lecciones las prepara: todo automático, con un estado de carga y un botón de reintentar si falla.
  */
-export default function PlanCard({ settings, plan, calibrated, onPlanChange, onStartLesson, onOpenPlan, onOpenGrammar }: Props) {
+export default function PlanCard({ settings, plan, calibrated, onPlanChange, onStartLesson, onOpenPlan, onOpenGrammar, onAltTopic, favorites }: Props) {
   const [busy, setBusy] = useState<string | null>(null)
+  const [why, setWhy] = useState(false)
   const [failed, setFailed] = useState<Fail | null>(null)
   const sig = `${settings.geminiKey}|${settings.geminiModel}|${settings.geminiFallbackModel}`
   const today = plan ? todayLesson(plan) : null
@@ -117,17 +129,42 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
   }
 
   if (error) {
+    // 5.11 (M-08, P-08 de A5): el fallo lo cuenta la mascota, sin texto técnico en rojo, y propone charlar de uno de tus
+    // temas mientras tanto (un toque). El motivo sigue a mano en «¿Por qué?», en gris. La tarjeta crece como mucho una
+    // línea frente a la de la lección (Inicio sin scroll en 320×640 y en horizontal).
+    const alt = pickOfTheDay(favoriteCategories(favorites))
+    const retry = () => (op === 'create' ? create() : prepareWeek(today!.week.n))
     return shell(
       <>
-        <div className="text-sm" style={{ color: 'var(--bad)' }}>
-          {error}
+        <div className="flex items-start gap-2">
+          <span className="flex-none" aria-hidden>
+            <Mascot element={THEME_INFO[settings.theme].mascot} size={44} mood="thinking" interactive={false} />
+          </span>
+          <div className="tip-bubble relative min-w-0 flex-1 rounded-[16px] px-3 py-1.5 fs-13 leading-snug" role="status">
+            {planErrorMessage(op === 'create' ? 'create' : 'week', alt, !!onAltTopic)}{' '}
+            {/* REV-11-D1-04: zona de toque de 40 px de alto (A11 con la pantalla dañada) sin hacer crecer la línea: el
+                margen negativo compensa el alto de más. */}
+            <button
+              onClick={() => setWhy((w) => !w)}
+              className="txt-sub -my-3 inline-flex min-h-10 items-center px-1.5 align-middle fs-12 underline decoration-dotted underline-offset-2"
+              aria-expanded={why}
+            >
+              ¿Por qué?
+            </button>
+            {why && <span className="txt-sub mt-0.5 block fs-12">{error}</span>}
+          </div>
         </div>
-        <button
-          onClick={() => (op === 'create' ? create() : prepareWeek(today!.week.n))}
-          className="btn-acc mt-2.5 h-10 w-full rounded-[20px] text-sm"
-        >
-          Reintentar
-        </button>
+        <div className="mt-2 flex gap-2">
+          {onAltTopic && (
+            <button onClick={() => onAltTopic(alt?.id)} className="btn-acc flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-[18px] px-3 fs-13">
+              {alt ? <span aria-hidden>{alt.emoji}</span> : <Icon name="spark" size={14} stroke={1.8} />}
+              <span className="truncate">{alt ? alt.title : 'Sorpréndeme'}</span>
+            </button>
+          )}
+          <button onClick={retry} className={`h-9 rounded-[18px] px-3.5 fs-13 ${onAltTopic ? 'field flex-none' : 'btn-acc flex-1'}`}>
+            Reintentar
+          </button>
+        </div>
       </>,
     )
   }

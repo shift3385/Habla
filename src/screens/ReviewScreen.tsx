@@ -20,11 +20,14 @@ import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording } from '../lib/speech'
 import {
+  AUTO_GRADE_SECONDS,
+  autoGrade,
   evaluateDrill,
   archiveCard,
   GRADES,
   previewIntervals,
   reviewCard,
+  reviewMode,
   sessionQueue,
   suggestedGrade,
   syncCards,
@@ -93,6 +96,12 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   const pronTry = useRef(0)
   const recorder = useRef(new Recorder())
   const recStart = useRef(0)
+  // 5.11 (M-10): «Escucha y repite» (1 de cada 4): el texto en inglés queda oculto hasta que lo pidas o respondas.
+  const [showText, setShowText] = useState(false)
+  // 5.11 (M-10): «Que decida Habla»: segundos que quedan para pasar sola (null = sin cuenta atrás).
+  const [autoLeft, setAutoLeft] = useState<number | null>(null)
+  const cancelAuto = useRef<() => void>(() => {})
+  const gradeRef = useRef<(g: Grade) => void>(() => {})
 
   useEffect(() => {
     syncCards()
@@ -133,6 +142,44 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   // 5.10.1 (REG-M-01): con el repaso abierto (y la app en uso) la ruta de los auriculares se queda puesta; se suelta al
   // ver la evaluación final, al salir y en segundo plano. No abre el micro.
   useEffect(() => (ended ? undefined : holdRoute()), [ended])
+
+  // 5.11 (M-10): en «Escucha y repite» la frase suena sola al aparecer la tarjeta (y con ▶ las veces que quieras).
+  const listenCard = queue?.[i] && reviewMode(i, queue[i]) === 'listen' ? queue[i] : null
+  const helpPending = step === 'result' && !settings.reviewHelpSeen
+  useEffect(() => {
+    if (!listenCard || ended) return
+    const id = setTimeout(() => speak(listenCard.answerEn, settings.ttsRate, settings.voiceIndex).catch(() => {}), 450)
+    return () => clearTimeout(id)
+    // Solo al cambiar de tarjeta (no con cada ajuste de voz).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listenCard, ended])
+
+  // 5.11 (M-10): «Que decida Habla». Con veredicto, cuenta atrás de 3 s visible y se aplica la nota sugerida; un toque en
+  // cualquier sitio la cancela y eliges tú. Con «No lo sé» no pasa sola. En segundo plano se cancela (no corre a escondidas).
+  useEffect(() => {
+    if (step !== 'result' || ended) return
+    const g = autoGrade(result, settings.reviewAutoGrade, helpPending)
+    if (g === null) return
+    let left = AUTO_GRADE_SECONDS
+    setAutoLeft(left)
+    const stop = () => {
+      clearInterval(id)
+      offBg()
+      setAutoLeft(null)
+    }
+    const id = setInterval(() => {
+      left--
+      if (left > 0) return setAutoLeft(left)
+      stop()
+      gradeRef.current(g)
+    }, 1000)
+    const offBg = whenBackground(stop)
+    cancelAuto.current = stop
+    return () => {
+      clearInterval(id)
+      offBg()
+    }
+  }, [step, result, ended, helpPending, settings.reviewAutoGrade])
 
   // v5.10 (punto 5): el micro es el mismo TalkButton de la clase (toca para hablar / toca para enviar, anillo de 60 s,
   // barras con la voz real, papelera). El envío automático a los 60 s lo hace el propio TalkButton con `elapsed`.
@@ -338,8 +385,10 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }
 
   const grade = async (g: Grade) => {
+    cancelAuto.current()
     pronTry.current++
     setPron(null)
+    setShowText(false)
     await reviewCard(card, g)
     record()
     // "Otra vez": vuelve al final de esta misma sesión.
@@ -352,9 +401,14 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }
 
   /** «Ya me la sé»: sale del repaso (se recupera en Palabras → Ya las sé) y se pasa a la siguiente. */
+  // La cuenta atrás (efecto de arriba) llama a la versión de este pintado.
+  gradeRef.current = grade
+
   const known = async () => {
+    cancelAuto.current()
     pronTry.current++
     setPron(null)
+    setShowText(false)
     await archiveCard(card)
     record()
     setResult(null)
@@ -365,6 +419,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }
 
   const v = result ? VERDICT[result === 'unknown' ? 'unknown' : result.verdict] : null
+  const listen = reviewMode(i, card) === 'listen'
 
   // La primera vez que toca elegir, la mascota explica qué significa (antes había que intuirlo).
   if (step === 'result' && !settings.reviewHelpSeen) {
@@ -381,7 +436,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }
 
   return (
-    <div className={pad}>
+    <div className={pad} onPointerDownCapture={() => autoLeft !== null && cancelAuto.current()}>
       <div className="flex items-center gap-3">
         <button onClick={leave} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Salir del repaso">
           <Icon name="back" size={20} stroke={1.8} />
@@ -413,9 +468,31 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
       <div key={i} className="anim-in no-scrollbar mt-5 flex min-h-0 flex-1 flex-col overflow-y-auto">
         <div className="txt-acc2 text-xs tracking-[1.2px] uppercase">
           {/* v5.10: en las de Gramática se ve el ejercicio en inglés (hueco o palabras) y se dice la frase entera. */}
-          {card.source === 'grammar' ? 'Di la frase completa en inglés' : '¿Cómo se dice en inglés?'}
+          {listen ? 'Escucha y repite' : card.source === 'grammar' ? 'Di la frase completa en inglés' : '¿Cómo se dice en inglés?'}
         </div>
-        <div className="glass mt-2 rounded-[26px] p-5 fs-21 leading-snug font-medium">{card.promptEs}</div>
+        {listen ? (
+          // 5.11 (M-10): suena el inglés y lo repites; debajo, lo que significa. El texto en inglés, solo si lo pides.
+          <div className="glass mt-2 flex flex-col gap-2.5 rounded-[26px] p-5" data-review-mode="listen">
+            <button
+              onClick={() => toggleSpeak(card.answerEn, settings.ttsRate, settings.voiceIndex)}
+              className="flex items-center gap-3 text-left"
+              aria-label="Escuchar la frase otra vez"
+            >
+              <span className="btn-acc grid h-12 w-12 flex-none place-items-center rounded-full">
+                <SpeakIcon speakKey={card.answerEn} size={20} />
+              </span>
+              <span className="fs-17 leading-snug font-semibold">{showText || step === 'result' ? card.answerEn : 'Escúchala y repítela en voz alta'}</span>
+            </button>
+            <div className="txt-sub fs-14 leading-snug">Significa: {card.promptEs}</div>
+            {!showText && step !== 'result' && (
+              <button onClick={() => setShowText(true)} className="txt-sub self-start fs-13 underline underline-offset-[3px]">
+                Ver la frase en inglés
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="glass mt-2 rounded-[26px] p-5 fs-21 leading-snug font-medium">{card.promptEs}</div>
+        )}
         {card.hintEs && step !== 'result' && (
           <button onClick={() => setShowHint((s) => !s)} className="txt-sub mt-2 flex items-center gap-1.5 self-start fs-13">
             <Icon name="bulb" size={14} color="var(--acc)" />
@@ -468,9 +545,23 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
                 </button>
               ))}
             </div>
-            <div className="txt-sub mt-1.5 text-center fs-12 leading-snug">
-              {suggested !== null ? 'Te marco una según cómo te salió, pero eliges tú. ' : ''}Elige una para pasar a la siguiente.
-            </div>
+            {autoLeft !== null ? (
+              // 5.11 (M-10): cuenta atrás visible; cualquier toque la cancela (onPointerDownCapture de arriba).
+              <button
+                onClick={() => cancelAuto.current()}
+                className="field mt-1.5 flex h-10 w-full items-center justify-center gap-2 rounded-[20px] fs-13.5 font-medium"
+                style={{ border: 0 }}
+                data-autograde={autoLeft}
+                aria-live="polite"
+              >
+                <span className="btn-acc grid h-6 w-6 place-items-center rounded-full fs-13 tabular-nums">{autoLeft}</span>
+                Paso a la siguiente con la marcada · toca para elegir tú
+              </button>
+            ) : (
+              <div className="txt-sub mt-1.5 text-center fs-12 leading-snug">
+                {suggested !== null ? 'Te marco una según cómo te salió, pero eliges tú. ' : ''}Elige una para pasar a la siguiente.
+              </div>
+            )}
             <button onClick={known} className="txt-sub mt-2 h-10 w-full rounded-[20px] fs-13.5" style={{ border: '1.5px dashed var(--sub)' }}>
               Ya me la sé: no volver a repasarla
             </button>

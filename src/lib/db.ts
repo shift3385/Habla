@@ -243,6 +243,51 @@ export interface GrammarProgress {
   masteredAt?: number
 }
 
+/** 5.11 (S-01): estado de un sonido en la tabla. Nuevo → visto → practicado → dominado (nunca baja). */
+export type SoundState = 'new' | 'seen' | 'practiced' | 'mastered'
+
+/** 5.11 (S-01): aciertos de un día (clave AAAA-MM-DD en `SoundProgress.listen` y `SoundProgress.azure`). */
+export interface SoundDayScore {
+  ok: number
+  total: number
+}
+
+/**
+ * 5.11 (S-01): progreso de «Sonidos» (tabla `sounds`). Dos clases de fila en la misma tabla:
+ * - un **sonido** (clave = id de la ficha de src/sounds/phonemes.json: `ih`, `th`, `s-cluster`…; `kind` ausente);
+ * - una **lección** de la ruta (clave = `lesson:<id>`, p. ej. `lesson:V1`; `kind: 'lesson'`).
+ * «Dominado» (sounds.ts, `masteryOf`): ≥ 85 % en «Escucha» y, con Azure, nota del sonido ≥ 80 en 4 de 5 palabras, en
+ * dos días distintos; sin Azure basta «Escucha» y se marca `earOnly` («solo de oído»).
+ */
+export interface SoundProgress {
+  id: string
+  kind?: 'lesson'
+  seenAt?: number // primera vez que abriste la ficha o la lección
+  lastAt: number // último uso
+  state: SoundState
+  /** Rondas de «Escucha» por día: aciertos / total. */
+  listen?: Record<string, SoundDayScore>
+  /** Palabras dichas con Azure por día: con nota del sonido ≥ 80 / evaluadas. */
+  azure?: Record<string, SoundDayScore>
+  bestScore?: number // mejor nota de Azure del sonido (0–100)
+  days?: string[] // días (AAAA-MM-DD) en que lo practicaste, sin repetir, en orden
+  mastered: boolean
+  masteredAt?: number
+  earOnly?: boolean // dominado sin Azure: «solo de oído»
+  completedAt?: number // lecciones: primera vez que llegaste al cierre
+  seconds?: number // lecciones: tiempo acumulado (también suma a la meta del día, addPracticeSeconds)
+}
+
+/**
+ * 5.11 (S-01, para M-03): un hito conseguido (tabla `milestones`, clave = id del hito de milestones.ts). Se guarda una
+ * sola vez: así un hito no se celebra dos veces, ni tras recargar ni tras restaurar una copia.
+ */
+export interface Milestone {
+  id: string
+  at: number // cuándo se consiguió
+  celebratedAt?: number // cuándo lo celebró la mascota (si ya lo hizo)
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
@@ -251,6 +296,8 @@ export const db = new Dexie('habla') as Dexie & {
   lookups: EntityTable<Lookup, 'id'>
   cards: EntityTable<SrsCard, 'id'>
   grammar: EntityTable<GrammarProgress, 'id'>
+  sounds: EntityTable<SoundProgress, 'id'>
+  milestones: EntityTable<Milestone, 'id'>
 }
 
 db.version(1).stores({
@@ -275,4 +322,10 @@ db.version(4).stores({
   grammar: 'id, lastAt',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar'] as const
+// 5.11 (S-01): progreso de Sonidos y hitos conseguidos. Igual que la v4, solo añade tablas: nada de lo anterior cambia.
+db.version(5).stores({
+  sounds: 'id, lastAt',
+  milestones: 'id, at',
+})
+
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones'] as const

@@ -1,0 +1,2117 @@
+{
+  "phonemes": [
+    {
+      "id": "iy",
+      "ipa": "iː",
+      "azure": ["i"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 1, "col": 1 },
+      "keyword": "sheep",
+      "nameEs": "i larga",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "spread",
+        "jaw": "close",
+        "place": "front",
+        "lipsEs": "Labios estirados, como si sonrieras.",
+        "tongueEs": "La lengua alta y adelante, tensa.",
+        "voiceEs": "Larga: estírala un poquito."
+      },
+      "tipShortEs": "«i» larga y tensa, con sonrisa: sheep, no ship",
+      "explanationEs": [
+        "Es una «i» larga y tensa. Estira los labios como si sonrieras y deja la lengua alta y adelante. Dura un poquito más que la «i» del español: «shiiip».",
+        "Si la acortas y la aflojas, el americano oye otra palabra: sheep (oveja) se vuelve ship (barco)."
+      ],
+      "spanishEs": "Se parece a la «i» de «sí», pero más larga y con más tensión.",
+      "mistakeEs": "Usarla también donde va la «i» corta: dices sheep cuando querías decir ship.",
+      "spellings": [
+        { "pattern": "ee", "examples": ["see", "green", "sheep"] },
+        { "pattern": "ea", "examples": ["tea", "team", "eat"] },
+        { "pattern": "e", "examples": ["me", "be", "she"] },
+        { "pattern": "e_e", "examples": ["these"] },
+        { "pattern": "ie", "examples": ["field", "piece"] },
+        { "pattern": "ey", "examples": ["key"] },
+        { "pattern": "i", "examples": ["pizza", "machine"] }
+      ],
+      "examples": {
+        "initial": ["eat", "easy", "each"],
+        "medial": ["sheep", "team", "field", "people"],
+        "final": ["see", "tea", "key", "me"]
+      },
+      "minimalPairs": [
+        { "with": "ih", "pairs": [["sheep", "ship"], ["seat", "sit"], ["feel", "fill"], ["heat", "hit"], ["beat", "bit"], ["cheap", "chip"], ["eat", "it"], ["green", "grin"]] }
+      ],
+      "sentences": [
+        { "en": "We need three sheep.", "es": "Necesitamos tres ovejas." },
+        { "en": "See you next week.", "es": "Nos vemos la próxima semana." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ih", "ey"],
+      "audio": "iy"
+    },
+    {
+      "id": "ih",
+      "ipa": "ɪ",
+      "azure": ["ɪ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 1, "col": 2 },
+      "keyword": "ship",
+      "nameEs": "i corta",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "close",
+        "place": "front",
+        "lipsEs": "Labios relajados, sin sonreír.",
+        "tongueEs": "La lengua un poco más baja y más atrás que para la «i».",
+        "voiceEs": "Corta: no la estires."
+      },
+      "tipShortEs": "«i» corta y relajada, casi «e»: ship, no sheep",
+      "explanationEs": [
+        "Es una «i» floja y corta. Prepara la boca para decir «i» y relaja todo: los labios, la lengua y la mandíbula. Te sale un sonido entre «i» y «e».",
+        "Si la dices larga y tensa, como en español, el americano oye otra palabra: ship (barco) se vuelve sheep (oveja)."
+      ],
+      "spanishEs": "No existe en español. Truco: di una «e» con la boca casi de «i».",
+      "mistakeEs": "Decir la «i» española, larga y tensa: ship suena sheep y this suena «thiis».",
+      "spellings": [
+        { "pattern": "i", "examples": ["sit", "big", "this"] },
+        { "pattern": "y", "examples": ["gym", "system"] },
+        { "pattern": "u", "examples": ["busy"] },
+        { "pattern": "o", "examples": ["women"] },
+        { "pattern": "ui", "examples": ["build"] },
+        { "pattern": "e", "examples": ["pretty", "English"] }
+      ],
+      "examples": {
+        "initial": ["it", "is", "in", "if"],
+        "medial": ["sit", "big", "busy", "women"],
+        "final": []
+      },
+      "positionNoteEs": "No va al final de palabra: en happy o city, la última vocal es una «i» más tensa.",
+      "minimalPairs": [
+        { "with": "iy", "pairs": [["ship", "sheep"], ["sit", "seat"], ["fill", "feel"], ["hit", "heat"], ["bit", "beat"], ["chip", "cheap"], ["it", "eat"], ["grin", "green"]] },
+        { "with": "eh", "pairs": [["pin", "pen"], ["sit", "set"], ["bit", "bet"], ["will", "well"], ["did", "dead"], ["lift", "left"]] }
+      ],
+      "sentences": [
+        { "en": "This is a big ship.", "es": "Este es un barco grande." },
+        { "en": "Is it in the kitchen?", "es": "¿Está en la cocina?" }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["iy", "eh", "ax"],
+      "audio": "ih"
+    },
+    {
+      "id": "eh",
+      "ipa": "ɛ",
+      "azure": ["ɛ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 2, "col": 1 },
+      "keyword": "bed",
+      "nameEs": "e abierta",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "front",
+        "lipsEs": "Labios relajados.",
+        "tongueEs": "La lengua adelante, a media altura, como para la «e».",
+        "voiceEs": "Corta."
+      },
+      "tipShortEs": "como la «e» española, con la boca un poco más abierta: bed",
+      "explanationEs": [
+        "Es casi la «e» del español. Abre la boca un poquito más de lo normal y relaja los labios.",
+        "Ojo con dos cambios: no la uses donde va la /æ/ de cat (man no es men), ni donde va «ei» (late no es let)."
+      ],
+      "spanishEs": "Es la «e» de «pez». Casi igual.",
+      "mistakeEs": "Usarla en lugar de /æ/ (man suena men) o en lugar de «ei» (late suena let).",
+      "spellings": [
+        { "pattern": "e", "examples": ["bed", "red", "ten"] },
+        { "pattern": "ea", "examples": ["head", "bread"] },
+        { "pattern": "ai", "examples": ["said", "again"] },
+        { "pattern": "ie", "examples": ["friend"] },
+        { "pattern": "a", "examples": ["any", "many"] }
+      ],
+      "examples": {
+        "initial": ["egg", "end", "every", "any"],
+        "medial": ["bed", "head", "said", "friend"],
+        "final": []
+      },
+      "positionNoteEs": "No va al final de palabra en inglés.",
+      "minimalPairs": [
+        { "with": "ih", "pairs": [["pen", "pin"], ["set", "sit"], ["bet", "bit"], ["well", "will"], ["left", "lift"], ["dead", "did"]] },
+        { "with": "ae", "pairs": [["bed", "bad"], ["pen", "pan"], ["men", "man"], ["set", "sat"], ["said", "sad"], ["head", "had"]] },
+        { "with": "ey", "pairs": [["wet", "wait"], ["sell", "sale"], ["let", "late"], ["get", "gate"], ["pepper", "paper"], ["test", "taste"]] }
+      ],
+      "sentences": [
+        { "en": "My friend said yes.", "es": "Mi amigo dijo que sí." },
+        { "en": "Every egg is red.", "es": "Todos los huevos son rojos." }
+      ],
+      "ukNoteEs": "En británico es un poco más cerrada.",
+      "related": ["ih", "ae", "ey"],
+      "audio": "eh"
+    },
+    {
+      "id": "ae",
+      "ipa": "æ",
+      "azure": ["æ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 3, "col": 1 },
+      "keyword": "cat",
+      "nameEs": "a con boca de e",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "spread",
+        "jaw": "open",
+        "place": "front",
+        "lipsEs": "Labios un poco estirados.",
+        "tongueEs": "La lengua abajo y adelante, como para la «e».",
+        "voiceEs": "Corta, con la boca muy abierta."
+      },
+      "tipShortEs": "boca muy abierta, entre «a» y «e»: cat, no cut",
+      "explanationEs": [
+        "Abre bien la boca, baja la mandíbula y deja la lengua abajo y adelante, como para decir «e». Te sale un sonido entre «a» y «e».",
+        "Es la vocal de cat, man y black. Si la cambias por la «a» española, cat suena como cut o como cot."
+      ],
+      "spanishEs": "No existe en español. Truco: di «e» y abre la boca hasta que salga casi «a».",
+      "mistakeEs": "Usar la misma «a» española para cat, cut y cot: las tres palabras suenan igual.",
+      "spellings": [
+        { "pattern": "a", "examples": ["cat", "man", "black"] },
+        { "pattern": "au", "examples": ["laugh"] }
+      ],
+      "examples": {
+        "initial": ["apple", "after", "ask", "and"],
+        "medial": ["cat", "bag", "man", "black"],
+        "final": []
+      },
+      "positionNoteEs": "No va al final de palabra en inglés.",
+      "minimalPairs": [
+        { "with": "ah", "pairs": [["cat", "cut"], ["cap", "cup"], ["bag", "bug"], ["ban", "bun"], ["match", "much"], ["bat", "but"], ["hat", "hut"]] },
+        { "with": "aa", "pairs": [["hat", "hot"], ["cap", "cop"], ["black", "block"], ["sack", "sock"], ["tap", "top"], ["map", "mop"]] },
+        { "with": "eh", "pairs": [["bad", "bed"], ["man", "men"], ["pan", "pen"], ["sad", "said"], ["had", "head"]] }
+      ],
+      "sentences": [
+        { "en": "My dad has a black bag.", "es": "Mi papá tiene una bolsa negra." },
+        { "en": "That cat is happy.", "es": "Ese gato está feliz." }
+      ],
+      "ukNoteEs": "En británico, ask, after, class y dance llevan una «a» larga /ɑː/; en americano, esta /æ/.",
+      "related": ["ah", "aa", "eh"]
+    },
+    {
+      "id": "aa",
+      "ipa": "ɑ",
+      "azure": ["ɑ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 3, "col": 3 },
+      "keyword": "hot",
+      "nameEs": "a abierta (la o que suena a)",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "open",
+        "place": "back",
+        "lipsEs": "Labios relajados, sin redondear.",
+        "tongueEs": "La lengua abajo y atrás.",
+        "voiceEs": "Abierta, como cuando el médico te pide decir «aaa»."
+      },
+      "tipShortEs": "«a» muy abierta y desde atrás, aunque se escriba o: hot",
+      "explanationEs": [
+        "Abre mucho la boca, relaja los labios y lleva la lengua abajo y atrás, como cuando el médico te pide decir «aaa».",
+        "La trampa es la letra: en hot, stop y box se escribe o, pero en americano suena «a»."
+      ],
+      "spanishEs": "Parecida a la «a» de «casa», pero más abierta y más atrás.",
+      "mistakeEs": "Leer la o como una «o» española: hot y stop suenan raros al oído americano.",
+      "spellings": [
+        { "pattern": "o", "examples": ["hot", "stop", "box"] },
+        { "pattern": "a", "examples": ["father", "watch", "want"] }
+      ],
+      "examples": {
+        "initial": ["odd", "on", "October", "honest"],
+        "medial": ["hot", "stop", "box", "father"],
+        "final": ["spa", "ma"]
+      },
+      "minimalPairs": [
+        { "with": "ae", "pairs": [["hot", "hat"], ["cop", "cap"], ["block", "black"], ["sock", "sack"], ["top", "tap"]] },
+        { "with": "ah", "pairs": [["cot", "cut"], ["shot", "shut"], ["not", "nut"], ["lock", "luck"], ["dock", "duck"]] },
+        { "with": "ow", "pairs": [["want", "won't"], ["cost", "coast"], ["not", "note"], ["rod", "road"], ["hop", "hope"]] }
+      ],
+      "sentences": [
+        { "en": "Stop! The pot is hot.", "es": "¡Para! La olla está caliente." },
+        { "en": "My father got a job in October.", "es": "Mi papá consiguió trabajo en octubre." }
+      ],
+      "ukNoteEs": "En británico, hot, stop y box llevan una «o» corta y redonda /ɒ/. Por eso en Sonidos la voz es siempre la americana.",
+      "related": ["ae", "ah", "ao", "ow"]
+    },
+    {
+      "id": "ao",
+      "ipa": "ɔ",
+      "azure": ["ɔ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 2, "col": 4 },
+      "keyword": "law",
+      "nameEs": "o abierta",
+      "level": "A2",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "open",
+        "place": "back",
+        "lipsEs": "Labios un poco redondos.",
+        "tongueEs": "La lengua baja y atrás.",
+        "voiceEs": "Abierta y algo larga."
+      },
+      "tipShortEs": "«o» muy abierta, con los labios un poco redondos: law, no low",
+      "explanationEs": [
+        "Abre la boca y redondea un poco los labios, con la lengua baja y atrás. Es una «o» muy abierta.",
+        "Muchos americanos ya la dicen igual que la «a» de hot. Lo importante es no cambiarla por «ou»: walk no es woke."
+      ],
+      "spanishEs": "Una «o» más abierta que la del español.",
+      "mistakeEs": "Decir «ou» o una «o» cerrada: walk suena casi woke y law suena low.",
+      "spellings": [
+        { "pattern": "aw", "examples": ["law", "saw"] },
+        { "pattern": "au", "examples": ["caught", "August"] },
+        { "pattern": "al", "examples": ["talk", "walk"] },
+        { "pattern": "ough", "examples": ["thought", "bought"] }
+      ],
+      "examples": {
+        "initial": ["all", "always", "often", "author"],
+        "medial": ["thought", "caught", "talk", "walk"],
+        "final": ["law", "saw", "draw", "straw"]
+      },
+      "minimalPairs": [
+        { "with": "ow", "pairs": [["law", "low"], ["saw", "so"], ["bought", "boat"], ["caught", "coat"], ["called", "cold"], ["walk", "woke"], ["ball", "bowl"]] },
+        { "with": "er", "pairs": [["walk", "work"], ["hall", "hurl"], ["caught", "curt"]] }
+      ],
+      "sentences": [
+        { "en": "I saw a small ball in the hall.", "es": "Vi una pelota pequeña en el pasillo." }
+      ],
+      "ukNoteEs": "En británico es más cerrada y larga /ɔː/, y nunca se confunde con la de hot.",
+      "related": ["aa", "ow", "er"],
+      "audio": "ao"
+    },
+    {
+      "id": "uh",
+      "ipa": "ʊ",
+      "azure": ["ʊ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 1, "col": 3 },
+      "keyword": "book",
+      "nameEs": "u corta",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "back",
+        "lipsEs": "Labios poco redondos, sueltos.",
+        "tongueEs": "La lengua algo más baja y menos atrás que para la «u».",
+        "voiceEs": "Corta: no la estires."
+      },
+      "tipShortEs": "«u» corta y relajada, casi «o»: book, no «buuk»",
+      "explanationEs": [
+        "Es una «u» floja y corta. Redondea poco los labios y relaja la lengua: el sonido queda entre «u» y «o».",
+        "Si la estiras y la tensas, cambias la palabra: full se vuelve fool y pull se vuelve pool."
+      ],
+      "spanishEs": "No existe en español: suena entre una «u» y una «o».",
+      "mistakeEs": "Decir la «u» española, larga y tensa: full suena fool y look suena Luke.",
+      "spellings": [
+        { "pattern": "oo", "examples": ["book", "good", "foot"] },
+        { "pattern": "u", "examples": ["put", "full", "push"] },
+        { "pattern": "ou", "examples": ["could", "would", "should"] },
+        { "pattern": "o", "examples": ["woman"] }
+      ],
+      "examples": {
+        "initial": [],
+        "medial": ["book", "good", "put", "could", "woman"],
+        "final": []
+      },
+      "positionNoteEs": "Casi nunca va al principio ni al final de palabra.",
+      "minimalPairs": [
+        { "with": "uw", "pairs": [["full", "fool"], ["pull", "pool"], ["look", "Luke"], ["stood", "stewed"]] },
+        { "with": "ah", "pairs": [["look", "luck"], ["book", "buck"], ["took", "tuck"]] }
+      ],
+      "sentences": [
+        { "en": "Put the good book on the table.", "es": "Pon el libro bueno en la mesa." },
+        { "en": "Could you look at my foot?", "es": "¿Me puedes mirar el pie?" }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["uw", "ah"],
+      "audio": "uh"
+    },
+    {
+      "id": "uw",
+      "ipa": "uː",
+      "azure": ["u"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 1, "col": 4 },
+      "keyword": "food",
+      "nameEs": "u larga",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "back",
+        "lipsEs": "Labios muy redondos y hacia adelante, como para un beso.",
+        "tongueEs": "La lengua alta y atrás.",
+        "voiceEs": "Larga."
+      },
+      "tipShortEs": "«u» larga, con los labios redondos como para un beso: food",
+      "explanationEs": [
+        "Redondea mucho los labios y llévalos hacia adelante, como para dar un beso. La lengua va alta y atrás, y el sonido es largo: «fuuud».",
+        "Su pareja corta es la /ʊ/ de book. Si las mezclas, fool y full suenan igual."
+      ],
+      "spanishEs": "La «u» de «tú», más larga y con los labios más adelante.",
+      "mistakeEs": "Acortarla (fool suena full) u olvidar la «i» que llevan palabras como music o few («miúsic», «fiú»).",
+      "spellings": [
+        { "pattern": "oo", "examples": ["food", "school", "too"] },
+        { "pattern": "u_e", "examples": ["rule", "June"] },
+        { "pattern": "ew", "examples": ["new", "flew"] },
+        { "pattern": "ue", "examples": ["blue", "true"] },
+        { "pattern": "ou", "examples": ["soup", "you"] },
+        { "pattern": "ui", "examples": ["fruit", "juice"] },
+        { "pattern": "o", "examples": ["do", "who", "move"] }
+      ],
+      "examples": {
+        "initial": ["ooze"],
+        "medial": ["food", "school", "soup", "fruit", "move"],
+        "final": ["too", "blue", "shoe", "new", "do"]
+      },
+      "minimalPairs": [
+        { "with": "uh", "pairs": [["fool", "full"], ["pool", "pull"], ["Luke", "look"], ["stewed", "stood"]] }
+      ],
+      "sentences": [
+        { "en": "Do you want some soup or fruit?", "es": "¿Quieres sopa o fruta?" },
+        { "en": "We go to school in June.", "es": "Vamos a la escuela en junio." }
+      ],
+      "ukNoteEs": "Igual en británico; pero tras t, d o n el británico mete una «i»: new suena «niú».",
+      "related": ["uh", "y"],
+      "audio": "uw"
+    },
+    {
+      "id": "ah",
+      "ipa": "ʌ",
+      "azure": ["ʌ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 3, "col": 2 },
+      "keyword": "cup",
+      "nameEs": "a corta",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "central",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La lengua en el centro, sin esfuerzo.",
+        "voiceEs": "Corta y seca."
+      },
+      "tipShortEs": "«a» corta y relajada, con la boca a medio abrir: cup",
+      "explanationEs": [
+        "Es una «a» corta y floja. Abre la boca solo a medias, deja los labios sueltos y la lengua en el centro, sin esfuerzo.",
+        "La trampa es la letra: love, money, come y son se escriben con o, pero suenan con esta «a» corta."
+      ],
+      "spanishEs": "Parecida a una «a» española corta y floja, con la boca menos abierta.",
+      "mistakeEs": "Leer la o de love o money como una «o» española, o abrir tanto que cup suena cap.",
+      "spellings": [
+        { "pattern": "u", "examples": ["cup", "bus", "but"] },
+        { "pattern": "o", "examples": ["love", "money", "come"] },
+        { "pattern": "ou", "examples": ["young", "country", "touch"] },
+        { "pattern": "oo", "examples": ["blood", "flood"] }
+      ],
+      "examples": {
+        "initial": ["up", "us", "under", "other"],
+        "medial": ["cup", "bus", "love", "money"],
+        "final": []
+      },
+      "positionNoteEs": "No va al final de palabra (la vocal final de sofa es otra, más floja: la schwa).",
+      "minimalPairs": [
+        { "with": "ae", "pairs": [["cut", "cat"], ["cup", "cap"], ["bug", "bag"], ["bun", "ban"], ["much", "match"], ["but", "bat"]] },
+        { "with": "aa", "pairs": [["cut", "cot"], ["shut", "shot"], ["nut", "not"], ["luck", "lock"], ["duck", "dock"]] },
+        { "with": "uh", "pairs": [["luck", "look"], ["buck", "book"], ["tuck", "took"]] }
+      ],
+      "sentences": [
+        { "en": "Come up for lunch on Monday.", "es": "Sube a almorzar el lunes." },
+        { "en": "My mother loves the sun.", "es": "A mi mamá le encanta el sol." }
+      ],
+      "ukNoteEs": "En británico es algo más abierta; en el norte de Inglaterra se dice como la de book.",
+      "related": ["ae", "aa", "ax", "uh"]
+    },
+    {
+      "id": "ax",
+      "ipa": "ə",
+      "azure": ["ə"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 2, "col": 2 },
+      "keyword": "about",
+      "nameEs": "schwa (vocal floja)",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "central",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La lengua quieta en el centro.",
+        "voiceEs": "Muy corta y suave, casi no suena."
+      },
+      "tipShortEs": "vocal débil y corta, casi no suena: about",
+      "explanationEs": [
+        "Es la vocal más común del inglés y la más floja: boca entreabierta, lengua quieta en el centro y labios sueltos. Dura muy poco, como un «eh» de duda muy corto.",
+        "Aparece en las sílabas sin acento, con cualquier letra: la a de about, la o de lemon, la e de problem."
+      ],
+      "spanishEs": "No existe en español: allí cada vocal suena entera aunque no lleve acento («ba-na-na»). En inglés, banana es «bə-NÆ-nə».",
+      "mistakeEs": "Pronunciar todas las vocales llenas: el inglés suena «silabeado» y cuesta entenderlo.",
+      "spellings": [
+        { "pattern": "a", "examples": ["about", "sofa"] },
+        { "pattern": "e", "examples": ["problem", "taken"] },
+        { "pattern": "o", "examples": ["lemon", "today"] },
+        { "pattern": "u", "examples": ["support"] },
+        { "pattern": "i", "examples": ["family"] }
+      ],
+      "examples": {
+        "initial": ["about", "ago", "again", "America"],
+        "medial": ["banana", "lemon", "problem", "today"],
+        "final": ["sofa", "pizza", "China"]
+      },
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "Today I have a problem.", "es": "Hoy tengo un problema." },
+        { "en": "A cup of tea and a banana.", "es": "Una taza de té y una banana." }
+      ],
+      "ukNoteEs": "Igual; además, el británico la usa al final de teacher o water, donde el americano dice /ɚ/.",
+      "related": ["ah", "axr", "ih"],
+      "audio": "ax"
+    },
+    {
+      "id": "er",
+      "ipa": "ɝ",
+      "azure": ["ɝ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 2, "col": 3 },
+      "keyword": "bird",
+      "nameEs": "vocal con r",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "mid",
+        "place": "central",
+        "lipsEs": "Labios un poco redondos.",
+        "tongueEs": "La lengua recogida hacia atrás (o la punta levantada), sin tocar nada.",
+        "voiceEs": "Un solo sonido: la vocal entera es una r."
+      },
+      "tipShortEs": "«r» sin vibrar que hace de vocal, labios un poco redondos: bird",
+      "explanationEs": [
+        "Toda la vocal es una r: recoge la lengua hacia atrás (o levanta la punta) sin tocar nada, redondea un poco los labios y deja la boca casi cerrada.",
+        "No es una vocal y luego una r: es un solo sonido. Si dices «uork» con la r vibrada, work suena walk."
+      ],
+      "spanishEs": "No existe en español. No digas «er» ni «ir» con la r de «pero».",
+      "mistakeEs": "Poner una vocal llena y una r vibrada: first suena «ferst» y work suena walk.",
+      "spellings": [
+        { "pattern": "ir", "examples": ["bird", "first"] },
+        { "pattern": "er", "examples": ["her", "term"] },
+        { "pattern": "ur", "examples": ["nurse", "turn"] },
+        { "pattern": "or", "examples": ["work", "word", "world"] },
+        { "pattern": "ear", "examples": ["learn", "early"] },
+        { "pattern": "our", "examples": ["journey"] }
+      ],
+      "examples": {
+        "initial": ["early", "earth", "earn", "urban"],
+        "medial": ["bird", "work", "learn", "nurse", "first"],
+        "final": ["her", "fur", "sir", "prefer"]
+      },
+      "minimalPairs": [
+        { "with": "ao", "pairs": [["work", "walk"], ["hurl", "hall"], ["curt", "caught"]] },
+        { "with": "ah", "pairs": [["bird", "bud"], ["hurt", "hut"], ["turn", "ton"], ["shirt", "shut"]] }
+      ],
+      "sentences": [
+        { "en": "Her nurse works on Thursday.", "es": "Su enfermera trabaja el jueves." }
+      ],
+      "ukNoteEs": "En británico no suena la r: bird es «bɜːd».",
+      "related": ["axr", "r", "ao"]
+    },
+    {
+      "id": "axr",
+      "ipa": "ɚ",
+      "azure": ["ɚ"],
+      "kind": "vowel",
+      "chart": { "block": "vowels", "row": 2, "col": 3 },
+      "keyword": "teacher",
+      "nameEs": "schwa con r",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "central",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La lengua recogida hacia atrás, sin tocar nada, como en bird.",
+        "voiceEs": "Corta y floja, en sílaba sin acento."
+      },
+      "tipShortEs": "vocal débil con «r» suave al final, sin vibrar: teacher",
+      "explanationEs": [
+        "Es la pareja débil de la vocal de bird: corta y floja, en sílaba sin acento. Casi siempre va al final: teacher, doctor, water.",
+        "No leas la terminación como se escribe: doctor no es «dok-TOR», es «DAK-tɚ»."
+      ],
+      "spanishEs": "No existe en español.",
+      "mistakeEs": "Leer la terminación con vocal llena y r vibrada: doctor con «o», teacher con «e».",
+      "spellings": [
+        { "pattern": "er", "examples": ["teacher", "better"] },
+        { "pattern": "or", "examples": ["doctor", "color"] },
+        { "pattern": "ar", "examples": ["sugar", "dollar"] },
+        { "pattern": "ure", "examples": ["picture", "nature"] }
+      ],
+      "examples": {
+        "initial": [],
+        "medial": ["understand", "afternoon", "Saturday", "different"],
+        "final": ["teacher", "doctor", "water", "color"]
+      },
+      "positionNoteEs": "Casi nunca va al principio de palabra.",
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "My brother is a doctor.", "es": "Mi hermano es médico." }
+      ],
+      "ukNoteEs": "En británico no suena la r: teacher termina en una schwa /ə/.",
+      "related": ["er", "ax"]
+    },
+    {
+      "id": "ey",
+      "ipa": "eɪ",
+      "azure": ["eɪ"],
+      "kind": "diphthong",
+      "chart": { "block": "diphthongs", "row": 1, "col": 1 },
+      "keyword": "day",
+      "nameEs": "ei",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "spread",
+        "jaw": "mid",
+        "place": "front",
+        "lipsEs": "Labios relajados que se estiran al final.",
+        "tongueEs": "La lengua empieza en «e» y sube hacia «i».",
+        "voiceEs": "Sin cortar: «ei»."
+      },
+      "tipShortEs": "«ei» completo, no «e» seca: late, no let",
+      "explanationEs": [
+        "Empieza en «e» y la lengua sube hacia «i» sin cortar el sonido: «ei». La segunda parte es más suave.",
+        "Existe en español («rey», «peine»); el problema es olvidar la «i» cuando se escribe solo con a: late, make, table."
+      ],
+      "spanishEs": "Es el «ei» de «rey» o «peine».",
+      "mistakeEs": "Decir una «e» seca: late suena let y wait suena wet.",
+      "spellings": [
+        { "pattern": "a_e", "examples": ["make", "late"] },
+        { "pattern": "ai", "examples": ["rain", "wait"] },
+        { "pattern": "ay", "examples": ["day", "say"] },
+        { "pattern": "ea", "examples": ["great", "break"] },
+        { "pattern": "eigh", "examples": ["eight", "weigh"] },
+        { "pattern": "ey", "examples": ["they"] }
+      ],
+      "examples": {
+        "initial": ["eight", "able", "age", "April"],
+        "medial": ["make", "rain", "great", "came"],
+        "final": ["day", "say", "they", "okay"]
+      },
+      "minimalPairs": [
+        { "with": "eh", "pairs": [["wait", "wet"], ["sale", "sell"], ["late", "let"], ["gate", "get"], ["paper", "pepper"], ["taste", "test"]] },
+        { "with": "ay", "pairs": [["lake", "like"], ["may", "my"], ["late", "light"]] }
+      ],
+      "sentences": [
+        { "en": "Wait, it’s eight o’clock!", "es": "¡Espera, son las ocho!" },
+        { "en": "They make great cakes.", "es": "Hacen pasteles buenísimos." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["eh", "ay", "iy"]
+    },
+    {
+      "id": "ay",
+      "ipa": "aɪ",
+      "azure": ["aɪ"],
+      "kind": "diphthong",
+      "chart": { "block": "diphthongs", "row": 1, "col": 2 },
+      "keyword": "my",
+      "nameEs": "ai",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "open",
+        "place": "front",
+        "lipsEs": "Labios relajados.",
+        "tongueEs": "La lengua empieza abajo y sube hacia «i».",
+        "voiceEs": "Sin cortar: «ai»."
+      },
+      "tipShortEs": "«ai», como en «hay», aunque se escriba i o y: my, time",
+      "explanationEs": [
+        "Es el «ai» de «hay» o «baile»: empieza con la boca abierta y termina cerca de «i».",
+        "La trampa es la letra: I, time y my se escriben con i o y, y suenan «ai». Por eso la letra I se llama «ai»."
+      ],
+      "spanishEs": "Igual que el «ai» de «hay».",
+      "mistakeEs": "Leer la i como «i» española: time suena «tim» y like suena «lik».",
+      "spellings": [
+        { "pattern": "i_e", "examples": ["time", "like"] },
+        { "pattern": "igh", "examples": ["night", "high"] },
+        { "pattern": "y", "examples": ["my", "fly"] },
+        { "pattern": "ie", "examples": ["pie", "tie"] },
+        { "pattern": "uy", "examples": ["buy", "guy"] },
+        { "pattern": "i", "examples": ["kind", "find"] }
+      ],
+      "examples": {
+        "initial": ["I", "ice", "eye", "idea"],
+        "medial": ["time", "night", "fine", "write"],
+        "final": ["my", "buy", "fly", "high"]
+      },
+      "minimalPairs": [
+        { "with": "ey", "pairs": [["like", "lake"], ["my", "may"], ["light", "late"]] },
+        { "with": "ih", "pairs": [["bite", "bit"], ["ride", "rid"], ["fine", "fin"], ["quite", "quit"]] }
+      ],
+      "sentences": [
+        { "en": "I like my bike.", "es": "Me gusta mi bici." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ey", "ih", "oy"]
+    },
+    {
+      "id": "oy",
+      "ipa": "ɔɪ",
+      "azure": ["ɔɪ"],
+      "kind": "diphthong",
+      "chart": { "block": "diphthongs", "row": 1, "col": 3 },
+      "keyword": "boy",
+      "nameEs": "oi",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "mid",
+        "place": "back",
+        "lipsEs": "Labios redondos al empezar.",
+        "tongueEs": "La lengua va de «o» a «i».",
+        "voiceEs": "Sin cortar: «oi»."
+      },
+      "tipShortEs": "«oi», como en «hoy»: boy",
+      "explanationEs": [
+        "Es el «oi» de «hoy»: empieza con los labios redondos en «o» y termina en «i».",
+        "Es fácil para ti: solo cuida que la «o» del principio sea abierta."
+      ],
+      "spanishEs": "Igual que el «oi» de «hoy».",
+      "mistakeEs": "Casi nunca falla; a veces se parte en dos sílabas: «bo-i».",
+      "spellings": [
+        { "pattern": "oi", "examples": ["coin", "voice"] },
+        { "pattern": "oy", "examples": ["boy", "toy"] }
+      ],
+      "examples": {
+        "initial": ["oil", "oyster"],
+        "medial": ["coin", "noise", "voice", "point"],
+        "final": ["boy", "toy", "enjoy"]
+      },
+      "minimalPairs": [
+        { "with": "ay", "pairs": [["boy", "buy"], ["toy", "tie"], ["oil", "aisle"]] }
+      ],
+      "sentences": [
+        { "en": "The boy enjoys his new toy.", "es": "El niño disfruta su juguete nuevo." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ay", "ao"]
+    },
+    {
+      "id": "aw",
+      "ipa": "aʊ",
+      "azure": ["aʊ"],
+      "kind": "diphthong",
+      "chart": { "block": "diphthongs", "row": 1, "col": 4 },
+      "keyword": "now",
+      "nameEs": "au",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "open",
+        "place": "central",
+        "lipsEs": "Los labios se redondean al final.",
+        "tongueEs": "La lengua va de «a» a «u».",
+        "voiceEs": "Sin cortar: «au»."
+      },
+      "tipShortEs": "«au», como en «causa»: now, house",
+      "explanationEs": [
+        "Es el «au» de «causa»: empieza con la boca abierta y cierra los labios hacia «u».",
+        "Ojo con ow: en now, how y town suena «au», pero en know, show y low suena «ou». Now y know no riman."
+      ],
+      "spanishEs": "Igual que el «au» de «causa».",
+      "mistakeEs": "Leer ow siempre igual: know como «nau» o now como «nou».",
+      "spellings": [
+        { "pattern": "ou", "examples": ["house", "out"] },
+        { "pattern": "ow", "examples": ["now", "town"] }
+      ],
+      "examples": {
+        "initial": ["out", "our", "owl", "hour"],
+        "medial": ["house", "town", "down", "cloud"],
+        "final": ["now", "how", "cow", "allow"]
+      },
+      "minimalPairs": [
+        { "with": "ow", "pairs": [["now", "know"], ["town", "tone"], ["found", "phoned"]] },
+        { "with": "aa", "pairs": [["down", "Don"], ["shout", "shot"], ["found", "fond"]] }
+      ],
+      "sentences": [
+        { "en": "How about now?", "es": "¿Qué tal ahora?" },
+        { "en": "Our house is downtown.", "es": "Nuestra casa está en el centro." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ow", "aa"]
+    },
+    {
+      "id": "ow",
+      "ipa": "oʊ",
+      "azure": ["oʊ"],
+      "kind": "diphthong",
+      "chart": { "block": "diphthongs", "row": 1, "col": 5 },
+      "keyword": "go",
+      "nameEs": "ou",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": null,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "mid",
+        "place": "back",
+        "lipsEs": "Labios redondos que se cierran al final.",
+        "tongueEs": "La lengua va de «o» a «u».",
+        "voiceEs": "Sin cortar: «ou»."
+      },
+      "tipShortEs": "«ou»: cierra los labios al final, no «o» seca: go, no",
+      "explanationEs": [
+        "Empieza en «o» y los labios se cierran hacia «u» mientras suena: «ou». La «u» del final es suave.",
+        "Con una «o» seca, el americano oye otra vocal: won’t (no lo haré) suena want (quiero)."
+      ],
+      "spanishEs": "En las palabras comunes del español no hay «ou»: por eso sale una «o» seca.",
+      "mistakeEs": "Decir una «o» seca: won’t suena want y coat suena caught.",
+      "spellings": [
+        { "pattern": "o", "examples": ["go", "no", "old"] },
+        { "pattern": "o_e", "examples": ["home", "phone"] },
+        { "pattern": "oa", "examples": ["boat", "road"] },
+        { "pattern": "ow", "examples": ["show", "know"] },
+        { "pattern": "ough", "examples": ["though"] },
+        { "pattern": "oe", "examples": ["toe"] }
+      ],
+      "examples": {
+        "initial": ["old", "open", "only", "okay"],
+        "medial": ["home", "boat", "road", "phone"],
+        "final": ["go", "no", "show", "know"]
+      },
+      "minimalPairs": [
+        { "with": "ao", "pairs": [["low", "law"], ["so", "saw"], ["boat", "bought"], ["coat", "caught"], ["cold", "called"], ["woke", "walk"]] },
+        { "with": "aa", "pairs": [["won't", "want"], ["coast", "cost"], ["note", "not"], ["road", "rod"], ["hope", "hop"]] }
+      ],
+      "sentences": [
+        { "en": "Don’t go home alone.", "es": "No te vayas solo a casa." }
+      ],
+      "ukNoteEs": "En británico empieza más al centro: suena casi «eu».",
+      "related": ["ao", "aa", "aw"]
+    },
+    {
+      "id": "p",
+      "ipa": "p",
+      "azure": ["p"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 1 },
+      "keyword": "pen",
+      "nameEs": "p",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "bilabial",
+        "lipsEs": "Labios juntos que se separan de golpe.",
+        "tongueEs": "La lengua descansa.",
+        "voiceEs": "Sin voz; con un soplo de aire al empezar una sílaba fuerte."
+      },
+      "tipShortEs": "labios juntos y suelta con un soplo de aire: pen",
+      "explanationEs": [
+        "Junta los labios y sepáralos con un soplito de aire: pen suena casi «p-hen». Pon un papel delante de la boca: si se mueve, lo estás haciendo bien.",
+        "Sin ese soplo, al oído americano tu p suena casi como b: pear se confunde con bear."
+      ],
+      "spanishEs": "La «p» española no lleva soplo; por eso a un americano le suena casi «b».",
+      "mistakeEs": "Decirla sin soplo: pear suena bear y pig suena big.",
+      "spellings": [
+        { "pattern": "p", "examples": ["pen", "park"] },
+        { "pattern": "pp", "examples": ["happy", "apple"] }
+      ],
+      "examples": {
+        "initial": ["pen", "park", "people"],
+        "medial": ["happy", "apple", "open"],
+        "final": ["stop", "cup", "help"]
+      },
+      "minimalPairs": [
+        { "with": "b", "pairs": [["pear", "bear"], ["pea", "bee"], ["pig", "big"], ["park", "bark"], ["cap", "cab"], ["rope", "robe"]] }
+      ],
+      "sentences": [
+        { "en": "Put the pen in your pocket.", "es": "Pon el bolígrafo en tu bolsillo." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["b", "t", "k"]
+    },
+    {
+      "id": "b",
+      "ipa": "b",
+      "azure": ["b"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 2 },
+      "keyword": "bed",
+      "nameEs": "b",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P1",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "bilabial",
+        "lipsEs": "Labios bien cerrados, también entre vocales.",
+        "tongueEs": "La lengua descansa.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "labios juntos y suelta el aire, con voz; no es «v»: bed",
+      "explanationEs": [
+        "Cierra los labios del todo y sepáralos con voz. Ciérralos siempre, también entre vocales: rabbit, about.",
+        "Nunca la uses para la letra v: berry (baya) y very (muy) son palabras distintas."
+      ],
+      "spanishEs": "En español, la b entre vocales se dice sin cerrar del todo los labios («cabo», «uva»). En inglés hay que cerrarlos siempre.",
+      "mistakeEs": "Usar la misma b para b y v: very suena berry y vote suena boat.",
+      "spellings": [
+        { "pattern": "b", "examples": ["bed", "big"] },
+        { "pattern": "bb", "examples": ["rabbit"] }
+      ],
+      "examples": {
+        "initial": ["bed", "big", "boy"],
+        "medial": ["rabbit", "about", "table"],
+        "final": ["job", "web", "club"]
+      },
+      "minimalPairs": [
+        { "with": "v", "pairs": [["berry", "very"], ["boat", "vote"], ["ban", "van"], ["best", "vest"], ["bet", "vet"], ["curb", "curve"]] },
+        { "with": "p", "pairs": [["bear", "pear"], ["big", "pig"], ["cab", "cap"]] }
+      ],
+      "sentences": [
+        { "en": "Bob has a big blue bag.", "es": "Bob tiene una bolsa azul grande." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["v", "p"]
+    },
+    {
+      "id": "t",
+      "ipa": "t",
+      "azure": ["t"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 3 },
+      "keyword": "top",
+      "nameEs": "t",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La punta de la lengua toca las encías detrás de los dientes de arriba (no los dientes).",
+        "voiceEs": "Sin voz. Al empezar una sílaba fuerte, con un soplo de aire."
+      },
+      "tipShortEs": "lengua en las encías, no en los dientes, y con soplo: top",
+      "explanationEs": [
+        "Pon la punta de la lengua en el borde de las encías, justo detrás de los dientes de arriba, y suéltala con un soplito de aire: top suena casi «t-hop».",
+        "Entre vocales, el americano la suaviza hasta sonar como la «r» de «pero»: water, city, better. Eso lo verás en otra lección."
+      ],
+      "spanishEs": "Se parece a la «t» del español, pero esa toca los dientes y no lleva soplo.",
+      "mistakeEs": "Decirla sin soplo (al oído americano suena casi «d») o usarla en lugar de la th: tank por thank.",
+      "spellings": [
+        { "pattern": "t", "examples": ["top", "ten"] },
+        { "pattern": "tt", "examples": ["letter", "better"] },
+        { "pattern": "-ed", "examples": ["worked", "stopped"] }
+      ],
+      "examples": {
+        "initial": ["top", "ten", "time"],
+        "medial": ["hotel", "after", "attack"],
+        "final": ["cat", "eat", "light"]
+      },
+      "minimalPairs": [
+        { "with": "th", "pairs": [["tree", "three"], ["tank", "thank"], ["taught", "thought"], ["true", "through"], ["boat", "both"], ["team", "theme"]] },
+        { "with": "d", "pairs": [["bet", "bed"], ["cart", "card"], ["neat", "need"], ["write", "ride"], ["seat", "seed"]] }
+      ],
+      "sentences": [
+        { "en": "It's time to eat.", "es": "Es hora de comer." },
+        { "en": "Take the ten o'clock train.", "es": "Toma el tren de las diez." }
+      ],
+      "ukNoteEs": "En británico la t entre vocales suena clara: water con t.",
+      "related": ["d", "th", "p", "k"]
+    },
+    {
+      "id": "d",
+      "ipa": "d",
+      "azure": ["d"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 4 },
+      "keyword": "dog",
+      "nameEs": "d",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La punta de la lengua toca las encías de arriba y se suelta.",
+        "voiceEs": "Con voz. Al final de palabra también se dice."
+      },
+      "tipShortEs": "lengua en las encías y con voz; dila también al final: bed",
+      "explanationEs": [
+        "Es como la t, pero con voz: la punta de la lengua toca las encías de arriba y se suelta. Siempre con contacto, también entre vocales.",
+        "Al final de palabra no te la comas: bed (cama) y bet (apuesta) son distintas."
+      ],
+      "spanishEs": "Entre vocales, la «d» española se afloja («nada»): en inglés eso es otro sonido, el de this. Al final, el español la pierde («Madrí»).",
+      "mistakeEs": "Comérsela al final (bed suena bet) o aflojarla entre vocales.",
+      "spellings": [
+        { "pattern": "d", "examples": ["dog", "day"] },
+        { "pattern": "dd", "examples": ["ladder", "middle"] },
+        { "pattern": "-ed", "examples": ["played", "called"] }
+      ],
+      "examples": {
+        "initial": ["dog", "day", "door"],
+        "medial": ["window", "lady", "ladder"],
+        "final": ["bed", "good", "need"]
+      },
+      "minimalPairs": [
+        { "with": "t", "pairs": [["bed", "bet"], ["card", "cart"], ["need", "neat"], ["ride", "write"], ["seed", "seat"]] },
+        { "with": "dh", "pairs": [["day", "they"], ["den", "then"], ["dare", "there"], ["dough", "though"], ["doze", "those"]] }
+      ],
+      "sentences": [
+        { "en": "Dad needs a good bed.", "es": "Papá necesita una buena cama." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["t", "dh"]
+    },
+    {
+      "id": "ch",
+      "ipa": "tʃ",
+      "azure": ["tʃ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 5 },
+      "keyword": "chair",
+      "nameEs": "ch",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P2",
+      "voiced": false,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "postalveolar",
+        "lipsEs": "Labios un poco hacia adelante.",
+        "tongueEs": "La lengua toca detrás de las encías de arriba y se suelta de golpe.",
+        "voiceEs": "Sin voz."
+      },
+      "tipShortEs": "«ch» de «chocolate», con un golpe: chair",
+      "explanationEs": [
+        "Es la «ch» de «chocolate»: la lengua toca detrás de las encías de arriba y se suelta de golpe.",
+        "No la cambies por sh: chair (silla) y share (compartir) son distintas."
+      ],
+      "spanishEs": "Igual que la «ch» de «chocolate».",
+      "mistakeEs": "Donde la «ch» se dice suave (Chile, Panamá, norte de México), puede sonar a sh: chip suena ship.",
+      "spellings": [
+        { "pattern": "ch", "examples": ["chair", "cheese"] },
+        { "pattern": "tch", "examples": ["watch", "kitchen"] },
+        { "pattern": "t", "examples": ["nature", "picture"] }
+      ],
+      "examples": {
+        "initial": ["chair", "cheese", "child"],
+        "medial": ["kitchen", "nature", "picture"],
+        "final": ["watch", "much", "teach"]
+      },
+      "minimalPairs": [
+        { "with": "sh", "pairs": [["chair", "share"], ["chip", "ship"], ["cheap", "sheep"], ["watch", "wash"], ["catch", "cash"], ["chin", "shin"]] },
+        { "with": "jh", "pairs": [["rich", "ridge"], ["batch", "badge"], ["cheap", "jeep"], ["choke", "joke"], ["chain", "Jane"]] }
+      ],
+      "sentences": [
+        { "en": "Choose a chair in the kitchen.", "es": "Elige una silla en la cocina." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["sh", "jh"],
+      "audio": "ch"
+    },
+    {
+      "id": "jh",
+      "ipa": "dʒ",
+      "azure": ["dʒ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 6 },
+      "keyword": "job",
+      "nameEs": "j inglesa",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": true,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "postalveolar",
+        "lipsEs": "Labios un poco hacia adelante.",
+        "tongueEs": "La lengua toca detrás de las encías y se suelta, como en ch.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "una «ch» con voz, como la «y» fuerte de «¡ya!»: job",
+      "explanationEs": [
+        "Es una ch con voz: la lengua toca detrás de las encías de arriba y se suelta mientras la garganta vibra.",
+        "No leas la j como la jota española (job no raspa) ni la ablandes a «i»: jet (avión) no es yet (todavía)."
+      ],
+      "spanishEs": "Se parece a la «y» fuerte de «¡ya!» o de «cónyuge» en muchos países.",
+      "mistakeEs": "Leer la j como jota (job raspado) o decir una «i» suave: Jess suena yes.",
+      "spellings": [
+        { "pattern": "j", "examples": ["job", "just"] },
+        { "pattern": "g", "examples": ["gym", "age", "giant"] },
+        { "pattern": "dge", "examples": ["bridge", "judge"] }
+      ],
+      "examples": {
+        "initial": ["job", "just", "gym", "giant"],
+        "medial": ["magic", "major", "danger"],
+        "final": ["age", "bridge", "large", "page"]
+      },
+      "minimalPairs": [
+        { "with": "y", "pairs": [["jet", "yet"], ["jam", "yam"], ["joke", "yolk"], ["Jess", "yes"], ["jail", "Yale"]] },
+        { "with": "ch", "pairs": [["ridge", "rich"], ["badge", "batch"], ["jeep", "cheap"], ["joke", "choke"], ["Jane", "chain"]] }
+      ],
+      "sentences": [
+        { "en": "John just got a job in June.", "es": "John acaba de conseguir trabajo en junio." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ch", "y", "zh"],
+      "audio": "jh"
+    },
+    {
+      "id": "k",
+      "ipa": "k",
+      "azure": ["k"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 7 },
+      "keyword": "key",
+      "nameEs": "k",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P2",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "velar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La parte de atrás de la lengua toca el fondo del paladar.",
+        "voiceEs": "Sin voz; con un soplo de aire al empezar una sílaba fuerte."
+      },
+      "tipShortEs": "como la «c» de «casa», con un soplo de aire: key",
+      "explanationEs": [
+        "La parte de atrás de la lengua toca el fondo del paladar y se suelta con un soplito de aire: key suena casi «k-hi».",
+        "Sin soplo, cold (frío) puede sonar gold (oro)."
+      ],
+      "spanishEs": "Igual que la «c» de «casa» o la «qu» de «queso», más el soplo.",
+      "mistakeEs": "Decirla sin soplo (cold suena casi gold) o pronunciar la k muda de know.",
+      "spellings": [
+        { "pattern": "c", "examples": ["cat", "cold"] },
+        { "pattern": "k", "examples": ["key", "kind"] },
+        { "pattern": "ck", "examples": ["back", "black"] },
+        { "pattern": "ch", "examples": ["school"] },
+        { "pattern": "qu", "examples": ["quick"] }
+      ],
+      "examples": {
+        "initial": ["cat", "key", "cold"],
+        "medial": ["lucky", "school", "breakfast"],
+        "final": ["back", "book", "like"]
+      },
+      "minimalPairs": [
+        { "with": "g", "pairs": [["coat", "goat"], ["cold", "gold"], ["class", "glass"], ["back", "bag"], ["pick", "pig"], ["duck", "dug"]] }
+      ],
+      "sentences": [
+        { "en": "Can I keep the black cup?", "es": "¿Me puedo quedar con la taza negra?" }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["g", "t", "p"]
+    },
+    {
+      "id": "g",
+      "ipa": "ɡ",
+      "azure": ["ɡ", "g"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 1, "col": 8 },
+      "keyword": "go",
+      "nameEs": "g",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "velar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La parte de atrás de la lengua toca el fondo del paladar.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "como la «g» de «gato», con contacto también entre vocales: go",
+      "explanationEs": [
+        "Es la k con voz: la parte de atrás de la lengua toca el paladar y se suelta. Haz el contacto completo, también entre vocales: bigger, again.",
+        "Ojo con la letra: g + e o i a veces suena como la j de job (gym, age) y a veces es esta g (get, give)."
+      ],
+      "spanishEs": "Igual que la «g» de «gato». Entre vocales el español la afloja («lago»); en inglés, no.",
+      "mistakeEs": "Aflojarla entre vocales o leer la g de get como la de gym.",
+      "spellings": [
+        { "pattern": "g", "examples": ["go", "get"] },
+        { "pattern": "gg", "examples": ["bigger", "egg"] },
+        { "pattern": "gu", "examples": ["guess", "guitar"] }
+      ],
+      "examples": {
+        "initial": ["go", "get", "good"],
+        "medial": ["bigger", "again", "sugar"],
+        "final": ["dog", "bag", "big"]
+      },
+      "minimalPairs": [
+        { "with": "k", "pairs": [["goat", "coat"], ["gold", "cold"], ["bag", "back"], ["dug", "duck"], ["pig", "pick"]] }
+      ],
+      "sentences": [
+        { "en": "Go get the big bag.", "es": "Ve por la bolsa grande." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["k", "jh"]
+    },
+    {
+      "id": "f",
+      "ipa": "f",
+      "azure": ["f"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 1 },
+      "keyword": "fish",
+      "nameEs": "f",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "labiodental",
+        "lipsEs": "El labio de abajo toca los dientes de arriba.",
+        "tongueEs": "La lengua descansa: no participa.",
+        "voiceEs": "Sin voz: solo aire. Se puede alargar."
+      },
+      "tipShortEs": "dientes de arriba sobre el labio de abajo, sin voz: fish",
+      "explanationEs": [
+        "Apoya los dientes de arriba sobre el labio de abajo y deja salir el aire, sin voz. Es igual que la «f» del español.",
+        "Su pareja con voz es la /v/ de very: el mismo gesto, pero haciendo vibrar la garganta."
+      ],
+      "spanishEs": "Igual que la «f» de «foca».",
+      "mistakeEs": "Casi nunca falla. El error está en sus vecinas: decir /f/ en lugar de la th (free por three).",
+      "spellings": [
+        { "pattern": "f", "examples": ["fish", "four"] },
+        { "pattern": "ff", "examples": ["coffee", "off"] },
+        { "pattern": "ph", "examples": ["phone", "photo"] },
+        { "pattern": "gh", "examples": ["laugh", "enough"] }
+      ],
+      "examples": {
+        "initial": ["fish", "phone", "four"],
+        "medial": ["coffee", "often", "after"],
+        "final": ["laugh", "leaf", "safe"]
+      },
+      "minimalPairs": [
+        { "with": "v", "pairs": [["fan", "van"], ["fine", "vine"], ["few", "view"], ["leaf", "leave"], ["safe", "save"], ["ferry", "very"]] },
+        { "with": "th", "pairs": [["free", "three"], ["fought", "thought"], ["deaf", "death"]] }
+      ],
+      "sentences": [
+        { "en": "My father drinks coffee after lunch.", "es": "Mi papá toma café después del almuerzo." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["v", "th"],
+      "audio": "f"
+    },
+    {
+      "id": "v",
+      "ipa": "v",
+      "azure": ["v"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 2 },
+      "keyword": "very",
+      "nameEs": "v",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "labiodental",
+        "lipsEs": "El labio de abajo toca los dientes de arriba.",
+        "tongueEs": "La lengua descansa.",
+        "voiceEs": "Con voz: notas cosquillas en el labio."
+      },
+      "tipShortEs": "dientes de arriba sobre el labio de abajo, con voz; no es «b»: very",
+      "explanationEs": [
+        "Apoya los dientes de arriba en el labio de abajo, como para la f, y haz vibrar la voz: es una «f con voz». Si lo haces bien, sientes cosquillas en el labio.",
+        "No cierres los labios: entonces sale b, y very (muy) se vuelve berry (baya)."
+      ],
+      "spanishEs": "No existe en el español de hoy: la b y la v suenan igual. Es el error más visible del hispanohablante.",
+      "mistakeEs": "Decir b: very suena berry, vote suena boat y van suena ban.",
+      "spellings": [
+        { "pattern": "v", "examples": ["very", "voice", "have"] },
+        { "pattern": "f", "examples": ["of"] }
+      ],
+      "examples": {
+        "initial": ["very", "voice", "video"],
+        "medial": ["seven", "river", "never"],
+        "final": ["have", "love", "five"]
+      },
+      "minimalPairs": [
+        { "with": "b", "pairs": [["very", "berry"], ["vote", "boat"], ["van", "ban"], ["vest", "best"], ["vet", "bet"], ["curve", "curb"]] },
+        { "with": "f", "pairs": [["van", "fan"], ["view", "few"], ["save", "safe"], ["leave", "leaf"], ["have", "half"]] },
+        { "with": "w", "pairs": [["vest", "west"], ["vine", "wine"], ["vet", "wet"]] }
+      ],
+      "sentences": [
+        { "en": "I have seven very good videos.", "es": "Tengo siete videos muy buenos." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["b", "f", "w"],
+      "audio": "v"
+    },
+    {
+      "id": "th",
+      "ipa": "θ",
+      "azure": ["θ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 3 },
+      "keyword": "think",
+      "nameEs": "th sorda",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P3",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "dental",
+        "lipsEs": "Labios sueltos, un poco abiertos.",
+        "tongueEs": "La punta de la lengua asoma entre los dientes de arriba y de abajo.",
+        "voiceEs": "Sin voz: solo aire. Se puede alargar."
+      },
+      "tipShortEs": "punta de la lengua entre los dientes y sopla, sin voz: think",
+      "explanationEs": [
+        "Saca un poquito la punta de la lengua entre los dientes y sopla aire, sin que vibre la garganta. La lengua no se mueve mientras suena: puedes alargarlo.",
+        "Si la lengua golpea, te sale «t» (tink); si se queda detrás de los dientes, «s» (sink)."
+      ],
+      "spanishEs": "En Latinoamérica no existe: ninguna letra del español suena así. (En España es la «z» de «zapato».)",
+      "mistakeEs": "Cambiarla por «t» (tank por thank), por «s» (sink por think) o por «f» (free por three).",
+      "spellings": [
+        { "pattern": "th", "examples": ["think", "math", "nothing"] }
+      ],
+      "examples": {
+        "initial": ["think", "three", "thank"],
+        "medial": ["nothing", "birthday", "method"],
+        "final": ["math", "both", "mouth", "teeth"]
+      },
+      "minimalPairs": [
+        { "with": "s", "pairs": [["think", "sink"], ["thick", "sick"], ["thing", "sing"], ["mouth", "mouse"], ["path", "pass"], ["faith", "face"]] },
+        { "with": "t", "pairs": [["three", "tree"], ["thank", "tank"], ["thought", "taught"], ["through", "true"], ["both", "boat"]] },
+        { "with": "f", "pairs": [["three", "free"], ["thought", "fought"], ["death", "deaf"]] }
+      ],
+      "sentences": [
+        { "en": "I think it's Thursday.", "es": "Creo que es jueves." },
+        { "en": "Thank you for the three books.", "es": "Gracias por los tres libros." }
+      ],
+      "ukNoteEs": "Igual en británico (en Londres a veces se oye «f»: free por three).",
+      "related": ["dh", "s", "t", "f"],
+      "audio": "th"
+    },
+    {
+      "id": "dh",
+      "ipa": "ð",
+      "azure": ["ð"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 4 },
+      "keyword": "this",
+      "nameEs": "th sonora",
+      "level": "A2",
+      "difficulty": 2,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "dental",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La punta de la lengua asoma entre los dientes, como en think.",
+        "voiceEs": "Con voz: la garganta vibra."
+      },
+      "tipShortEs": "como la d suave de «nada», con la lengua entre los dientes: this",
+      "explanationEs": [
+        "Ya lo sabes hacer: di «nada» despacio y fíjate en la d, suave, casi sin tocar. Ese es el sonido de the y this. Ahora asoma un poquito la lengua entre los dientes y haz vibrar la garganta.",
+        "Si la lengua golpea fuerte, te sale una «d»: day en vez de they."
+      ],
+      "spanishEs": "Existe en todo el español: es la «d» suave de «nada», «dedo» o «cada».",
+      "mistakeEs": "Decir una «d» fuerte al principio de palabra: day por they, den por then.",
+      "spellings": [
+        { "pattern": "th", "examples": ["this", "the", "mother"] }
+      ],
+      "examples": {
+        "initial": ["this", "the", "they", "there"],
+        "medial": ["mother", "other", "weather", "together"],
+        "final": ["breathe", "smooth"]
+      },
+      "minimalPairs": [
+        { "with": "d", "pairs": [["they", "day"], ["then", "den"], ["there", "dare"], ["though", "dough"], ["those", "doze"], ["breathe", "breed"]] }
+      ],
+      "sentences": [
+        { "en": "This is my mother.", "es": "Esta es mi mamá." },
+        { "en": "They live there together.", "es": "Viven allí juntos." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["th", "d"],
+      "audio": "dh"
+    },
+    {
+      "id": "s",
+      "ipa": "s",
+      "azure": ["s"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 5 },
+      "keyword": "sun",
+      "nameEs": "s",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "close",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La punta de la lengua cerca de las encías de arriba, sin tocarlas.",
+        "voiceEs": "Sin voz: solo aire, como un silbido. Se puede alargar."
+      },
+      "tipShortEs": "como la «s» española, sin voz: sun",
+      "explanationEs": [
+        "Es como la «s» del español: la punta de la lengua cerca de las encías de arriba y el aire sale silbando, sin voz.",
+        "Dos trampas: no pongas una «e» delante de s + consonante (Spain, no «Espain») y no la uses donde va la /z/ con zumbido (is, was, music)."
+      ],
+      "spanishEs": "Igual que la «s» de «sol».",
+      "mistakeEs": "Decir «es-» delante de s + consonante («eschool») o usar /s/ donde va /z/ (is con s).",
+      "spellings": [
+        { "pattern": "s", "examples": ["sun", "bus"] },
+        { "pattern": "ss", "examples": ["class", "miss"] },
+        { "pattern": "c", "examples": ["city", "nice"] },
+        { "pattern": "sc", "examples": ["science"] }
+      ],
+      "examples": {
+        "initial": ["sun", "see", "city"],
+        "medial": ["messy", "basic", "decide"],
+        "final": ["bus", "yes", "nice"]
+      },
+      "minimalPairs": [
+        { "with": "z", "pairs": [["sip", "zip"], ["sue", "zoo"], ["ice", "eyes"], ["price", "prize"], ["peace", "peas"], ["bus", "buzz"], ["place", "plays"]] },
+        { "with": "sh", "pairs": [["see", "she"], ["sip", "ship"], ["sort", "short"], ["so", "show"], ["mass", "mash"]] },
+        { "with": "th", "pairs": [["sink", "think"], ["sick", "thick"], ["mouse", "mouth"], ["sing", "thing"]] }
+      ],
+      "sentences": [
+        { "en": "Sit in the sun on Saturday.", "es": "Siéntate al sol el sábado." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["z", "sh", "th", "s-cluster"],
+      "audio": "s"
+    },
+    {
+      "id": "z",
+      "ipa": "z",
+      "azure": ["z"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 6 },
+      "keyword": "zoo",
+      "nameEs": "z con zumbido",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "close",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La lengua como para la s.",
+        "voiceEs": "Con voz: zumba como una abeja."
+      },
+      "tipShortEs": "«s» con zumbido, que vibre la garganta: is, zoo",
+      "explanationEs": [
+        "Pon la boca como para la s y haz vibrar la voz: suena como una abeja, «zzzz». Pon la mano en la garganta: tiene que vibrar.",
+        "Muchas veces se escribe con s: is, was, his, music, because. Y la vocal de antes se alarga un poco: eyes es más larga que ice."
+      ],
+      "spanishEs": "No existe como sonido propio, aunque te sale solo en «mismo» o «desde». La «z» escrita del español no es este sonido.",
+      "mistakeEs": "Decir s en is, was, his, because o music.",
+      "spellings": [
+        { "pattern": "z", "examples": ["zoo", "zero"] },
+        { "pattern": "zz", "examples": ["buzz", "jazz"] },
+        { "pattern": "s", "examples": ["is", "was", "music"] },
+        { "pattern": "-s", "examples": ["dogs", "plays"] }
+      ],
+      "examples": {
+        "initial": ["zoo", "zero", "zip"],
+        "medial": ["busy", "easy", "music", "reason"],
+        "final": ["is", "was", "his", "because"]
+      },
+      "minimalPairs": [
+        { "with": "s", "pairs": [["zip", "sip"], ["zoo", "sue"], ["eyes", "ice"], ["prize", "price"], ["peas", "peace"], ["buzz", "bus"], ["plays", "place"], ["rise", "rice"]] }
+      ],
+      "sentences": [
+        { "en": "His dogs are busy at the zoo.", "es": "Sus perros están ocupados en el zoológico." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["s", "s-ending"],
+      "audio": "z"
+    },
+    {
+      "id": "sh",
+      "ipa": "ʃ",
+      "azure": ["ʃ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 7 },
+      "keyword": "she",
+      "nameEs": "sh",
+      "level": "A2",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": false,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "postalveolar",
+        "lipsEs": "Labios hacia adelante, un poco redondos.",
+        "tongueEs": "La lengua un poco más atrás que para la s, sin tocar el paladar.",
+        "voiceEs": "Sin voz: el aire sale seguido. Se puede alargar."
+      },
+      "tipShortEs": "«shhh», como para pedir silencio, sin golpe: she, no «chi»",
+      "explanationEs": [
+        "Pon los labios hacia adelante, como para pedir silencio, y deja salir el aire seguido: «shhh». La lengua no toca el paladar.",
+        "Si la lengua golpea, te sale ch: ship (barco) se vuelve chip."
+      ],
+      "spanishEs": "No existe en el español general. Se parece a la «y» de «yo» de los porteños jóvenes («sho») o a la «ch» suave de Chile o Panamá.",
+      "mistakeEs": "Decir ch (chip por ship) o s (see por she).",
+      "spellings": [
+        { "pattern": "sh", "examples": ["she", "ship", "wash"] },
+        { "pattern": "ti", "examples": ["nation"] },
+        { "pattern": "ci", "examples": ["special"] },
+        { "pattern": "ch", "examples": ["machine", "chef"] },
+        { "pattern": "s", "examples": ["sure", "sugar"] }
+      ],
+      "examples": {
+        "initial": ["she", "ship", "sure", "shop"],
+        "medial": ["fashion", "machine", "special", "nation"],
+        "final": ["fish", "wash", "push", "English"]
+      },
+      "minimalPairs": [
+        { "with": "ch", "pairs": [["ship", "chip"], ["shoe", "chew"], ["sheep", "cheap"], ["share", "chair"], ["wash", "watch"], ["cash", "catch"], ["wish", "which"], ["shin", "chin"]] },
+        { "with": "s", "pairs": [["she", "see"], ["ship", "sip"], ["short", "sort"], ["show", "so"], ["mash", "mass"]] }
+      ],
+      "sentences": [
+        { "en": "She sells fish on the ship.", "es": "Ella vende pescado en el barco." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ch", "s", "zh"],
+      "audio": "sh"
+    },
+    {
+      "id": "zh",
+      "ipa": "ʒ",
+      "azure": ["ʒ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 2, "col": 8 },
+      "keyword": "measure",
+      "nameEs": "sh con voz",
+      "level": "B1",
+      "difficulty": 2,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "postalveolar",
+        "lipsEs": "Labios hacia adelante, como para sh.",
+        "tongueEs": "La lengua como para sh.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "«sh» con voz, como la «y» de «yo» en Buenos Aires: measure",
+      "explanationEs": [
+        "Es la sh con voz: los mismos labios hacia adelante y la garganta vibrando.",
+        "Es poco frecuente y casi siempre va en medio de palabra: usually, television, decision."
+      ],
+      "spanishEs": "Es la «y» o «ll» de Buenos Aires o Montevideo («yo», «calle»). En otros países no existe y se cambia por una «y».",
+      "mistakeEs": "Cambiarla por «y» o por «ch»: measure suena «méyur».",
+      "spellings": [
+        { "pattern": "s", "examples": ["measure", "usual"] },
+        { "pattern": "si", "examples": ["vision", "television"] },
+        { "pattern": "g", "examples": ["beige", "garage"] }
+      ],
+      "examples": {
+        "initial": ["genre"],
+        "medial": ["measure", "vision", "usual", "television"],
+        "final": ["beige", "garage", "massage"]
+      },
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "I usually watch television.", "es": "Normalmente veo la televisión." }
+      ],
+      "ukNoteEs": "Igual; en británico, garage se suele decir con la j de job al final.",
+      "related": ["sh", "jh"],
+      "audio": "zh"
+    },
+    {
+      "id": "m",
+      "ipa": "m",
+      "azure": ["m"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 1 },
+      "keyword": "man",
+      "nameEs": "m",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "close",
+        "place": "bilabial",
+        "lipsEs": "Labios cerrados.",
+        "tongueEs": "La lengua descansa; el aire sale por la nariz.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "labios cerrados, también al final: I’m, come",
+      "explanationEs": [
+        "Cierra los labios y deja que el sonido salga por la nariz. Es igual que en español.",
+        "Al final de palabra, cierra bien los labios: I’m no es «ain» y come no es «con»."
+      ],
+      "spanishEs": "Igual que la «m» de «mamá».",
+      "mistakeEs": "Decir n al final de palabra: team suena teen.",
+      "spellings": [
+        { "pattern": "m", "examples": ["man", "me"] },
+        { "pattern": "mm", "examples": ["summer"] },
+        { "pattern": "mb", "examples": ["climb"] }
+      ],
+      "examples": {
+        "initial": ["man", "me", "more"],
+        "medial": ["summer", "family", "number"],
+        "final": ["home", "come", "them"]
+      },
+      "minimalPairs": [
+        { "with": "n", "pairs": [["some", "sun"], ["came", "cane"], ["team", "teen"], ["gum", "gun"], ["seem", "seen"], ["dime", "dine"]] }
+      ],
+      "sentences": [
+        { "en": "My mom made some lemon cake.", "es": "Mi mamá hizo pastel de limón." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["n", "b"],
+      "audio": "m"
+    },
+    {
+      "id": "n",
+      "ipa": "n",
+      "azure": ["n"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 2 },
+      "keyword": "no",
+      "nameEs": "n",
+      "level": "A1",
+      "difficulty": 1,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La punta de la lengua en las encías de arriba; el aire sale por la nariz.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "punta de la lengua arriba, en las encías: no, sun",
+      "explanationEs": [
+        "La punta de la lengua toca las encías de arriba y el sonido sale por la nariz. Es igual que en español.",
+        "Al final de palabra, deja la lengua arriba: si la n se va atrás, sun (sol) suena sung."
+      ],
+      "spanishEs": "Igual que la «n» de «nada».",
+      "mistakeEs": "En el Caribe y otras zonas, la n final se dice atrás («paŋ») y sin suena sing.",
+      "spellings": [
+        { "pattern": "n", "examples": ["no", "name"] },
+        { "pattern": "nn", "examples": ["dinner"] },
+        { "pattern": "kn", "examples": ["know", "knife"] }
+      ],
+      "examples": {
+        "initial": ["no", "name", "nice"],
+        "medial": ["money", "dinner", "any"],
+        "final": ["sun", "ten", "phone"]
+      },
+      "minimalPairs": [
+        { "with": "ng", "pairs": [["sin", "sing"], ["thin", "thing"], ["win", "wing"], ["ran", "rang"], ["ban", "bang"], ["kin", "king"], ["sun", "sung"]] },
+        { "with": "m", "pairs": [["sun", "some"], ["cane", "came"], ["teen", "team"]] }
+      ],
+      "sentences": [
+        { "en": "Ann needs a new phone.", "es": "Ann necesita un teléfono nuevo." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["ng", "m"],
+      "audio": "n"
+    },
+    {
+      "id": "ng",
+      "ipa": "ŋ",
+      "azure": ["ŋ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 3 },
+      "keyword": "sing",
+      "nameEs": "ng",
+      "level": "A2",
+      "difficulty": 2,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "velar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La parte de atrás de la lengua sube al fondo del paladar; el aire sale por la nariz.",
+        "voiceEs": "Con voz. Al final, sin «g» fuerte."
+      },
+      "tipShortEs": "«n» al fondo de la boca, sin «g» fuerte al final: sing",
+      "explanationEs": [
+        "La parte de atrás de la lengua sube y toca el fondo del paladar, y el sonido sale por la nariz. Ya la haces en «tengo» o «banco».",
+        "Al final de palabra no sueltes una «g»: sing, no «sing-g». Y no la cambies por n: thing no es thin."
+      ],
+      "spanishEs": "Sí la tienes: es la n de «tengo», «banco» o «mango».",
+      "mistakeEs": "Cambiarla por n (goin por going) o añadir una «g» fuerte al final.",
+      "spellings": [
+        { "pattern": "ng", "examples": ["sing", "long"] },
+        { "pattern": "n", "examples": ["think", "bank", "finger"] }
+      ],
+      "examples": {
+        "initial": [],
+        "medial": ["singer", "finger", "English", "bank"],
+        "final": ["sing", "long", "going", "morning"]
+      },
+      "positionNoteEs": "Nunca va al principio de palabra.",
+      "minimalPairs": [
+        { "with": "n", "pairs": [["sing", "sin"], ["thing", "thin"], ["wing", "win"], ["rang", "ran"], ["bang", "ban"], ["king", "kin"], ["sung", "sun"]] }
+      ],
+      "sentences": [
+        { "en": "The king is singing a long song.", "es": "El rey canta una canción larga." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["n", "g", "k"],
+      "audio": "ng"
+    },
+    {
+      "id": "hh",
+      "ipa": "h",
+      "azure": ["h"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 4 },
+      "keyword": "house",
+      "nameEs": "h con aire",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": false,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "open",
+        "place": "glottal",
+        "lipsEs": "Boca abierta para la vocal que sigue.",
+        "tongueEs": "La lengua no hace nada: el aire sale de la garganta.",
+        "voiceEs": "Sin voz: solo aire, como al empañar un espejo."
+      },
+      "tipShortEs": "solo aire, como al empañar un espejo; no raspes: house",
+      "explanationEs": [
+        "Abre la boca y suelta aire desde la garganta, sin roce, como cuando empañas un espejo.",
+        "No la calles (hair no es air) y no la raspes como una jota fuerte: es mucho más suave."
+      ],
+      "spanishEs": "La h española es muda. Esta es solo aire: se parece a la «j» suave del Caribe, Colombia o Centroamérica, no a la «j» raspada.",
+      "mistakeEs": "Callarla (hair suena air) o rasparla («jáppi» por happy).",
+      "spellings": [
+        { "pattern": "h", "examples": ["house", "hat"] },
+        { "pattern": "wh", "examples": ["who", "whole"] }
+      ],
+      "examples": {
+        "initial": ["hat", "house", "who", "happy"],
+        "medial": ["ahead", "behind", "perhaps"],
+        "final": []
+      },
+      "positionNoteEs": "Nunca suena al final de palabra (en high o through la h no se dice).",
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "His house is behind the hill.", "es": "Su casa está detrás de la colina." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["k"],
+      "audio": "hh"
+    },
+    {
+      "id": "l",
+      "ipa": "l",
+      "azure": ["l"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 5 },
+      "keyword": "light",
+      "nameEs": "l",
+      "level": "A2",
+      "difficulty": 2,
+      "priority": "P3",
+      "voiced": true,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La punta de la lengua en las encías de arriba; tras vocal, la parte de atrás también sube.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "al principio como en español; al final, más hueca, casi «u»: feel",
+      "explanationEs": [
+        "Al principio de sílaba es como la «l» española: light, look.",
+        "Después de vocal (feel, call, milk, people) la parte de atrás de la lengua también sube y suena más hueca, casi con una «u» delante. Es la «l oscura»."
+      ],
+      "spanishEs": "La del principio es igual que la española; la «l oscura» del final no existe en español.",
+      "mistakeEs": "Decir todas las l claras y cortas: feel y call suenan poco naturales.",
+      "spellings": [
+        { "pattern": "l", "examples": ["light", "love"] },
+        { "pattern": "ll", "examples": ["hello", "call"] }
+      ],
+      "examples": {
+        "initial": ["light", "look", "love"],
+        "medial": ["hello", "color", "only"],
+        "final": ["feel", "call", "people", "milk"]
+      },
+      "minimalPairs": [
+        { "with": "r", "pairs": [["light", "right"], ["led", "red"], ["load", "road"], ["play", "pray"], ["glass", "grass"], ["collect", "correct"]] }
+      ],
+      "sentences": [
+        { "en": "Lily likes little yellow lemons.", "es": "A Lily le gustan los limones amarillos pequeños." }
+      ],
+      "ukNoteEs": "En británico la l del principio es más clara y la del final, algo menos oscura.",
+      "related": ["r"],
+      "audio": "l"
+    },
+    {
+      "id": "r",
+      "ipa": "ɹ",
+      "azure": ["ɹ"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 6 },
+      "keyword": "red",
+      "nameEs": "r americana",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": true,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "mid",
+        "place": "postalveolar",
+        "lipsEs": "Labios un poco redondos.",
+        "tongueEs": "La punta se curva hacia atrás (o la lengua se amontona atrás) sin tocar nada.",
+        "voiceEs": "Con voz. Nunca vibra ni golpea."
+      },
+      "tipShortEs": "«r» sin vibrar: la lengua no toca nada: red",
+      "explanationEs": [
+        "Curva la punta de la lengua hacia atrás sin tocar el paladar, o amontónala atrás, y redondea un poco los labios. La lengua nunca golpea ni vibra.",
+        "En americano se pronuncia siempre, también al final: car, more, here."
+      ],
+      "spanishEs": "No existe en español. Curiosidad: el golpe de la «r» de «pero» es justo la t suave americana de water.",
+      "mistakeEs": "Usar la r de «pero» o la de «perro»: suenan muy extranjeras.",
+      "spellings": [
+        { "pattern": "r", "examples": ["red", "run"] },
+        { "pattern": "rr", "examples": ["sorry", "carry"] },
+        { "pattern": "wr", "examples": ["write", "wrong"] }
+      ],
+      "examples": {
+        "initial": ["red", "right", "run"],
+        "medial": ["very", "sorry", "around"],
+        "final": ["car", "more", "here"]
+      },
+      "minimalPairs": [
+        { "with": "l", "pairs": [["right", "light"], ["red", "led"], ["road", "load"], ["pray", "play"], ["grass", "glass"], ["correct", "collect"]] },
+        { "with": "w", "pairs": [["ring", "wing"], ["rest", "west"], ["red", "wed"]] }
+      ],
+      "sentences": [
+        { "en": "Rita runs around the red car.", "es": "Rita corre alrededor del carro rojo." }
+      ],
+      "ukNoteEs": "En británico solo suena antes de vocal: en car o more no se dice.",
+      "related": ["l", "w", "er"]
+    },
+    {
+      "id": "w",
+      "ipa": "w",
+      "azure": ["w"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 7 },
+      "keyword": "we",
+      "nameEs": "w",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P2",
+      "voiced": true,
+      "articulation": {
+        "lips": "rounded",
+        "jaw": "close",
+        "place": "labio-velar",
+        "lipsEs": "Labios muy redondos que se abren rápido.",
+        "tongueEs": "La parte de atrás de la lengua sube un poco, sin tocar.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "labios redondos, una «u» rapidísima, sin «g»: we, would",
+      "explanationEs": [
+        "Redondea mucho los labios y ábrelos rápido hacia la vocal: es una «u» cortísima delante.",
+        "No metas una «g»: would no es «güud» y woman no es «guoman»."
+      ],
+      "spanishEs": "Es el «hu» de «huevo», pero sin «g».",
+      "mistakeEs": "Poner una «g» delante (wood suena good) o una b (west suena vest).",
+      "spellings": [
+        { "pattern": "w", "examples": ["we", "water"] },
+        { "pattern": "wh", "examples": ["why", "what"] },
+        { "pattern": "u", "examples": ["quick", "language"] },
+        { "pattern": "o", "examples": ["one", "once"] }
+      ],
+      "examples": {
+        "initial": ["we", "water", "one", "why"],
+        "medial": ["away", "between", "language"],
+        "final": []
+      },
+      "positionNoteEs": "No va al final de palabra como consonante (en now o show, la w es parte de la vocal).",
+      "minimalPairs": [
+        { "with": "v", "pairs": [["west", "vest"], ["wine", "vine"], ["wet", "vet"]] },
+        { "with": "g", "pairs": [["wood", "good"], ["west", "guest"], ["wait", "gate"]] }
+      ],
+      "sentences": [
+        { "en": "We went for a walk with Will.", "es": "Fuimos a caminar con Will." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["v", "r", "uw"],
+      "audio": "w"
+    },
+    {
+      "id": "y",
+      "ipa": "j",
+      "azure": ["j"],
+      "kind": "consonant",
+      "chart": { "block": "consonants", "row": 3, "col": 8 },
+      "keyword": "yes",
+      "nameEs": "y suave",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P2",
+      "voiced": true,
+      "articulation": {
+        "lips": "spread",
+        "jaw": "close",
+        "place": "palatal",
+        "lipsEs": "Labios estirados, como para «i».",
+        "tongueEs": "La lengua se acerca al paladar sin tocarlo, sin roce.",
+        "voiceEs": "Con voz."
+      },
+      "tipShortEs": "una «i» rapidísima antes de la vocal, sin endurecer: yes",
+      "explanationEs": [
+        "Es una «i» cortísima delante de la vocal: la lengua se acerca al paladar sin tocarlo.",
+        "No la endurezcas como la «y» fuerte de «yo»: yes (sí) se vuelve Jess, y yet se vuelve jet."
+      ],
+      "spanishEs": "Es la «i» de «tierra», «bien» o «pie», no la «y» fuerte de «yo».",
+      "mistakeEs": "Endurecerla (yes suena Jess) o comérsela delante de «i» (year suena ear).",
+      "spellings": [
+        { "pattern": "y", "examples": ["yes", "you"] },
+        { "pattern": "u", "examples": ["music", "cute"] },
+        { "pattern": "ew", "examples": ["few"] },
+        { "pattern": "i", "examples": ["onion", "million"] }
+      ],
+      "examples": {
+        "initial": ["yes", "you", "year", "young"],
+        "medial": ["canyon", "onion", "million"],
+        "final": []
+      },
+      "positionNoteEs": "No va al final de palabra como consonante (en day o my, la y es parte de la vocal).",
+      "minimalPairs": [
+        { "with": "jh", "pairs": [["yet", "jet"], ["yes", "Jess"], ["yolk", "joke"], ["Yale", "jail"], ["yam", "jam"]] }
+      ],
+      "sentences": [
+        { "en": "Yes, I’ll see you next year.", "es": "Sí, te veo el año que viene." }
+      ],
+      "ukNoteEs": "Igual en británico.",
+      "related": ["jh", "iy"],
+      "audio": "y"
+    },
+    {
+      "id": "s-cluster",
+      "ipa": "s+cons.",
+      "azure": [],
+      "kind": "feature",
+      "keyword": "school",
+      "nameEs": "s + consonante (sin «e» delante)",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "close",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos: no abras la boca para una «e».",
+        "tongueEs": "La lengua ya en posición de s desde el principio.",
+        "voiceEs": "Empieza directamente con el siseo."
+      },
+      "tipShortEs": "no digas «es-»: empieza directamente con la s (Spain, no Espain)",
+      "explanationEs": [
+        "En español ninguna palabra empieza por s + consonante, así que sale una «e» delante: «eschool», «Espain». En inglés no hay «e».",
+        "Truco: alarga la s y empieza ahí, «sss-chool», o únela a la palabra de antes: my school suena «mai-schul»."
+      ],
+      "spanishEs": "El español pone una «e» delante: escuela, estudiar, espacio.",
+      "mistakeEs": "Decir «eschool», «Espain» o «estudy»: cambias las sílabas y el ritmo.",
+      "spellings": [
+        { "pattern": "sc / sk", "examples": ["school", "sky"] },
+        { "pattern": "sp", "examples": ["Spain", "speak"] },
+        { "pattern": "st", "examples": ["star", "study"] },
+        { "pattern": "sm", "examples": ["small"] },
+        { "pattern": "sn", "examples": ["snow"] },
+        { "pattern": "sl", "examples": ["sleep"] },
+        { "pattern": "sw", "examples": ["sweet"] }
+      ],
+      "examples": {
+        "initial": ["school", "Spain", "star", "study", "speak", "small"],
+        "medial": [],
+        "final": []
+      },
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "Students speak Spanish at school.", "es": "Los estudiantes hablan español en la escuela." }
+      ],
+      "related": ["s"]
+    },
+    {
+      "id": "ed",
+      "ipa": "-ed",
+      "azure": [],
+      "kind": "feature",
+      "keyword": "worked",
+      "nameEs": "la -ed del pasado",
+      "level": "A1",
+      "difficulty": 3,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "mid",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La lengua termina en las encías de arriba: /t/ o /d/.",
+        "voiceEs": "/t/ sin voz tras un sonido sordo; /d/ con voz tras uno sonoro."
+      },
+      "tipShortEs": "la -ed suena /t/ o /d/, sin sílaba de más: worked es una sílaba",
+      "explanationEs": [
+        "La -ed casi nunca es una sílaba: worked suena «workt» y played suena «pleid». Tras un sonido sin voz (k, p, s, sh, ch, f) suena /t/; tras uno con voz, /d/.",
+        "Solo es una sílaba más, /ɪd/, después de t o d: wanted, needed."
+      ],
+      "spanishEs": "En español suenan todas las letras escritas; aquí la e de -ed casi nunca se dice.",
+      "mistakeEs": "Decir «work-ed» con una sílaba de más, o comerse la -ed: I work yesterday.",
+      "spellings": [
+        { "pattern": "-ed", "examples": ["worked", "played", "wanted"] },
+        { "pattern": "-d", "examples": ["lived", "changed"] }
+      ],
+      "examples": {
+        "initial": [],
+        "medial": [],
+        "final": ["worked", "played", "wanted", "stopped", "cleaned", "needed"]
+      },
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "I walked home and cooked dinner.", "es": "Caminé a casa y preparé la cena." }
+      ],
+      "related": ["t", "d", "s-ending"]
+    },
+    {
+      "id": "s-ending",
+      "ipa": "-s",
+      "azure": [],
+      "kind": "feature",
+      "keyword": "dogs",
+      "nameEs": "la -s final",
+      "level": "A1",
+      "difficulty": 2,
+      "priority": "P1",
+      "voiced": null,
+      "articulation": {
+        "lips": "neutral",
+        "jaw": "close",
+        "place": "alveolar",
+        "lipsEs": "Labios sueltos.",
+        "tongueEs": "La lengua como para la s.",
+        "voiceEs": "/s/ sin voz, /z/ con zumbido o /ɪz/ con una sílaba más."
+      },
+      "tipShortEs": "-s: /s/ tras sonido sordo, /z/ tras sonoro, /ɪz/ tras s, sh o ch: buses",
+      "explanationEs": [
+        "La -s del plural, de he works o de John’s suena de tres formas: /s/ tras un sonido sin voz (cats, books), /z/ tras uno con voz (dogs, plays) y /ɪz/, con una sílaba más, tras s, z, sh, ch o j (buses, watches).",
+        "No te la comas: cat y cats, o he work y he works, son distintas."
+      ],
+      "spanishEs": "En español la -s siempre suena /s/, y en muchos países se aspira o se pierde al final («loh gato»).",
+      "mistakeEs": "Comérsela (two cat) o decir siempre /s/ (dogs con s).",
+      "spellings": [
+        { "pattern": "-s", "examples": ["cats", "dogs"] },
+        { "pattern": "-es", "examples": ["buses", "watches"] },
+        { "pattern": "-’s", "examples": ["John’s"] }
+      ],
+      "examples": {
+        "initial": [],
+        "medial": [],
+        "final": ["cats", "dogs", "buses", "watches", "books", "plays"]
+      },
+      "minimalPairs": [],
+      "sentences": [
+        { "en": "She works and watches movies.", "es": "Ella trabaja y ve películas." }
+      ],
+      "related": ["s", "z", "ed"]
+    }
+  ]
+}

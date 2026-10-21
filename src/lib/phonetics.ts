@@ -1,7 +1,7 @@
 import { hasMonitor, monthUsage, type Usage } from './azureUsage'
-import { AzureError, assessPronunciation, type PronResult } from './pronunciation'
+import { AzureError, assessPronunciation, assessWord, type PronResult, type WordScore } from './pronunciation'
 import type { Settings } from './settings'
-import { toWav16k } from './wav'
+import { toWav16k, WORD_PAD_MS } from './wav'
 
 // Política del corrector fonético (Azure). Es opcional: sin credenciales o desactivado, todo va solo con Gemini.
 // El plan elegido en Ajustes solo REFLEJA el plan del recurso de Azure; cambiarlo se hace en el portal de Azure.
@@ -108,14 +108,36 @@ export function runPhonetics(
   reference: () => Promise<string>,
 ): Promise<PronResult | string> | null {
   if (!phoneticsActive(s)) return null
-  return (async () => (await assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(blob), reference)) ?? 'Azure no oyó habla clara en este audio')().catch(
-    (e) => {
-      if (e instanceof AzureError && e.kind === 'quota') {
-        // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
-        update(quotaExhaustedPatch())
-        reportPhoneticsQuota()
-      } else console.warn('[HABLA-NET] azure:', (e as Error).message)
-      return e instanceof AzureError ? e.message : 'No se pudo preparar el audio para Azure'
-    },
+  return (async () => (await assessPronunciation(s.azureKey, s.azureRegion, await toWav16k(blob), reference)) ?? NO_SPEECH)().catch(azureFailure(update))
+}
+
+const NO_SPEECH = 'Azure no oyó habla clara en este audio'
+
+/** Fallo de Azure → texto para el alumno. Con el F0 agotado apaga la fonética y avisa a la mascota. */
+const azureFailure = (update: (p: Partial<Settings>) => void) => (e: unknown) => {
+  if (e instanceof AzureError && e.kind === 'quota') {
+    // F0 agotado este mes: se apaga la fonética, sigue solo Gemini y la mascota avisa.
+    update(quotaExhaustedPatch())
+    reportPhoneticsQuota()
+  } else console.warn('[HABLA-NET] azure:', (e as Error).message)
+  return e instanceof AzureError ? e.message : 'No se pudo preparar el audio para Azure'
+}
+
+/**
+ * 5.11 (S-06): nota de una palabra o frase conocida en Sonidos (`say-word`, `say-pair`), con la MISMA política que la
+ * clase: null si la fonética está apagada, sin Azure o con el F0 agotado este mes (no llama: «sin nota», y Sonidos
+ * ofrece «Escúchate»); el texto del motivo si Azure falla o no oyó habla. Una sola petición, con 300 ms de silencio
+ * delante y detrás. `target` es el sonido que se practica, en IPA (`/θ/` → 'θ').
+ */
+export function runWordPhonetics(
+  s: Settings,
+  update: (p: Partial<Settings>) => void,
+  blob: Blob,
+  reference: string,
+  target?: string,
+): Promise<WordScore | string> | null {
+  if (!phoneticsActive(s) || !reference.trim()) return null
+  return (async () => (await assessWord(s.azureKey, s.azureRegion, await toWav16k(blob, { padMs: WORD_PAD_MS }), reference, target)) ?? NO_SPEECH)().catch(
+    azureFailure(update),
   )
 }

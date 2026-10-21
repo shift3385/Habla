@@ -1,0 +1,53 @@
+{
+  "families": [
+    { "id": "ey", "ipa": "eɪ", "labelEs": "«ei»", "letters": ["A", "H", "J", "K"] },
+    { "id": "iy", "ipa": "iː", "labelEs": "«i»", "letters": ["B", "C", "D", "E", "G", "P", "T", "V", "Z"] },
+    { "id": "eh", "ipa": "ɛ", "labelEs": "«e»", "letters": ["F", "L", "M", "N", "S", "X"] },
+    { "id": "ay", "ipa": "aɪ", "labelEs": "«ai»", "letters": ["I", "Y"] },
+    { "id": "ow", "ipa": "oʊ", "labelEs": "«ou»", "letters": ["O"] },
+    { "id": "uw", "ipa": "uː", "labelEs": "«iu»", "letters": ["Q", "U", "W"] },
+    { "id": "ar", "ipa": "ɑɹ", "labelEs": "«ar»", "letters": ["R"] }
+  ],
+  "letters": [
+    { "letter": "A", "ipa": "eɪ", "family": "ey", "soundsLikeEs": "«ei»", "ttsText": "A.", "trapEs": "Se dice «ei», no «a».", "confusedWith": ["E", "H"] },
+    { "letter": "B", "ipa": "biː", "family": "iy", "soundsLikeEs": "«bi»", "ttsText": "B.", "trapEs": "Con los labios bien cerrados; no es «vi».", "confusedWith": ["V"] },
+    { "letter": "C", "ipa": "siː", "family": "iy", "soundsLikeEs": "«si»", "ttsText": "C.", "confusedWith": ["Z"] },
+    { "letter": "D", "ipa": "diː", "family": "iy", "soundsLikeEs": "«di»", "ttsText": "D." },
+    { "letter": "E", "ipa": "iː", "family": "iy", "soundsLikeEs": "«i»", "ttsText": "E.", "trapEs": "La trampa n.º 1: la E se dice «i» (y la I se dice «ai»).", "confusedWith": ["I", "A"] },
+    { "letter": "F", "ipa": "ɛf", "family": "eh", "soundsLikeEs": "«ef»", "ttsText": "F." },
+    { "letter": "G", "ipa": "dʒiː", "family": "iy", "soundsLikeEs": "«yi»", "ttsText": "G.", "trapEs": "G es «yi» y J es «yei»: no las cambies.", "confusedWith": ["J"] },
+    { "letter": "H", "ipa": "eɪtʃ", "family": "ey", "soundsLikeEs": "«eich»", "ttsText": "H.", "trapEs": "Se dice «eich», no «hache».", "confusedWith": ["A"] },
+    { "letter": "I", "ipa": "aɪ", "family": "ay", "soundsLikeEs": "«ai»", "ttsText": "I.", "trapEs": "Se dice «ai», no «i».", "confusedWith": ["E", "Y"] },
+    { "letter": "J", "ipa": "dʒeɪ", "family": "ey", "soundsLikeEs": "«yei»", "ttsText": "J.", "trapEs": "Se dice «yei», con una «y» fuerte; no es «jota».", "confusedWith": ["G"] },
+    { "letter": "K", "ipa": "keɪ", "family": "ey", "soundsLikeEs": "«kei»", "ttsText": "K." },
+    { "letter": "L", "ipa": "ɛl", "family": "eh", "soundsLikeEs": "«el»", "ttsText": "L." },
+    { "letter": "M", "ipa": "ɛm", "family": "eh", "soundsLikeEs": "«em»", "ttsText": "M.", "trapEs": "Termina con los labios cerrados.", "confusedWith": ["N"] },
+    { "letter": "N", "ipa": "ɛn", "family": "eh", "soundsLikeEs": "«en»", "ttsText": "N.", "trapEs": "Termina con la lengua arriba, la boca abierta.", "confusedWith": ["M"] },
+    { "letter": "O", "ipa": "oʊ", "family": "ow", "soundsLikeEs": "«ou»", "ttsText": "O.", "trapEs": "Termina cerrando los labios: «ou», no «o» seca." },
+    { "letter": "P", "ipa": "piː", "family": "iy", "soundsLikeEs": "«pi»", "ttsText": "P.", "trapEs": "Con un soplo de aire, si no suena «bi».", "confusedWith": ["B"] },
+    { "letter": "Q", "ipa": "kjuː", "family": "uw", "soundsLikeEs": "«kiu»", "ttsText": "Q." },
+    { "letter": "R", "ipa": "ɑɹ", "family": "ar", "soundsLikeEs": "«ar»", "ttsText": "R.", "trapEs": "Sin vibrar la r: la lengua se recoge y no toca nada." },
+    { "letter": "S", "ipa": "ɛs", "family": "eh", "soundsLikeEs": "«es»", "ttsText": "S." },
+    { "letter": "T", "ipa": "tiː", "family": "iy", "soundsLikeEs": "«ti»", "ttsText": "T." },
+    { "letter": "U", "ipa": "juː", "family": "uw", "soundsLikeEs": "«iu»", "ttsText": "U.", "trapEs": "Se dice «iu», no «u».", "confusedWith": ["W"] },
+    { "letter": "V", "ipa": "viː", "family": "iy", "soundsLikeEs": "«vi»", "ttsText": "V.", "trapEs": "Con el labio de abajo en los dientes, y vibrando; no es «bi».", "confusedWith": ["B"] },
+    { "letter": "W", "ipa": "ˈdʌbəljuː", "family": "uw", "soundsLikeEs": "«dábel-iu»", "ttsText": "W.", "trapEs": "Es «double u»: «dábel-iu».", "confusedWith": ["U"] },
+    { "letter": "X", "ipa": "ɛks", "family": "eh", "soundsLikeEs": "«eks»", "ttsText": "X." },
+    { "letter": "Y", "ipa": "waɪ", "family": "ay", "soundsLikeEs": "«uai»", "ttsText": "Y.", "trapEs": "Se dice «uai», no «i griega».", "confusedWith": ["I"] },
+    { "letter": "Z", "ipa": "ziː", "family": "iy", "soundsLikeEs": "«zi» (con zumbido)", "ttsText": "Z.", "trapEs": "«zi» con zumbido en EE. UU.; en el Reino Unido es «zed».", "confusedWith": ["C"] }
+  ],
+  "spellingPhrases": [
+    { "en": "How do you spell that?", "es": "¿Cómo se escribe eso?" },
+    { "en": "Could you spell your last name, please?", "es": "¿Me deletreas tu apellido, por favor?" },
+    { "en": "It's spelled M, I, double S, I, double S, I, double P, I.", "es": "Se escribe M, I, doble S, I, doble S, I, doble P, I." },
+    { "en": "B as in boy.", "es": "B de boy (para aclarar una letra)." },
+    { "en": "All lowercase.", "es": "Todo en minúsculas." }
+  ],
+  "symbols": [
+    { "symbol": "@", "en": "at", "es": "arroba" },
+    { "symbol": ".", "en": "dot", "es": "punto (en correos y webs)" },
+    { "symbol": "-", "en": "dash", "es": "guion" },
+    { "symbol": "_", "en": "underscore", "es": "guion bajo" },
+    { "symbol": "/", "en": "slash", "es": "barra" }
+  ]
+}
