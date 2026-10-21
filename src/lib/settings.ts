@@ -1,5 +1,6 @@
 import { Preferences } from '@capacitor/preferences'
 import { normalizeTheme, type Mode, type TeacherKey, type ThemeKey } from '../ui/theme'
+import { ALL_EFFECTS, normalizeEffects, type Effects } from './effects'
 import { DEFAULT_FALLBACK_MODEL, DEFAULT_MODEL, type Models } from './gemini'
 import type { OrientationMode } from './orientation'
 import type { AzurePlan } from './phonetics'
@@ -33,6 +34,7 @@ export interface Settings {
   retestSnoozed: string // día (AAAA-MM-DD) en que dijo "Más tarde" al re-test
   homeworkSeen: number // fecha de la última tarea ya enseñada antes del Inicio
   orientation: OrientationMode // automática, vertical u horizontal forzada (Apariencia)
+  effects: Effects // 5.11.x: modo ligero, efectos visuales por grupos (lib/effects.ts); todo encendido por defecto
   fontScale: number // 5.10.1 (REG-M-05): tamaño de letra (0,9 · 1 · 1,15 · 1,3), × la letra del sistema (lib/fontScale.ts)
   // Corrector fonético con Azure Speech (Ajustes → Modelos). Claves y secretos: mismo almacenamiento y misma
   // protección con el bloqueo del teléfono que la clave de Gemini; nunca en el código ni en las copias.
@@ -80,6 +82,7 @@ const DEFAULTS: Settings = {
   retestSnoozed: '',
   homeworkSeen: 0,
   orientation: 'auto',
+  effects: { ...ALL_EFFECTS },
   azureKey: '',
   azureRegion: '',
   azurePlan: 'F0',
@@ -109,6 +112,7 @@ export async function loadSettings(): Promise<Settings> {
       if (stored[k] !== undefined) (s as Record<string, unknown>)[k] = stored[k]
     }
     s.theme = normalizeTheme(s.theme) // Aurora (v3) ya no existe: pasa a Marea
+    s.effects = normalizeEffects(s.effects) // un grupo nuevo llega encendido a las instalaciones antiguas
     return s
   } catch {
     return { ...DEFAULTS }

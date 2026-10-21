@@ -46,6 +46,8 @@ import { onOpenSound } from './lib/soundLink'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, THEME_INFO, themeVars } from './ui/theme'
 import { applyFontScale } from './lib/fontScale'
+import { applyEffects, normalizeEffects } from './lib/effects'
+import { setMascotStill } from './ui/Mascot'
 
 // 5.11 (Sonidos): la hoja de Sonidos se carga la primera vez que se abre (no pesa en el arranque).
 const SoundSheet = lazy(() => import('./components/SoundSheet'))
@@ -273,6 +275,13 @@ export default function App() {
   useEffect(() => {
     applyFontScale(fontScale)
   }, [fontScale])
+  // 5.11.x: modo ligero (Apariencia → Rendimiento): cada grupo de efectos apagado es una clase en <html>.
+  const effectsKey = JSON.stringify(settings?.effects ?? null)
+  useEffect(() => {
+    const e = normalizeEffects(JSON.parse(effectsKey))
+    applyEffects(e)
+    setMascotStill(!e.mascot)
+  }, [effectsKey])
   // Orientación elegida en Apariencia (p. ej. horizontal fija si el teléfono no gira).
   const orientation = settings?.orientation ?? 'auto'
   useEffect(() => {

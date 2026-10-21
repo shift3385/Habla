@@ -6,10 +6,12 @@ import type { ThemeVars } from './theme'
  * cada fotograma (≈1 núcleo en reposo en el POCO); quietas, el WebView las pinta una vez y las reutiliza.
  */
 export default function Background({ t }: { t: ThemeVars }) {
-  const blob = (style: React.CSSProperties) => <div style={{ position: 'absolute', borderRadius: '50%', ...style }} />
+  // 5.11.x (modo ligero): `bg-blob` y `bg-root` permiten cambiar las manchas por un degradado (index.css, .fx-no-bg).
+  const blob = (style: React.CSSProperties) => <div className="bg-blob" style={{ position: 'absolute', borderRadius: '50%', ...style }} />
   return (
     <div
       aria-hidden
+      className="bg-root"
       style={{ position: 'fixed', inset: 0, background: t.bg, overflow: 'hidden', zIndex: 0, transition: 'background .4s' }}
     >
       {blob({ width: 420, height: 420, left: -150, top: -70, background: t.b1, filter: 'blur(70px)', opacity: 0.85 })}

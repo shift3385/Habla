@@ -92,9 +92,21 @@ export function themeVars(theme: ThemeKey, mode: Mode): ThemeVars {
 }
 
 /** Variables CSS para el contenedor raíz. */
+/** Mezcla dos colores #rrggbb (k = peso del segundo). */
+function mixHex(a: string, b: string, k: number): string {
+  const p = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))
+  const [x, y] = [p(a), p(b)]
+  return '#' + x.map((v, i) => Math.round(v * (1 - k) + y[i] * k).toString(16).padStart(2, '0')).join('')
+}
+
 export function cssVars(t: ThemeVars): Record<string, string> {
   const light = t.tx !== '#ffffff'
+  // 5.11.x (modo ligero): el cristal sin desenfoque pasa a un color liso del mismo tono (fondo con un toque de la mancha
+  // principal y el blanco del cristal), y el fondo sin manchas, a un degradado suave desde ese toque de color.
+  const tint = mixHex(t.bg, t.b1, light ? 0.18 : 0.14)
   return {
+    '--gs': mixHex(tint, '#ffffff', light ? 0.55 : 0.07),
+    '--bgt': mixHex(t.bg, t.b1, light ? 0.45 : 0.3),
     // 5.10.1 (REG-A4-03): verde/rojo de «bien»/«mal» legibles en los temas claros (≥ 5:1 sobre el cristal; antes
     // #22c58b y #f87171 daban 2,1–2,7:1). En oscuro, los de siempre (6–8:1).
     '--ok': light ? '#0b7a53' : '#22c58b',

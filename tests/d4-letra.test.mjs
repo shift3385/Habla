@@ -98,5 +98,7 @@ test('Ajustes: «Tema y mascota» pasa a «Apariencia» con «Tamaño de letra»
   assert.match(s, /look: \{ title: 'Apariencia'/)
   assert.match(s, /Tamaño de letra/)
   assert.match(s, /Vista previa/)
-  assert.doesNotMatch(s, /'Tema y mascota'/)
+  // 5.11.x: «Tema y mascota» vuelve, pero como subsección de Apariencia (menú), no como nombre de la sección.
+  assert.doesNotMatch(s, /look: \{ title: 'Tema y mascota'/)
+  assert.match(s, /lookTheme: \{ title: 'Tema y mascota'/)
 })

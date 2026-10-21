@@ -6,6 +6,7 @@ import { speakUS, stopSpeaking, toggleSpeakUS, useSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot, { type MascotElement } from '../ui/Mascot'
 import SpeakIcon from './SpeakIcon'
+import { scrollBehavior } from '../lib/effects' // 5.11.x: sin desplazamiento suave en modo ligero
 
 // 5.11 (S-10): ejercicios de escuchar y clasificar de Sonidos, todos por toques (nada de arrastrar en 320 px).
 // Cada uno avisa al terminar con `onDone({ correct, total })`; la lección suma y guarda el progreso.
@@ -23,7 +24,7 @@ interface Common {
 
 const OK = 'var(--ok)'
 const BAD = 'var(--bad)'
-const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() })
 
 /** Globo de la mascota tras responder (acierto o fallo), con «Siguiente». */
 function Feedback({ ok, mascot, mascotName, children, next, nextLabel = 'Siguiente' }: { ok: boolean; mascot: MascotElement; mascotName: string; children?: ReactNode; next: () => void; nextLabel?: string }) {

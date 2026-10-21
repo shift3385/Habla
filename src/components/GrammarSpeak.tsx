@@ -21,9 +21,10 @@ import SpeakIcon from './SpeakIcon'
 import { MAX_TALK_SECONDS } from './TalkButton'
 import { DISCARD_HINTS, logDiscard, MIN_SEND_MS } from './talkGesture'
 import { holdRoute } from '../lib/audioRoute'
+import { scrollBehavior } from '../lib/effects' // 5.11.x: sin desplazamiento suave en modo ligero
 
 /** El resultado se desplaza a la vista al aparecer (estable: solo al montar). */
-const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() })
 
 // 5.10.1 (REG-A4-02, P7): 'opening' mientras abre el micro («Abriendo el micro… espera», sin aceptar toques).
 type Step = 'ask' | 'opening' | 'recording' | 'checking' | 'result'

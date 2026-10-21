@@ -6,9 +6,10 @@ import { toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot, { type MascotElement } from '../ui/Mascot'
 import SpeakIcon from './SpeakIcon'
+import { scrollBehavior } from '../lib/effects' // 5.11.x: sin desplazamiento suave en modo ligero
 
 /** Al aparecer la explicación (o el botón Siguiente), se desplaza a la vista sin quedar bajo la barra de pestañas. */
-const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() })
 
 // 5.10.1 (REG-A4-03): verde y rojo por modo (theme.ts › cssVars): los fijos daban 2,1–2,7:1 en los temas claros.
 const OK = 'var(--ok)'

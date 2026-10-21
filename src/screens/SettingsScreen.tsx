@@ -25,9 +25,13 @@ import Switch from '../ui/Switch'
 import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars, teacherName } from '../ui/theme'
 import Mascot, { type MascotElement } from '../ui/Mascot'
 import { FONT_SCALES, fontScaleCapped, normalizeFontScale, systemFontScale } from '../lib/fontScale'
+import { ALL_EFFECTS, EFFECT_INFO, EFFECT_KEYS, effectsPreset, LIGHT_EFFECTS, looksModest, normalizeEffects, type EffectKey } from '../lib/effects'
 import MascotPage from '../components/MascotPage'
 
-export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag'
+export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag' | LookSub
+// 5.11.x: Apariencia crecía con cada versión (letra, temas, modo, orientación, globos y ahora el modo ligero): es un
+// menú con secciones (EVALUACION.md §5).
+type LookSub = 'lookTheme' | 'lookFont' | 'lookFx' | 'lookScreen'
 type Page = SettingsPage
 
 const PAGES: Record<Page, { title: string; icon: IconName }> = {
@@ -39,7 +43,13 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   gemini: { title: 'Modelos', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
   diag: { title: 'Diagnóstico', icon: 'chart' },
+  lookTheme: { title: 'Tema y mascota', icon: 'palette' },
+  lookFont: { title: 'Tamaño de letra', icon: 'book' },
+  lookFx: { title: 'Rendimiento', icon: 'bolt' },
+  lookScreen: { title: 'Pantalla y globos', icon: 'bubble' },
 }
+/** Sección de la que cuelga cada subpágina: Atrás vuelve ahí y no al panel. */
+const PARENT: Partial<Record<Page, Page>> = { lookTheme: 'look', lookFont: 'look', lookFx: 'look', lookScreen: 'look' }
 
 
 type Status = { kind: 'ok' | 'error' | 'info'; text: string } | null
@@ -71,7 +81,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
 
   // Atrás (Android) desde una sección vuelve al panel.
   useEffect(() => {
-    registerBack(page ? () => (dialogBack.current ? dialogBack.current() : setPage(null)) : null)
+    registerBack(page ? () => (dialogBack.current ? dialogBack.current() : setPage(PARENT[page] ?? null)) : null)
     return () => registerBack(null)
   }, [page, registerBack])
 
@@ -81,13 +91,17 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
     return (
       <div key={page} className="anim-in flex flex-col gap-3">
         <div className="flex h-[54px] items-center gap-3">
-          <button onClick={() => setPage(null)} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Atrás">
+          <button onClick={() => setPage(PARENT[page] ?? null)} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Atrás">
             <Icon name="back" size={20} stroke={1.8} />
           </button>
           <div className="text-2xl font-semibold tracking-[-.4px]">{PAGES[page].title}</div>
         </div>
         {page === 'voice' && <VoicePage settings={settings} update={update} />}
-        {page === 'look' && <LookPage settings={settings} update={update} />}
+        {page === 'look' && <LookMenu settings={settings} onOpen={setPage} />}
+        {page === 'lookTheme' && <ThemePage settings={settings} update={update} />}
+        {page === 'lookFont' && <FontSizeCard settings={settings} update={update} />}
+        {page === 'lookFx' && <EffectsPage settings={settings} update={update} />}
+        {page === 'lookScreen' && <ScreenPage settings={settings} update={update} />}
         {page === 'goal' && <GoalPage settings={settings} update={update} />}
         {page === 'profile' && profile && (
           <>
@@ -434,10 +448,108 @@ function FontSizeCard({ settings, update }: { settings: Settings; update: (p: Pa
   )
 }
 
-function LookPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
+/** Una fila del menú de Apariencia: icono, sección y lo que tienes elegido. */
+function MenuRow({ icon, title, value, onClick }: { icon: IconName; title: string; value: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="glass flex min-h-[58px] items-center gap-3 rounded-[29px] px-2.5 py-2 text-left">
+      <span className="field txt-acc2 grid h-[40px] w-[40px] flex-none place-items-center rounded-full">
+        <Icon name={icon} size={18} stroke={1.6} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block fs-15 font-semibold">{title}</span>
+        <span className="txt-sub block fs-12.5 leading-snug">{value}</span>
+      </span>
+      <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
+    </button>
+  )
+}
+
+const PRESET_LABEL = { full: 'Completo: todos los efectos', light: 'Modo ligero', custom: 'A medida' } as const
+
+/** 5.11.x: Apariencia como menú (EVALUACION.md §5): cada sección en su página, con lo elegido a la vista. */
+function LookMenu({ settings, onOpen }: { settings: Settings; onOpen: (p: Page) => void }) {
+  const info = THEME_INFO[settings.theme]
+  const fx = normalizeEffects(settings.effects)
+  const preset = effectsPreset(fx)
+  const off = EFFECT_KEYS.filter((k) => !fx[k]).length
+  const orientation = ORIENTATIONS.find((o) => o.key === settings.orientation)?.title ?? 'Automática'
+  const globes = settings.mascotNotices || settings.mascotAdvice ? 'globos encendidos' : 'sin globos'
   return (
     <>
-      <FontSizeCard settings={settings} update={update} />
+      <MenuRow icon="palette" title="Tema y mascota" value={`${info.mascotName} · ${info.name} · ${settings.mode === 'dark' ? 'oscuro' : 'claro'}`} onClick={() => onOpen('lookTheme')} />
+      <MenuRow icon="book" title="Tamaño de letra" value={fontLabel(settings.fontScale)} onClick={() => onOpen('lookFont')} />
+      <MenuRow
+        icon="bolt"
+        title="Rendimiento"
+        value={preset === 'custom' ? `${PRESET_LABEL.custom}: ${off} de ${EFFECT_KEYS.length} efectos apagados` : PRESET_LABEL[preset]}
+        onClick={() => onOpen('lookFx')}
+      />
+      <MenuRow icon="bubble" title="Pantalla y globos" value={`${orientation} · ${globes}`} onClick={() => onOpen('lookScreen')} />
+      {preset === 'full' && looksModest() && (
+        <div className="tip-bubble rounded-[18px] px-3.5 py-2.5 fs-13 leading-snug">
+          Tu teléfono parece de gama modesta. Si notas la app lenta o que gasta batería, prueba el <b>modo ligero</b> en Rendimiento.
+        </div>
+      )}
+    </>
+  )
+}
+
+/**
+ * 5.11.x · Modo ligero: un interruptor que apaga todo lo decorativo que cuesta pintar (medido en EVALUACION.md §2) y,
+ * debajo, cada grupo por separado. Nada de lo que se apaga cambia cómo funciona la app.
+ */
+function EffectsPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
+  const fx = normalizeEffects(settings.effects)
+  const light = effectsPreset(fx) === 'light'
+  const info = THEME_INFO[settings.theme]
+  return (
+    <>
+      <Card>
+        <button onClick={() => update({ effects: light ? { ...ALL_EFFECTS } : { ...LIGHT_EFFECTS } })} className="flex w-full items-center justify-between gap-3 text-left">
+          <span>
+            <span className="block fs-17 font-semibold">Modo ligero</span>
+            <span className="txt-sub block fs-12.5 leading-snug">
+              Apaga los efectos que más trabajo le dan al teléfono: va más fluida y gasta menos batería. Todo funciona igual.
+            </span>
+          </span>
+          <Switch on={light} />
+        </button>
+      </Card>
+      {!light && looksModest() && (
+        <div className="flex items-start gap-2">
+          <Mascot element={info.mascot} mood="idle" size={40} interactive={false} />
+          <div className="tip-bubble min-w-0 flex-1 rounded-[16px] px-3 py-2 fs-13 leading-snug">
+            Tu teléfono parece de gama modesta: el modo ligero le vendrá bien.
+          </div>
+        </div>
+      )}
+      <Card>
+        <div className="txt-sub text-sm">A medida</div>
+        {(['blur', 'mascot', 'motion', 'background', 'glow'] as EffectKey[]).map((k) => (
+          <button
+            key={k}
+            onClick={() => update({ effects: { ...fx, [k]: !fx[k] } })}
+            className="mt-3 flex w-full items-center justify-between gap-3 text-left fs-15"
+          >
+            <span>
+              {EFFECT_INFO[k].title}
+              <span className="txt-sub block text-xs leading-snug">{EFFECT_INFO[k].desc}</span>
+            </span>
+            <Switch on={fx[k]} />
+          </button>
+        ))}
+        <div className="txt-sub mt-3 fs-12 leading-snug">
+          Ordenados de más a menos ahorro. Los avisos que sí sirven (el anillo de los 60 s, las barras de tu voz, el verde y el
+          rojo de las respuestas, las vibraciones) no se tocan.
+        </div>
+      </Card>
+    </>
+  )
+}
+
+function ThemePage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
+  return (
+    <>
       {THEME_KEYS.map((k) => {
         const info = THEME_INFO[k]
         const sel = settings.theme === k
@@ -484,6 +596,13 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
           ))}
         </div>
       </Card>
+    </>
+  )
+}
+
+function ScreenPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
+  return (
+    <>
       <Card>
         <div className="txt-sub text-sm">Orientación de la pantalla</div>
         <div className="mt-2 grid grid-cols-2 gap-2">

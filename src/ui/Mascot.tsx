@@ -138,12 +138,22 @@ const REDUCED_MS = 250
 const HIDDEN_MS = 500
 const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 const live = new Set<Mascot>()
+// 5.11.x (modo ligero, «Mascota en movimiento» apagada; decisión del dueño): todas las mascotas son una imagen fija en
+// su pose de reposo. Ni vaivén, ni ojos que siguen el dedo, ni partículas, ni reacción animada al tocarlas (el toque
+// sigue funcionando: globos, secreto). Solo se vuelven a dibujar si cambia algo (ánimo, tema, tamaño).
+let still = false
+export function setMascotStill(on: boolean) {
+  if (still === on) return
+  still = on
+  for (const m of live) m.wake()
+}
 let rafId = 0
 let timer = 0
 function schedule() {
   if (rafId || !live.size) return
   let next = Infinity
   for (const m of live) next = Math.min(next, m.nextAt)
+  if (next === Infinity) return // todas quietas: nada que programar hasta que algo las despierte
   const wait = next - performance.now()
   if (timer) clearTimeout(timer)
   timer = 0
@@ -217,6 +227,7 @@ export default class Mascot extends Component<Props> {
     return [((e.clientX - b.left) / b.width) * 220 - 110, ((e.clientY - b.top) / b.height) * 220 - 125]
   }
   onWin = (e: PointerEvent) => {
+    if (still) return
     const p = this.loc(e)
     if (p && this.P) {
       this.P.ptr = p
@@ -514,6 +525,14 @@ export default class Mascot extends Component<Props> {
     // Sin cuerpo dibujado, fuera de la vista o con la app oculta: no se pinta; se vuelve a mirar en medio segundo.
     if (!P || !r.body || !r.body.isConnected || !this.visible || document.hidden) {
       this.nextAt = now + HIDDEN_MS
+      return
+    }
+    if (still) {
+      // Pose de reposo limpia (sin el estado de un toque o de un salto a medias) y un solo dibujo.
+      this.P = this.fresh()
+      this.draw()
+      this.lastDraw = performance.now()
+      this.nextAt = Infinity
       return
     }
     this.draw()

@@ -47,9 +47,11 @@ export const RELEASES: Release[] = [
       'Debajo de tu nota de pronunciación, «Practicar el sonido» te lleva a su ficha',
       'Tu mascota celebra tus logros: rachas, frases repasadas, tu primer tema dominado… Y en Progreso, «Tus logros»',
       'Comodín de racha: un día de descanso a la semana no rompe tu racha',
+      'Modo ligero (Ajustes → Apariencia → Rendimiento): apaga el cristal desenfocado, el fondo de colores, los brillos, las animaciones y el movimiento de la mascota para que la app vaya fluida en teléfonos modestos. Todo funciona igual, y puedes elegir efecto por efecto',
     ],
     improved: [
       'Tu informe te compara contigo: cada cifra con una flecha frente a tu media de las últimas clases',
+      'Apariencia, ordenada en secciones: Tema y mascota, Tamaño de letra, Rendimiento y Pantalla y globos',
       'Tu profe varía: a veces, en vez de preguntarte, te propone un mini-reto',
       'Repaso: de vez en cuando, «Escucha y repite»; y la opción «Que decida Habla» para pasar sola a la siguiente',
       'Tu mascota dice las cosas de varias formas y retira los consejos que ya viste',

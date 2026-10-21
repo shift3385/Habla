@@ -41,6 +41,7 @@ import { Icon, type IconName } from '../ui/icons'
 import Mascot, { type MascotMood } from '../ui/Mascot'
 import { THEME_INFO, type ThemeVars, teacherName, teacherPersona } from '../ui/theme'
 import Wave from '../ui/Wave'
+import { scrollBehavior } from '../lib/effects' // 5.11.x: sin desplazamiento suave en modo ligero
 
 interface SpokenAnswer {
   base64: string
@@ -197,7 +198,7 @@ export default function Conversation({
 
   useEffect(() => {
     const el = listRef.current
-    if (view === 'chat' && el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+    if (view === 'chat' && el) el.scrollTo({ top: el.scrollHeight, behavior: scrollBehavior() })
   }, [turns, phase, ideas, view])
 
   // Cronómetro mientras grabas

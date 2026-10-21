@@ -5,6 +5,7 @@ import Mascot from '../ui/Mascot'
 import FavoritesPicker from '../components/FavoritesPicker'
 import { FAV_COUNT } from '../lib/topics'
 import { THEME_INFO, THEME_KEYS, type Mode, type ThemeKey } from '../ui/theme'
+import { scrollBehavior } from '../lib/effects' // 5.11.x: sin desplazamiento suave en modo ligero
 
 // Bienvenida animada: te recibe la mascota de tu tema (Chispa, Musgo, Gota o Brisa), que cae, rebota y te
 // sigue con los ojos. Usuario nuevo: cuatro pasos (nombre, compañero, a qué se dedica, qué le gusta); al
@@ -120,7 +121,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
     const id = setTimeout(() => {
       // El lienzo alto se desplaza en #root: hasta el final, donde queda el botón con su margen.
       const root = document.getElementById('root')
-      if (root && continueBtn.current) root.scrollTo({ top: root.scrollHeight, behavior: 'smooth' })
+      if (root && continueBtn.current) root.scrollTo({ top: root.scrollHeight, behavior: scrollBehavior() })
     }, 700)
     return () => clearTimeout(id)
   }, [phase])
