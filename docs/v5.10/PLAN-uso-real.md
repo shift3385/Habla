@@ -2,6 +2,7 @@
 
 > **Para continuar en otra sesión:** rama `claude/peaceful-fermi-ua55yq` (= `v5.10-gramatica` + lo de aquí).
 > Escribe: `Lee docs/v5.10/PLAN-uso-real.md y continúa por el primer punto que no esté «hecho».`
+> **2026-10-21:** todo entregado (builds 39–40). Las pruebas en el teléfono quedan **pendientes** por decisión del dueño: `docs/pruebas/PENDIENTES.md`.
 > Cada punto se sube en su propio commit. Comprobar siempre: `npx tsc -b`, `npm run lint` (0 errores), `npm test`,
 > `node scripts/validate-grammar.mjs`.
 

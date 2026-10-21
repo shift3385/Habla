@@ -5,6 +5,14 @@
 > Rama: `v5.11`, creada el 2026-10-21 desde la 5.10.1 commiteada (`307ecd7`, rama `v5.10.1-correcciones`) a petición del dueño; la release y la fusión de la 5.10.1 en `main` siguen pendientes. Sin commits ni push hasta que el dueño apruebe.
 > Estados: `pendiente` → `en desarrollo` → `para revisar` → `en revisión` → `NC` (vuelve a dev) / `aprobada`.
 
+## 🔀 DECISIÓN DEL DUEÑO (2026-10-21, tarde) — qué se hace ahora
+- **Las pruebas en el teléfono quedan pendientes** (no se hacen por ahora): todas reunidas en `docs/pruebas/PENDIENTES.md`
+  (5.11, 5.10.1, 5.10 y E3 de la 5.9.1). Las filas S-00 y MOV siguen «pendiente».
+- **Ahora:** (1) **terminar el modo ligero** partiendo del estudio a medias (`rendimiento/EVALUACION.md`) — estudio y desarrollo;
+  (2) **en paralelo, debatir** cómo representar la boca, la lengua, los labios y la vibración en Sonidos (librería, vídeo
+  corto de 3–5 s o maqueta): `docs/v5.11/sonidos-boca/DEBATE.md`. Sin código de la boca hasta que el dueño decida.
+- Se trabaja en la rama `claude/peaceful-fermi-ua55yq` (= `v5.11` + lo nuevo) desde Claude Cloud.
+
 ## ⏸ PAUSA (2026-10-21, ~11:30, a petición del dueño por el límite de uso) — estado exacto
 - **Git (actualizado 2026-10-21):** ramas **subidas a GitHub**: `v5.10-gramatica` (cd5803a), `v5.10.1-correcciones` (307ecd7) y `v5.11` (esta). `main` intacta (5.9.1). Una sesión de Claude Cloud ya puede trabajar sobre `v5.11`.
 - **Estudio del modo ligero (aprobado por el dueño):** el agente se detuvo a medias (medidas en marcha). Hay borrador en
