@@ -1,7 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
-import { BACKUP_FORMAT, BACKUP_VERSION, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
+import { BACKUP_FORMAT, backupVersionFor, MAX_BACKUP_BYTES, parseBackup, type CheckedBackup } from './backupCheck'
 import { db, TABLES } from './db'
 import { clearSavedClass } from './savedClass'
 import { resetPracticeSeconds } from './stats'
@@ -21,7 +21,9 @@ interface Backup {
 export async function buildBackup(): Promise<Backup> {
   const tables: Record<string, unknown[]> = {}
   for (const t of TABLES) tables[t] = await db.table(t).toArray()
-  return { format: BACKUP_FORMAT, version: BACKUP_VERSION, exportedAt: new Date().toISOString(), tables }
+  // 5.10.1 (REG-A1-07, decisión del dueño): con Gramática la copia es versión 2, así una app 5.8/5.9 dice «Actualiza la
+  // app» en vez de «archivo dañado» (o de perder el progreso de Gramática sin avisar). Sin Gramática sigue siendo 1.
+  return { format: BACKUP_FORMAT, version: backupVersionFor(tables as Parameters<typeof backupVersionFor>[0]), exportedAt: new Date().toISOString(), tables }
 }
 
 export interface ExportResult {
@@ -69,8 +71,47 @@ export async function exportBackup(): Promise<ExportResult> {
     await Share.share({ title: 'Copia de seguridad de Habla', files: [cached.uri] })
   } catch {
     // El usuario cerró el diálogo de compartir: no es un error.
+  } finally {
+    forgetSharedFile(fileName)
   }
   return { savedPath }
+}
+
+/** 5.10.1 (REG-A2-04, FUG-403): archivos que Habla deja en la caché solo para Compartir (copia y resumen del test). */
+export const SHARE_CACHE_FILE = /^habla-(backup|test)-[\w.-]*\.(json|txt)$/
+
+/** Margen antes de borrar: si la app destino (Drive, WhatsApp…) aún lee el archivo, ya tiene su permiso de URI. */
+const SHARE_GRACE_MS = 60_000
+
+/**
+ * 5.10.1 (REG-A2-04, FUG-403): la copia (perfil y todas tus transcripciones en claro) y el resumen del test se quedaban
+ * para siempre en la caché tras Compartir. Se borran 60 s después (el temporizador se congela en segundo plano, así que
+ * en la práctica es al volver a la app) y, por si la app se cerró antes, al siguiente arranque (`cleanShareCache`).
+ */
+export function forgetSharedFile(fileName: string) {
+  setTimeout(() => {
+    Filesystem.deleteFile({ path: fileName, directory: Directory.Cache }).catch(() => {})
+  }, SHARE_GRACE_MS)
+}
+
+/** Al arrancar (App.tsx): borra de la caché las copias y resúmenes compartidos que quedaran. Nunca falla. */
+export async function cleanShareCache(): Promise<number> {
+  if (!Capacitor.isNativePlatform()) return 0
+  let n = 0
+  try {
+    const { files } = await Filesystem.readdir({ path: '', directory: Directory.Cache })
+    for (const f of files) {
+      const name = typeof f === 'string' ? f : f.name
+      if (!SHARE_CACHE_FILE.test(name)) continue
+      await Filesystem.deleteFile({ path: name, directory: Directory.Cache }).then(
+        () => n++,
+        () => {},
+      )
+    }
+  } catch {
+    // Sin caché o sin permiso: no hay nada que limpiar.
+  }
+  return n
 }
 
 export interface ImportSummary {

@@ -7,7 +7,7 @@ import { Icon } from '../ui/icons'
 
 function Chip({ on, label, onClick }: { on: boolean; label: string; onClick: () => void }) {
   return (
-    <button onClick={onClick} className={`flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px] ${on ? 'btn-acc' : 'glass'}`}>
+    <button onClick={onClick} className={`flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 fs-13.5 ${on ? 'btn-acc' : 'glass'}`}>
       {on && <Icon name="check" size={14} stroke={2.2} />}
       {label}
     </button>
@@ -51,12 +51,12 @@ export default function ProfileForm({ submitLabel, onSaved }: { submitLabel: str
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <div className="mb-1.5 text-[15px] font-semibold">¿Cómo te llamas?</div>
+        <div className="mb-1.5 fs-15 font-semibold">¿Cómo te llamas?</div>
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre" className="input" autoComplete="given-name" />
       </div>
       <div>
-        <div className="mb-1.5 text-[15px] font-semibold">
-          ¿A qué te dedicas? <span className="txt-sub text-[13px] font-normal">(opcional)</span>
+        <div className="mb-1.5 fs-15 font-semibold">
+          ¿A qué te dedicas? <span className="txt-sub fs-13 font-normal">(opcional)</span>
         </div>
         <textarea
           value={about}
@@ -67,7 +67,7 @@ export default function ProfileForm({ submitLabel, onSaved }: { submitLabel: str
         />
       </div>
       <div>
-        <div className="mb-2 text-[15px] font-semibold">¿Para qué quieres el inglés?</div>
+        <div className="mb-2 fs-15 font-semibold">¿Para qué quieres el inglés?</div>
         <div className="flex flex-wrap gap-2">
           {PURPOSES.map((p) => (
             <Chip key={p.id} on={purposes.includes(p.id)} label={p.label} onClick={() => toggle(setPurposes, p.id)} />
@@ -75,15 +75,15 @@ export default function ProfileForm({ submitLabel, onSaved }: { submitLabel: str
         </div>
       </div>
       <div>
-        <div className="mb-2 text-[15px] font-semibold">
-          Tus 3 temas <span className="txt-sub text-[13px] font-normal">(los verás en el Inicio)</span>
+        <div className="mb-2 fs-15 font-semibold">
+          Tus 3 temas <span className="txt-sub fs-13 font-normal">(los verás en el Inicio)</span>
         </div>
         <FavoritesPicker value={interests} onChange={setInterests} />
       </div>
       <button
         onClick={save}
         disabled={!name.trim() || interests.length !== FAV_COUNT || saving}
-        className="btn-acc mt-1 h-[56px] rounded-full text-[16px] transition-opacity"
+        className="btn-acc mt-1 h-[56px] rounded-full fs-16 transition-opacity"
         style={{ opacity: name.trim() && interests.length === FAV_COUNT ? 1 : 0.45 }}
       >
         {submitLabel}

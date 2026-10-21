@@ -1,0 +1,14 @@
+﻿### 07-java
+exit=0 tiempo=28.5s
+.\gradlew.bat : Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of 
+version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were 
+released at different times.
+En 
+C:\Users\Shift\AppData\Local\Temp\claude\D--My-Apps-HABLA\072e4fb4-2cd3-4a7c-b9a7-9d41ee94cacd\scratchpad\run11.ps1: 
+12 Carácter: 17
++ ... '07-java' { .\gradlew.bat :app:compileDebugJavaWithJavac --offline -q ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: SDK pr...ifferent times.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+

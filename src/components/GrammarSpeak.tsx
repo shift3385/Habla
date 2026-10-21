@@ -19,17 +19,19 @@ import PhoneticsToggle from './PhoneticsToggle'
 import PronunciationView from './PronunciationView'
 import SpeakIcon from './SpeakIcon'
 import { MAX_TALK_SECONDS } from './TalkButton'
-import { MIN_SEND_MS } from './talkGesture'
+import { DISCARD_HINTS, logDiscard, MIN_SEND_MS } from './talkGesture'
+import { holdRoute } from '../lib/audioRoute'
 
 /** El resultado se desplaza a la vista al aparecer (estable: solo al montar). */
 const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
 
-type Step = 'ask' | 'recording' | 'checking' | 'result'
+// 5.10.1 (REG-A4-02, P7): 'opening' mientras abre el micro («Abriendo el micro… espera», sin aceptar toques).
+type Step = 'ask' | 'opening' | 'recording' | 'checking' | 'result'
 
 const VERDICT = {
-  correct: { label: '¡Correcto!', icon: 'check' as const, color: '#22c58b' },
+  correct: { label: '¡Correcto!', icon: 'check' as const, color: 'var(--ok)' },
   almost: { label: 'Casi', icon: 'spark' as const, color: 'var(--acc)' },
-  wrong: { label: 'Aún no', icon: 'back' as const, color: '#f87171' },
+  wrong: { label: 'Aún no', icon: 'back' as const, color: 'var(--bad)' },
 }
 
 /**
@@ -66,14 +68,19 @@ export default function GrammarSpeak({ topic, settings, update }: { topic: Gramm
     return () => clearInterval(id)
   }, [step])
 
-  // MOV-1: al pasar a segundo plano se cierra el micro; la pantalla no debe seguir «grabando».
+  // MOV-1: al pasar a segundo plano se cierra el micro; la pantalla no debe seguir «grabando» (ni «abriendo», REG-A1-01).
   useEffect(() => {
-    if (step !== 'recording') return
+    if (step !== 'recording' && step !== 'opening') return
     return whenBackground(() => {
+      logDiscard('segundo-plano', 'dilo-tu', { step })
       setStep('ask')
-      setError('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
+      setError(DISCARD_HINTS['segundo-plano'])
     })
   }, [step])
+
+  // 5.10.1 (REG-M-01): con «Dilo tú» abierto (y la app en uso) la ruta de los auriculares se queda puesta; se suelta al
+  // salir de esta parte del tema y en segundo plano. No abre el micro.
+  useEffect(() => (keyReady ? holdRoute() : undefined), [keyReady])
 
   // Como en la clase y el Repaso: una respuesta dura como mucho 60 s; al llegar se envía sola.
   const toggleRef = useRef<(() => void) | null>(null)
@@ -85,13 +92,19 @@ export default function GrammarSpeak({ topic, settings, update }: { topic: Gramm
     if (!challenge || !keyReady) return
     setError(null)
     if (step === 'ask' || step === 'result') {
+      // REG-A1-01: billete al tocar, antes de esperar a que calle la voz.
+      const ticket = recorder.current.ticket()
+      setStep('opening') // REG-A4-02 (P7)
       await stopSpeaking()
       setResult(null)
       pronTry.current++
       setPron(null)
       try {
         // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste o segundo plano).
-        if (!(await recorder.current.begin())) return
+        if (!(await recorder.current.begin(ticket))) {
+          setStep((s) => (s === 'opening' ? 'ask' : s))
+          return
+        }
         recStart.current = performance.now()
         setElapsed(0)
         setStep('recording')
@@ -122,7 +135,10 @@ export default function GrammarSpeak({ topic, settings, update }: { topic: Gramm
     job?.then((r) => pronTry.current === mine && setPron(r))
     if (!heard) {
       giveReference('')
-      setError('No te he oído. Inténtalo otra vez.')
+      // REG-M-02: motivo en el registro; el aviso se queda hasta el siguiente toque.
+      const reason = seconds < 0.8 || blob.size === 0 ? 'corta' : empty ? 'vacia' : 'sin-voz'
+      logDiscard(reason, 'dilo-tu', { seconds, bytes: blob.size, analyzed: !!analysis, mic: recorder.current.label })
+      setError(DISCARD_HINTS[reason])
       setStep('ask')
       return
     }
@@ -167,48 +183,48 @@ export default function GrammarSpeak({ topic, settings, update }: { topic: Gramm
       </div>
       <div className="flex items-start gap-2.5">
         <Mascot element={info.mascot} size={64} mood={step === 'checking' ? 'thinking' : step === 'recording' ? 'listening' : 'speaking'} />
-        <div className="tip-bubble relative min-w-0 flex-1 rounded-[20px] px-4 py-3 text-[15.5px] leading-snug">
+        <div className="tip-bubble relative min-w-0 flex-1 rounded-[20px] px-4 py-3 fs-15.5 leading-snug">
           <div className="font-semibold">{challenge.promptEs}</div>
-          <div className="txt-sub mt-1 text-[12.5px]">💡 {challenge.checkEs}</div>
-          <div className="txt-sub mt-1 text-[11.5px]">— {info.mascotName}</div>
+          <div className="txt-sub mt-1 fs-12.5">💡 {challenge.checkEs}</div>
+          <div className="txt-sub mt-1 fs-11.5">— {info.mascotName}</div>
         </div>
       </div>
 
       {result && v && (
         <div ref={showOnMount} className="anim-up flex scroll-mb-[120px] flex-col gap-2.5">
-          <div className="flex items-center gap-2 text-[17px] font-semibold" style={{ color: v.color }}>
+          <div className="flex items-center gap-2 fs-17 font-semibold" style={{ color: v.color }}>
             <Icon name={v.icon} size={20} stroke={2} />
             {v.label}
           </div>
           {result.transcript && (
-            <div className="txt-sub text-[14px]">
+            <div className="txt-sub fs-14">
               Dijiste: <i>"{result.transcript}"</i>
             </div>
           )}
-          {result.feedbackEs && <div className="text-[14px] leading-snug">{result.feedbackEs}</div>}
-          <div className="txt-sub text-[12px]">Una forma de decirlo:</div>
+          {result.feedbackEs && <div className="fs-14 leading-snug">{result.feedbackEs}</div>}
+          <div className="txt-sub fs-12">Una forma de decirlo:</div>
           <button onClick={() => toggleSpeak(challenge.modelEn)} className="glass flex items-center gap-3 rounded-[20px] px-3.5 py-2.5 text-left">
             <span className="btn-acc grid h-9 w-9 flex-none place-items-center rounded-full">
               <SpeakIcon speakKey={challenge.modelEn} size={16} />
             </span>
-            <span className="min-w-0 flex-1 text-[15.5px] font-semibold break-words">{challenge.modelEn}</span>
+            <span className="min-w-0 flex-1 fs-15.5 font-semibold break-words">{challenge.modelEn}</span>
           </button>
-          {pron === 'pending' && <div className="txt-sub text-[12.5px]">Azure está puntuando tu pronunciación…</div>}
+          {pron === 'pending' && <div className="txt-sub fs-12.5">Azure está puntuando tu pronunciación…</div>}
           {pron && pron !== 'pending' && typeof pron !== 'string' && (
             <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} pausable />
           )}
-          {typeof pron === 'string' && pron !== 'pending' && <div className="txt-sub text-[12px]">Sin nota de pronunciación: {pron}</div>}
+          {typeof pron === 'string' && pron !== 'pending' && <div className="txt-sub fs-12">Sin nota de pronunciación: {pron}</div>}
         </div>
       )}
 
       <div className="mt-1 flex flex-col items-center gap-2.5">
         {error && (
-          <div className="text-center text-[13px]" style={{ color: '#f87171' }}>
+          <div className="text-center fs-13" style={{ color: 'var(--bad)' }}>
             {error}
           </div>
         )}
         {!keyReady ? (
-          <div className="glass txt-sub rounded-[20px] p-4 text-center text-[13.5px] leading-snug">
+          <div className="glass txt-sub rounded-[20px] p-4 text-center fs-13.5 leading-snug">
             Para que {info.mascotName} te escuche hace falta tu clave de Gemini (Ajustes). La explicación y los ejercicios funcionan sin ella.
           </div>
         ) : (
@@ -217,7 +233,7 @@ export default function GrammarSpeak({ topic, settings, update }: { topic: Gramm
               <Wave on={step === 'recording'} />
               <button
                 onClick={toggleRecord}
-                disabled={step === 'checking'}
+                disabled={step === 'checking' || step === 'opening'}
                 className="grid h-[80px] w-[80px] place-items-center rounded-full disabled:opacity-60"
                 style={{
                   border: '1px solid rgba(255,255,255,.35)',
@@ -232,19 +248,21 @@ export default function GrammarSpeak({ topic, settings, update }: { topic: Gramm
               </button>
               <Wave on={step === 'recording'} />
             </div>
-            <div className="txt-sub text-[13px] tabular-nums">
+            <div className="txt-sub fs-13 tabular-nums">
               {step === 'recording'
                 ? `${Math.floor(elapsed)} s de ${MAX_TALK_SECONDS} · toca para enviar`
-                : step === 'checking'
-                  ? `${info.mascotName} te está escuchando…`
-                  : step === 'result'
-                    ? 'Toca para intentarlo otra vez'
-                    : 'Toca para hablar'}
+                : step === 'opening'
+                  ? 'Abriendo el micro… espera'
+                  : step === 'checking'
+                    ? `${info.mascotName} te está escuchando…`
+                    : step === 'result'
+                      ? 'Toca para intentarlo otra vez'
+                      : 'Toca para hablar'}
             </div>
           </>
         )}
-        {topic.speaking.length > 1 && step !== 'recording' && step !== 'checking' && (
-          <button onClick={nextChallenge} className="field h-10 rounded-[20px] px-4 text-[14px]">
+        {topic.speaking.length > 1 && step !== 'recording' && step !== 'checking' && step !== 'opening' && (
+          <button onClick={nextChallenge} className="field h-10 rounded-[20px] px-4 fs-14">
             Otro reto
           </button>
         )}

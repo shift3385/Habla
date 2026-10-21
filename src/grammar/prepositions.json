@@ -15,7 +15,7 @@
       "keywords": ["in", "on", "at", "at night", "in the morning", "on Monday", "hora", "día", "fecha", "mes", "año", "en"],
       "categories": ["preposition"],
       "explanationEs": [
-        "En español decimos «en» o nada («el lunes», «a las siete», «en julio»). En inglés hay tres preposiciones según el tamaño del momento: «at» para un punto (la hora), «on» para un día y «in» para periodos más largos.",
+        "En español cambiamos poco: «a las siete», «en julio» y, para los días, ninguna palabra («el lunes»). En inglés hay tres preposiciones según el tamaño del momento: «at» para un punto (la hora), «on» para un día y «in» para periodos más largos.",
         "«At»: horas y momentos concretos (at 7:30, at noon, at midnight, at night) y fiestas como periodo (at Christmas). «On»: días y fechas (on Monday, on May 5th, on my birthday, on Friday night). «In»: meses, años, estaciones, siglos y partes del día (in July, in 2024, in summer, in the morning).",
         "Sin preposición con this, next, last, every, today, tomorrow y yesterday: «I'll see you next Monday», «We met last year». Fin de semana: en EE. UU. se dice «on the weekend» y en Reino Unido «at the weekend»; las dos son correctas."
       ],
@@ -63,7 +63,7 @@
         { "id": "prepositions-of-time-3", "type": "gap", "prompt": "We usually visit my aunt ____ Saturdays.", "answers": ["on"], "whyEs": "Los días de la semana, también en plural para un hábito, van con «on»." },
         { "id": "prepositions-of-time-4", "type": "gap", "prompt": "The neighbors play loud music ____ night and I can't sleep.", "answers": ["at"], "whyEs": "Expresión fija: «at night» (por la noche), frente a «in the morning / afternoon / evening»." },
         { "id": "prepositions-of-time-5", "type": "choice", "prompt": "The new update will be ready ____.", "options": ["next Tuesday", "on next Tuesday", "in next Tuesday", "at next Tuesday"], "answer": 0, "whyEs": "Con «next» no se usa preposición.", "trapsEs": ["", "Con «next» sobra «on».", "Con «next» sobra la preposición, y los días nunca van con «in».", "Con «next» sobra la preposición, y «at» es para horas."] },
-        { "id": "prepositions-of-time-6", "type": "gap", "prompt": "Her train gets in ____ the afternoon, around four.", "answers": ["in"], "whyEs": "Las partes del día van con «in the…»: in the morning, in the afternoon, in the evening." },
+        { "id": "prepositions-of-time-6", "type": "gap", "prompt": "Her train arrives ____ the afternoon, around four.", "answers": ["in"], "whyEs": "Las partes del día van con «in the…»: in the morning, in the afternoon, in the evening." },
         { "id": "prepositions-of-time-7", "type": "choice", "prompt": "The office is closed ____ New Year's Day.", "options": ["on", "at", "in", "for"], "answer": 0, "whyEs": "Un día concreto, aunque sea festivo, va con «on».", "trapsEs": ["", "«At» se usa para la fiesta como periodo (at Christmas, at New Year), no para un día concreto.", "«In» es para periodos largos, no para un día.", "«For» indica duración, no cuándo pasa algo."] },
         { "id": "prepositions-of-time-8", "type": "order", "words": ["do", "on", "What", "you", "do", "Sundays"], "answer": "What do you do on Sundays", "whyEs": "Pregunta con Wh- y, al final, el día con «on»." }
       ],
@@ -84,7 +84,7 @@
       "explanationEs": [
         "El español usa «en» para casi todo («en la mesa», «en casa», «en Madrid»). El inglés distingue: «in» es dentro de algo (in the box, in the kitchen, in Mexico), «on» es sobre una superficie o una línea (on the table, on the wall, on the second floor) y «at» es un punto o un sitio donde se hace algo (at the door, at the bus stop).",
         "Expresiones fijas con «at»: at home, at work, at school, at the doctor's, at a party, at the airport. Ojo: es «at home», sin «the» y nunca «in home».",
-        "Transportes: «in» para coches y taxis (in the car, in a taxi) y «on» para transporte público y grande (on the bus, on the train, on the plane, on my bike). Calles: en EE. UU. «on Main Street»; en Reino Unido también se oye «in Oxford Street». Con el número de la casa se usa «at»: at 25 Oak Street."
+        "Transportes: «in» para carros y taxis (in the car, in a taxi) y «on» para transporte público y grande (on the bus, on the train, on the plane, on my bike). Calles: en EE. UU. «on Main Street»; en Reino Unido también se oye «in Oxford Street». Con el número de la casa se usa «at»: at 25 Oak Street."
       ],
       "forms": {
         "affirmative": {
@@ -110,7 +110,7 @@
         }
       },
       "examples": [
-        { "en": "I left my glasses in the car.", "es": "Me dejé las gafas en el coche." },
+        { "en": "I left my glasses in the car.", "es": "Dejé los lentes en el carro." },
         { "en": "Your coffee is on the kitchen counter.", "es": "Tu café está en la encimera de la cocina." },
         { "en": "She's at the gym until seven.", "es": "Está en el gimnasio hasta las siete.", "noteEs": "«at» porque es el sitio donde hace una actividad, no «dentro de un edificio»." },
         { "en": "We live on the third floor.", "es": "Vivimos en el tercer piso." },
@@ -120,7 +120,7 @@
       "commonMistakes": [
         { "wrong": "I'm in home now.", "right": "I'm at home now.", "whyEs": "«En casa» es «at home», sin artículo; «in home» no se usa." },
         { "wrong": "We arrived to the hotel at midnight.", "right": "We arrived at the hotel at midnight.", "whyEs": "«Arrive» nunca va con «to»: «arrive at» un sitio concreto y «arrive in» una ciudad o país." },
-        { "wrong": "I was in the bus when you called.", "right": "I was on the bus when you called.", "whyEs": "Para viajar en autobús, tren o avión se dice «on»; «in» es para coches y taxis." },
+        { "wrong": "I was in the bus when you called.", "right": "I was on the bus when you called.", "whyEs": "Para viajar en autobús, tren o avión se dice «on»; «in» es para carros y taxis." },
         { "wrong": "The picture is in the wall.", "right": "The picture is on the wall.", "whyEs": "La pared es una superficie: «on». «In the wall» sería dentro del muro (un hueco, un cable)." }
       ],
       "related": ["prepositions-of-time", "there-is-there-are", "verb-prepositions"],
@@ -129,7 +129,7 @@
         { "id": "prepositions-of-place-2", "type": "choice", "prompt": "Sorry, I can't talk now. I'm still ____ work.", "options": ["at", "on", "to", "into"], "answer": 0, "whyEs": "Expresión fija: «at work» (en el trabajo), como «at home» o «at school».", "trapsEs": ["", "«On» es para superficies o transporte público.", "«To» es dirección: «go to work».", "«Into» es movimiento hacia dentro."] },
         { "id": "prepositions-of-place-3", "type": "gap", "prompt": "My cousins live ____ a small village in the mountains.", "answers": ["in"], "whyEs": "Ciudades, pueblos y países van con «in»: estás dentro de esa zona." },
         { "id": "prepositions-of-place-4", "type": "gap", "prompt": "There's a big mirror ____ the wall next to the door.", "answers": ["on"], "whyEs": "Algo colgado en una pared está sobre una superficie: «on the wall»." },
-        { "id": "prepositions-of-place-5", "type": "choice", "prompt": "Let's meet ____ the bus stop in front of the bank.", "options": ["at", "in", "on", "to"], "answer": 0, "whyEs": "Un punto concreto donde quedas: «at the bus stop».", "trapsEs": ["", "No estás dentro de la parada.", "«On the bus» sí, pero la parada es un punto: «at».", "«To» es dirección, no el sitio donde quedáis."] },
+        { "id": "prepositions-of-place-5", "type": "choice", "prompt": "Let's meet ____ the bus stop in front of the bank.", "options": ["at", "in", "on", "to"], "answer": 0, "whyEs": "Un punto concreto donde quedas: «at the bus stop».", "trapsEs": ["", "No estás dentro de la parada.", "«On the bus» sí, pero la parada es un punto: «at».", "«To» es dirección, no el sitio donde se ven."] },
         { "id": "prepositions-of-place-6", "type": "choice", "prompt": "Their apartment is ____ the fourth floor.", "options": ["on", "in", "at", "to"], "answer": 0, "whyEs": "Los pisos de un edificio van con «on».", "trapsEs": ["", "Con plantas de un edificio no se usa «in».", "Con plantas de un edificio no se usa «at».", "«To» indica movimiento, no dónde está."] },
         { "id": "prepositions-of-place-7", "type": "gap", "prompt": "Send me a message when you arrive ____ the station.", "answers": ["at"], "whyEs": "«Arrive at» un sitio concreto (estación, hotel, aeropuerto); «arrive in» una ciudad o país. Nunca «arrive to»." },
         { "id": "prepositions-of-place-8", "type": "order", "words": ["still", "Why", "you", "at", "are", "work"], "answer": "Why are you still at work", "whyEs": "Pregunta con Wh-: Why + are + you, y «at work» al final." }
@@ -158,7 +158,7 @@
         "affirmative": {
           "pattern": "… for + duración · … since + inicio · … during + periodo · … tiempo + ago",
           "examples": [
-            { "en": "I've had this phone for three years.", "es": "Tengo este móvil desde hace tres años." },
+            { "en": "I've had this phone for three years.", "es": "Tengo este celular desde hace tres años." },
             { "en": "We moved to Monterrey six months ago.", "es": "Nos mudamos a Monterrey hace seis meses." }
           ]
         },
@@ -172,7 +172,7 @@
         "question": {
           "pattern": "How long have you…? · How long ago did you…? · When…?",
           "examples": [
-            { "en": "How long have you known each other?", "es": "¿Desde cuándo os conocéis?" },
+            { "en": "How long have you known each other?", "es": "¿Desde cuándo se conocen?" },
             { "en": "How long ago did you start the course?", "es": "¿Hace cuánto empezaste el curso?" }
           ]
         }
@@ -180,7 +180,7 @@
       "examples": [
         { "en": "I've been a nurse for fifteen years.", "es": "Soy enfermera desde hace quince años.", "noteEs": "Sigue siendo enfermera: presente perfecto + for." },
         { "en": "She's worked from home since the pandemic.", "es": "Trabaja desde casa desde la pandemia." },
-        { "en": "Please keep your phone on silent during the presentation.", "es": "Por favor, ten el móvil en silencio durante la presentación." },
+        { "en": "Please keep your phone on silent during the presentation.", "es": "Por favor, ten el celular en silencio durante la presentación." },
         { "en": "I bought these headphones a month ago.", "es": "Compré estos auriculares hace un mes." },
         { "en": "We waited for forty minutes, and then we left.", "es": "Esperamos cuarenta minutos y luego nos fuimos.", "noteEs": "«For» también va con pasado si la situación ya terminó." }
       ],
@@ -248,7 +248,7 @@
         { "en": "I need your answer by tomorrow at noon.", "es": "Necesito tu respuesta para mañana a mediodía, como muy tarde." },
         { "en": "Let's keep working until lunch.", "es": "Sigamos trabajando hasta la comida." },
         { "en": "By the time I got to the party, everyone had left.", "es": "Para cuando llegué a la fiesta, todos se habían ido." },
-        { "en": "She didn't learn to drive until she was thirty.", "es": "No aprendió a conducir hasta los treinta.", "noteEs": "«not… until»: no pasó antes de ese momento." }
+        { "en": "She didn't learn to drive until she was thirty.", "es": "No aprendió a manejar hasta los treinta.", "noteEs": "«not… until»: no pasó antes de ese momento." }
       ],
       "commonMistakes": [
         { "wrong": "Please send the invoice until Friday.", "right": "Please send the invoice by Friday.", "whyEs": "Mandar algo es una acción puntual con fecha límite: «by». «Until» sería «estar mandándola todo el tiempo hasta el viernes»." },

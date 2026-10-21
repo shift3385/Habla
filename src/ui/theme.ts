@@ -93,7 +93,12 @@ export function themeVars(theme: ThemeKey, mode: Mode): ThemeVars {
 
 /** Variables CSS para el contenedor raíz. */
 export function cssVars(t: ThemeVars): Record<string, string> {
+  const light = t.tx !== '#ffffff'
   return {
+    // 5.10.1 (REG-A4-03): verde/rojo de «bien»/«mal» legibles en los temas claros (≥ 5:1 sobre el cristal; antes
+    // #22c58b y #f87171 daban 2,1–2,7:1). En oscuro, los de siempre (6–8:1).
+    '--ok': light ? '#0b7a53' : '#22c58b',
+    '--bad': light ? '#b91c1c' : '#f87171',
     '--bg': t.bg,
     '--tx': t.tx,
     '--sub': t.sub,

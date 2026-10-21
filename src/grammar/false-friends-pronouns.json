@@ -48,7 +48,7 @@
         { "en": "Ana called her brother last night.", "es": "Ana llamó a su hermano anoche.", "noteEs": "«her» porque el poseedor es Ana, aunque el hermano sea un hombre." },
         { "en": "I love this café. Its coffee is amazing.", "es": "Me encanta esta cafetería. Su café es buenísimo." },
         { "en": "Our neighbors are lovely. We often have dinner with them.", "es": "Nuestros vecinos son encantadores. Cenamos a menudo con ellos." },
-        { "en": "Is that your car or theirs?", "es": "¿Ese coche es tuyo o de ellos?" }
+        { "en": "Is that your car or theirs?", "es": "¿Ese carro es tuyo o de ellos?" }
       ],
       "commonMistakes": [
         { "wrong": "My boss is great. Is very funny.", "right": "My boss is great. She's very funny.", "whyEs": "En inglés el sujeto no se omite: hay que decir «she», «he» o «it»." },
@@ -68,7 +68,7 @@
         { "id": "subject-object-possessive-pronouns-8", "type": "choice", "prompt": "Is this coffee ____? — No, mine is the one with milk.", "options": ["yours", "your", "you", "you's"], "answer": 0, "whyEs": "Sin nombre detrás: pronombre posesivo «yours».", "trapsEs": ["", "«Your» necesita un nombre detrás (your coffee).", "«You» no es posesivo.", "No existe."] }
       ],
       "speaking": [
-        { "promptEs": "Habla de dos personas de tu familia: cómo se llaman, qué hacen y algo suyo (su coche, su trabajo…).", "modelEn": "My brother is called Luis. He's a teacher and his school is near our house. My mother loves her garden.", "checkEs": "Sujeto siempre presente, y «his» / «her» según quién posee." },
+        { "promptEs": "Habla de dos personas de tu familia: cómo se llaman, qué hacen y algo suyo (su carro, su trabajo…).", "modelEn": "My brother is called Luis. He's a teacher and his school is near our house. My mother loves her garden.", "checkEs": "Sujeto siempre presente, y «his» / «her» según quién posee." },
         { "promptEs": "Imagina que encuentras unas llaves en la mesa: pregunta de quién son y responde.", "modelEn": "Are these keys yours? — No, they aren't mine. I think they're hers.", "checkEs": "Pronombres posesivos (yours, mine, hers) sin nombre detrás." }
       ],
       "classFocusEn": "Practice subject, object and possessive pronouns: never drop the subject, object pronouns after the verb, his/her agreeing with the owner, its vs it's, mine/yours. Correct 'Is very funny', 'María… his husband' and 'This is my'."
@@ -112,7 +112,7 @@
       },
       "examples": [
         { "en": "I live by myself in a small studio.", "es": "Vivo solo en un estudio pequeño.", "noteEs": "«by myself» = solo, sin nadie más." },
-        { "en": "Please help yourselves to some cake.", "es": "Por favor, servíos tarta." },
+        { "en": "Please help yourselves to some cake.", "es": "Por favor, sírvanse pastel." },
         { "en": "We built the website ourselves.", "es": "Hicimos la web nosotros mismos." },
         { "en": "Ana and Luis met at work, and now they text each other every day.", "es": "Ana y Luis se conocieron en el trabajo y ahora se escriben todos los días.", "noteEs": "Recíproco: «each other», no «themselves»." },
         { "en": "I usually take a shower and get dressed in ten minutes.", "es": "Normalmente me ducho y me visto en diez minutos.", "noteEs": "Ducharse y vestirse no llevan reflexivo en inglés." }

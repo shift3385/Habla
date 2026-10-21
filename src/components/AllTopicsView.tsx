@@ -40,7 +40,7 @@ export default function AllTopicsView({ favs, onPick, onFree, onFavsChange, onBa
           <button
             onClick={save}
             disabled={draft.length !== FAV_COUNT}
-            className="btn-acc h-[54px] rounded-full text-[16px] transition-opacity"
+            className="btn-acc h-[54px] rounded-full fs-16 transition-opacity"
             style={{ opacity: draft.length === FAV_COUNT ? 1 : 0.45 }}
           >
             Guardar mis temas
@@ -51,8 +51,8 @@ export default function AllTopicsView({ favs, onPick, onFree, onFavsChange, onBa
           <button onClick={onFree} className="btn-acc flex h-[58px] items-center gap-3 rounded-[29px] px-4 text-left">
             <Icon name="pencil" size={19} />
             <span className="min-w-0 flex-1">
-              <span className="block text-[15px] font-semibold">Tema libre</span>
-              <span className="block text-[12.5px] opacity-85">Tú decides de qué hablar</span>
+              <span className="block fs-15 font-semibold">Tema libre</span>
+              <span className="block fs-12.5 opacity-85">Tú decides de qué hablar</span>
             </span>
             <Icon name="chevR" size={16} stroke={2} />
           </button>
@@ -68,7 +68,7 @@ export default function AllTopicsView({ favs, onPick, onFree, onFavsChange, onBa
                   <span className="field txt-acc2 grid h-[34px] w-[34px] place-items-center rounded-full">
                     <Icon name={c.icon} size={18} stroke={1.6} />
                   </span>
-                  <span className="text-center text-[11.5px] leading-[1.15] text-balance">{c.title}</span>
+                  <span className="text-center fs-11.5 leading-[1.15] text-balance">{c.title}</span>
                   {fav && (
                     <span className="txt-acc absolute top-[7px] left-[8px]" title="Uno de tus 3 temas">
                       <Icon name="star" size={11} stroke={2} />

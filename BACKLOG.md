@@ -96,6 +96,43 @@ La app ya la usan otras personas.
 
 ### 4.5 Sección de fonemas del inglés (anotado 2026-10-19) 🟡
 Idea del dueño: una sección con **todos los fonemas del inglés** (sonido, símbolo IPA, ejemplos y cómo se articula), como en este reel: https://www.instagram.com/reel/DenIef3B8mf/ . Encaja con la fonética de Azure (las «palabras a cuidar» ya dicen el sonido que falló: se podría enlazar a su fonema). **No para la 5.10**: para más adelante.
+> **Diseño propuesto (2026-10-20, pendiente de aprobar):** sección «Sonidos» (abecedario + 40 sonidos del inglés americano, tabla fonémica, ruta de 33 clases, enlace desde la nota de Azure) en `docs/fonemas/DISENO-fonemas.md`; contenido base en `docs/fonemas/inventario-fonemas.md`. Propuesta: F0 de viabilidad ya, MVP en la 5.13 (o en la 5.12).
+
+## 5. Hoja de ruta acordada (2026-10-20) 🟢
+
+- **5.10.1:** correcciones de la regresión de la 5.10 (`docs/pruebas/regresion-5.10/INFORME.md` y `CORRECCION.md`), prueba de sonido en un paso y tamaño de letra.
+- **5.11 «Motivación» + «Sonidos»:** las 10 propuestas rápidas de `docs/pruebas/regresion-5.10/A5-usabilidad.md` (comodín de racha, hitos, informe frente a ti mismo, variedad del profe…) y la nueva pestaña «Sonidos del inglés» (diseño en `docs/fonemas/DISENO-fonemas.md`; decisiones del dueño en su §10.3).
+- **5.12 «Juntos»:** colaboración entre personas que usan Habla (ver 5.1).
+
+### 5.1 Colaboración entre usuarios de Habla (idea del dueño, para la 5.12) 🟡
+Que la app permita practicar **con otras personas que también usan Habla** (familia, amistades), no solo con el profe de IA. Ideas a valorar:
+- **Palabras compartidas:** enviar a otra persona una palabra o frase guardada (con su significado y audio) para que la añada a su Repaso.
+- **Chat o audios entre ambos**, en inglés: notas de voz cortas que el otro escucha y responde; el profe puede corregir tu audio antes de enviarlo.
+- **Retos y competencia amistosa:** el mismo reto de «Dilo tú» o el mismo tema para los dos, comparar notas de fluidez y pronunciación, racha compartida, reto semanal en familia.
+- **Practicar en pareja:** un roleplay donde cada persona hace un papel y el profe modera y corrige a los dos.
+
+**Ojo con las decisiones actuales** (`docs/decisiones.md`): hoy no hay backend ni cuentas y cada persona usa su clave; la 6.0 está reservada para abrir la app a otras personas. Opciones para la 5.12, de menos a más infraestructura:
+1. **Sin servidor, asíncrono:** retos y palabras como archivo o enlace que se comparte por WhatsApp/Telegram (`@capacitor/share`) y se importa en la otra app; los audios viajan como nota de voz. Cero coste, encaja con la arquitectura actual.
+2. **Cerca, sin internet:** emparejar dos teléfonos en la misma Wi-Fi o por Bluetooth para un reto en vivo (plugin nativo propio).
+3. **Con un servicio en la nube** (p. ej. Firebase o Supabase) para chat, ranking y retos en tiempo real: requiere cuentas, privacidad (audios de otras personas), coste y moderación. Choca con «sin backend» y probablemente pertenece a la 6.0.
+Decidir antes de diseñar: qué se comparte (texto, audio, notas), si hace falta tiempo real y quién paga la IA de cada persona.
+
+### 5.2 Varios proveedores de IA configurables (idea del dueño, 2026-10-20) 🔴 aparcado
+> **Decisión del dueño (2026-10-20): se queda solo Gemini.** No se añade otro proveedor mientras no exista uno que, como Gemini, oiga el audio y corrija en la misma llamada con una sola clave y una sola cuota. Revisar si aparece un modelo así (p. ej. Claude u OpenAI con entrada de audio). Mejora pendiente y barata dentro de Gemini: permitir elegir un modelo más capaz para el turno del profe.
+> **Conclusión del 2026-10-20 (debate con el dueño): Gemini sigue siendo la base de Habla.** Es el único que oye el audio y corrige en la misma llamada, con una sola clave, capa gratuita y búsqueda de Google; los providers quedan como **opción** para el «profe», no como sustituto. Antes de añadirlos: (1) probar un Gemini más capaz solo para el turno del profe, y (2) medir con un *eval* (los mismos ~30 turnos grabados, corregidos por cada modelo) si Claude mejora lo bastante para pagar la latencia y la complejidad de dos llamadas.
+Poder elegir el motor de IA (Gemini, Claude, ChatGPT/OpenAI, DeepSeek…) y configurar cada uno (clave, modelo, modelo de respaldo). Ya estaba propuesto en `docs/decisiones.md` («Multi-proveedor»).
+**Por qué (señalado por un amigo del dueño):** no todo el mundo puede o quiere pagar la API de un proveedor concreto; cada persona debería usar el que ya tenga o el que le dé mejores respuestas por su dinero. El dueño tiene crédito de API de Claude y quiere usarlo para el profe, porque espera respuestas mejores que las de Gemini (que hoy son correctas, pero mejorables).
+**Coste del «oído» sin Gemini:** el reconocedor de Android (gratis, calidad variable con acento), Azure Speech a texto (el dueño ya tiene clave; capa F0 gratuita) o un modelo barato solo para transcribir. Así el profe puede ser Claude sin pagar dos veces por lo mismo.
+Cómo se haría:
+- **Capa de proveedores (patrón adaptador):** una interfaz común, p. ej. `AiProvider` con `chat()`, `json(schema)`, `listModels()`, `checkKey()`, y un adaptador por proveedor (`GeminiProvider`, `ClaudeProvider`, `OpenAiProvider`, `DeepSeekProvider`). El resto de la app (`teacher.ts`, `grammarAi.ts`, `lookup.ts`, `topics.ts`…) llama a la interfaz, nunca a una API concreta. Hoy todo vive en `src/lib/gemini.ts`, que pasaría a ser un adaptador más.
+- **Ajustes por proveedor:** proveedor activo, clave de cada uno (solo en Preferences, nunca en copias), modelo principal, de respaldo y rápido, y «Comprobar mi clave», como hoy con Gemini.
+- **El obstáculo es el audio:** Gemini entiende el audio directamente; Claude y DeepSeek no aceptan audio. Hay que separar el **«oído»** (transcripción: Gemini, Azure Speech, Whisper de OpenAI o el reconocedor de Android) del **«profe»** (cualquier modelo de texto). Así se podría, por ejemplo, transcribir con Azure y corregir con Claude.
+- **Búsqueda web:** Gemini usa Google Search; Claude tiene su propia herramienta de búsqueda web en la API (`web_search`), así que las noticias también funcionarían con Claude. Para los demás proveedores, comprobar si la tienen.
+- **Combinación recomendada para el dueño:** Azure Speech como «oído» (ya da la fonética con el mismo audio) + Claude como «profe»; Gemini deja de ser imprescindible.
+- **Sin Azure (p. ej. solo Claude):** oído = Gemini con clave gratuita (buena transcripción y comentarios de pronunciación aproximados, sin nota por fonema) o el reconocedor de Android; profe = Claude. Solo Azure da la nota exacta por sonido. Whisper de OpenAI es otra opción de pago barata.
+- **Requisito (dueño, 2026-10-20): nadie se queda sin poder usar la app porque se le acabe un plan.** El «oído» es una **cadena de respaldo**, no un único servicio: si el primero falla o se agota, pasa al siguiente y la mascota lo explica. Orden propuesto: (1) el que elija la persona (Azure, Gemini, Whisper…); (2) **Gemini con clave gratuita** de AI Studio (sin tarjeta, con límites diarios); (3) **reconocedor de voz de Android** (gratis, sin límite, sin clave; menos preciso con acento y sin nota de pronunciación); (4) **escribir la respuesta** (ya existe). Igual para el «profe»: si el proveedor elegido da error de cuota o de pago, se ofrece cambiar a otro con clave guardada. La app ya detecta el F0 de Azure agotado (`phonetics.ts`): reutilizar ese patrón.
+- **Salida estructurada:** cada proveedor pide el JSON de forma distinta (esquema de Gemini, *tool use* de Claude, `response_format` de OpenAI); el adaptador lo traduce y valida la respuesta igual para todos.
+- **Orden propuesto:** separar oído y profe → interfaz y adaptador de Gemini (sin cambios visibles) → Claude y OpenAI → DeepSeek → selector en Ajustes. Encaja como versión menor propia o como parte de la 6.0 (abrir la app a otras personas).
 
 ## 3. Propuestas para debatir 🟡
 

@@ -1,0 +1,19 @@
+X1 [ 'pause', 'duck', 'abandon' ] []
+✔ X1: explicación (pausa) cortada por un ▶ corto: pasa a bajar y al final suelta (no se queda en pausa) (981.888ms)
+X2 [ 'duck', 'pause', 'abandon' ]
+✔ X2: ▶ corto cortado por la explicación: de bajar a pausar y al final suelta (738.8282ms)
+X3 [ 'pause', 'abandon' ] null
+✔ X3: el motor falla en un tramo: la lectura acaba, ▶ vuelve y el foco se suelta (1445.3293ms)
+✔ X4: grabando + explicación: el micro se suelta y la lectura sigue en pausa; al acabar, nada (754.3557ms)
+X5 []
+✔ X5: stop mientras se prepara la voz (antes de sonar) no deja foco (736.9931ms)
+X6 [ 'pause', 'abandon' ] 11
+✔ X6: dos explicaciones seguidas rápidas (doble toque en dos temas) (736.9937ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6013.7961

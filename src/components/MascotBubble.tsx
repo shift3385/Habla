@@ -101,7 +101,7 @@ export default function MascotBubble({
         setOpen(false)
         if (tip.action) onAction(tip)
       }}
-      className="tip-bubble absolute z-30 flex flex-col items-start gap-1.5 rounded-[16px] px-3 py-2 text-left text-[12.5px] leading-snug shadow-lg transition-[opacity,transform] duration-300"
+      className="tip-bubble absolute z-30 flex flex-col items-start gap-1.5 rounded-[16px] px-3 py-2 text-left fs-12.5 leading-snug shadow-lg transition-[opacity,transform] duration-300"
       style={{
         left: box.left,
         right: box.right,
@@ -121,7 +121,7 @@ export default function MascotBubble({
       <span className="relative min-w-0">{tip.text}</span>
       {/* La acción va DENTRO del globo, como botón con texto y a la izquierda: no se confunde con los botones de al lado. */}
       {tip.action && tip.cta && (
-        <span className="btn-acc relative flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-semibold">
+        <span className="btn-acc relative flex items-center gap-1 rounded-full px-3 py-1 fs-12 font-semibold">
           <Icon name={tip.action === 'review' ? 'cards' : 'mic'} size={12} />
           {tip.cta}
         </span>

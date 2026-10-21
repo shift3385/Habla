@@ -93,7 +93,7 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
               <span className="txt-acc2 mt-0.5 flex-none">
                 <Icon name={icon} size={15} />
               </span>
-              <span className="text-[14px] leading-snug">{text}</span>
+              <span className="fs-14 leading-snug">{text}</span>
             </div>
           ))}
         </div>
@@ -153,7 +153,7 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
           <span className="txt-acc2 mt-0.5 flex-none">
             <Icon name="flag" size={17} />
           </span>
-          <span className="text-[16px] leading-snug">{homework.text}</span>
+          <span className="fs-16 leading-snug">{homework.text}</span>
         </div>
       </MascotPage>
     )
@@ -217,7 +217,7 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
           {others.map((k) => (
             <div key={k} className="flex flex-col items-center">
               <Mascot element={THEME_INFO[k].mascot} mood="happy" size={92} interactive={false} />
-              <span className="text-[13px] font-semibold">{THEME_INFO[k].mascotName}</span>
+              <span className="fs-13 font-semibold">{THEME_INFO[k].mascotName}</span>
             </div>
           ))}
         </div>

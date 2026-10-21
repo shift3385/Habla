@@ -13,6 +13,7 @@ import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
+import { speakingGoal } from '../lib/fluency'
 import { notificationsGranted } from '../lib/reminders'
 import AllTopicsView from '../components/AllTopicsView'
 import GrammarPanel from '../components/GrammarPanel'
@@ -89,12 +90,15 @@ export default function Home({
   const [ask, setAsk] = useState<AskKind | null>(null)
   const [retestAt, setRetestAt] = useState<number | null>(null)
   const [hasPurpose, setHasPurpose] = useState(true)
+  // 5.10.1 (UX-04): la meta de velocidad del consejo «ppm» es la de tu nivel al hablar (la misma que el informe).
+  const [speakLevel, setSpeakLevel] = useState<string | undefined>()
   useEffect(() => {
     getProfile().then((p) => {
       setFavs(p.interests ?? [])
       setRetestAt(nextRetestAt(p))
       setHasPurpose(!!(p.purposes?.length || p.goal?.trim()))
       setGramLevel(p.levels.grammar || p.levels.overall)
+      setSpeakLevel(p.levels.speaking || p.levels.overall)
     })
   }, [])
   // Atrás (Android): cierra la hoja o "Más temas" antes de salir del Inicio.
@@ -130,7 +134,7 @@ export default function Home({
       />
       {!settings.mascotTapped && (
         <span
-          className="anim-bob pointer-events-none absolute -top-3 left-[60%] rounded-[14px_14px_14px_4px] px-2.5 py-1.5 text-[12px] font-semibold whitespace-nowrap"
+          className="anim-bob pointer-events-none absolute -top-3 left-[60%] rounded-[14px_14px_14px_4px] px-2.5 py-1.5 fs-12 font-semibold whitespace-nowrap"
           style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 6px 18px var(--glow)' }}
         >
           ¡Tócame!
@@ -204,10 +208,10 @@ export default function Home({
           remindersBlocked,
         })
       : []
-    const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn }), adviceCursor) : []
+    const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn, wpmGoal: speakLevel ? speakingGoal(speakLevel) : undefined }), adviceCursor) : []
     return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked])
+  }, [mins, goal, dash?.streak, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel])
   const onTip = (tip: Tip) => {
     if (tip.action === 'notif') onOpenGoal?.()
     else if (tip.action === 'resume') onResumeClass?.()
@@ -268,11 +272,12 @@ export default function Home({
       {/* Cabecera */}
       <div className="flex min-h-[54px] items-center justify-between gap-2.5">
         <div className="min-w-0">
-          <div className="text-[27px] leading-[1.1] font-semibold tracking-[-.7px]">
+          <div className="home-title fs-27 leading-[1.1] font-semibold tracking-[-.7px]">
             {greeting()}
             <span className="txt-acc">.</span>
           </div>
-          <div className="txt-sub mt-0.5 text-sm">¿De qué hablamos hoy?</div>
+          {/* 5.10.1 (REG-A4-08): home-sub se oculta en vertical con poco alto (index.css) para que el Inicio no desplace. */}
+          <div className="home-sub txt-sub mt-0.5 text-sm">¿De qué hablamos hoy?</div>
         </div>
         <div className="flex flex-none gap-2">
           <button
@@ -338,16 +343,16 @@ export default function Home({
               <Icon name="mic" size={15} />
             </span>
             <span className="min-w-0 flex-1 leading-tight">
-              <b className="block truncate text-[14px] font-semibold">Clase en progreso</b>
-              <span className="txt-sub block truncate text-[12px]">{savedClass.title}</span>
+              <b className="fs-clamp block truncate fs-14 font-semibold">Clase en progreso</b>
+              <span className="fs-clamp txt-sub block truncate fs-12">{savedClass.title}</span>
             </span>
           </button>
           {onFinishClass && (
-            <button onClick={onFinishClass} className="field flex h-9 flex-none items-center rounded-[18px] px-3 text-[13px]">
+            <button onClick={onFinishClass} className="field flex h-9 flex-none items-center rounded-[18px] px-3 fs-13">
               Terminar
             </button>
           )}
-          <button onClick={onResumeClass} className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 text-[13px]">
+          <button onClick={onResumeClass} className="btn-acc flex h-9 flex-none items-center rounded-[18px] px-3.5 fs-13">
             Continuar
           </button>
         </div>
@@ -368,11 +373,11 @@ export default function Home({
           <span className="field txt-acc2 grid h-8 w-8 flex-none place-items-center rounded-full">
             <Icon name="cards" size={15} />
           </span>
-          <span className="min-w-0 flex-1 truncate text-[14px]">
+          <span className="fs-clamp min-w-0 flex-1 truncate fs-14">
             <b className="font-semibold">Repaso de hoy</b>
             <span className="txt-sub"> · {due.total} {due.total === 1 ? 'frase' : 'frases'}</span>
           </span>
-          <span className="btn-acc flex h-9 items-center rounded-[18px] px-3.5 text-[13px]">Repasar</span>
+          <span className="btn-acc flex h-9 items-center rounded-[18px] px-3.5 fs-13">Repasar</span>
         </button>
       )}
 
@@ -425,7 +430,7 @@ export default function Home({
                 <span className="field txt-acc2 grid h-[40px] w-[40px] place-items-center rounded-full">
                   <Icon name={c.icon} size={20} stroke={1.6} />
                 </span>
-                <span className="text-center text-[12px] leading-[1.15] font-medium text-balance">{c.title}</span>
+                <span className="text-center fs-12 leading-[1.15] font-medium text-balance">{c.title}</span>
                 {c.live && (
                   <span
                     className="absolute top-[10px] right-[10px] h-1.5 w-1.5 rounded-full"
@@ -440,13 +445,13 @@ export default function Home({
               <span className="field txt-acc2 grid h-8 w-8 flex-none place-items-center rounded-full">
                 <Icon name="pencil" size={15} />
               </span>
-              <span className="text-left text-[13.5px] leading-tight font-semibold">Tema libre</span>
+              <span className="text-left fs-13.5 leading-tight font-semibold">Tema libre</span>
             </button>
             <button onClick={() => setAllOpen(true)} className="glass flex h-[52px] items-center gap-2.5 rounded-[26px] px-3">
               <span className="field txt-acc2 grid h-8 w-8 flex-none place-items-center rounded-full">
                 <Icon name="cards" size={15} />
               </span>
-              <span className="min-w-0 flex-1 text-left text-[13.5px] leading-tight font-semibold">Más temas</span>
+              <span className="min-w-0 flex-1 text-left fs-13.5 leading-tight font-semibold">Más temas</span>
               <span className="txt-sub text-xs">{TOPIC_CATEGORIES.length}</span>
             </button>
           </div>
@@ -462,8 +467,8 @@ export default function Home({
                   <Icon name={p.icon} size={18} stroke={1.7} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold">{p.title}</span>
-                  <span className="txt-sub block truncate text-[12.5px]">{p.subtitle}</span>
+                  <span className="block fs-15 font-semibold">{p.title}</span>
+                  <span className="txt-sub block truncate fs-12.5">{p.subtitle}</span>
                 </span>
                 <span className="txt-sub grid w-[28px] flex-none place-items-center">
                   <Icon name="arrowUR" size={16} />
@@ -475,9 +480,9 @@ export default function Home({
                   <span className="field txt-acc2 grid h-[32px] w-[32px] flex-none place-items-center rounded-full">
                     <Icon name={p.icon} size={16} stroke={1.6} />
                   </span>
-                  <span className="line-clamp-2 min-w-0 flex-1 text-[13px] leading-[1.15] font-semibold">{p.title}</span>
+                  <span className="line-clamp-2 min-w-0 flex-1 fs-13 leading-[1.15] font-semibold">{p.title}</span>
                 </span>
-                <span className="txt-sub line-clamp-2 block text-[11.5px] leading-[1.2]">{p.subtitle}</span>
+                <span className="prac-desc txt-sub line-clamp-2 block fs-11.5 leading-[1.2]">{p.subtitle}</span>
               </button>
             )
           })}

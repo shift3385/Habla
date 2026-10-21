@@ -44,7 +44,7 @@ export default function PronunciationView({ r, onSay, pausable = false }: { r: P
   const [tipLabel, tipValue] = items[shown]
 
   return (
-    <div className="field rounded-[14px] px-3 py-2 text-[13px]" style={{ border: 0 }}>
+    <div className="field rounded-[14px] px-3 py-2 fs-13" style={{ border: 0 }}>
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 font-semibold">
           <Icon name="ear" size={14} /> Pronunciación
@@ -53,7 +53,7 @@ export default function PronunciationView({ r, onSay, pausable = false }: { r: P
           {r.pron}/100
         </b>
       </div>
-      <div ref={row} className="relative mt-1.5 grid grid-cols-4 gap-1 text-center">
+      <div ref={row} className="pron-grid relative mt-1.5 grid grid-cols-4 gap-1 text-center">
         {items.map(([label, v], k) => (
           <button
             key={label}
@@ -63,16 +63,16 @@ export default function PronunciationView({ r, onSay, pausable = false }: { r: P
             className="min-w-0 rounded-[10px] py-0.5"
             style={{ background: tip === k ? 'var(--g)' : undefined }}
           >
-            <div className="text-[13px] font-semibold tabular-nums" style={{ color: v === undefined ? 'var(--sub)' : tone(v) }}>
+            <div className="fs-13 font-semibold tabular-nums" style={{ color: v === undefined ? 'var(--sub)' : tone(v) }}>
               {v ?? '—'}
             </div>
-            <div className="txt-sub truncate text-[10.5px] underline decoration-dotted underline-offset-2">{label}</div>
+            <div className="pron-label txt-sub truncate fs-10.5 underline decoration-dotted underline-offset-2">{label}</div>
           </button>
         ))}
         <div
           role="tooltip"
           aria-hidden={tip === null}
-          className="tip-bubble absolute top-full right-0 left-0 z-20 mt-2 rounded-[14px] px-3 py-2 text-left text-[12.5px] leading-snug shadow-lg transition-opacity duration-150"
+          className="tip-bubble absolute top-full right-0 left-0 z-20 mt-2 rounded-[14px] px-3 py-2 text-left fs-12.5 leading-snug shadow-lg transition-opacity duration-150"
           style={{
             opacity: tip === null ? 0 : 1,
             visibility: tip === null ? 'hidden' : 'visible',
@@ -81,8 +81,9 @@ export default function PronunciationView({ r, onSay, pausable = false }: { r: P
         >
           {/* Flecha que apunta a la nota tocada. */}
           <span
-            className="absolute -top-[7px] h-3 w-3 rotate-45"
-            style={{ left: `calc(${shown * 25 + 12.5}% - 6px)`, background: 'var(--tip-bg)', borderLeft: '1px solid var(--tip-border)', borderTop: '1px solid var(--tip-border)' }}
+            className="pron-arrow absolute -top-[7px] h-3 w-3 rotate-45"
+            // 5.10.1 (REG-M-05): con letra grande la rejilla pasa a 2 × 2 (index.css) y la flecha usa --a2.
+            style={{ ['--a4' as string]: `calc(${shown * 25 + 12.5}% - 6px)`, ['--a2' as string]: `calc(${(shown % 2) * 50 + 25}% - 6px)`, left: 'var(--a4)', background: 'var(--tip-bg)', borderLeft: '1px solid var(--tip-border)', borderTop: '1px solid var(--tip-border)' }}
           />
           <b>{tipLabel}</b>
           {tipValue !== undefined && (
@@ -101,8 +102,10 @@ export default function PronunciationView({ r, onSay, pausable = false }: { r: P
             <button
               key={w.word}
               onClick={() => (pausable && speakingKey() === w.word ? stopSpeaking() : onSay(w.word))}
-              className="glass flex min-h-7 max-w-full items-center gap-1 rounded-full px-2.5 py-0.5 text-[12.5px] break-words"
-              title="Escúchala bien pronunciada"
+              className="glass flex min-h-7 max-w-full items-center gap-1 rounded-full px-2.5 py-0.5 fs-12.5 break-words"
+              // 5.10.1 (REG-A3-19): el consejo en español también en el chip (el IPA solo, un A2 no lo lee).
+              title={w.tip ? `${w.tip}. Toca para oírla bien pronunciada` : 'Escúchala bien pronunciada'}
+              aria-label={`Escuchar «${w.word}» bien pronunciada${w.tip ? `: ${w.tip}` : ''}`}
             >
               {pausable ? <SpeakIcon speakKey={w.word} size={12} /> : <Icon name="speaker" size={12} />}
               <b>{w.word}</b>

@@ -1,0 +1,14 @@
+ventana ms 10156
+85.7% (idle) :-1
+11.7% (program) :-1
+1.0% setAttribute :-1
+0.5% (garbage collector) :-1
+0.3% (anon) index-BQfa43WL.js:8
+0.3% draw index-BQfa43WL.js:8
+0.2% Le index-BQfa43WL.js:8
+0.2% requestAnimationFrame :-1
+0.1% frame index-BQfa43WL.js:8
+0.1% matchMedia :-1
+0.0% Ye index-BQfa43WL.js:8
+0.0% now :-1
+0.0% setTimeout :-1

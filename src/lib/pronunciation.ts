@@ -188,8 +188,32 @@ function numberWords(n: number): string {
   return numberWords(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberWords(n % 1000) : '')
 }
 
-/** Cifras en palabras ("20" → "twenty"): Azure alinea mal una cifra del texto de referencia con lo que se dijo. */
-export const spellNumbers = (s: string) => s.replace(/\b\d{1,6}\b/g, (d) => numberWords(Number(d)))
+const ORDINAL: Record<string, string> = { one: 'first', two: 'second', three: 'third', five: 'fifth', eight: 'eighth', nine: 'ninth', twelve: 'twelfth' }
+/** «twenty-one» → «twenty-first», «five» → «fifth», «twenty» → «twentieth». */
+function ordinalWords(n: number): string {
+  return numberWords(n).replace(/[a-z]+$/, (last) => ORDINAL[last] ?? (last.endsWith('y') ? last.slice(0, -1) + 'ieth' : last + 'th'))
+}
+
+/** «10:00» → «ten o'clock», «7:30» → «seven thirty», «9:05» → «nine oh five» (como se dice en inglés). */
+function timeWords(h: number, m: number): string {
+  if (m === 0) return `${numberWords(h)} o'clock`
+  return `${numberWords(h)} ${m < 10 ? 'oh ' : ''}${numberWords(m)}`
+}
+
+/**
+ * Cifras en palabras ("20" → "twenty"): Azure alinea mal una cifra del texto de referencia con lo que se dijo.
+ * 5.10.1 (REG-M-09): antes «10:00» salía como la palabra «ten:zero» en la lista de palabras a cuidar. Ahora también
+ * las horas (10:00, 7:30 pm), los ordinales (5th), los miles con coma (1,000), los decimales (2.5) y el «%».
+ */
+export const spellNumbers = (s: string) =>
+  s
+    .replace(/\b(\d{1,2}):(\d{2})\s*([ap])\.?\s?m\b\.?/gi, (_, h, m, ap: string) => `${timeWords(Number(h), Number(m))} ${ap.toLowerCase() === 'a' ? 'a.m.' : 'p.m.'}`)
+    .replace(/\b(\d{1,2}):(\d{2})\b/g, (_, h, m) => timeWords(Number(h), Number(m)))
+    .replace(/\b\d{1,3}(?:,\d{3})+\b/g, (d) => d.replace(/,/g, ''))
+    .replace(/\b(\d{1,6})\.(\d{1,3})\b/g, (_, a, b: string) => `${numberWords(Number(a))} point ${[...b].map((x) => ONES[Number(x)]).join(' ')}`)
+    .replace(/\b(\d{1,6})(?:st|nd|rd|th)\b/gi, (_, d) => ordinalWords(Number(d)))
+    .replace(/\b(\d{1,6})\s?%/g, (_, d) => `${numberWords(Number(d))} percent`)
+    .replace(/\b\d{1,6}\b/g, (d) => numberWords(Number(d)))
 
 /** ¿Azure y Gemini entendieron las mismas palabras? */
 export const sameWords = (a: string, b: string) => wordsOf(spellNumbers(a)).join(' ') === wordsOf(spellNumbers(b)).join(' ')
@@ -235,23 +259,91 @@ export async function checkAzureKey(key: string, region: string): Promise<void> 
 // ---------------------------------------------------------------------------
 // Mensaje del coach: la pronunciación contada en español, para unirla a las correcciones de Gemini.
 
-/** Palabras a cuidar: mal pronunciadas, omitidas o con baja precisión, con su fonema más flojo. */
-export function weakWords(r: PronResult, max = 4): { word: string; error: PronError; accuracy: number; phoneme?: string }[] {
+/**
+ * 5.10.1 (REG-A3-19): consejo en español para los sonidos que más fallan a un hispanohablante (IPA de Azure en-US;
+ * Azure escribe /iː/ como «i» y /uː/ como «u»). Un A2 no lee IPA: la nota debe decir CÓMO arreglarlo.
+ */
+const SOUND_TIPS: Record<string, string> = {
+  'ɪ': '«i» corta y relajada, casi «e»: ship, no sheep',
+  i: '«i» larga y tensa: sheep',
+  'iː': '«i» larga y tensa: sheep',
+  v: 'dientes de arriba sobre el labio de abajo; no es «b»: very, no berry',
+  b: 'labios juntos y suelta el aire; no es «v»',
+  'θ': 'lengua entre los dientes, como la «z» de España: think',
+  'ð': 'lengua entre los dientes, una «d» muy suave: this',
+  'ʃ': '«sh», como para pedir silencio: she',
+  'tʃ': '«ch» fuerte: cheese',
+  z: '«s» con zumbido, que vibre la garganta: is, zoo',
+  'ə': 'vocal débil y neutra, casi no suena: about',
+  'ɚ': 'vocal débil con «r» suave, sin vibrar: teacher',
+  'æ': 'entre «a» y «e», con la boca abierta: cat',
+  'ʌ': '«a» corta y relajada: cup',
+  'ʊ': '«u» corta y relajada: book',
+  u: '«u» larga: food',
+  'uː': '«u» larga: food',
+  h: '«j» muy suave, solo aire: house',
+  'dʒ': '«y» fuerte, como «ll» rioplatense: job',
+  j: '«i» suave al empezar: yes',
+  'ɹ': '«r» sin vibrar: la lengua no toca nada: red',
+  'ɝ': '«r» sin vibrar, con la boca casi cerrada: bird',
+  'ŋ': '«n» al fondo de la boca, sin «g» fuerte al final: sing',
+}
+
+/**
+ * 5.10.1 (REG-A3-19): palabras de función. Sus vocales son débiles y Azure las puntúa bajo, pero no son lo que hay que
+ * practicar: van detrás de las palabras de contenido (salvo si te las comiste).
+ */
+const FUNCTION_WORDS = new Set(
+  'a an the of to and or but in on at for from with by as is are am was were be been it its i you he she we they me my your his her our their this that can could do does did have has had will would not so if than then'.split(
+    ' ',
+  ),
+)
+
+/** ¿Es un token que Azure saca de una cifra u hora sin pasar a palabras («ten:zero», «10:00»)? No se enseña. */
+const odd = (w: string) => /[\d:]/.test(w)
+
+/**
+ * 5.10.1 (REG-A3-19): el consejo en español para una palabra y su sonido más flojo. Primero los casos típicos que se
+ * ven con lo que da Azure: la «e» de más antes de s + consonante (Spain → «Espain») y la -ed con sílaba de más.
+ */
+export function soundTipEs(word: string, phoneme?: string, error?: PronError): string | undefined {
+  const w = word.toLowerCase()
+  if (phoneme === 's' && /^s[ptkcqmnlw]/.test(w)) return 'no digas «es-»: empieza directamente con la s (Spain, no Espain)'
+  if ((phoneme === 't' || phoneme === 'd') && /[^etd]ed$/.test(w)) return 'la -ed suena /t/ o /d/, sin sílaba de más: worked es una sílaba'
+  if (error === 'Omission') return 'te la comiste: dila entera'
+  return phoneme ? SOUND_TIPS[phoneme] : undefined
+}
+
+/** Palabras a cuidar: mal pronunciadas, omitidas o con baja precisión, con su fonema más flojo y su consejo. */
+export function weakWords(r: PronResult, max = 4): { word: string; error: PronError; accuracy: number; phoneme?: string; tip?: string }[] {
+  // Las palabras de función, detrás (salvo omitidas); a igual prioridad, la peor primero.
+  const rank = (w: PronWord) => (FUNCTION_WORDS.has(w.word.toLowerCase()) && w.error !== 'Omission' ? 1 : 0)
   return r.words
+    .filter((w) => w.word && !odd(w.word))
     .filter((w) => w.error === 'Mispronunciation' || w.error === 'Omission' || (w.error === 'None' && w.accuracy < 70))
-    .sort((a, b) => a.accuracy - b.accuracy)
+    .sort((a, b) => rank(a) - rank(b) || a.accuracy - b.accuracy)
     .slice(0, max)
     .map((w) => {
       const worst = [...w.phonemes].sort((a, b) => a.accuracy - b.accuracy)[0]
-      return { word: w.word, error: w.error, accuracy: w.accuracy, phoneme: worst && worst.accuracy < 70 ? worst.phoneme : undefined }
+      const phoneme = worst && worst.accuracy < 70 ? worst.phoneme : undefined
+      return { word: w.word, error: w.error, accuracy: w.accuracy, phoneme, tip: soundTipEs(w.word, phoneme, w.error) }
     })
 }
 
-/** Una frase natural sobre la pronunciación (en español). */
+/** Una frase natural sobre la pronunciación (en español), con el consejo de cada sonido flojo. */
 export function pronunciationLine(r: PronResult): string {
   const weak = weakWords(r, 3)
-  const head = r.pron >= 90 ? '¡Muy buena pronunciación!' : r.pron >= 80 ? 'Buena pronunciación.' : r.pron >= 60 ? 'Se te entiende, pero hay sonidos por pulir.' : 'Tu pronunciación necesita práctica.'
+  const head = r.pron >= 90 ? '¡Muy buena pronunciación!' : r.pron >= 80 ? 'Buena pronunciación.' : r.pron >= 60 ? 'Se te entiende, pero hay sonidos por pulir.' : 'Vamos a pulir unos sonidos.'
   if (!weak.length) return `${head} No encontré palabras con problemas.`
-  const list = weak.map((w) => `«${w.word}»${w.phoneme ? ` (el sonido /${w.phoneme}/)` : w.error === 'Omission' ? ' (te la comiste)' : ''}`).join(', ')
-  return `${head} Cuida ${list}.`
+  // El mismo consejo no se repite (dos palabras con /θ/ lo llevan solo en la primera).
+  const used = new Set<string>()
+  const list = weak.map((w) => {
+    if (w.tip) {
+      const fresh = !used.has(w.tip)
+      used.add(w.tip)
+      return `«${w.word}»${fresh ? ` (${w.tip})` : ''}`
+    }
+    return `«${w.word}»${w.phoneme ? ` (el sonido /${w.phoneme}/)` : ''}`
+  })
+  return `${head} Cuida ${list.join('; ')}.`
 }

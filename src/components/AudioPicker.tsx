@@ -1,8 +1,21 @@
 import { App as CapApp } from '@capacitor/app'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { applyAudioMode, audioState, AUDIO_MODES, onAudioDevicesChanged, type AudioMode, type AudioState } from '../lib/audioRoute'
+import {
+  audioState,
+  AUDIO_MODES,
+  bluetoothGranted,
+  isForeground,
+  ensureHeadsetRoute,
+  onAudioDevicesChanged,
+  releaseAfterMic,
+  setHeadsetWanted,
+  settleRoute,
+  type AudioMode,
+  type AudioState,
+} from '../lib/audioRoute'
 import { interruptForSoundTest } from '../lib/lifecycle'
-import { onMicOpened, setMicMode, trustDefaultMic } from '../lib/recorder'
+import { onMicClosed, onMicDistrusted, onMicOpened, setHeadsetName, setMicMode, trustDefaultMic } from '../lib/recorder'
+import { loadChecked, markChecked, needsCheck } from '../lib/soundCheck'
 import type { Settings } from '../lib/settings'
 import { Icon } from '../ui/icons'
 import type { ThemeVars } from '../ui/theme'
@@ -18,6 +31,11 @@ interface Props {
   settings: Settings
   t: ThemeVars
   update: (p: Partial<Settings>) => void
+  /**
+   * REG-M-03: ¿se puede preguntar ya (selector o prueba de sonido)? No antes de terminar la bienvenida y el tutorial con
+   * la clave de Gemini guardada, ni en mitad del test de nivel (App.tsx). Mientras tanto solo se aplica lo ya elegido.
+   */
+  ready?: boolean
 }
 
 /**
@@ -29,13 +47,24 @@ interface Props {
  * auriculares, en cualquier pantalla, después de elegir (o con lo ya elegido) llega la prueba de audio y sonido
  * (SoundTest) y no se sigue hasta pasarla. Lo que pasa la prueba es lo que se guarda para esos auriculares.
  * También se abre desde Ajustes → Profe y voz → Prueba de sonido (sin auriculares, prueba el teléfono).
+ *
+ * 5.10.1 (REG-M-03): la prueba ya no sale en cada conexión ni en cada arranque: solo con auriculares nuevos, si cambió el
+ * modo elegido o si la última falló (o el micro salió mudo en uso real). Se recuerda por nombre en Preferences
+ * (soundCheck.ts). Y nunca antes de la bienvenida y la clave, ni cortando el test de nivel (`ready`).
  */
-export default function AudioPicker({ settings, t, update }: Props) {
+export default function AudioPicker({ settings, t, update, ready = true }: Props) {
+  const readyRef = useRef(ready)
+  useEffect(() => {
+    readyRef.current = ready
+  }, [ready])
   const [state, setState] = useState<AudioState | null>(null)
   const [open, setOpen] = useState(false)
   const [test, setTest] = useState<{ mode: TestMode; n: number } | null>(null)
   const testRef = useRef(test)
   useEffect(() => {
+    // REG-M-01: la prueba de sonido fija ella misma la ruta de los auriculares; al cerrarse, la ruta solo se queda si
+    // hay una pantalla que graba abierta (la clase, el repaso…). En el Inicio vuelve al teléfono.
+    if (testRef.current && !test) settleRoute()
     testRef.current = test
   }, [test])
   const [error, setError] = useState<string | null>(null)
@@ -51,14 +80,21 @@ export default function AudioPicker({ settings, t, update }: Props) {
     lastApplied = mode
     if (mode === 'none') {
       onMicOpened(null)
+      onMicClosed(null)
       setMicMode('auto')
-      await applyAudioMode('none')
+      setHeadsetWanted(false) // suelta la ruta (setRoute phone)
       return true
     }
-    const ok = await applyAudioMode(mode === 'headset' ? 'headset' : 'none')
+    // 5.10.1 (REG-M-01): elegir «Todo por los auriculares» ya no fija la ruta en toda la app (antes quedaba en «modo
+    // llamada» también en el Inicio). Aquí solo se pide el permiso de Bluetooth; la ruta la retienen las pantallas que
+    // graban, solo cuando te toca hablar (audioRoute: al acabar la voz del profe), y se suelta al salir o al minimizar.
+    const ok = mode === 'headset' ? await bluetoothGranted().catch(() => false) : true
     setMicMode(ok ? mode : 'split')
-    // Cada vez que se abre el micro, se vuelven a fijar los auriculares (el WebView elige el suyo al abrirlo).
-    onMicOpened(ok && mode === 'headset' ? async () => void (await applyAudioMode('headset')) : null)
+    setHeadsetWanted(ok && mode === 'headset')
+    // Al abrir el micro solo se comprueba la ruta (preparada al acabar el profe) y se aplica si falta; al soltarlo
+    // (enviar o descartar) se suelta, para que el profe responda con calidad normal (decisión del dueño, ronda 2).
+    onMicOpened(ok && mode === 'headset' ? async () => void (await ensureHeadsetRoute()) : null)
+    onMicClosed(ok && mode === 'headset' ? releaseAfterMic : null)
     return ok
   }, [])
 
@@ -72,6 +108,7 @@ export default function AudioPicker({ settings, t, update }: Props) {
     async (s: AudioState) => {
       console.info(`[HABLA-MIC] audio: ${s.headset ? `auriculares «${s.headsetName}»` : 'sin auriculares'} · probados: ${testedFor ?? '—'}`)
       setState(s)
+      setHeadsetName(s.headset ? s.headsetName : '') // REG-M-01: el Recorder recuerda qué auriculares ya dieron señal
       if (!s.headset) {
         testedFor = null
         setOpen(false)
@@ -82,6 +119,17 @@ export default function AudioPicker({ settings, t, update }: Props) {
       const pref = prefsRef.current[s.headsetName]
       if (pref) await apply(pref)
       if (testedFor === s.headsetName) return // ya pasaron la prueba en esta conexión (p. ej. vuelta del segundo plano)
+      // REG-M-03: aún no se pregunta nada (bienvenida, tutorial sin clave o test de nivel): al estar listo se vuelve a mirar.
+      // REV-D1-02 (privacidad): con la app oculta tampoco (auriculares conectados con Habla minimizada); al volver a primer
+      // plano, appStateChange vuelve a llamar a check().
+      if (!readyRef.current || !isForeground()) return
+      // REG-M-03: probados antes con este mismo modo y sin fallos: no se repite la prueba.
+      if (pref && !needsCheck((await loadChecked())[s.headsetName], pref)) {
+        testedFor = s.headsetName
+        if (pref === 'headset') trustDefaultMic()
+        console.info(`[HABLA-MIC] auriculares «${s.headsetName}» ya probados en modo ${pref}: sin prueba de sonido`)
+        return
+      }
       const running = testRef.current?.mode
       if (running === 'none') setTest(null) // la prueba del teléfono no tapa a los auriculares que acaban de llegar
       if (pref) {
@@ -91,8 +139,23 @@ export default function AudioPicker({ settings, t, update }: Props) {
     [apply, startTest],
   )
 
+  // REG-M-03: al quedar lista la app (fin de la bienvenida y la clave, fin del test de nivel) se mira si toca preguntar.
   useEffect(() => {
-    audioState().then(check)
+    if (ready) audioState().then(check)
+  }, [ready, check])
+
+  // REG-M-03: un micro mudo con estos auriculares en uso real (grabación vacía) apunta el fallo: la próxima vez se prueba.
+  useEffect(() => {
+    onMicDistrusted((name) => {
+      if (!name) return
+      const mode = prefsRef.current[name]
+      if (mode) markChecked(name, mode, false).catch(() => {})
+      if (testedFor === name) testedFor = null
+    })
+    return () => onMicDistrusted(null)
+  }, [])
+
+  useEffect(() => {
     // Android conecta los auriculares Bluetooth por etapas (audio A2DP, luego el micro HFP): se vuelve a mirar al
     // cabo de 1,5 s por si el primer aviso llegó a medias (el dueño conectó unos MI03 y no salió el selector).
     let later = 0
@@ -117,8 +180,8 @@ export default function AudioPicker({ settings, t, update }: Props) {
     // En segundo plano no se retiene el "modo llamada" (afectaría a otras apps); al volver se reaplica.
     const sub = CapApp.addListener('appStateChange', ({ isActive }) => {
       if (!isActive) {
-        applyAudioMode('none')
-        lastApplied = null // al volver se reaplica
+        // La ruta la suelta lifecycle (suspendRoute) y, en nativo, el plugin en onStop. Al volver se reaplica lo elegido.
+        lastApplied = null
       } else audioState().then(check)
     })
     return () => {
@@ -149,9 +212,16 @@ export default function AudioPicker({ settings, t, update }: Props) {
     if (state?.headset && mode && mode !== 'none') {
       testedFor = state.headsetName
       update({ audioPrefs: { ...prefsRef.current, [state.headsetName]: mode } })
+      markChecked(state.headsetName, mode, true).catch(() => {}) // REG-M-03: no se repite en cada arranque
     }
     setTest(null)
   }, [test, state, update])
+
+  // REG-M-03: no se oyó voz: se apunta el fallo para esos auriculares (la próxima conexión vuelve a probar).
+  const failed = useCallback(() => {
+    const mode = test?.mode
+    if (state?.headset && mode && mode !== 'none') markChecked(state.headsetName, mode, false).catch(() => {})
+  }, [test, state])
 
   if (test)
     return (
@@ -162,6 +232,7 @@ export default function AudioPicker({ settings, t, update }: Props) {
         mode={test.mode}
         headsetName={state?.headset ? state.headsetName : ''}
         onPassed={passed}
+        onFailed={failed}
         onUsePhoneMic={async () => {
           await apply('split', true)
           startTest('split')
@@ -188,7 +259,8 @@ export default function AudioPicker({ settings, t, update }: Props) {
       }}
     >
       <div
-        className="anim-up w-full rounded-t-[30px] px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+22px)]"
+        // 5.10.1 (REG-M-05): con letra grande en horizontal (360 px de alto) la hoja no cabe: se desplaza en vez de cortar el título.
+        className="anim-up max-h-full w-full overflow-y-auto rounded-t-[30px] px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+22px)]"
         style={{ background: 'var(--bg)', borderTop: '1px solid var(--gb)' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -198,7 +270,7 @@ export default function AudioPicker({ settings, t, update }: Props) {
           </span>
           <div className="min-w-0">
             <div className="text-lg font-semibold">Auriculares conectados</div>
-            <div className="txt-sub truncate text-[13px]">{state.headsetName || 'Auriculares'}</div>
+            <div className="fs-clamp txt-sub truncate fs-13">{state.headsetName || 'Auriculares'}</div>
           </div>
         </div>
         <div className="txt-sub mt-3 text-sm">¿Por dónde quieres escuchar al profe y hablar?</div>
@@ -211,15 +283,15 @@ export default function AudioPicker({ settings, t, update }: Props) {
               style={current === m.key ? { border: '2px solid var(--acc)' } : undefined}
             >
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">{m.title}</span>
-                <span className="txt-sub block text-[12.5px]">{m.desc}</span>
+                <span className="block fs-15 font-semibold">{m.title}</span>
+                <span className="txt-sub block fs-12.5">{m.desc}</span>
               </span>
               {current === m.key && <Icon name="check" size={18} stroke={2.2} color="var(--acc)" />}
             </button>
           ))}
         </div>
         {error && (
-          <p className="mt-3 text-sm" style={{ color: '#f87171' }}>
+          <p className="mt-3 text-sm" style={{ color: 'var(--bad)' }}>
             {error}
           </p>
         )}

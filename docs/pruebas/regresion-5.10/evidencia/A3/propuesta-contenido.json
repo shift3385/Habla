@@ -1,0 +1,670 @@
+{
+  "nota": "Propuesta del agente A3 (regresión 5.10, 2026-10-20). NO aplicada. «current» es el valor leído hoy del JSON: aplicar solo si sigue igual. Tras aplicar: node scripts/validate-grammar.mjs. «alsoAccepted» necesita antes el cambio de código descrito en A3-contenido.md (REG-A3-06).",
+  "cambios": [
+    {
+      "reg": "REG-A3-02",
+      "file": "src/grammar/conditionals.json",
+      "topic": "in-case-vs-if",
+      "path": [
+        "exercises",
+        {
+          "ex": "in-case-vs-if-8"
+        }
+      ],
+      "current": {
+        "id": "in-case-vs-if-8",
+        "type": "choice",
+        "prompt": "«I'll buy some snacks in case the kids get hungry.» ¿Cuándo compras los snacks?",
+        "options": [
+          "Ahora, por precaución",
+          "Solo cuando los niños tengan hambre",
+          "Nunca, si los niños no tienen hambre",
+          "Después de que los niños coman"
+        ],
+        "answer": 0,
+        "whyEs": "«In case» = por si acaso: la acción ocurre ya, pase lo que pase.",
+        "trapsEs": [
+          "",
+          "Eso sería «if the kids get hungry».",
+          "Con «in case» compras igualmente, tengan hambre o no.",
+          "No: «in case» es una precaución previa."
+        ]
+      },
+      "proposed": {
+        "id": "in-case-vs-if-8",
+        "type": "choice",
+        "prompt": "We're going on a long drive, so I'll buy some snacks now ____ the kids get hungry.",
+        "options": [
+          "in case",
+          "if",
+          "unless",
+          "in case of"
+        ],
+        "answer": 0,
+        "whyEs": "Los compras ya, por precaución, tengan hambre o no: «in case» (por si).",
+        "trapsEs": [
+          "",
+          "«If» = solo si: los comprarías cuando ya tuvieran hambre, no ahora.",
+          "«Unless» = a menos que: diría lo contrario.",
+          "«In case of» va con un sustantivo («in case of hunger»), no con una frase."
+        ]
+      }
+    },
+    {
+      "reg": "REG-A3-05",
+      "file": "src/grammar/negatives-questions.json",
+      "topic": "contractions",
+      "path": [
+        "exercises",
+        {
+          "ex": "contractions-2"
+        }
+      ],
+      "current": {
+        "id": "contractions-2",
+        "type": "choice",
+        "prompt": "In «She's finished her homework», 's means ____.",
+        "options": [
+          "has",
+          "is",
+          "was",
+          "does"
+        ],
+        "answer": 0,
+        "whyEs": "Detrás viene un participio (finished): 's = has (presente perfecto).",
+        "trapsEs": [
+          "",
+          "Is + finished sería «está terminada», pero aquí lleva objeto (her homework): es has.",
+          "'s nunca es la contracción de was.",
+          "'s puede ser does solo en preguntas informales como «What's he do?», no aquí."
+        ]
+      },
+      "proposed": {
+        "id": "contractions-2",
+        "type": "choice",
+        "prompt": "«She's finished her homework.» → She ____ finished her homework.",
+        "options": [
+          "has",
+          "is",
+          "was",
+          "does"
+        ],
+        "answer": 0,
+        "whyEs": "Detrás viene un participio (finished) con objeto (her homework): 's = has (presente perfecto).",
+        "trapsEs": [
+          "",
+          "Is + finished sería «está terminada», pero aquí lleva objeto (her homework): es has.",
+          "'s nunca es la contracción de was.",
+          "'s solo es does en preguntas informales como «What's he do?», no aquí."
+        ]
+      }
+    },
+    {
+      "reg": "REG-A3-05",
+      "file": "src/grammar/negatives-questions.json",
+      "topic": "contractions",
+      "path": [
+        "exercises",
+        {
+          "ex": "contractions-3"
+        }
+      ],
+      "current": {
+        "id": "contractions-3",
+        "type": "choice",
+        "prompt": "In «I'd already eaten», I'd means ____.",
+        "options": [
+          "I had",
+          "I would",
+          "I did",
+          "I could"
+        ],
+        "answer": 0,
+        "whyEs": "Detrás viene un participio (eaten): 'd = had (pasado perfecto).",
+        "trapsEs": [
+          "",
+          "Would va con el verbo base (I'd eat), no con un participio.",
+          "'d no es la contracción de did en frases afirmativas.",
+          "Could nunca se contrae como 'd."
+        ]
+      },
+      "proposed": {
+        "id": "contractions-3",
+        "type": "choice",
+        "prompt": "«I'd already eaten.» → I ____ already eaten.",
+        "options": [
+          "had",
+          "would",
+          "did",
+          "could"
+        ],
+        "answer": 0,
+        "whyEs": "Detrás viene un participio (eaten): 'd = had (pasado perfecto).",
+        "trapsEs": [
+          "",
+          "Would va con el verbo base (I'd eat), no con un participio.",
+          "'d no es la contracción de did en frases afirmativas.",
+          "Could nunca se contrae como 'd."
+        ]
+      }
+    },
+    {
+      "reg": "REG-A3-07",
+      "file": "src/grammar/articles-quantifiers.json",
+      "topic": "some-any",
+      "path": [
+        "exercises",
+        {
+          "ex": "some-any-2"
+        },
+        "prompt"
+      ],
+      "current": "We don't have ____ bread. Can you buy some?",
+      "proposed": "We don't have ____ bread. Can you buy some? (some o any)"
+    },
+    {
+      "reg": "REG-A3-07",
+      "file": "src/grammar/conditionals.json",
+      "topic": "zero-conditional",
+      "path": [
+        "exercises",
+        {
+          "ex": "zero-conditional-7"
+        },
+        "prompt"
+      ],
+      "current": "____ the app work if I'm offline?",
+      "proposed": "____ the app work if I'm offline? (do o does)"
+    },
+    {
+      "reg": "REG-A3-07",
+      "file": "src/grammar/modals.json",
+      "topic": "will-shall-offers",
+      "path": [
+        "exercises",
+        {
+          "ex": "will-shall-offers-6"
+        },
+        "prompt"
+      ],
+      "current": "A: I'm hungry. B: ____ make you a sandwich.",
+      "proposed": "A: I'm hungry. B: ____ make you a sandwich. (will, ofrecimiento)"
+    },
+    {
+      "reg": "REG-A3-07",
+      "file": "src/grammar/modals.json",
+      "topic": "must-vs-have-to",
+      "path": [
+        "exercises",
+        {
+          "ex": "must-vs-have-to-6"
+        },
+        "answers"
+      ],
+      "current": [
+        "must",
+        "have to"
+      ],
+      "proposed": [
+        "must",
+        "have to",
+        "need to",
+        "have got to",
+        "'ve got to"
+      ]
+    },
+    {
+      "reg": "REG-A3-08",
+      "file": "src/grammar/tenses.json",
+      "topic": "past-continuous",
+      "path": [
+        "exercises",
+        {
+          "ex": "past-continuous-5"
+        }
+      ],
+      "current": {
+        "id": "past-continuous-5",
+        "type": "choice",
+        "prompt": "She broke her arm while she ____.",
+        "options": [
+          "was skiing",
+          "skied",
+          "is skiing",
+          "was ski"
+        ],
+        "answer": 0,
+        "whyEs": "While + acción larga en curso: was + -ing.",
+        "trapsEs": [
+          "",
+          "Con while lo natural es el continuo para la acción de fondo.",
+          "Es presente; la historia está en pasado.",
+          "Después de was va la forma -ing."
+        ]
+      },
+      "proposed": {
+        "id": "past-continuous-5",
+        "type": "choice",
+        "prompt": "She ____ down the slope when she fell and broke her arm.",
+        "options": [
+          "was skiing",
+          "skied",
+          "is skiing",
+          "was ski"
+        ],
+        "answer": 0,
+        "whyEs": "La acción larga en marcha (was skiing) se interrumpe por la corta (fell): was + -ing.",
+        "trapsEs": [
+          "",
+          "Pasado simple: suena a un descenso completo, no a lo que estaba haciendo cuando se cayó.",
+          "Es presente; la historia está en pasado.",
+          "Después de was va la forma -ing."
+        ]
+      }
+    },
+    {
+      "reg": "REG-A3-09",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "its-time",
+      "path": [
+        "examples",
+        2,
+        "es"
+      ],
+      "current": "Ya era hora de que llamaras a tu madre.",
+      "proposed": "Ya va siendo hora de que llames a tu madre."
+    },
+    {
+      "reg": "REG-A3-10",
+      "file": "src/grammar/tenses.json",
+      "topic": "present-perfect",
+      "path": [
+        "commonMistakes",
+        1,
+        "whyEs"
+      ],
+      "current": "En España se dice «la he visto hoy», pero con un momento terminado como yesterday el inglés exige pasado simple.",
+      "proposed": "Aunque en España se diga «la he visto esta mañana», con un momento ya terminado como yesterday el inglés exige pasado simple, igual que en español decimos «la vi ayer»."
+    },
+    {
+      "reg": "REG-A3-10",
+      "file": "src/grammar/negatives-questions.json",
+      "topic": "subject-and-object-questions",
+      "path": [
+        "explanationEs",
+        3
+      ],
+      "current": "En las de sujeto, el verbo va con -s en presente o en pasado: «Who lives here?», «What happened?».",
+      "proposed": "En las de sujeto, el verbo se conjuga como en una afirmación: con -s en presente («Who lives here?») o en pasado («What happened?»)."
+    },
+    {
+      "reg": "REG-A3-10",
+      "file": "src/grammar/verbs.json",
+      "topic": "verbs-change-meaning",
+      "path": [
+        "explanationEs",
+        1
+      ],
+      "current": "«Remember / forget + to» = acordarse u olvidarse de algo que tienes que hacer («Remember to call»: acuérdate de llamar). «Remember / forget + -ing» = recordar algo que ya hiciste («I remember calling»: recuerdo haber llamado; casi siempre «I'll never forget…»).",
+      "proposed": "«Remember / forget + to» = acordarse u olvidarse de algo que tienes que hacer («Remember to call»: acuérdate de llamar). «Remember + -ing» = recordar algo que ya hiciste («I remember calling»: recuerdo haber llamado). Con «forget + -ing» casi siempre se dice «I'll never forget…»."
+    },
+    {
+      "reg": "REG-A3-10",
+      "file": "src/grammar/conditionals.json",
+      "topic": "if-i-were-you",
+      "path": [
+        "exercises",
+        {
+          "ex": "if-i-were-you-6"
+        },
+        "trapsEs",
+        3
+      ],
+      "current": "Al revés: tú no te imaginas que el otro es tú; «If I were you».",
+      "proposed": "Es al revés: «If you were me» lo dice quien pide consejo («What would you do if you were me?»); quien aconseja dice «If I were you»."
+    },
+    {
+      "reg": "REG-A3-10",
+      "file": "src/grammar/passive.json",
+      "topic": "passive-present-past",
+      "path": [
+        "exercises",
+        {
+          "ex": "passive-present-past-7"
+        },
+        "prompt"
+      ],
+      "current": "Where ____ you ____ (bear)? — In Bogotá.",
+      "proposed": "Where ____ you ____ (be born)? — In Bogotá."
+    },
+    {
+      "reg": "REG-A3-10",
+      "file": "src/grammar/verbs.json",
+      "topic": "regular-irregular-verbs",
+      "path": [
+        "commonMistakes",
+        2
+      ],
+      "current": {
+        "wrong": "I have went there twice.",
+        "right": "I have gone there twice. / I have been there twice.",
+        "whyEs": "Detrás de «have» va el participio («gone»), no el pasado («went»)."
+      },
+      "proposed": {
+        "wrong": "I have went there twice.",
+        "right": "I have been there twice.",
+        "whyEs": "Detrás de «have» va el participio, no el pasado («went»). Para experiencias se usa «been» («he estado»); «I have gone» significa que se fue y sigue allí."
+      }
+    },
+    {
+      "reg": "REG-A3-11",
+      "file": "src/grammar/negatives-questions.json",
+      "topic": "short-answers",
+      "path": [
+        "explanationEs",
+        0
+      ],
+      "current": "En inglés suena seco contestar solo «Yes» o «No». Lo natural es añadir el sujeto y el auxiliar de la pregunta: «Do you like it? — Yes, I do».",
+      "proposed": "Se puede contestar solo «Yes» o «No», pero suena más natural y amable añadir el sujeto y el auxiliar de la pregunta: «Do you like it? — Yes, I do»."
+    },
+    {
+      "reg": "REG-A3-11",
+      "file": "src/grammar/word-order-linkers.json",
+      "topic": "adverbs-of-frequency",
+      "path": [
+        "commonMistakes",
+        3,
+        "whyEs"
+      ],
+      "current": "Se dice once (una vez), twice (dos veces), three times… y «a month / a week», no «per».",
+      "proposed": "Lo natural es once (una vez), twice (dos veces), three times… + «a month / a week». «Per month» suena formal y «one time» es coloquial."
+    },
+    {
+      "reg": "REG-A3-11",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "wish-past-simple",
+      "path": [
+        "forms",
+        "question",
+        "examples",
+        0,
+        "es"
+      ],
+      "current": "¿Alguna vez desearías vivir en otro país?",
+      "proposed": "¿A veces te gustaría vivir en otro país?"
+    },
+    {
+      "reg": "REG-A3-11",
+      "file": "src/grammar/passive.json",
+      "topic": "causative-have-something-done",
+      "path": [
+        "examples",
+        1,
+        "es"
+      ],
+      "current": "Se hizo el vestido con una diseñadora de la zona.",
+      "proposed": "Le hizo el vestido una diseñadora de la zona."
+    },
+    {
+      "reg": "REG-A3-11",
+      "file": "src/grammar/verbs.json",
+      "topic": "there-is-there-are",
+      "path": [
+        "explanationEs",
+        0
+      ],
+      "current": "«Hay» se dice «there is» con singular o incontable («There's a bank near here», «There is some milk») y «there are» con plural («There are two bank branches»).",
+      "proposed": "«Hay» se dice «there is» con singular o incontable («There's a bank near here», «There is some milk») y «there are» con plural («There are two banks on this street»)."
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/verbs.json",
+      "topic": "verbs-change-meaning",
+      "path": [
+        "exercises",
+        {
+          "ex": "verbs-change-meaning-6"
+        },
+        "prompt"
+      ],
+      "current": "We regret ____ you that your flight has been cancelled.",
+      "proposed": "We regret ____ you that your flight has been canceled."
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "should-have-would-have-had-to",
+      "path": [
+        "exercises",
+        {
+          "ex": "should-have-would-have-had-to-2"
+        },
+        "prompt"
+      ],
+      "current": "If the train had been cancelled, we ____ a taxi.",
+      "proposed": "If the train had been canceled, we ____ a taxi."
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "would-like-rather-prefer",
+      "path": [
+        "exercises",
+        {
+          "ex": "would-like-rather-prefer-2"
+        },
+        "options",
+        2
+      ],
+      "current": "travelled",
+      "proposed": "traveled"
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "wish-past-perfect",
+      "path": [
+        "speaking",
+        0,
+        "modelEn"
+      ],
+      "current": "I wish I hadn't stopped playing the guitar. I wish I had travelled more when I was younger.",
+      "proposed": "I wish I hadn't stopped playing the guitar. I wish I had traveled more when I was younger."
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "if-only",
+      "path": [
+        "speaking",
+        0,
+        "modelEn"
+      ],
+      "current": "If only I had a bigger flat! If only I had learned English at school!",
+      "proposed": "If only I had a bigger apartment! If only I had learned English at school!"
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/verbs.json",
+      "topic": "there-is-there-are",
+      "path": [
+        "forms",
+        "affirmative",
+        "examples",
+        1
+      ],
+      "current": {
+        "en": "There are three people in the queue.",
+        "es": "Hay tres personas en la cola."
+      },
+      "proposed": {
+        "en": "There are three people in line.",
+        "es": "Hay tres personas en la cola."
+      }
+    },
+    {
+      "reg": "REG-A3-12",
+      "file": "src/grammar/wishes-advice.json",
+      "topic": "should-could-would",
+      "path": [
+        "speaking",
+        0,
+        "modelEn"
+      ],
+      "current": "You should practise every day. You could watch series in English. I would use an app like this one.",
+      "proposed": "You should practice every day. You could watch series in English. I would use an app like this one."
+    }
+  ],
+  "ordenesAlternativas": [
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "present-simple",
+      "exercise": "present-simple-7",
+      "answer": "My dad never works on Sundays",
+      "alsoAccepted": [
+        "On Sundays my dad never works"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "present-continuous",
+      "exercise": "present-continuous-6",
+      "answer": "My laptop isn't working today",
+      "alsoAccepted": [
+        "Today my laptop isn't working"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "present-perfect-continuous",
+      "exercise": "present-perfect-continuous-7",
+      "answer": "It has been raining since Monday",
+      "alsoAccepted": [
+        "Since Monday it has been raining"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "future-will",
+      "exercise": "future-will-6",
+      "answer": "I'll send you the photos tomorrow",
+      "alsoAccepted": [
+        "Tomorrow I'll send you the photos"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "future-going-to",
+      "exercise": "future-going-to-6",
+      "answer": "I'm going to learn Italian next year",
+      "alsoAccepted": [
+        "Next year I'm going to learn Italian"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "present-continuous-for-future",
+      "exercise": "present-continuous-for-future-6",
+      "answer": "We are getting married on Friday",
+      "alsoAccepted": [
+        "On Friday we are getting married"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/tenses.json",
+      "topic": "future-perfect",
+      "exercise": "future-perfect-6",
+      "answer": "They'll have left by then",
+      "alsoAccepted": [
+        "By then they'll have left"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/modals.json",
+      "topic": "can-cant",
+      "exercise": "can-cant-7",
+      "answer": "She can't drive the car today",
+      "alsoAccepted": [
+        "Today she can't drive the car"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/passive.json",
+      "topic": "causative-have-something-done",
+      "exercise": "causative-have-something-done-3",
+      "answer": "I'm getting my eyes checked tomorrow",
+      "alsoAccepted": [
+        "Tomorrow I'm getting my eyes checked"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/verbs.json",
+      "topic": "phrasal-verbs",
+      "exercise": "phrasal-verbs-3",
+      "answer": "Turn it off please",
+      "alsoAccepted": [
+        "Please turn it off"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/conditionals.json",
+      "topic": "first-conditional",
+      "exercise": "first-conditional-5",
+      "answer": "You'll be late if you don't hurry",
+      "alsoAccepted": [
+        "If you don't hurry you'll be late"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/conditionals.json",
+      "topic": "second-conditional",
+      "exercise": "second-conditional-5",
+      "answer": "I'd buy a house if I had enough money",
+      "alsoAccepted": [
+        "If I had enough money I'd buy a house"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/conditionals.json",
+      "topic": "if-i-were-you",
+      "exercise": "if-i-were-you-3",
+      "answer": "I'd take a break if I were you",
+      "alsoAccepted": [
+        "If I were you I'd take a break"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/conditionals.json",
+      "topic": "mixed-conditionals",
+      "exercise": "mixed-conditionals-5",
+      "answer": "I wouldn't be here now if I'd missed the plane",
+      "alsoAccepted": [
+        "If I'd missed the plane I wouldn't be here now"
+      ]
+    },
+    {
+      "reg": "REG-A3-06",
+      "file": "src/grammar/conditionals.json",
+      "topic": "unless-as-long-as-provided-that",
+      "exercise": "unless-as-long-as-provided-that-6",
+      "answer": "We'll finish on time provided the weather is good",
+      "alsoAccepted": [
+        "Provided the weather is good we'll finish on time"
+      ]
+    }
+  ]
+}

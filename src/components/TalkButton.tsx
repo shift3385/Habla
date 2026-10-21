@@ -213,7 +213,7 @@ export default function TalkButton({ phase, elapsed, onPress, onRelease, onCance
           )}
         </div>
       </div>
-      <div className="txt-sub h-5 text-center text-[13px] tabular-nums" style={ending ? { color: ringColor(left), fontWeight: 600 } : undefined}>
+      <div className="txt-sub h-5 text-center fs-13 tabular-nums" style={ending ? { color: ringColor(left), fontWeight: 600 } : undefined}>
         {ending ? `${label} · ${clock(left)}` : label}
       </div>
     </div>

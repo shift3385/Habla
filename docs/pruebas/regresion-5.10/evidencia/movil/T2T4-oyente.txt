@@ -1,0 +1,13 @@
+00:36:25.027 silencio
+00:36:25.794 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:36:35.502 silencio
+00:36:42.167 Habla-debug@BLUETOOTH_SCO(uso 2, 0 dB) 
+00:36:53.613 silencio
+00:36:54.173 Habla-debug@BLUETOOTH_A2DP(uso 2, 0 dB) 
+00:36:54.715 silencio
+00:37:01.794 Habla-debug@BLUETOOTH_SCO(uso 2, 0 dB) 
+00:37:11.877 silencio
+00:37:12.422 Habla-debug@BLUETOOTH_A2DP(uso 2, 0 dB) 
+00:37:12.707 silencio
+00:37:17.346 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:37:27.475 silencio

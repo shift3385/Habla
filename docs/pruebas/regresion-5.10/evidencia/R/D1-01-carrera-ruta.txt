@@ -1,0 +1,60 @@
+[HABLA-MIC] ruta auriculares {"id":7,"headset":true}
+salir getDevices > requestBluetooth > setRoute:phone > setRoute:headset → final: AURICULARES (modo llamada)
+✖ R: salir mientras se pide el permiso de Bluetooth → ¿queda la ruta puesta? (843.0991ms)
+[HABLA-MIC] ruta auriculares {"id":7,"headset":true}
+segundo plano getDevices > requestBluetooth > setRoute:phone > setRoute:headset → final: AURICULARES (modo llamada)
+✖ R: segundo plano mientras se pide el permiso de Bluetooth → ¿queda la ruta puesta? (709.5966ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1832.2731
+
+✖ failing tests:
+
+test at C:\Users\Shift\AppData\Local\Temp\claude\D--My-Apps-HABLA\072e4fb4-2cd3-4a7c-b9a7-9d41ee94cacd\scratchpad\rev-d1-race.test.mjs:17:3
+✖ R: salir mientras se pide el permiso de Bluetooth → ¿queda la ruta puesta? (843.0991ms)
+  AssertionError [ERR_ASSERTION]: la ruta debe quedar suelta
+  + actual - expected
+  
+  + {
+  +   headset: true,
+  +   id: 7
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/072e4fb4-2cd3-4a7c-b9a7-9d41ee94cacd/scratchpad/rev-d1-race.test.mjs:28:12)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { id: 7, headset: true },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at C:\Users\Shift\AppData\Local\Temp\claude\D--My-Apps-HABLA\072e4fb4-2cd3-4a7c-b9a7-9d41ee94cacd\scratchpad\rev-d1-race.test.mjs:17:3
+✖ R: segundo plano mientras se pide el permiso de Bluetooth → ¿queda la ruta puesta? (709.5966ms)
+  AssertionError [ERR_ASSERTION]: la ruta debe quedar suelta
+  + actual - expected
+  
+  + {
+  +   headset: true,
+  +   id: 7
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///C:/Users/Shift/AppData/Local/Temp/claude/D--My-Apps-HABLA/072e4fb4-2cd3-4a7c-b9a7-9d41ee94cacd/scratchpad/rev-d1-race.test.mjs:28:12)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { id: 7, headset: true },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

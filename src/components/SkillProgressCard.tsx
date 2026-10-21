@@ -31,7 +31,7 @@ export default function SkillProgressCard({ levels, title = 'Por habilidad', ext
         {SKILLS.map(({ key, label }) => {
           const l = levels[key]
           return (
-            <div key={key} className="grid items-center gap-2.5" style={{ gridTemplateColumns: 'minmax(64px, 84px) minmax(40px, 1fr) auto' }}>
+            <div key={key} className="skill-row grid items-center gap-2.5" style={{ gridTemplateColumns: 'minmax(64px, 84px) minmax(40px, 1fr) auto' }}>
               <span className="truncate text-sm">{label}</span>
               <div className="h-2 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
                 <div className="h-full rounded" style={{ width: `${((levelIdx(l) + 1) / 6) * 100}%`, background: 'var(--acc)' }} />

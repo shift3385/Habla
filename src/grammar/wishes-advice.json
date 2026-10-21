@@ -242,7 +242,7 @@
       "speaking": [
         {
           "promptEs": "Tu amigo quiere aprender inglés. Dale un consejo («deberías»), una idea («podrías») y di qué harías tú («yo…»).",
-          "modelEn": "You should practise every day. You could watch series in English. I would use an app like this one.",
+          "modelEn": "You should practice every day. You could watch series in English. I would use an app like this one.",
           "checkEs": "Usa «should», «could» y «would» + verbo base."
         },
         {
@@ -325,7 +325,7 @@
       "examples": [
         {
           "en": "I have to renew my driver's license.",
-          "es": "Tengo que renovar el carné de conducir."
+          "es": "Tengo que renovar la licencia de manejo."
         },
         {
           "en": "We had to cancel the trip because of the storm.",
@@ -337,7 +337,7 @@
         },
         {
           "en": "If the car broke down, we would have to take a bus.",
-          "es": "Si se estropeara el coche, tendríamos que coger un autobús."
+          "es": "Si se descompusiera el carro, tendríamos que tomar un autobús."
         },
         {
           "en": "I've had to work every weekend this month.",
@@ -581,7 +581,7 @@
         },
         {
           "en": "I'd rather walk than wait for the bus.",
-          "es": "Prefiero ir andando que esperar el autobús."
+          "es": "Prefiero ir caminando que esperar el autobús."
         }
       ],
       "commonMistakes": [
@@ -638,7 +638,7 @@
           "options": [
             "to travel",
             "travel",
-            "travelled",
+            "traveled",
             "than travel"
           ],
           "answer": 0,
@@ -790,7 +790,7 @@
           "examples": [
             {
               "en": "Do you ever wish you lived abroad?",
-              "es": "¿Alguna vez desearías vivir en otro país?"
+              "es": "¿A veces te gustaría vivir en otro país?"
             }
           ]
         }
@@ -806,7 +806,7 @@
         },
         {
           "en": "She wishes she had a bigger apartment.",
-          "es": "Ella desearía tener un piso más grande."
+          "es": "Ella desearía tener un departamento más grande."
         },
         {
           "en": "I wish it weren't so cold.",
@@ -1186,7 +1186,7 @@
       "speaking": [
         {
           "promptEs": "Cuenta dos cosas que lamentas de tu pasado: una que hiciste y otra que no hiciste.",
-          "modelEn": "I wish I hadn't stopped playing the guitar. I wish I had travelled more when I was younger.",
+          "modelEn": "I wish I hadn't stopped playing the guitar. I wish I had traveled more when I was younger.",
           "checkEs": "Usa «I wish I had / hadn't» + participio."
         },
         {
@@ -1241,7 +1241,7 @@
           "examples": [
             {
               "en": "If only I hadn't lost my phone!",
-              "es": "¡Ojalá no hubiera perdido el móvil!"
+              "es": "¡Ojalá no hubiera perdido el celular!"
             }
           ]
         },
@@ -1387,7 +1387,7 @@
       "speaking": [
         {
           "promptEs": "Di dos deseos con «if only»: uno sobre tu vida ahora y uno sobre algo que pasó.",
-          "modelEn": "If only I had a bigger flat! If only I had learned English at school!",
+          "modelEn": "If only I had a bigger apartment! If only I had learned English at school!",
           "checkEs": "Usa «if only» + pasado / had + participio."
         },
         {
@@ -1471,7 +1471,7 @@
         },
         {
           "en": "It's about time you called your mother.",
-          "es": "Ya era hora de que llamaras a tu madre."
+          "es": "Ya va siendo hora de que llames a tu madre."
         },
         {
           "en": "Come on, kids, it's time for dinner.",
@@ -1479,7 +1479,7 @@
         },
         {
           "en": "Isn't it time you updated your computer?",
-          "es": "¿No va siendo hora de que actualices el ordenador?"
+          "es": "¿No va siendo hora de que actualices la computadora?"
         }
       ],
       "commonMistakes": [
@@ -1652,7 +1652,7 @@
       ],
       "explanationEs": [
         "«Tendría que haber» y «debería haber» (un lamento o una crítica sobre el pasado) se dicen «should have» + participio: «I should have called you» = tendría que haberte llamado. En negativa: «You shouldn't have paid» = no tendrías que haber pagado.",
-        "«Habría tenido que» (una obligación imaginaria en el pasado) es «would have had to»: «If I had missed the bus, I would have had to walk» = si hubiera perdido el autobús, habría tenido que ir andando.",
+        "«Habría tenido que» (una obligación imaginaria en el pasado) es «would have had to»: «If I had missed the bus, I would have had to walk» = si hubiera perdido el autobús, habría tenido que ir caminando.",
         "Y «tuve que» (una obligación real que se cumplió) es simplemente «had to»: «I had to walk». No confundas «had to» (lo hice) con «should have» (no lo hice y debería)."
       ],
       "forms": {
@@ -1678,7 +1678,7 @@
             },
             {
               "en": "With a car, I wouldn't have had to take two buses.",
-              "es": "Con coche, no habría tenido que coger dos autobuses."
+              "es": "Con carro, no habría tenido que tomar dos autobuses."
             }
           ]
         },
@@ -1770,7 +1770,7 @@
         {
           "id": "should-have-would-have-had-to-2",
           "type": "choice",
-          "prompt": "If the train had been cancelled, we ____ a taxi.",
+          "prompt": "If the train had been canceled, we ____ a taxi.",
           "options": [
             "would have had to take",
             "would had to take",
@@ -1865,7 +1865,7 @@
           "checkEs": "Usa «should have» + participio."
         },
         {
-          "promptEs": "Ayer perdiste el autobús y fuiste andando. Di qué tuviste que hacer y qué habrías tenido que hacer si hubiera llovido.",
+          "promptEs": "Ayer perdiste el autobús y fuiste caminando. Di qué tuviste que hacer y qué habrías tenido que hacer si hubiera llovido.",
           "modelEn": "I missed the bus, so I had to walk. If it had rained, I would have had to take a taxi.",
           "checkEs": "Distingue «had to» (real) y «would have had to» (imaginario)."
         }

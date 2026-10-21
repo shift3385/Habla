@@ -1,4 +1,6 @@
-# Estado actual (2026-10-08, v5.9.1 build 37)
+# Estado actual (2026-10-21, v5.10.1 build 41)
+
+> **v5.10.1 «Actualización de parches de seguridad y corrección de la v5.10»** (build 41, rama `v5.10.1-correcciones`): corrige la regresión de la 5.10 (micro con auriculares en ~0,9 s con la ruta preparada al acabar el profe, grabaciones que se perdían sin aviso, explicaciones que seguían sonando, «May fifth», 94 ejercicios con la pista pegada y tarjetas corregidas, español neutro, prompts y fonética en español, avisos con la mascota) y añade la prueba de sonido en un paso y el tamaño de letra (Ajustes → Apariencia). Probada en navegador y, en buena parte, en el POCO (`docs/pruebas/regresion-5.10/MOVIL.md`). Siguiente: **5.11 «Motivación» + «Sonidos»** (`docs/v5.11/PLAN.md`).
 
 > **v5.9.1 «Actualización de parches de seguridad y corrección de la v5.9»** (build 37, `apk/Habla-v5.9.1.apk`, sin probar aún en el teléfono): el repaso ya no manda grabaciones vacías a Gemini (error 400 al desconectar los auriculares), la fonética del repaso se mide sobre lo que dijiste, ▶ para oír cada corrección, ▶/⏸ en toda la app (salvo el test) y parches dentro de su versión en Novedades. **Pendiente:** E3, volver al micro del teléfono al desconectar los auriculares (reproducir en el POCO). Detalle en `docs/correccion/NC-v5.9.1.md`.
 

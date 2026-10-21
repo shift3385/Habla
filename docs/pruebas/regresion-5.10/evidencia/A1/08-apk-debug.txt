@@ -1,0 +1,79 @@
+﻿### 08-apk-debug
+exit=1 tiempo=34.7s
+
+> habla@0.0.0 apk:debug
+> npm run build && cap sync android && cd android && gradlew.bat assembleDebug --offline
+
+
+> habla@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+Found 1 warning while optimizing generated CSS:
+
+[2m│   max-width: 640px;[22m
+[2m│ }[22m
+[2m│[22m html[data-landscape] .shell:not(:has(.mp-page)) > .relative.z-[2] {
+[2m┆[22m                                                                [33m[2m^--[22m No qualified name in attribute selector: Number { has_sign: false, value: 2.0, int_value: Some(2) }.[39m
+[2m┆[22m
+[2m│   margin-inline: auto;[22m
+[2m│   max-width: 640px;[22m
+
+✓ 195 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                             0.54 kB │ gzip:   0.33 kB
+dist/assets/outfit-latin-ext-500-normal-zeox_O30.woff2      6.24 kB
+dist/assets/outfit-latin-ext-400-normal-5tcqmc2S.woff2      6.38 kB
+dist/assets/outfit-latin-ext-300-normal-BYS6Dpvq.woff2      6.38 kB
+dist/assets/outfit-latin-ext-700-normal-CI4iH74K.woff2      6.48 kB
+dist/assets/outfit-latin-ext-600-normal-B85nYjL1.woff2      6.52 kB
+dist/assets/outfit-latin-ext-500-normal-DrCvqoFD.woff       8.49 kB
+dist/assets/outfit-latin-ext-300-normal-CMIMshEd.woff       8.54 kB
+dist/assets/outfit-latin-ext-400-normal-DHm7mdGe.woff       8.64 kB
+dist/assets/outfit-latin-ext-600-normal-CWJcPgd7.woff       8.75 kB
+dist/assets/outfit-latin-ext-700-normal-fjS8-Gm7.woff       8.78 kB
+dist/assets/outfit-latin-500-normal-DKnIMDSk.woff2         13.52 kB
+dist/assets/outfit-latin-300-normal-CRYTwY6m.woff2         13.95 kB
+dist/assets/outfit-latin-400-normal-BGsTXAXT.woff2         14.03 kB
+dist/assets/outfit-latin-700-normal-Cu9v6i1X.woff2         14.06 kB
+dist/assets/outfit-latin-600-normal-B7SfZ07L.woff2         14.14 kB
+dist/assets/outfit-latin-500-normal-ClnHRwRh.woff          17.68 kB
+dist/assets/outfit-latin-300-normal-AWLfuCom.woff          18.19 kB
+dist/assets/outfit-latin-400-normal-DMwTpYkH.woff          18.23 kB
+dist/assets/outfit-latin-700-normal-D4itBLBr.woff          18.34 kB
+dist/assets/outfit-latin-600-normal-BEfTtDA7.woff          18.41 kB
+dist/assets/index-CQ26vAhW.css                             46.09 kB │ gzip:   9.59 kB
+dist/assets/web-B7UzUs7d.js                                 0.36 kB │ gzip:   0.24 kB
+dist/assets/web-BPoEm44a.js                                 0.84 kB │ gzip:   0.40 kB
+dist/assets/web-DHTLl4R9.js                                 0.89 kB │ gzip:   0.45 kB
+dist/assets/web-DKGpXGos.js                                 1.19 kB │ gzip:   0.54 kB
+dist/assets/web-C7a6EEKX.js                                 1.68 kB │ gzip:   0.69 kB
+dist/assets/web-EgYNXEBa.js                                 4.44 kB │ gzip:   1.28 kB
+dist/assets/web-g4I4TEMD.js                                 8.43 kB │ gzip:   2.81 kB
+dist/assets/index-BQfa43WL.js                           1,924.90 kB │ gzip: 588.58 kB
+
+✓ built in 1.12s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+√ Copying web assets from dist to android\app\src\main\assets\public in 52.15ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 2.85ms
+√ copy android in 112.86ms
+√ Updating Android plugins in 5.70ms
+[info] Found 7 Capacitor plugins for android:
+       @capacitor-community/text-to-speech@8.0.2
+       @capacitor/app@8.1.1
+       @capacitor/filesystem@8.1.3
+       @capacitor/haptics@8.0.2
+       @capacitor/local-notifications@8.3.1
+       @capacitor/preferences@8.0.1
+       @capacitor/share@8.0.2
+√ update android in 418.55ms
+[info] Sync finished in 0.625s
+"gradlew.bat" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+

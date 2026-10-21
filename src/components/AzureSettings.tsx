@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fmtHours, F0_SECONDS, hasMonitor, monitorProblem, monthUsage, normalizeResourceId, type Usage } from '../lib/azureUsage'
-import { confirmIdentity } from '../lib/deviceAuth'
+import { confirmIdentity, type AuthScope } from '../lib/deviceAuth'
 import { costEstimate, hasAzure, monitorCreds, monthKey, PLANS } from '../lib/phonetics'
 import { AzureError, checkAzureKey } from '../lib/pronunciation'
 import type { Settings } from '../lib/settings'
@@ -10,12 +10,27 @@ type Status = { kind: 'ok' | 'error' | 'info'; text: string } | null
 
 function Line({ s }: { s: Status }) {
   if (!s) return null
-  const color = s.kind === 'error' ? '#f87171' : s.kind === 'ok' ? 'var(--acc)' : 'var(--sub)'
-  return <div className="mt-2 text-[13px] leading-snug" style={{ color }}>{s.text}</div>
+  const color = s.kind === 'error' ? 'var(--bad)' : s.kind === 'ok' ? 'var(--acc)' : 'var(--sub)'
+  return <div className="mt-2 fs-13 leading-snug" style={{ color }}>{s.text}</div>
 }
 
 /** Campo secreto: vacío, con "termina en …XXXX"; el ojo muestra lo guardado tras confirmar con el bloqueo. */
-function Secret({ label, saved, value, onChange, what }: { label: string; saved: string; value: string; onChange: (v: string) => void; what: string }) {
+function Secret({
+  label,
+  saved,
+  value,
+  onChange,
+  what,
+  scope,
+}: {
+  label: string
+  saved: string
+  value: string
+  onChange: (v: string) => void
+  what: string
+  /** 5.10.1 (REG-A2-03): la gracia de 60 s de la confirmación es de cada credencial. */
+  scope: AuthScope
+}) {
   const [show, setShow] = useState(false)
   const toggle = async () => {
     if (show) {
@@ -24,7 +39,7 @@ function Secret({ label, saved, value, onChange, what }: { label: string; saved:
       return
     }
     if (!value && saved) {
-      const r = await confirmIdentity(`Para ver ${what}`)
+      const r = await confirmIdentity(`Para ver ${what}`, scope)
       if (!r.ok) return
       onChange(saved)
     }
@@ -100,7 +115,7 @@ export default function AzureSettings({ settings, update }: { settings: Settings
     const r = region.trim().toLowerCase().replace(/\s+/g, '')
     if (!k || !r) return setStatus({ kind: 'error', text: 'Escribe la clave (Clave 1) y la región de tu recurso de Speech.' })
     if (settings.azureKey && k !== settings.azureKey) {
-      const ok = await confirmIdentity('Para cambiar tu clave de Azure Speech')
+      const ok = await confirmIdentity('Para cambiar tu clave de Azure Speech', 'azure')
       if (!ok.ok) return setStatus({ kind: 'error', text: 'No se confirmó tu identidad: la clave no se cambió.' })
     }
     setChecking(true)
@@ -136,7 +151,7 @@ export default function AzureSettings({ settings, update }: { settings: Settings
       (settings.azureClientId && next.clientId !== settings.azureClientId) ||
       (settings.azureResourceId && resourceId !== settings.azureResourceId)
     if (changed) {
-      const ok = await confirmIdentity('Para cambiar el acceso a Azure Monitor')
+      const ok = await confirmIdentity('Para cambiar el acceso a Azure Monitor', 'monitor')
       if (!ok.ok) return setMonStatus({ kind: 'error', text: 'No se confirmó tu identidad: no se cambió.' })
     }
     update({ azureTenantId: next.tenantId, azureClientId: next.clientId, azureClientSecret: secret, azureResourceId: resourceId })
@@ -155,14 +170,14 @@ export default function AzureSettings({ settings, update }: { settings: Settings
   return (
     <div className="glass rounded-[24px] p-4">
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-[16px] font-semibold">
+        <div className="flex items-center gap-2 fs-16 font-semibold">
           <Icon name="ear" size={18} /> Azure Speech (fonética)
         </div>
-        <span className="rounded-full px-2.5 py-0.5 text-[11.5px]" style={{ border: '1px solid var(--gb)' }}>
+        <span className="rounded-full px-2.5 py-0.5 fs-11.5" style={{ border: '1px solid var(--gb)' }}>
           {!configured ? 'Sin configurar' : exhausted ? 'F0 agotado' : settings.phoneticsOn ? 'Activo' : 'Apagado'}
         </span>
       </div>
-      <div className="txt-sub mt-1 text-[12.5px] leading-snug">
+      <div className="txt-sub mt-1 fs-12.5 leading-snug">
         Opcional. Evalúa tu pronunciación (sonido a sonido) mientras Gemini corrige el contenido; el coach te lo cuenta todo junto. Con fonética, cada respuesta dura como máximo 60 s.
       </div>
 
@@ -175,8 +190,8 @@ export default function AzureSettings({ settings, update }: { settings: Settings
         aria-pressed={settings.phoneticsOn}
       >
         <span className="min-w-0">
-          <span className="block text-[15px] font-semibold">Usar corrector fonético</span>
-          <span className="txt-sub block text-[12px] leading-snug">
+          <span className="block fs-15 font-semibold">Usar corrector fonético</span>
+          <span className="txt-sub block fs-12 leading-snug">
             {!configured
               ? 'Añade la clave y la región de Azure para poder activarlo.'
               : exhausted
@@ -190,9 +205,9 @@ export default function AzureSettings({ settings, update }: { settings: Settings
       </button>
 
       {/* Clave y región */}
-      <Secret label="CLAVE DE SPEECH (CLAVE 1)" saved={settings.azureKey} value={key} onChange={setKey} what="tu clave de Azure Speech" />
+      <Secret label="CLAVE DE SPEECH (CLAVE 1)" saved={settings.azureKey} value={key} onChange={setKey} what="tu clave de Azure Speech" scope="azure" />
       <Plain label="REGIÓN" value={region} onChange={setRegion} placeholder="eastus" />
-      <button onClick={saveKey} disabled={checking} className="btn-acc mt-2.5 h-[48px] w-full rounded-[24px] text-[15px]">
+      <button onClick={saveKey} disabled={checking} className="btn-acc mt-2.5 h-[48px] w-full rounded-[24px] fs-15">
         {checking ? 'Comprobando…' : 'Guardar y comprobar'}
       </button>
       <Line s={status} />
@@ -213,8 +228,8 @@ export default function AzureSettings({ settings, update }: { settings: Settings
                 {sel && <span className="h-2.5 w-2.5 rounded-full" style={{ background: 'currentColor' }} />}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[14px] font-semibold">{p.title}</span>
-                <span className={`block text-[12px] ${sel ? 'opacity-85' : 'txt-sub'}`}>
+                <span className="block fs-14 font-semibold">{p.title}</span>
+                <span className={`block fs-12 ${sel ? 'opacity-85' : 'txt-sub'}`}>
                   {p.price}
                   {p.perHour ? ` · ${costEstimate(p.key)}` : ''}
                 </span>
@@ -223,35 +238,35 @@ export default function AzureSettings({ settings, update }: { settings: Settings
           )
         })}
       </div>
-      <div className="txt-sub mt-1.5 text-[11.5px] leading-snug">
+      <div className="txt-sub mt-1.5 fs-11.5 leading-snug">
         Marca el plan que tiene tu recurso. La app no lo cambia: pasar a S0 se hace en el portal de Azure. Al agotarse el F0, Azure no cobra ni cambia de plan; deja de procesar hasta el mes siguiente.
       </div>
 
       {/* Consumo del mes */}
       <div className="mt-4 rounded-[18px] px-3.5 py-3" style={{ background: 'var(--field)' }}>
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[14px] font-semibold">Consumo de este mes</span>
+          <span className="fs-14 font-semibold">Consumo de este mes</span>
           {monitorReady && (
-            <button onClick={() => loadUsage(true)} className="txt-acc2 text-[12.5px]">
+            <button onClick={() => loadUsage(true)} className="txt-acc2 fs-12.5">
               Actualizar
             </button>
           )}
         </div>
         {usage ? (
           <>
-            <div className="mt-1 text-[14px]">
+            <div className="mt-1 fs-14">
               ≈ <b>{fmtHours(usage.usedSeconds)}</b> de 5 h usadas
               {settings.azurePlan === 'F0' && <> · quedan <b>{fmtHours(usage.remainingSeconds)}</b></>}
             </div>
             <div className="mt-1.5 h-2 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
               <div className="h-full rounded" style={{ width: `${Math.min(100, (usage.usedSeconds / F0_SECONDS) * 100)}%`, background: usage.remainingSeconds ? 'var(--acc)' : '#f59e0b' }} />
             </div>
-            <div className="txt-sub mt-1 text-[11.5px]">
+            <div className="txt-sub mt-1 fs-11.5">
               Dato aproximado de Azure Monitor (puede ir unos minutos por detrás) · {new Date(usage.at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
             </div>
           </>
         ) : (
-          <div className="txt-sub mt-1 text-[12.5px] leading-snug">
+          <div className="txt-sub mt-1 fs-12.5 leading-snug">
             {monitorReady ? 'Sin dato todavía.' : 'Para ver las horas usadas (de todas las apps o personas que usan esta clave), añade el acceso a Azure Monitor aquí abajo.'}
           </div>
         )}
@@ -259,7 +274,7 @@ export default function AzureSettings({ settings, update }: { settings: Settings
       </div>
 
       {/* Acceso a Azure Monitor (service principal) */}
-      <button onClick={() => setMonOpen((o) => !o)} className="mt-3 flex w-full items-center justify-between text-left text-[14px] font-semibold">
+      <button onClick={() => setMonOpen((o) => !o)} className="mt-3 flex w-full items-center justify-between text-left fs-14 font-semibold">
         Acceso a Azure Monitor (opcional)
         <span className="transition-transform" style={{ transform: monOpen ? 'rotate(180deg)' : 'none' }}>
           <Icon name="chevD" size={15} stroke={2} />
@@ -267,18 +282,18 @@ export default function AzureSettings({ settings, update }: { settings: Settings
       </button>
       {monOpen && (
         <div className="anim-up">
-          <div className="txt-sub mt-1 text-[12px] leading-snug">
+          <div className="txt-sub mt-1 fs-12 leading-snug">
             La clave de Speech no sirve para leer el consumo. Crea un registro de aplicación (service principal) en Microsoft Entra ID y dale el rol <b>Monitoring Reader</b> sobre el recurso de Speech.
           </div>
           <Plain label="TENANT ID" value={mon.tenantId} onChange={(v) => setMon((m) => ({ ...m, tenantId: v }))} placeholder="00000000-0000-…" />
           <Plain label="CLIENT ID" value={mon.clientId} onChange={(v) => setMon((m) => ({ ...m, clientId: v }))} placeholder="00000000-0000-…" />
-          <Secret label="CLIENT SECRET" saved={settings.azureClientSecret} value={mon.clientSecret} onChange={(v) => setMon((m) => ({ ...m, clientSecret: v }))} what="el secreto de Azure" />
+          <Secret label="CLIENT SECRET" saved={settings.azureClientSecret} value={mon.clientSecret} onChange={(v) => setMon((m) => ({ ...m, clientSecret: v }))} what="el secreto de Azure" scope="monitor" />
           <Plain label="RESOURCE ID DEL RECURSO DE SPEECH" value={mon.resourceId} onChange={(v) => setMon((m) => ({ ...m, resourceId: v }))} placeholder="/subscriptions/…/providers/Microsoft.CognitiveServices/accounts/…" />
-          <button onClick={saveMonitor} className="glass mt-2.5 h-[44px] w-full rounded-[22px] text-[14px]">
+          <button onClick={saveMonitor} className="glass mt-2.5 h-[44px] w-full rounded-[22px] fs-14">
             Guardar acceso
           </button>
           <Line s={monStatus} />
-          <div className="txt-sub mt-2 text-[11.5px] leading-snug">
+          <div className="txt-sub mt-2 fs-11.5 leading-snug">
             ¿Compartes la clave con otras personas? Mejor un pequeño servidor intermedio que guarde la clave y el service principal: las demás apps lo llaman y nadie ve la clave real.
           </div>
         </div>

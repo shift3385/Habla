@@ -1,0 +1,11 @@
+﻿.\gradlew.bat : Note: D:\My Apps\HABLA\android\app\src\main\java\com\shift\habla\AudioRoutePlugin.java uses or 
+overrides a deprecated API.
+En línea: 1 Carácter: 526
++ ... roid"; $o = .\gradlew.bat :app:compileDebugJavaWithJavac --offline -q ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Note: D:\My App...deprecated API.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Note: Recompile with -Xlint:deprecation for details.
+
+exit=0

@@ -8,7 +8,7 @@ export default function HelpPoint({ icon, children }: { icon: IconName; children
       <span className="field txt-acc2 mt-0.5 grid h-8 w-8 flex-none place-items-center rounded-full">
         <Icon name={icon} size={15} />
       </span>
-      <span className="min-w-0 flex-1 text-[14px] leading-snug">{children}</span>
+      <span className="min-w-0 flex-1 fs-14 leading-snug">{children}</span>
     </li>
   )
 }

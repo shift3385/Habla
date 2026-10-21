@@ -186,7 +186,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
       <div className="pointer-events-none absolute inset-0 z-[3]">
         {phase === 'intro' && (
           <>
-            <div className="absolute right-0 left-0 flex justify-center text-[58px] font-bold tracking-[-2px]" style={{ top: '60.7%' }}>
+            <div className="absolute right-0 left-0 flex justify-center fs-58 font-bold tracking-[-2px]" style={{ top: '60.7%' }}>
               {'Habla.'.split('').map((c, i) => (
                 <span
                   key={i}
@@ -201,7 +201,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
               ))}
             </div>
             <div
-              className="txt-sub absolute right-0 left-0 text-center text-[15px] opacity-0"
+              className="txt-sub absolute right-0 left-0 text-center fs-15 opacity-0"
               style={{
                 top: '70.4%',
                 animation: 'hb-fadein .8s 1.9s ease forwards',
@@ -215,7 +215,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
         {phase === 'welcome' && (
           <>
             <div
-              className="txt-sub absolute right-0 left-0 text-center text-[13px]"
+              className="txt-sub absolute right-0 left-0 text-center fs-13"
               style={{
                 top: '13%',
                 animation: 'bw-bob 2s ease-in-out infinite',
@@ -224,8 +224,8 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
               {pokes === 0 ? 'Tócame' : pokes < 4 ? '¡Otra vez!' : 'Jeje, me haces cosquillas'}
             </div>
             <div className="anim-up absolute right-7 left-7 text-center" style={{ top: '51%' }}>
-              <div className="txt-acc2 text-[15px] tracking-[1.5px] uppercase">Welcome to</div>
-              <div className="mt-1 text-[52px] leading-[1.05] font-bold tracking-[-1.8px]">
+              <div className="txt-acc2 fs-15 tracking-[1.5px] uppercase">Welcome to</div>
+              <div className="mt-1 fs-52 leading-[1.05] font-bold tracking-[-1.8px]">
                 Habla<span className="txt-acc">.</span>
               </div>
               <div className="txt-sub mt-3 text-base leading-snug text-pretty">
@@ -245,7 +245,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                   setMsgI(0)
                   setPhase('loading')
                 }}
-                className="btn-acc h-[58px] rounded-full text-[17px]"
+                className="btn-acc h-[58px] rounded-full fs-17"
               >
                 Soy nuevo, empecemos
               </button>
@@ -253,7 +253,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                 Ya tengo mi perfil (importar copia)
               </button>
               {importError && (
-                <div className="text-center text-[13px]" style={{ color: '#f87171' }}>
+                <div className="text-center fs-13" style={{ color: 'var(--bad)' }}>
                   {importError}
                 </div>
               )}
@@ -283,7 +283,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
         {phase === 'loading' && (
           <div className="anim-up absolute right-0 left-0 text-center" style={{ top: '64.3%' }}>
             <div className="text-2xl font-semibold tracking-[-.4px]">Preparando tu espacio</div>
-            <div className="txt-sub relative mt-2 h-[22px] text-[15px]">
+            <div className="txt-sub relative mt-2 h-[22px] fs-15">
               <div key={msgI} className="absolute inset-0 flex justify-center" style={{ animation: 'ld-msg 1.1s ease both' }}>
                 {LOAD_MSGS[Math.min(msgI, LOAD_MSGS.length - 1)]}
                 <span style={{ animation: 'hb-dot 1s infinite' }}>…</span>
@@ -313,7 +313,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                 />
               ))}
             </div>
-            <div className="mt-[18px] text-center text-[28px] font-semibold tracking-[-.6px]">
+            <div className="mt-[18px] text-center fs-28 font-semibold tracking-[-.6px]">
               {
                 [
                   '¿Cómo te llamas?',
@@ -323,7 +323,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                 ][step]
               }
             </div>
-            <div className="txt-sub mt-1.5 text-center text-[15px]">
+            <div className="txt-sub mt-1.5 text-center fs-15">
               {
                 [
                   'Así te saludará tu profe',
@@ -344,7 +344,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                     }}
                     placeholder="Tu nombre"
                     autoComplete="given-name"
-                    className="glass h-[60px] w-full rounded-[30px] px-[22px] text-center text-[19px] outline-none"
+                    className="glass h-[60px] w-full rounded-[30px] px-[22px] text-center fs-19 outline-none"
                     style={{ color: 'var(--tx)' }}
                   />
                 </div>
@@ -353,12 +353,12 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                 <div key="sc" className="anim-up flex h-full min-h-[480px] flex-col">
                   <div className="relative grid flex-1 place-items-center">
                     <Mascot key={theme} element={THEME_INFO[theme].mascot} mood={cheer ? 'happy' : 'idle'} size={210} />
-                    <div className="txt-sub anim-bob absolute right-0 bottom-0 left-0 text-center text-[13px]">
+                    <div className="txt-sub anim-bob absolute right-0 bottom-0 left-0 text-center fs-13">
                       Tócalo o estíralo para conocerlo
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[26px] font-bold tracking-[-.5px]">{THEME_INFO[theme].mascotName}</div>
+                    <div className="fs-26 font-bold tracking-[-.5px]">{THEME_INFO[theme].mascotName}</div>
                     <div className="txt-sub mt-0.5 text-sm">{THEME_INFO[theme].personality}</div>
                   </div>
                   <div className="mt-4 grid grid-cols-4 gap-[7px]">
@@ -380,7 +380,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                           }}
                         >
                           <Mascot element={THEME_INFO[k].mascot} size={58} interactive={false} />
-                          <span className="text-[13px] font-semibold">{THEME_INFO[k].name}</span>
+                          <span className="fs-13 font-semibold">{THEME_INFO[k].name}</span>
                         </button>
                       )
                     })}
@@ -418,7 +418,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                           cheerUp()
                           setRole(role === r ? null : r)
                         }}
-                        className={`h-[42px] rounded-[21px] px-4 text-[14.5px] transition-transform ${chip(role === r)}`}
+                        className={`h-[42px] rounded-[21px] px-4 fs-14.5 transition-transform ${chip(role === r)}`}
                       >
                         {r}
                       </button>
@@ -461,7 +461,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
               )}
               <button
                 onClick={next}
-                className="btn-acc h-[58px] flex-1 rounded-full text-[17px] transition-opacity"
+                className="btn-acc h-[58px] flex-1 rounded-full fs-17 transition-opacity"
                 style={{ opacity: canNext ? 1 : 0.45 }}
               >
                 {step === 1 ? `Elegir a ${THEME_INFO[theme].mascotName}` : step < STEPS - 1 ? 'Siguiente' : 'Crear mi espacio'}
@@ -473,8 +473,8 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
         {phase === 'back' && returning && (
           <>
             <div className="anim-up absolute right-7 left-7 text-center" style={{ top: '49.8%' }}>
-              <div className="txt-acc2 text-[15px]">Welcome back,</div>
-              <div className="text-[44px] leading-[1.1] font-bold tracking-[-1.4px]">{firstName}</div>
+              <div className="txt-acc2 fs-15">Welcome back,</div>
+              <div className="fs-44 leading-[1.1] font-bold tracking-[-1.4px]">{firstName}</div>
               <div className="mt-[18px] flex justify-center gap-2">
                 <span className="glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-sm font-semibold">
                   <svg
@@ -522,7 +522,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="txt-sub block text-xs">Lo dejaste aquí</span>
-                    <span className="block truncate text-[15px] font-semibold">{returning.lastTopic}</span>
+                    <span className="block truncate fs-15 font-semibold">{returning.lastTopic}</span>
                   </span>
                 </div>
               )}
@@ -532,7 +532,7 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
                   cheerUp()
                   setPhase('enter')
                 }}
-                className="btn-acc h-[58px] rounded-full text-[17px]"
+                className="btn-acc h-[58px] rounded-full fs-17"
               >
                 Continuar donde lo dejé
               </button>
@@ -548,10 +548,10 @@ export default function WelcomeScreen({ returning, onImport, onDone, theme, mode
               animation: 'hb-up .6s .7s ease forwards',
             }}
           >
-            <div className="text-[15px] font-semibold tracking-[1.5px] uppercase opacity-70">
+            <div className="fs-15 font-semibold tracking-[1.5px] uppercase opacity-70">
               {returning ? 'Entrando a Habla' : 'Tu espacio está listo'}
             </div>
-            <div className="mt-1.5 text-[38px] leading-[1.1] font-bold tracking-[-1.2px] text-balance">
+            <div className="mt-1.5 fs-38 leading-[1.1] font-bold tracking-[-1.2px] text-balance">
               {returning ? `Seguimos, ${firstName}` : firstName ? `Let's talk, ${firstName}!` : "Let's talk!"}
             </div>
           </div>

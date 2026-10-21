@@ -11,7 +11,7 @@ export default function CorrectionView({ c, compact = false }: { c: Correction; 
   // el catálogo se pueden abrir encima.
   const topics = topicsOfCorrections([c])
   return (
-    <div className="field rounded-[14px] px-3 py-2 text-[13px]" style={{ border: 0 }}>
+    <div className="field rounded-[14px] px-3 py-2 fs-13" style={{ border: 0 }}>
       <div className="flex flex-wrap items-center gap-2">
         <span className="txt-sub line-through">{c.original}</span>
         <Icon name="arrowR" size={14} stroke={2} color="var(--acc)" />
@@ -25,7 +25,7 @@ export default function CorrectionView({ c, compact = false }: { c: Correction; 
               e.stopPropagation()
               toggleSpeak(c.corrected)
             }}
-            className="txt-acc2 -my-1.5 grid h-8 w-8 flex-none place-items-center rounded-full"
+            className="txt-acc2 -my-2.5 grid h-10 w-10 flex-none place-items-center rounded-full"
             aria-label="Escuchar la frase corregida"
             title="Escúchala con la voz del profe"
           >
@@ -34,20 +34,24 @@ export default function CorrectionView({ c, compact = false }: { c: Correction; 
         </span>
       </div>
       {!compact && c.explanationEs && <div className="txt-sub mt-1 text-xs leading-snug">{c.explanationEs}</div>}
-      {!compact &&
-        topics.map((topic) => (
-          <button
-            key={topic.id}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              openGrammarTopic(topic.id)
-            }}
-            className="txt-acc2 mt-1.5 flex items-center gap-1 text-left text-[12px] font-medium"
-          >
-            <span aria-hidden>📘</span> Ver en Gramática: {topic.nameEs}
-          </button>
-        ))}
+      {/* 5.10.1 (REG-A4-05): enlaces de al menos 40 px de alto y en fila (con 2 temas ya no ocupan media tarjeta). */}
+      {!compact && topics.length > 0 && (
+        <div className="mt-0.5 flex flex-wrap gap-x-3">
+          {topics.map((topic) => (
+            <button
+              key={topic.id}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                openGrammarTopic(topic.id)
+              }}
+              className="txt-acc2 flex min-h-10 items-center gap-1 text-left fs-12 font-medium"
+            >
+              <span aria-hidden>📘</span> Ver en Gramática: {topic.nameEs}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -28,14 +28,14 @@ export default function LookupStack({ s, ttsRate, voiceIndex }: { s: LookupStack
         <div className="flex min-w-0 items-center gap-2">
           <button
             onClick={s.pop}
-            className="field flex h-9 max-w-[70%] min-w-0 flex-none items-center gap-1 rounded-[18px] pr-3 pl-2 text-[13.5px]"
+            className="field flex h-9 max-w-[70%] min-w-0 flex-none items-center gap-1 rounded-[18px] pr-3 pl-2 fs-13.5"
             aria-label={`Volver a ${back}`}
           >
             <Icon name="back" size={16} stroke={1.8} />
             <span className="truncate">{back}</span>
           </button>
           {top.relation && (
-            <span className="txt-sub min-w-0 truncate text-[12.5px]">
+            <span className="txt-sub min-w-0 truncate fs-12.5">
               {kind} de <b className="font-semibold">{top.relation.of}</b>
             </span>
           )}
@@ -45,13 +45,13 @@ export default function LookupStack({ s, ttsRate, voiceIndex }: { s: LookupStack
       {!top.lookup && !top.error && (
         <div className="glass txt-sub animate-pulse rounded-[24px] p-5 text-center">
           Buscando qué significa <b>"{entryLabel(top)}"</b> aquí…
-          {top.hint && <div className="mt-1.5 text-[13px]">{top.hint}</div>}
+          {top.hint && <div className="mt-1.5 fs-13">{top.hint}</div>}
         </div>
       )}
       {top.error && (
         <div className="glass rounded-[24px] p-4 text-sm">
-          <div style={{ color: '#f87171' }}>{top.error}</div>
-          <button onClick={s.retry} className="btn-acc mt-3 h-10 rounded-[20px] px-4 text-[14px]">
+          <div style={{ color: 'var(--bad)' }}>{top.error}</div>
+          <button onClick={s.retry} className="btn-acc mt-3 h-10 rounded-[20px] px-4 fs-14">
             Reintentar
           </button>
         </div>

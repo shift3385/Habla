@@ -1,0 +1,3 @@
+--------- beginning of main
+10-20 22:06:02.372 I/HablaAudio(25542): ruta auriculares lista en 745 ms · soundcore Liberty 4 Pro tipo 7 · ahora: soundcore Liberty 4 Pro tipo 7 · modo 3
+10-20 22:06:06.476 I/HablaAudio(25542): ruta auriculares lista en 90 ms · soundcore Liberty 4 Pro tipo 7 · ahora: soundcore Liberty 4 Pro tipo 7 · modo 3

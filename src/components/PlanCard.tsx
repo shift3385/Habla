@@ -119,7 +119,7 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
   if (error) {
     return shell(
       <>
-        <div className="text-sm" style={{ color: '#f87171' }}>
+        <div className="text-sm" style={{ color: 'var(--bad)' }}>
           {error}
         </div>
         <button
@@ -142,10 +142,10 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
           <Icon name="star" size={18} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[15px] font-semibold">¡Plan de 12 semanas completado!</span>
-          <span className="txt-sub block text-[12.5px]">Crea uno nuevo con tu nivel actual.</span>
+          <span className="block fs-15 font-semibold">¡Plan de 12 semanas completado!</span>
+          <span className="txt-sub block fs-12.5">Crea uno nuevo con tu nivel actual.</span>
         </span>
-        <button onClick={create} className="btn-acc h-9 flex-none rounded-[18px] px-3.5 text-[13px]">
+        <button onClick={create} className="btn-acc h-9 flex-none rounded-[18px] px-3.5 fs-13">
           Nuevo plan
         </button>
       </div>,
@@ -159,9 +159,10 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
 
   return shell(
     <>
-      <button onClick={onOpenPlan} className="flex w-full items-center justify-between text-left">
-        <span className="txt-acc2 text-[11px] tracking-[1.2px] uppercase">
-          {finishedToday ? '✓ Lección de hoy hecha' : 'Lección de hoy'} · Semana {week.n} de {PLAN_WEEKS}
+      <button onClick={onOpenPlan} className="flex w-full flex-wrap items-center justify-between gap-x-2 text-left">
+        <span className="txt-acc2 fs-11 tracking-[1.2px] uppercase">
+          {finishedToday ? '✓ Lección de hoy hecha' : 'Lección de hoy'}
+          <span className="plan-week"> · Semana {week.n} de {PLAN_WEEKS}</span>
         </span>
         <span className="txt-sub flex items-center gap-0.5 text-xs">
           Mi plan
@@ -170,8 +171,8 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
       </button>
       {lesson && (
         <>
-          <div className="mt-1 truncate text-[16px] leading-tight font-semibold">{lesson.titleEs}</div>
-          <div className="txt-sub mt-0.5 truncate text-[12.5px]">
+          <div className="mt-1 truncate fs-16 leading-tight font-semibold">{lesson.titleEs}</div>
+          <div className="plan-mission txt-sub mt-0.5 truncate fs-12.5">
             {ahead ? 'Adelantas la semana siguiente · ' : ''}
             {lesson.missionEs}
           </div>
@@ -189,7 +190,7 @@ export default function PlanCard({ settings, plan, calibrated, onPlanChange, onS
               // En la misma fila que el botón: la tarjeta no crece (Inicio sin scroll).
               <button
                 onClick={() => onOpenGrammar!(gram.id)}
-                className="field flex h-9 max-w-[42%] min-w-0 flex-none items-center gap-1 rounded-[18px] px-2.5 text-[12px]"
+                className="field flex h-9 max-w-[42%] min-w-0 flex-none items-center gap-1 rounded-[18px] px-2.5 fs-12"
                 title={`Gramática: ${gram.nameEs}`}
                 aria-label={`Ver en Gramática: ${gram.nameEs}`}
               >

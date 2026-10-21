@@ -26,8 +26,8 @@ export default function FavoritesSetup({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="anim-up relative z-[2] flex h-full flex-col px-5 pt-[calc(env(safe-area-inset-top)+28px)] pb-[calc(env(safe-area-inset-bottom)+24px)]">
-      <div className="text-center text-[28px] font-semibold tracking-[-.6px]">Elige tus 3 temas</div>
-      <div className="txt-sub mt-1.5 text-center text-[15px] leading-snug">
+      <div className="text-center fs-28 font-semibold tracking-[-.6px]">Elige tus 3 temas</div>
+      <div className="txt-sub mt-1.5 text-center fs-15 leading-snug">
         Serán los que veas en tu Inicio para hablar con un toque. Los demás siguen en «Más temas».
       </div>
       <div className="mt-6 min-h-0 flex-1">
@@ -36,7 +36,7 @@ export default function FavoritesSetup({ onDone }: { onDone: () => void }) {
       <button
         onClick={save}
         disabled={ids.length !== FAV_COUNT || saving}
-        className="btn-acc h-[58px] rounded-full text-[17px] transition-opacity"
+        className="btn-acc h-[58px] rounded-full fs-17 transition-opacity"
         style={{ opacity: ids.length === FAV_COUNT ? 1 : 0.45 }}
       >
         Guardar mis temas

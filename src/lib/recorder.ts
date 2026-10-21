@@ -38,6 +38,12 @@ const MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;code
 
 export class MicError extends Error {}
 
+/** REG-A1-01: generación de la grabadora y del segundo plano en el momento del toque (ver `Recorder.ticket()`). */
+export interface MicTicket {
+  gen: number
+  epoch: number
+}
+
 /** Calidad de grabación (bits/s). */
 const AUDIO_BPS = 24_000
 
@@ -55,6 +61,20 @@ export function onMicOpened(fn: (() => Promise<void>) | null) {
   afterOpen = fn
 }
 
+// 5.10.1 (REG-M-01): se llama al soltar un micro que estaba abierto (enviar, descartar, salir). El selector de audio
+// suelta entonces la ruta de los auriculares para que el profe responda con calidad normal; se vuelve a preparar al
+// acabar su voz (audioRoute.ts, «preparar al acabar el profe»).
+let afterClose: (() => void) | null = null
+export function onMicClosed(fn: (() => void) | null) {
+  afterClose = fn
+}
+
+// REG-M-03: aviso de «micro mudo en uso real» (grabación vacía) con el nombre de los auriculares conectados (o '').
+let afterDistrust: ((headset: string) => void) | null = null
+export function onMicDistrusted(fn: ((headset: string) => void) | null) {
+  afterDistrust = fn
+}
+
 export const getMicMode = () => micMode
 
 /**
@@ -64,7 +84,20 @@ export const getMicMode = () => micMode
  */
 export function trustDefaultMic() {
   defaultOk = true
+  if (headsetName) trustedHeadsets.add(headsetName)
 }
+
+/**
+ * 5.10.1 (REG-M-01): auriculares conectados ahora mismo (nombre que da el plugin; '' sin auriculares). Lo fija el
+ * selector de audio. Sirve para recordar qué auriculares ya dieron señal: al reconectarlos, `devicechange` borra
+ * `defaultOk` y antes se volvía a medir la señal hasta 5 s en cada toque (medido en el POCO: 5,8–6,6 s hasta grabar).
+ */
+export function setHeadsetName(name: string) {
+  headsetName = name
+}
+
+/** ¿Estos auriculares ya dieron señal (prueba de sonido o una apertura medida) desde que se abrió la app? */
+export const headsetTrusted = (name = headsetName) => !!name && trustedHeadsets.has(name)
 
 /**
  * Una grabación salió vacía (p. ej. auriculares Bluetooth desconectados sin que llegara el aviso): se olvida el
@@ -74,6 +107,9 @@ export function trustDefaultMic() {
 export function distrustMic() {
   chosen = null
   defaultOk = false
+  // 5.10.1 (REG-M-01): una grabación vacía con estos auriculares les quita la confianza: la próxima vez se mide.
+  if (headsetName) trustedHeadsets.delete(headsetName)
+  afterDistrust?.(headsetName) // REG-M-03: el selector apunta el fallo para repetir la prueba de sonido
   recorders.forEach((r) => r.releaseIfIdle())
 }
 
@@ -92,6 +128,12 @@ export function setMicMode(mode: MicMode) {
 let chosen: MediaTrackConstraints | null = null
 // El micrófono por defecto ya se comprobó y da señal: no hace falta volver a medirlo en cada clase.
 let defaultOk = false
+// 5.10.1 (REG-M-01): auriculares conectados y los que ya dieron señal en esta ejecución de la app. Solo en memoria:
+// son nombres de dispositivos, no hace falta guardarlos (al abrir la app con auriculares se pasa la prueba de sonido).
+let headsetName = ''
+const trustedHeadsets = new Set<string>()
+// 5.10.1 (REG-A1-01): sube con cada releaseAllMics() (segundo plano): un begin() con un billete anterior no abre nada.
+let epoch = 0
 // Las que tienen el micrófono abierto O ABRIÉNDOSE (AUD-MIC-301: así el segundo plano cancela la apertura).
 const recorders = new Set<Recorder>()
 navigator.mediaDevices?.addEventListener?.('devicechange', () => {
@@ -108,6 +150,7 @@ navigator.mediaDevices?.addEventListener?.('devicechange', () => {
  * toda la noche y vacía la batería (NC-14). Al volver, la próxima grabación lo reabre sola.
  */
 export function releaseAllMics() {
+  epoch++
   ;[...recorders].forEach((r) => r.close())
 }
 
@@ -243,13 +286,16 @@ export class Recorder {
       if (cancelled()) return false
       // MOV-4: en modo auriculares, si ya se eligió otro micro (`chosen`) tampoco se vuelve a medir: antes cada toque
       // repetía la espera de 5 s y otra alternativa (~9 s hasta grabar).
-      const measure = micMode === 'headset' ? !defaultOk && !chosen : micMode !== 'split' && !chosen && !defaultOk
+      // 5.10.1 (REG-M-01): ni con unos auriculares que ya dieron señal en esta ejecución (reconectados).
+      const measure =
+        micMode === 'headset' ? !defaultOk && !chosen && !headsetTrusted() : micMode !== 'split' && !chosen && !defaultOk
       if (!measure) return true
       // El micro Bluetooth tarda 1–3 s en activarse: se le da margen antes de rendirse.
       const ok = await hasSignal(stream, micMode === 'headset' ? 5000 : 2000, cancelled)
       if (cancelled()) return false
       if (ok) {
         defaultOk = true
+        if (micMode === 'headset' && headsetName) trustedHeadsets.add(headsetName)
         return true
       }
       const muted = await looksMuted(stream)
@@ -360,11 +406,25 @@ export class Recorder {
   }
 
   /**
+   * 5.10.1 (REG-A1-01): «billete» que la pantalla toma AL TOCAR, antes de cualquier espera (stopSpeaking + 400 ms de
+   * P6). Un `close()` (terminar o salir de la clase) o un `releaseAllMics()` (segundo plano) entretanto lo invalida y
+   * `begin(billete)` devuelve `false` sin abrir el micro. Antes el micro se abría con la app ya en segundo plano.
+   */
+  ticket(): MicTicket {
+    return { gen: this.gen, epoch }
+  }
+
+  /**
    * Abre (o reabre) el micrófono y empieza a grabar; si falla, lo reintenta una vez con un stream nuevo.
    * Devuelve `true` si hay una grabación en marcha gracias a esta llamada (o a la que comparte), `false` si se
    * canceló durante la apertura (cerraste la pantalla, cambiaste de paso, segundo plano) o si ya se grababa.
    */
-  begin(): Promise<boolean> {
+  begin(ticket: MicTicket = this.ticket()): Promise<boolean> {
+    // REG-A1-01: si entre el toque y ahora se cerró la grabadora o la app pasó a segundo plano, no se abre nada.
+    if (ticket.gen !== this.gen || ticket.epoch !== epoch) {
+      console.info('[HABLA-MIC] descartada: motivo apertura cancelada antes de empezar (salida o segundo plano)')
+      return Promise.resolve(false)
+    }
     if (this.beginning) return this.beginning
     const p: Promise<boolean> = this.doBegin().finally(() => {
       if (this.beginning === p) this.beginning = null
@@ -493,7 +553,9 @@ export class Recorder {
   private release(): void {
     releaseAudioFocus('mic')
     this.closeMeter()
+    const had = !!this.stream
     stopTracks(this.stream)
+    if (had) afterClose?.() // REG-M-01: el selector de audio suelta la ruta de los auriculares
     this.stream = null
     this.recorder = null
     recorders.delete(this)

@@ -42,28 +42,28 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onS
             <SpeakIcon speakKey={r.headword} name="speakerWave" size={20} />
           </button>
           <div className="min-w-0 flex-1">
-            <div className="text-[22px] leading-tight font-semibold break-words">{r.headword}</div>
-            <div className="txt-sub text-[13px]">
+            <div className="fs-22 leading-tight font-semibold break-words">{r.headword}</div>
+            <div className="txt-sub fs-13">
               {[r.ipa, r.partOfSpeech].filter(Boolean).join(' · ')}
             </div>
           </div>
           <button
             onClick={toggleSave}
-            className={`flex h-9 flex-none items-center gap-1.5 rounded-[18px] px-3 text-[13px] ${saved ? 'btn-acc' : 'field'}`}
+            className={`flex h-9 flex-none items-center gap-1.5 rounded-[18px] px-3 fs-13 ${saved ? 'btn-acc' : 'field'}`}
           >
             <Icon name={saved ? 'check' : 'flag'} size={14} />
             {saved ? 'Guardada' : 'Guardar'}
           </button>
         </div>
         {r.translation && (
-          <div className="mt-3 text-[19px] font-semibold" style={{ color: 'var(--acc)' }}>
+          <div className="mt-3 fs-19 font-semibold" style={{ color: 'var(--acc)' }}>
             {r.translation}
           </div>
         )}
-        {lookup.context && <div className="txt-sub mt-1 text-[13px] italic">"{lookup.context}"</div>}
-        <p className="mt-2 text-[15px] leading-snug">{r.meaningEs}</p>
+        {lookup.context && <div className="txt-sub mt-1 fs-13 italic">"{lookup.context}"</div>}
+        <p className="mt-2 fs-15 leading-snug">{r.meaningEs}</p>
         {r.whyEs && (
-          <p className="txt-sub mt-1.5 text-[13.5px] leading-snug">
+          <p className="txt-sub mt-1.5 fs-13.5 leading-snug">
             <b className="font-semibold">¿Por qué aquí? </b>
             {r.whyEs}
           </p>
@@ -71,7 +71,7 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onS
       </div>
 
       {r.falseFriendEs && (
-        <div className="rounded-[20px] px-4 py-3 text-[14px]" style={{ background: 'var(--acc)', color: 'var(--ink)' }}>
+        <div className="rounded-[20px] px-4 py-3 fs-14" style={{ background: 'var(--acc)', color: 'var(--ink)' }}>
           <b>Ojo, falso amigo:</b> {r.falseFriendEs}
         </div>
       )}
@@ -81,8 +81,8 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onS
           <span className="txt-sub mb-0.5 flex items-center gap-1.5 text-xs">
             <SpeakIcon speakKey={r.exampleEn} size={12} /> Ejemplo con este mismo sentido
           </span>
-          <span className="block text-[15px]">{r.exampleEn}</span>
-          <span className="txt-sub block text-[13px]">{r.exampleEs}</span>
+          <span className="block fs-15">{r.exampleEn}</span>
+          <span className="txt-sub block fs-13">{r.exampleEs}</span>
         </button>
       )}
 
@@ -98,7 +98,7 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onS
           <div className="mb-1.5 text-sm font-semibold">Otros significados</div>
           <div className="flex flex-col gap-2">
             {r.otherMeanings.map((m, i) => (
-              <div key={i} className="text-[13.5px] leading-snug">
+              <div key={i} className="fs-13.5 leading-snug">
                 <div>{m.meaningEs}</div>
                 <div className="txt-sub">
                   {m.exampleEn} — {m.exampleEs}
@@ -110,7 +110,7 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onS
       )}
 
       {(r.register || r.collocations.length > 0) && (
-        <div className="glass rounded-[20px] px-4 py-3 text-[13.5px]">
+        <div className="glass rounded-[20px] px-4 py-3 fs-13.5">
           {r.register && (
             <div>
               <b className="font-semibold">Registro: </b>
@@ -120,7 +120,7 @@ export default function LookupCard({ lookup, ttsRate, voiceIndex, onRelated, onS
           {r.collocations.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
               {r.collocations.map((c) => (
-                <button key={c} onClick={() => speak(c, ttsRate, voiceIndex)} className="field min-h-8 max-w-full rounded-2xl px-2.5 py-1 text-left text-[13px] break-words">
+                <button key={c} onClick={() => speak(c, ttsRate, voiceIndex)} className="field min-h-8 max-w-full rounded-2xl px-2.5 py-1 text-left fs-13 break-words">
                   {c}
                 </button>
               ))}
@@ -156,7 +156,7 @@ function RelatedWords({
       <div className="mb-2 text-sm font-semibold">{title}</div>
       <div className="flex flex-wrap gap-1.5">
         {words.map((w) => (
-          <span key={w} className="field flex min-h-9 max-w-full items-stretch overflow-hidden rounded-[18px] text-[13.5px]">
+          <span key={w} className="field flex min-h-9 max-w-full items-stretch overflow-hidden rounded-[18px] fs-13.5">
             <button
               onClick={() => onOpen?.(w, kind)}
               disabled={!onOpen}

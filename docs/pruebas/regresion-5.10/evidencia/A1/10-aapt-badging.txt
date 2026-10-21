@@ -1,0 +1,7 @@
+package: name='com.shift.habla.debug' versionCode='40' versionName='5.10-debug' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+sdkVersion:'24'
+targetSdkVersion:'36'
+application-label:'Habla debug'
+application-debuggable
+  uses-implied-feature: name='android.hardware.bluetooth' reason='requested android.permission.BLUETOOTH permission, and targetSdkVersion > 4'
+13b7c5879bf0a9e70c2fe9e468d1666e099790e7019e7d1c77d19ba7e8b20284 */d/My Apps/HABLA/apk/Habla-v5.10-debug.apk

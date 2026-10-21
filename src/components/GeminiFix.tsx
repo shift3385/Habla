@@ -19,14 +19,14 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
   return (
     <div className="flex flex-col gap-3">
       <div className="glass rounded-[20px] p-4">
-        <div className="text-[15px] font-semibold">Probar con otro modelo</div>
-        <div className="txt-sub mt-0.5 text-[12.5px] leading-snug">Si uno está saturado, va lento o se quedó sin cuota, otro suele responder.</div>
+        <div className="fs-15 font-semibold">Probar con otro modelo</div>
+        <div className="txt-sub mt-0.5 fs-12.5 leading-snug">Si uno está saturado, va lento o se quedó sin cuota, otro suele responder.</div>
         <div className="mt-2.5 flex flex-wrap gap-2">
           {models.map((m) => (
             <button
               key={m}
               onClick={() => update({ geminiModel: m })}
-              className={`rounded-full px-3 py-1.5 text-[13px] ${m === settings.geminiModel ? 'btn-acc' : 'glass'}`}
+              className={`rounded-full px-3 py-1.5 fs-13 ${m === settings.geminiModel ? 'btn-acc' : 'glass'}`}
             >
               {m.replace('gemini-', '')}
             </button>
@@ -34,8 +34,8 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
         </div>
       </div>
       <div className="glass rounded-[20px] p-4">
-        <div className="text-[15px] font-semibold">Usar otra clave de Gemini</div>
-        <div className="txt-sub mt-0.5 text-[12.5px] leading-snug">Por ejemplo, una de pago, que no se satura. Se guarda solo en este teléfono; para cambiarla te pediremos el patrón, PIN o huella.</div>
+        <div className="fs-15 font-semibold">Usar otra clave de Gemini</div>
+        <div className="txt-sub mt-0.5 fs-12.5 leading-snug">Por ejemplo, una de pago, que no se satura. Se guarda solo en este teléfono; para cambiarla te pediremos el patrón, PIN o huella.</div>
         <input
           type="password"
           value={key}
@@ -47,14 +47,14 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          className="glass mt-2.5 h-[46px] w-full rounded-[16px] px-4 text-[15px] outline-none"
+          className="glass mt-2.5 h-[46px] w-full rounded-[16px] px-4 fs-15 outline-none"
           style={{ color: 'var(--tx)' }}
         />
         <button
           onClick={async () => {
             // Cambiar una clave que ya existe exige confirmar con el bloqueo del teléfono (D-02).
             if (settings.geminiKey && key.trim() !== settings.geminiKey) {
-              const r = await confirmIdentity('Para cambiar tu clave de Gemini')
+              const r = await confirmIdentity('Para cambiar tu clave de Gemini', 'gemini')
               if (!r.ok) return setDenied(true)
             }
             setDenied(false)
@@ -68,12 +68,12 @@ export default function GeminiFix({ settings, update }: { settings: Settings; up
             setKeySaved(true)
           }}
           disabled={key.trim().length < 20 || checking}
-          className="glass mt-2 h-10 w-full rounded-full text-[14px] disabled:opacity-45"
+          className="glass mt-2 h-10 w-full rounded-full fs-14 disabled:opacity-45"
         >
           {checking ? 'Comprobando con Google…' : keySaved ? 'Clave cambiada ✓' : 'Usar esta clave'}
         </button>
-        {denied && <div className="txt-sub mt-1.5 text-center text-[12.5px]">No se confirmó tu identidad: la clave no se cambió.</div>}
-        {keyError && <div className="mt-1.5 text-center text-[12.5px]" style={{ color: '#f87171' }}>{keyError}</div>}
+        {denied && <div className="txt-sub mt-1.5 text-center fs-12.5">No se confirmó tu identidad: la clave no se cambió.</div>}
+        {keyError && <div className="mt-1.5 text-center fs-12.5" style={{ color: 'var(--bad)' }}>{keyError}</div>}
       </div>
     </div>
   )

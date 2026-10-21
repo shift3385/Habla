@@ -1,0 +1,6 @@
+22:29:59.740 foco=[pack: com.spotify.music: GAIN;] spotify=state=PAUSED(2) modo=NORMAL com=
+22:30:00.661 foco=[pack: com.spotify.music: GAIN;pack: com.android.deskclock: GAIN_TRANSIENT;] spotify=state=PAUSED(2) modo=NORMAL com=
+22:30:01.217 foco=[pack: com.spotify.music: GAIN;pack: com.android.deskclock: GAIN_TRANSIENT;pack: com.shift.habla.debug: GAIN_TRANSIENT_MAY_DUCK;] spotify=state=PAUSED(2) modo=NORMAL com=
+22:30:04.410 foco=[pack: com.spotify.music: GAIN;pack: com.shift.habla.debug: GAIN_TRANSIENT_MAY_DUCK;] spotify=state=PAUSED(2) modo=NORMAL com=
+22:30:07.782 foco=[pack: com.shift.habla.debug: GAIN_TRANSIENT_MAY_DUCK;] spotify=state=PAUSED(2) modo=NORMAL com=
+22:30:10.262 foco=[pack: com.shift.habla.debug: GAIN_TRANSIENT_MAY_DUCK;] spotify= modo=NORMAL com=

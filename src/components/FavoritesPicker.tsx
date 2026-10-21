@@ -25,7 +25,7 @@ export default function FavoritesPicker({ value, onChange }: { value: string[]; 
               aria-pressed={on}
             >
               <Icon name={c.icon} size={18} stroke={1.7} />
-              <span className="text-center text-[11.5px] leading-[1.15] text-balance">{c.title}</span>
+              <span className="text-center fs-11.5 leading-[1.15] text-balance">{c.title}</span>
               {on && (
                 <span className="absolute top-1.5 right-1.5">
                   <Icon name="check" size={12} stroke={2.6} />
@@ -35,7 +35,7 @@ export default function FavoritesPicker({ value, onChange }: { value: string[]; 
           )
         })}
       </div>
-      <div className="txt-sub mt-2.5 text-center text-[13px]">
+      <div className="txt-sub mt-2.5 text-center fs-13">
         {value.length} de {FAV_COUNT} elegidos{full ? ' · toca uno para cambiarlo' : ''}
       </div>
     </div>

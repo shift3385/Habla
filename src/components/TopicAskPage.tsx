@@ -130,8 +130,8 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
           <Icon name={icon} size={19} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[17px] font-semibold">{title}</span>
-          <span className="txt-sub block text-[13px] leading-snug">{desc}</span>
+          <span className="block fs-17 font-semibold">{title}</span>
+          <span className="txt-sub block fs-13 leading-snug">{desc}</span>
         </span>
         <Icon name="chevR" size={16} stroke={2} color="var(--sub)" />
       </button>
@@ -181,21 +181,21 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
         rows={3}
         maxLength={160}
         placeholder={debate ? 'Ej.: ¿Deberían prohibir los móviles en los colegios?' : 'Ej.: mi viaje a Japón, el último partido, cómo aprender a cocinar…'}
-        className="glass w-full resize-none rounded-[26px] px-5 py-4 text-center text-[17px] leading-snug outline-none"
+        className="glass w-full resize-none rounded-[26px] px-5 py-4 text-center fs-17 leading-snug outline-none"
         style={{ color: 'var(--tx)' }}
       />
       <div className="mt-3 flex flex-col items-center gap-1.5">
         <button
           onClick={toggleMic}
           disabled={mic === 'writing'}
-          className="btn-acc flex h-[48px] items-center gap-2 rounded-full px-5 text-[15px] disabled:opacity-60"
+          className="btn-acc flex h-[48px] items-center gap-2 rounded-full px-5 fs-15 disabled:opacity-60"
           style={mic === 'recording' ? { boxShadow: '0 0 0 8px var(--glow)' } : undefined}
           aria-label={mic === 'recording' ? 'Terminar de dictar' : 'Dictar por voz'}
         >
           {mic === 'recording' ? <span className="h-4 w-4 rounded-[4px]" style={{ background: 'var(--ink)' }} /> : <Icon name="mic" size={19} />}
           {mic === 'recording' ? 'Te escucho… toca para terminar' : mic === 'writing' ? 'Escribiendo lo que dijiste…' : 'Dictar por voz'}
         </button>
-        {micHint && <div className="txt-sub text-center text-[13px]">{micHint}</div>}
+        {micHint && <div className="txt-sub text-center fs-13">{micHint}</div>}
       </div>
       <div className="mt-3 flex flex-wrap justify-center gap-2">
         {EXAMPLES[kind].map((x) => (
@@ -206,7 +206,7 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
               setCheer(true)
               setTimeout(() => setCheer(false), 1200)
             }}
-            className="glass h-[40px] rounded-[20px] px-4 text-[14px]"
+            className="glass h-[40px] rounded-[20px] px-4 fs-14"
           >
             {x}
           </button>

@@ -1,0 +1,382 @@
+﻿
+> habla@0.0.0 test
+> node --test "tests/**/*.test.mjs"
+
+✔ FUG-401: Resource IDs maliciosos o mal formados se rechazan y NO sale ninguna petición (ni el token) (250.1971ms)
+✔ FUG-401: un Resource ID correcto va solo a login.microsoftonline.com y a management.azure.com (72.3378ms)
+✔ FUG-401: Tenant y Client ID con forma incorrecta se rechazan antes de pedir el token (67.0951ms)
+✔ Una copia correcta (forma de buildBackup) se acepta con sus recuentos (287.1108ms)
+✔ REV-U3-1: copias antiguas legítimas se aceptan (v4.1 sin consultas ni tarjetas, v4.6 sin tarjetas, sin perfil) (64.1068ms)
+✔ Consultas con y sin synonyms/antonyms se aceptan; con un tipo erróneo se rechazan (49.8028ms)
+✔ v5.10: la tabla de Gramática es opcional (copias antiguas sin ella) y se comprueba si viene (23.0923ms)
+✔ SEG-501 / RES-704 / E2E-601: copias dañadas se rechazan con un mensaje en español (30.8461ms)
+✔ Versión más nueva: pide actualizar la app; JSON roto: lo dice (79.4093ms)
+✔ __proto__ en una fila no contamina objetos (30.2823ms)
+✔ RES-704: repairProfile completa un perfil roto para que el arranque no falle (250.3398ms)
+✔ carga: los 450 ítems del banco, con ids únicos (914.4889ms)
+✔ pickItems: no repite lo ya visto mientras quede banco y respeta los excluidos (1.1342ms)
+✔ pickItems: con el banco agotado repite lo menos usado y evita los temas pedidos si puede (0.8101ms)
+✔ recordUse: suma usos y añade a vistos sin duplicar (1.8629ms)
+✔ normalizeAnswer: mayúsculas, puntuación y contracciones (1.1929ms)
+✔ stem: misma raíz para formas derivadas; los números no se recortan (1.0577ms)
+✔ checkShort: exacta, sin artículo, misma raíz; palabras distintas no; tolerancia de una letra solo en audición (1.9643ms)
+✔ scriptSeconds / wordCount: ≈150 palabras por minuto (0.8527ms)
+[HABLA-MIC] descartada: motivo apertura cancelada antes de empezar (salida o segundo plano)
+✔ REG-A1-01: un billete tomado antes de releaseAllMics() (segundo plano en la espera de P6) no abre el micro (354.805ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] descartada: motivo apertura cancelada antes de empezar (salida o segundo plano)
+✔ REG-A1-01: un billete tomado antes de close() («Terminar» o salir de la clase) no abre el micro (87.4653ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ REG-A1-01: con un billete vigente (o sin billete) se graba como siempre (138.5853ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ REG-A1-01: releaseAllMics() de una vez anterior no invalida un toque posterior (209.4194ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-01: unos auriculares que pasaron la prueba no se vuelven a medir aunque se olvide defaultOk (64.9343ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo headset); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo headset); usando "Speakerphone"
+✔ REG-M-01: otros auriculares (sin probar) sí se miden; y una grabación vacía quita la confianza (555.8274ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-01: una apertura medida con señal en modo auriculares los deja como probados (147.1898ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ REG-M-01: al soltar un micro abierto se avisa (onMicClosed) para soltar la ruta; sin micro, no (156.7594ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-01 (ronda 2): en el Inicio no se prepara nada; al entrar en la clase (sin voz) se prepara, sin micro (188.7918ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-01 (ronda 2): mientras habla el profe la ruta está suelta (A2DP) y se prepara al acabar (109.6148ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-01 (ronda 2): sin tocar el micro, la ruta preparada se suelta sola (~20 s; aquí 120 ms) (250.2649ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares ya puesta (400 ms)
+✔ REG-M-01 (ronda 2): al tocar con la ruta lista solo se consulta; se mantiene grabando y se suelta al enviar (283.5373ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares aplicada al tocar en 400 ms
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares aplicada al tocar en 400 ms
+✔ REG-M-01 (ronda 2): si tocas antes de que esté lista, se aplica en el toque (47.0439ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-01 (privacidad): en segundo plano se suelta aunque la clase siga abierta, y al volver se prepara otra vez (171.4822ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-01: elegir otro modo suelta la ruta; tras la prueba de sonido en el Inicio, también (109.0704ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares aplicada al tocar en 400 ms
+✔ REV-D1-01: salir o minimizar mientras se pide la ruta no la deja puesta (setRoute tardío) (612.2435ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":7,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-01: dos pantallas que graban: la ruta sigue hasta que sale la última (93.9509ms)
+✔ REG-M-01: la clase suelta la ruta antes de que hable el profe (say → disarmRoute) (1.2487ms)
+✔ REG-A3-04 / 5.10h / REG-A4-03: Gramática con speakSegments, aviso de fonética no al reanudar, colores del tema (2.1177ms)
+✔ REG-M-01: lifecycle suelta y reaplica la ruta en segundo plano y al volver (0.5288ms)
+✔ REG-M-02: localDiscard da el motivo de cada camino de descarte local (7.8788ms)
+✔ REG-M-02: cada motivo tiene su aviso y el registro dice «descartada: motivo …» sin el texto del usuario (4.6326ms)
+✔ REG-M-02: la clase descarta siempre por discard() (aviso persistente + registro), nunca con una línea gris suelta (1.0095ms)
+✔ REG-A4-02 / REG-A1-01: Repaso, «Dilo tú», test y clase muestran «Abriendo el micro… espera» y usan el billete (2.9446ms)
+✔ REG-A2-06: AudioRoutePlugin solo escribe el nombre de los auriculares en logcat en el APK debug (0.8222ms)
+✔ REG-M-03: frases cortas y distintas al repetir; espera de 400 ms (teléfono) y 600 ms (Bluetooth) (305.4177ms)
+✔ REG-M-03: dos palabras por encima del ruido y 800 ms de silencio → oído (66.7016ms)
+✔ REG-M-03: el ruido de fondo constante (música, ventilador) no cuenta como voz; el umbral es relativo (59.8429ms)
+✔ REG-M-03: un golpe o una tos corta (< 400 ms) no pasa la prueba; sin voz en 8 s → no te oigo (81.1945ms)
+✔ REG-M-03: 2,5 s de voz seguida ya basta (no espera al silencio); voz suficiente al acabar el tiempo, también (50.59ms)
+✔ REG-M-03: rmsOfBytes con muestras de 8 bits (silencio = 128) (12.3202ms)
+✔ REG-M-03: «probado» por auriculares en Preferences: no se repite salvo nuevos, otro modo o fallo (81.7865ms)
+✔ REG-M-03: un micro mudo en uso real (distrustMic) avisa con el nombre de los auriculares (131.243ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":1,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+[HABLA-MIC] ruta auriculares {"id":1,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REG-M-03: durante la prueba, las voces de la clase de debajo no tocan la ruta; al acabar se recoloca (161.6929ms)
+✔ REG-M-03: la prueba es de un paso, sin «Sí, te oigo», con «No te oigo» siempre y «Ver la frase» tras 2 fallos (1.4575ms)
+✔ REG-M-03: no sale antes de la bienvenida y la clave, ni durante el test de nivel; no se repite si ya se probó (1.1188ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":1,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REV-D1-02: con la app en segundo plano, la prueba de sonido no fija la ruta (23.4782ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] ruta auriculares {"id":1,"type":7,"kind":"bluetooth","name":"bt","headset":true}
+✔ REV-D1-02: minimizar mientras la prueba pide la ruta no la deja puesta (setRoute tardío) (131.8119ms)
+✔ REV-D1-02: AudioPicker no pregunta ni monta la prueba con la app oculta; SoundTest no habla ni abre el micro (0.9605ms)
+✔ REG-A1-02: grabando, un ▶ no cambia «pausar» por «bajar» ni suelta el foco del micro (329.1699ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-02: el más fuerte gana (micro > lectura larga > ▶) y al soltar el fuerte se baja al siguiente (81.0188ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-03: la voz suelta el foco 600 ms después: dos frases seguidas, una sola petición (896.3724ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-03: con la app oculta (temporizadores congelados) el foco se suelta al instante (24.7959ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-06: una frase larga (> ~12 s) pausa la música; una corta la baja (62.0572ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fijo y un solo foco «pausar» (868.9637ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-07: tocar ⏸ a mitad o pararla con stopSpeakingIf corta todos los tramos y suelta el foco (753.3786ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-03: el profe y otra frase seguidas no hacen rebotar la música; un ▶ corto baja, no pausa (1553.6791ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-06: con Leo y sin voz masculina, el inglés va con tono 0,8 y el español con tono normal (737.8808ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A3-04: speakSegments lee la respuesta del profe por idiomas como UNA lectura (1454.7504ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REV-D2-02: un ▶ corto que corta la explicación cambia «pausar» por «bajar» y al final lo suelta todo (1452.3004ms)
+✔ REG-M-10: «on May 5th» es un solo tramo inglés y se lee «fifth» (nada de «th» en español) (6.9777ms)
+✔ REG-M-10: ordinales en palabras (1.4877ms)
+✔ REG-M-10: horas, años y números sueltos (8.6091ms)
+✔ REG-A3-13 · 1: «actualmente» y «embarazada» (Falsos amigos) en español (2.1582ms)
+✔ REG-A3-13 · 2: «Soy ingeniero» en español; «I'm an engineer» en inglés (0.5472ms)
+✔ REG-A3-13 · 3: «If + presente simple, will + verbo»: la metalengua en español (0.6886ms)
+✔ REG-A3-13 · 4: «me levanto» en español (0.4045ms)
+✔ REG-A3-13 · 5: «no vi nada» y «no vino nadie» en español (0.2839ms)
+✔ REG-A3-13 · 6: «cualquier», «aunque», «sin embargo», «porque» en español (0.9639ms)
+✔ REG-A3-14 · 7: «Although, however, despite…» en inglés (0.4927ms)
+✔ REG-A3-14 · 8: «already = ya» → already en inglés (0.4076ms)
+✔ REG-A3-14 · 9: «nobody, no one / not … anybody» en un tramo inglés (0.4187ms)
+✔ REG-A3-14 · 10: «edad (old, new)» → old en inglés (0.3967ms)
+✔ REG-A3-14 · 11: «Con «to»: want, need, decide, hope, plan, promise, agree, refuse» en un tramo (0.2694ms)
+✔ REG-A3-14 · 12: «at the bus stop» en un tramo; «and her husband» en inglés (0.658ms)
+✔ REG-A3-14 · 13: «no uses «wish»» → «uses» en español (0.4765ms)
+✔ REG-A2-03: confirmar una credencial no abre la gracia de las otras (363.9266ms)
+Capacitor plugin "DeviceAuth" already registered. Cannot register plugins twice.
+✔ REG-A2-03: sin bloqueo de pantalla o con la confirmación fallida no se abre ninguna gracia (15.5558ms)
+✔ REG-A2-03: cada llamada pide su credencial (2.1988ms)
+✔ REG-A2-04: solo se limpian los archivos que Habla deja para Compartir (324.929ms)
+✔ REG-A2-04: la copia y el resumen del test se olvidan tras Compartir, y la caché se limpia al arrancar (2.0776ms)
+0 tamaños migrados
+✔ las 4 opciones fijas y lo guardado raro cuenta como Normal (386.783ms)
+Capacitor plugin "Orientation" already registered. Cannot register plugins twice.
+✔ escala efectiva = elección × sistema, con suelo 0,85 y topes 1,3 (vertical) y 1,15 (horizontal) (31.2463ms)
+✔ ajuste nuevo con valor por defecto (llega solo a instalaciones antiguas) (1.0908ms)
+✔ migración: text-[NNpx] → fs-NN, con variantes y sin tocar lo demás (0.2905ms)
+✔ en src/ ya no quedan tamaños fijos en px (tampoco en la prueba de sonido ni el selector de audio) (27.4384ms)
+✔ index.css: los tamaños de Tailwind y fs-* multiplican --fs; los arreglos solo con letra grande (1.2162ms)
+✔ Ajustes: «Tema y mascota» pasa a «Apariencia» con «Tamaño de letra» y vista previa (0.7991ms)
+✔ REG-M-09: horas, ordinales, miles, decimales y % se pasan a palabras (nada de «ten:zero») (335.7891ms)
+✔ REG-M-09: Gemini con cifras y Azure con palabras cuentan como lo mismo (1.2208ms)
+✔ REG-A3-19: las palabras de función van detrás de las de contenido (salvo si te las comiste) (0.9719ms)
+✔ REG-A3-19: consejo en español por sonido típico del hispanohablante (0.793ms)
+✔ REG-A3-19: la frase del coach da el consejo en español (sin IPA si hay consejo) y no lo repite (0.7294ms)
+✔ REG-A1-04: solo la idea exacta (con muletillas) cuenta como «leíste la idea»; idea + algo tuyo, no (1021.4244ms)
+✔ REG-A3-15 y REG-A3-17: el profe no felicita con correcciones y no queda la instrucción huérfana has_error (715.3691ms)
+✔ REG-A3-03 y REG-A3-04: la clase de Gramática anula las 3 reglas del profe y marca el español con « » (222.5361ms)
+✔ REG-A3-04: replySegments lee lo de « » en español y el resto en inglés, sin las comillas (242.9388ms)
+[HABLA-NET] {"at":1792555194734,"what":"You are a precise, encouraging English teacher gra","model":"modelo-falso","thinking":true,"kb":2,"status":200,"ms":6}
+✔ REG-A3-16: en «Dilo tú» cualquier error impide «correct» y hay que nombrarlo (427.192ms)
+✔ 5.8c: «Remember:\nat» se pinta y se lee «Remember: at» (y las horas no cambian) (248.2709ms)
+[HABLA-NET] {"at":1792555195246,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":1}
+✔ REG-A2-05: el profe no se rompe con tipos inesperados (modelo sin esquema) y limpia la respuesta (257.0149ms)
+[HABLA-NET] {"at":1792555195453,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":0}
+✔ REG-A2-05: correcciones que no son una lista no rompen el turno (206.8986ms)
+✔ REG-A4-03: verde y rojo con contraste ≥ 4,5:1 sobre el cristal en los 8 temas (394.26ms)
+✔ UX-01: ningún consejo enseña el gesto del candado (desde la 5.9 el micro es «toca y toca») (27.2293ms)
+✔ UX-03/04: metas por nivel, una sola fuente para informe, consejo y nota (290.1239ms)
+✔ REG-A1-07: una copia con algo que esta app no conoce dice «versión más nueva», no «dañado» (28.2999ms)
+✔ REG-A2-05: «Pregúntale» con tipos raros no lanza y recorta párrafos (532.183ms)
+✔ REG-A2-07: el vocabulario del tema solo admite textos (sin objetos que rompan el render) (165.8226ms)
+✔ REG-A1-07 (ronda 2): la exportación usa backupVersionFor y la copia resultante se vuelve a leer (52.9304ms)
+✔ isEmptyRecording: vacía, solo cabecera sin decodificar, y grabaciones reales (357.5385ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+✔ distrustMic: tras fiarse del micro por defecto, la siguiente apertura vuelve a medir y cambia a uno con señal (350.9163ms)
+✔ countWords: sin muletillas ni puntuación (370.0361ms)
+✔ turnMetrics: velocidad solo con ≥ 1,5 s y ≥ 3 palabras; lo escrito no tiene velocidad (1.452ms)
+✔ sessionMetrics: sin respuestas tuyas no hay métricas (0.4795ms)
+✔ sessionMetrics: una clase hablada con buena fluidez (0.6747ms)
+✔ sessionMetrics: errores y pausas bajan la nota; las correcciones antiguas (correction) también cuentan (0.732ms)
+✔ sessionMetrics: solo escrito → nota por longitud y precisión, sin velocidad (0.5335ms)
+✔ scoreLevel: umbrales de la nota (0.3576ms)
+✔ Clave rechazada por Google: no hay nada que guardar (se conserva la anterior) (524.1282ms)
+✔ Sin conexión: tampoco se guarda (88.2584ms)
+✔ Clave aceptada: devuelve la clave limpia y los modelos válidos para ella (80.2145ms)
+✔ Clave aceptada pero sin el modelo elegido: elige uno disponible (50.8893ms)
+✔ Clave vacía: error sin llamar a Google (45.7119ms)
+✔ REV-U4-1 / E2E-604: textos al comprobar la clave (sin «Revísala en Ajustes» ni «prueba otro modelo») (27.6339ms)
+✔ catálogo: secciones ordenadas por "order" e índices por id (794.1101ms)
+✔ catálogo: el orden de los archivos no importa y un id repetido no duplica el tema (3.9307ms)
+✔ buscador: por nombre en inglés o español, sin tildes ni mayúsculas (1.8152ms)
+✔ buscador: palabras clave y resumen; prioriza el nombre (0.867ms)
+✔ ejercicios: comprobación de choice, gap (uno y dos huecos) y order (0.9808ms)
+✔ ejercicios: frase completa para la voz y la tarjeta del Repaso (1.4493ms)
+✔ id numérico de la tarjeta: estable, positivo e igual en la app y en el validador (0.8304ms)
+✔ dominado: ≥ 80 % de la última ronda (0.5333ms)
+✔ «Para ti»: tu nivel y el siguiente, sin los dominados, primero los empezados (1.2004ms)
+✔ validador: la muestra pasa (solo avisos de related hacia secciones que no existen) (8.1949ms)
+✔ validador: detecta los errores del FORMATO (8.4136ms)
+✔ validador: huecos y partes de la respuesta deben cuadrar (11.5822ms)
+✔ validador: comparación con el banco (huecos, pistas entre paréntesis, subcadenas) (1.1175ms)
+✔ validador: ejemplos, order, modelEn y errores típicos también se comparan con el banco (5.6071ms)
+✔ barajar: estable con la misma semilla, la correcta sigue siendo la misma opción y las trampas la acompañan (1.3084ms)
+✔ plan: el tema que nombra un texto; gana la frase más larga y un empate no enlaza nada (1.4755ms)
+✔ profe: solo se guardan ids que existen (nunca uno inventado por Gemini) (0.253ms)
+✔ clase centrada: el brief lleva el tema, el nivel, el foco y las formas (0.7062ms)
+✔ informe: temas de las correcciones en orden, sin repetir y sin ids desconocidos (0.4313ms)
+✔ «Para ti» con señales: errores con tema, tema del plan, categorías de respaldo y sin dominados (0.376ms)
+✔ frase completa (REG-A3-01): sin la pista, sin el prefijo en español y con «I'll» unido (casos reales) (273.1815ms)
+✔ REG-A3-02 y REG-M-08: in-case-vs-if-8 y prepositions-of-time-6 dan frases inglesas claras (197.3848ms)
+✔ todo el catálogo: ninguna frase completa lleva pista, español, flecha ni una palabra repetida («in in») (205.4325ms)
+✔ órdenes alternativos (REG-A3-06): «alsoAccepted» cuenta como acierto y la frase que se enseña es la tuya (211.5711ms)
+✔ huecos (REG-A3-07): otras respuestas válidas de must-vs-have-to-6 (180.8274ms)
+✔ tarjetas ya creadas con la 5.10: se rehacen desde el ejercicio por su sourceId (idempotente) (212.0278ms)
+✔ validador: «alsoAccepted» con otras palabras, igual que «answer» o con punto final es un error (7.1806ms)
+✔ levelIdx / levelAt: «+» se ignora, lo desconocido cuenta como B1 y los extremos se recortan (250.139ms)
+✔ nivel general: media de las 4 destrezas, un ,5 exacto hacia abajo (0.69ms)
+✔ nivel general: nunca más de 2 niveles por encima de la destreza más baja (0.2668ms)
+✔ re-test 70/30: el test pesa más; un ,5 exacto va hacia abajo (1.2711ms)
+✔ trayectoria: solo el habla la proponen las clases; el resto es el nivel actual (0.4598ms)
+✔ re-test: a los 28 días; un test anterior al banco (sin bankVersion) se puede repetir ya (0.3765ms)
+✔ velocidad de voz por nivel: sube con el nivel (0.2648ms)
+✔ Palabra → sinónimo → antónimo → atrás → atrás; con uno solo no se quita nada (la hoja se cierra) (251.0046ms)
+✔ Raíz por hacer (palabra tocada en la clase) y casos que no apilan (18.7151ms)
+✔ relatedWords: limpia, sin repetidos ni la propia palabra, máximo 6; acepta consultas antiguas sin el campo (42.0674ms)
+✔ FLU-900: con el recordatorio bloqueado, la mascota lo dice primero y lleva a arreglarlo (226.9783ms)
+✔ Sin bloqueo no hay aviso de notificaciones (27.4927ms)
+✔ gramática: escalera de 20 (15 opción múltiple + 5 huecos), de A1 a C2 y sin repetir (594.7822ms)
+✔ checkGrammar: opción correcta y hueco con la respuesta aceptada (1.6404ms)
+✔ nivel de gramática: el más alto aprobado con los anteriores; C1/C2 exigen un hueco acertado (2.6696ms)
+✔ fin anticipado: todo mal en dos niveles seguidos (1.8644ms)
+✔ lectura y audición: niveles de inicio (mínimo A2) y salto del segundo bloque (0.5035ms)
+✔ checkQuestion: sin responder o «No sé» nunca cuenta; errata tolerada solo con tolerateTypo (0.6345ms)
+✔ nivel por bloques y confianza (0.906ms)
+✔ habla: tarea 3 sencilla si las dos primeras ≤ A2; mediana hacia abajo (1.0051ms)
+[HABLA-NET] {"at":1792555194188,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":8}
+✔ Pregúntale: ids de temas inventados o peligrosos se descartan; el HTML queda como texto plano (976.7205ms)
+[HABLA-NET] {"at":1792555194641,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✔ Pregúntale: una respuesta enorme no cuela más de 4 ejemplos ni 3 temas (444.7896ms)
+[HABLA-NET] {"at":1792555194850,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✔ REG-A2-05: Pregúntale limita también el número de párrafos de la respuesta (207.9844ms)
+[HABLA-NET] {"at":1792555195083,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✔ REG-A2-05: Pregúntale no se rompe si la IA devuelve tipos inesperados (sin esquema, p. ej. modelo de respaldo) (233.1001ms)
+[HABLA-NET] {"at":1792555195470,"what":"You are a precise, encouraging English teacher gra","model":"modelo-falso","thinking":true,"kb":2,"status":200,"ms":1}
+✔ Dilo tú: un veredicto fuera de la lista cuenta como «wrong» (la IA no puede forzar «correct») (386.6749ms)
+[HABLA-NET] {"at":1792555195920,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":1}
+✔ Profe: correcciones con ids o categorías maliciosas se limpian; las vacías o iguales se descartan (450.6109ms)
+✔ Profe: grammarFields no acepta claves del prototipo ni rutas como id de tema (196.5596ms)
+✔ SEG-509 (hoy): el texto del tema entra literal, con saltos de línea y encabezados falsos (233.6669ms)
+✖ SEG-509 (deseado): el tema va delimitado y sin poder abrir secciones nuevas del prompt (213.0819ms) # SEG-509 abierto: propuesta en A2-seguridad.md
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (290.0445ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (116.0352ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (46.1246ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (188.0008ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (25.6588ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (68.7981ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (62.3989ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (187.8728ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 5200 ms; grabando a los 6000 ms (modo auto)
+✔ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (299.3437ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+[HABLA-MIC] abierto en 3600 ms; grabando a los 4400 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión (218.5089ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (218.8833ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 5200 ms; grabando a los 6000 ms (modo auto)
+✔ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (298.7797ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+✔ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (172.8463ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto (32.3363ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto (44.9819ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-309: cada grabación tiene sus propios trozos (62.3663ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo headset); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 8400 ms; grabando a los 9200 ms (modo headset)
+✔ MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado) (552.6557ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+✔ REV-T1-1: si el micro del teléfono no se puede abrir en el reintento, se prueba el por defecto sin procesado (357.6314ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+✔ REV-T1-1: si fallan también las alternativas, MicError en español y nada abierto (204.6484ms)
+✔ Precisión: correcto = 1, casi = 0,5, aún no y no lo sé = 0; sin intentos, 0 (248.4915ms)
+✔ Recuento, media de pronunciación (solo las que llegaron) y segundos (18.9737ms)
+✔ Lo que más costó: agrupa por tarjeta («Otra vez»), primero «No lo sé», sin las correctas, máx. 5 (25.9081ms)
+✔ Feedback: el título y el consejo cambian con la precisión y con lo que falló (13.6931ms)
+✔ Saliste a mitad: el feedback dice cuántas quedaron (11.6079ms)
+✔ speaking: el final tardío de una frase interrumpida no devuelve la nueva a ▶ (228.0876ms)
+✔ toggleSpeak: ▶ → ⏸ → ▶, otro botón para el anterior y al terminar solo vuelve a ▶ (163.8927ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ stopSpeaking mientras se prepara la voz: la frase ya no se lanza (58.1405ms)
+✔ presente simple: el inglés sin comillas va con voz inglesa (5.3993ms)
+✔ citas: «…» en inglés con voz inglesa; las citas en español siguen en español (1.0126ms)
+✔ la «a» española delante de inglés sigue en español; la fonética /…/ no se lee (0.6587ms)
+✔ texto solo en español: un tramo (0.3707ms)
+✔ Toque en reposo: empieza a grabar; ocupado (pensando, procesando): se ignora (197.3988ms)
+✔ MIC-305: con la grabación en marcha, un toque envía (17.7627ms)
+✔ MIC-302/304: el rebote de un doble toque (o un segundo dedo) justo al empezar no envía una grabación vacía (6.9237ms)
+✔ P6: la idea tal cual se detecta; una respuesta propia que la continúa, no (508.2524ms)
+✔ P5: una corrección puede enlazar varios temas (máx. 3, sin repetir, solo ids que existen) (476.7321ms)
+ℹ tests 224
+ℹ suites 0
+ℹ pass 223
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 8800.4196
+
+✖ failing tests:
+
+test at tests\promptInjection.test.mjs:138:1
+✖ SEG-509 (deseado): el tema va delimitado y sin poder abrir secciones nuevas del prompt (213.0819ms) # SEG-509 abierto: propuesta en A2-seguridad.md
+  AssertionError [ERR_ASSERTION]: el texto del alumno no puede crear un encabezado
+      at TestContext.<anonymous> (file:///D:/My%20Apps/HABLA/tests/promptInjection.test.mjs:142:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

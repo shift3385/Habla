@@ -31,11 +31,11 @@ export default function Segmented<T extends string>({
           <button
             key={o.value}
             onClick={() => onChange(o.value)}
-            className="relative z-[1] flex items-center justify-center gap-1.5 rounded-[20px] text-[15px] transition-colors"
+            className="relative z-[1] flex items-center justify-center gap-1.5 rounded-[20px] fs-15 transition-colors"
             style={{ fontWeight: sel ? 600 : 500, color: sel ? 'var(--ink)' : 'var(--sub)' }}
           >
             {o.label}
-            {o.count !== undefined && <span className="text-xs opacity-75">{o.count}</span>}
+            {o.count !== undefined && <span className="seg-count text-xs opacity-75">{o.count}</span>}
           </button>
         )
       })}

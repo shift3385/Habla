@@ -69,14 +69,14 @@ export default function MascotPage({
         )}
       </div>
       <div className="mp-main">
-        <div className="mt-[14px] text-center text-[28px] leading-tight font-semibold tracking-[-.6px] text-balance">{title}</div>
-        {subtitle && <div className="txt-sub mt-1.5 text-center text-[15px] leading-snug text-pretty">{subtitle}</div>}
+        <div className="mt-[14px] text-center fs-28 leading-tight font-semibold tracking-[-.6px] text-balance">{title}</div>
+        {subtitle && <div className="txt-sub mt-1.5 text-center fs-15 leading-snug text-pretty">{subtitle}</div>}
         <div className="no-scrollbar mt-5 min-h-0 flex-1 overflow-y-auto">{children}</div>
         {secondary && (
           <button
             onClick={secondary.onClick}
             disabled={secondary.disabled}
-            className="txt-sub mt-2 h-10 text-[15px] underline underline-offset-[3px]"
+            className="txt-sub mt-2 min-h-10 py-1.5 fs-15 underline underline-offset-[3px]"
           >
             {secondary.label}
           </button>
@@ -91,7 +91,7 @@ export default function MascotPage({
             <button
               onClick={primary.onClick}
               disabled={primary.disabled}
-              className="btn-acc h-[58px] flex-1 rounded-full text-[17px] transition-opacity"
+              className="btn-acc h-[58px] flex-1 rounded-full fs-17 transition-opacity"
               style={{ opacity: primary.disabled ? 0.45 : 1 }}
             >
               {primary.label}

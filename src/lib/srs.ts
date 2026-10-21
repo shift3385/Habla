@@ -1,6 +1,7 @@
 import { createEmptyCard, fsrs, Rating, State, type Card, type Grade } from 'ts-fsrs'
 import { db, type SrsCard, type StoredFsrs } from './db'
 import { askGemini, withRetry, type JsonSchema, type Models } from './gemini'
+import { grammarCardPatch } from './grammar'
 
 // Cuaderno de errores con repetición espaciada (FSRS): tus correcciones y palabras guardadas
 // vuelven como ejercicio oral (frase en español → la dices en inglés).
@@ -31,6 +32,15 @@ function toInput(s: StoredFsrs) {
 /** Crea tarjetas para las correcciones y palabras guardadas que aún no tengan (idempotente). */
 export async function syncCards(): Promise<number> {
   const existing = await db.cards.toArray()
+  // 5.10.1 (REG-A3-01, REG-A3-02, REG-M-08): las tarjetas de Gramática de la 5.10 guardaron la frase con la pista
+  // («… (can, negativa)»), en español (in-case-vs-if-8) o «gets in in»: se rehacen desde el ejercicio actual (por su
+  // sourceId) sin tocar su progreso. Idempotente: con todo ya al día no escribe nada.
+  for (const c of existing) {
+    const patch = c.id ? grammarCardPatch(c) : null
+    if (!patch) continue
+    Object.assign(c, patch)
+    await db.cards.update(c.id!, patch).catch(() => {})
+  }
   const keys = new Set(existing.map((c) => `${c.source}:${c.sourceId}`))
   // Una misma corrección repetida da una sola tarjeta.
   const answers = new Set(existing.map((c) => c.answerEn.toLowerCase().trim()))

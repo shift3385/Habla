@@ -1,0 +1,55 @@
+== M1 (src/lib/audioFocus.ts): «holders.has('mic') || holders.has('read')» -> «holders.has('read')» [restaurado]
+✖ REG-A1-02: grabando, un ▶ no cambia «pausar» por «bajar» ni suelta el foco del micro (121.4123ms)
+ℹ pass 8
+ℹ fail 1
+✖ failing tests:
+✖ REG-A1-02: grabando, un ▶ no cambia «pausar» por «bajar» ni suelta el foco del micro (121.4123ms)
+== M2 (src/lib/audioFocus.ts): «if (now || who === 'mic' || hidden())» -> «if (true)» [restaurado]
+✖ REG-A1-03: la voz suelta el foco 600 ms después: dos frases seguidas, una sola petición (116.6004ms)
+✖ REG-A1-03: con la app oculta (temporizadores congelados) el foco se suelta al instante (8.3459ms)
+✖ REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fijo y un solo foco «pausar» (64.199ms)
+✖ REG-A1-03: el profe y otra frase seguidas no hacen rebotar la música; un ▶ corto baja, no pausa (155.9478ms)
+ℹ pass 5
+ℹ fail 4
+== M3 (src/lib/audioFocus.ts): «if (now || who === 'mic' || hidden())» -> «if (now || who === 'mic')» [restaurado]
+✖ REG-A1-03: con la app oculta (temporizadores congelados) el foco se suelta al instante (15.2805ms)
+ℹ pass 8
+ℹ fail 1
+✖ failing tests:
+✖ REG-A1-03: con la app oculta (temporizadores congelados) el foco se suelta al instante (15.2805ms)
+== M4 (src/lib/tts.ts): «const pitch = !lang && voiceIndex» -> «const pitch = voiceIndex» [restaurado]
+✖ REG-A1-06: con Leo y sin voz masculina, el inglés va con tono 0,8 y el español con tono normal (37.6553ms)
+ℹ pass 8
+ℹ fail 1
+✖ failing tests:
+✖ REG-A1-06: con Leo y sin voz masculina, el inglés va con tono 0,8 y el español con tono normal (37.6553ms)
+== M5 (src/lib/tts.ts): «holdFocus(segs.length > 1 ? 'read'» -> «holdFocus(segs.length > 1 ? 'tts'» [restaurado]
+✖ REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fijo y un solo foco «pausar» (60.87ms)
+✖ REG-M-07: tocar ⏸ a mitad o pararla con stopSpeakingIf corta todos los tramos y suelta el foco (734.551ms)
+ℹ pass 7
+ℹ fail 2
+✖ failing tests:
+✖ REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fijo y un solo foco «pausar» (60.87ms)
+== M6 (src/lib/tts.ts): «prefix ? !k.startsWith(key) : k !== key» -> «prefix ? !k.startsWith(key) : false» [restaurado]
+✖ REG-M-07: tocar ⏸ a mitad o pararla con stopSpeakingIf corta todos los tramos y suelta el foco (53.6214ms)
+ℹ pass 8
+ℹ fail 1
+✖ failing tests:
+✖ REG-M-07: tocar ⏸ a mitad o pararla con stopSpeakingIf corta todos los tramos y suelta el foco (53.6214ms)
+== M7 (src/lib/speechLang.ts): «ordinalWord(Number(d)) ?? m» -> «m» [restaurado]
+✖ REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fijo y un solo foco «pausar» (56.3891ms)
+✖ REG-M-10: «on May 5th» es un solo tramo inglés y se lee «fifth» (nada de «th» en español) (3.4525ms)
+✖ REG-M-10: ordinales en palabras (1.414ms)
+ℹ pass 22
+ℹ fail 3
+✖ failing tests:
+== M8 (src/lib/tts.ts): «if (heldFocus && heldFocus !== who) releaseAudioFocus(heldFocus, true)» -> «» [restaurado]
+ℹ pass 9
+ℹ fail 0
+== M9 (src/lib/speechLang.ts): «ES_MARK.has(w) || (w.length > 4» -> «ES_MARK.has(w) || (false» [restaurado]
+✖ REG-A3-13 · 1: «actualmente» y «embarazada» (Falsos amigos) en español (1.5043ms)
+ℹ pass 15
+ℹ fail 1
+✖ failing tests:
+✖ REG-A3-13 · 1: «actualmente» y «embarazada» (Falsos amigos) en español (1.5043ms)
+M10: sin coincidencia

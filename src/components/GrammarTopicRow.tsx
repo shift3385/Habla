@@ -1,6 +1,6 @@
 import type { GrammarProgress } from '../lib/db'
 import { topicStatus, type GrammarTopic, type TopicStatus } from '../lib/grammar'
-import { toggleSpeak } from '../lib/tts'
+import { toggleSpeak, useSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import SpeakIcon from './SpeakIcon'
 
@@ -9,12 +9,12 @@ import SpeakIcon from './SpeakIcon'
 const STATUS: Record<TopicStatus, { label: string; color: string }> = {
   new: { label: 'Nuevo', color: 'var(--sub)' },
   seen: { label: 'Visto', color: 'var(--acc2)' },
-  mastered: { label: 'Dominado', color: '#22c58b' },
+  mastered: { label: 'Dominado', color: 'var(--ok)' },
 }
 
 export function LevelChip({ level }: { level: string }) {
   return (
-    <span className="field flex h-[22px] flex-none items-center rounded-[11px] px-2 text-[11px] font-semibold tabular-nums" title="Nivel MCER">
+    <span className="field flex h-[22px] flex-none items-center rounded-[11px] px-2 fs-11 font-semibold tabular-nums" title="Nivel MCER">
       {level}
     </span>
   )
@@ -24,7 +24,7 @@ export function StatusChip({ progress }: { progress?: GrammarProgress }) {
   const s = topicStatus(progress)
   const { label, color } = STATUS[s]
   return (
-    <span className="flex h-[22px] flex-none items-center gap-1 rounded-[11px] px-2 text-[11px] font-semibold" style={{ color, border: `1px solid ${color}` }}>
+    <span className="flex h-[22px] flex-none items-center gap-1 rounded-[11px] px-2 fs-11 font-semibold" style={{ color, border: `1px solid ${color}` }}>
       {s === 'mastered' && <Icon name="check" size={11} stroke={2.4} />}
       {label}
     </span>
@@ -49,14 +49,16 @@ export default function GrammarTopicRow({
   onOpen: () => void
 }) {
   const sample = topic.examples[0]?.en
+  // 5.10.1 (REG-A4-07): el lector de pantalla también sabe si el ejemplo está sonando (el icono ya cambia a ⏸).
+  const playing = useSpeaking(sample ?? '') && !!sample
   return (
     <div className="glass flex items-center gap-2 rounded-[20px] py-2 pr-2 pl-3.5">
       <button onClick={onOpen} className="flex min-w-0 flex-1 flex-col gap-1 py-1 text-left">
         <span className="flex items-center gap-1.5">
           {forYou && <Icon name="star" size={13} color="var(--acc)" stroke={2} />}
-          <span className="min-w-0 text-[15px] leading-tight font-semibold break-words">{topic.name}</span>
+          <span className="min-w-0 fs-15 leading-tight font-semibold break-words">{topic.name}</span>
         </span>
-        <span className="txt-sub text-[12.5px] leading-tight break-words">
+        <span className="txt-sub fs-12.5 leading-tight break-words">
           {topic.nameEs}
           {sectionTitle ? ` · ${sectionTitle}` : ''}
         </span>
@@ -69,15 +71,17 @@ export default function GrammarTopicRow({
         <button
           onClick={() => toggleSpeak(sample)}
           className="field txt-acc2 grid h-10 w-10 flex-none place-items-center rounded-full"
-          aria-label={`Escuchar un ejemplo: ${sample}`}
+          aria-label={playing ? `Parar el ejemplo: ${sample}` : `Escuchar un ejemplo: ${sample}`}
+          aria-pressed={playing}
           title={sample}
         >
           <SpeakIcon speakKey={sample} size={16} />
         </button>
       )}
-      <button onClick={onOpen} className="txt-sub grid h-10 w-6 flex-none place-items-center" aria-label={`Abrir ${topic.name}`}>
+      {/* 5.10.1 (REG-A4-05): el chevron ya no es un botón de 24 px pegado al ▶ (se tocaba uno por otro): toda la fila abre. */}
+      <span className="txt-sub grid h-10 w-5 flex-none place-items-center" aria-hidden="true">
         <Icon name="chevR" size={16} />
-      </button>
+      </span>
     </div>
   )
 }

@@ -1,0 +1,5 @@
+21:48:24.799 foco=[pack: com.spotify.music: GAIN;] spotify=state=PLAYING(3) modo=NORMAL com=
+21:48:28.968 foco=[pack: com.spotify.music: GAIN;pack: com.shift.habla.debug: GAIN_TRANSIENT;] spotify=state=PAUSED(2) modo=NORMAL com=
+21:48:34.758 foco=[pack: com.spotify.music: GAIN;] spotify=state=PAUSED(2) modo=NORMAL com=
+21:48:35.904 foco=[pack: com.spotify.music: GAIN;] spotify=state=PLAYING(3) modo=NORMAL com=
+21:48:40.319 foco=[pack: com.spotify.music: GAIN;pack: com.shift.habla.debug: GAIN_TRANSIENT_MAY_DUCK;] spotify=state=PLAYING(3) modo=NORMAL com=

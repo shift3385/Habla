@@ -10,7 +10,7 @@ import SpeakIcon from './SpeakIcon'
 const OUTCOME: Record<ReviewOutcome, { label: string; color: string }> = {
   correct: { label: 'Correcto', color: '#5fe3a1' },
   almost: { label: 'Casi', color: 'var(--acc)' },
-  wrong: { label: 'Aún no', color: '#f87171' },
+  wrong: { label: 'Aún no', color: 'var(--bad)' },
   unknown: { label: 'No lo sé', color: 'var(--acc2)' },
 }
 
@@ -48,11 +48,11 @@ export default function ReviewSummaryView({
       primary={{ label: 'Volver', onClick: onBack }}
     >
       <div className="flex flex-col gap-3">
-        <div className="tip-bubble rounded-[20px] px-4 py-3 text-[14.5px] leading-snug">{s.feedback.join(' ')}</div>
+        <div className="tip-bubble rounded-[20px] px-4 py-3 fs-14.5 leading-snug">{s.feedback.join(' ')}</div>
 
         <div className="glass flex flex-col items-center gap-2 rounded-[28px] px-4 pt-5 pb-4">
           <ScoreRing value={s.score} label={String(s.score)} sublabel="precisión" size={128} stroke={11} />
-          <div className="txt-sub text-center text-[12px] leading-snug">Correcto = 1 punto · Casi = ½ · Aún no y No lo sé = 0</div>
+          <div className="txt-sub text-center fs-12 leading-snug">Correcto = 1 punto · Casi = ½ · Aún no y No lo sé = 0</div>
         </div>
 
         <div className="grid grid-cols-4 gap-2 text-center">
@@ -83,10 +83,10 @@ export default function ReviewSummaryView({
                     <SpeakIcon speakKey={c.answerEn} size={15} />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] leading-snug font-semibold">{c.answerEn}</span>
-                    <span className="txt-sub block text-[12.5px] leading-snug">{c.promptEs}</span>
+                    <span className="block fs-15 leading-snug font-semibold">{c.answerEn}</span>
+                    <span className="txt-sub block fs-12.5 leading-snug">{c.promptEs}</span>
                   </span>
-                  <span className="flex-none text-[11.5px] font-semibold" style={{ color: OUTCOME[c.worst].color }}>
+                  <span className="flex-none fs-11.5 font-semibold" style={{ color: OUTCOME[c.worst].color }}>
                     {OUTCOME[c.worst].label}
                     {c.misses > 1 ? ` ×${c.misses}` : ''}
                   </span>

@@ -126,7 +126,7 @@ export default function PrepareScreen({ kind, state, mascot, teacherName, title,
         {state === 'loading' && (
           <>
             <div className="text-2xl font-semibold tracking-[-.4px]">{title ?? text.title}</div>
-            <div className="txt-sub relative mt-2 h-[22px] text-[15px]">
+            <div className="txt-sub relative mt-2 h-[22px] fs-15">
               <div key={msgI} className="ld-msg absolute inset-0 flex items-center justify-center gap-0.5" style={{ animation: 'ld-msg 2.4s ease both' }}>
                 {text.msgs[msgI % text.msgs.length]}
                 {[0, 1, 2].map((i) => (
@@ -141,7 +141,7 @@ export default function PrepareScreen({ kind, state, mascot, teacherName, title,
         {done && (
           <div className="anim-up">
             <div className="text-2xl font-semibold tracking-[-.4px]">{text.done}</div>
-            <div className="txt-sub mt-2 text-[15px]">{kind === 'clase' ? `${teacherName} te espera` : kind === 'test' ? '¡Mucha suerte!' : 'Preparando tu resultado'}</div>
+            <div className="txt-sub mt-2 fs-15">{kind === 'clase' ? `${teacherName} te espera` : kind === 'test' ? '¡Mucha suerte!' : 'Preparando tu resultado'}</div>
           </div>
         )}
       </div>
@@ -149,7 +149,7 @@ export default function PrepareScreen({ kind, state, mascot, teacherName, title,
       {onCancel && !error && !done && (
         <button
           onClick={onCancel}
-          className="glass absolute left-1/2 h-11 -translate-x-1/2 rounded-full px-6 text-[15px] font-medium"
+          className="glass absolute left-1/2 h-11 -translate-x-1/2 rounded-full px-6 fs-15 font-medium"
           style={{ bottom: 'calc(env(safe-area-inset-bottom) + 28px)' }}
         >
           Salir
@@ -165,12 +165,12 @@ export default function PrepareScreen({ kind, state, mascot, teacherName, title,
           <div className="txt-sub mt-1.5 text-sm leading-snug">{errorText}</div>
           <div className={`mt-4 grid gap-2 ${onBack ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {onBack && (
-              <button onClick={onBack} className="field h-12 rounded-3xl text-[15px] font-medium">
+              <button onClick={onBack} className="field h-12 rounded-3xl fs-15 font-medium">
                 Volver
               </button>
             )}
             {onRetry && (
-              <button onClick={onRetry} className="btn-acc h-12 rounded-3xl text-[15px]">
+              <button onClick={onRetry} className="btn-acc h-12 rounded-3xl fs-15">
                 Reintentar
               </button>
             )}

@@ -1,0 +1,61 @@
+[HABLA-NET] {"at":1792546724893,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":7}
+✔ Pregúntale: ids de temas inventados o peligrosos se descartan; el HTML queda como texto plano (668.3021ms)
+[HABLA-NET] {"at":1792546725306,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✔ Pregúntale: una respuesta enorme no cuela más de 4 ejemplos ni 3 temas (405.0721ms)
+[HABLA-NET] {"at":1792546725495,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✖ REG-A2: Pregúntale limita también el número de párrafos de la respuesta (189.1716ms) # answer_es no se recorta (propuesta: .slice(0, 4))
+[HABLA-NET] {"at":1792546725700,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✖ REG-A2: Pregúntale no se rompe si la IA devuelve tipos inesperados (sin esquema, p. ej. modelo de respaldo) (203.9561ms) # e.en.trim con e.en numérico lanza TypeError
+[HABLA-NET] {"at":1792546726078,"what":"You are a precise, encouraging English teacher gra","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":1}
+✔ Dilo tú: un veredicto fuera de la lista cuenta como «wrong» (la IA no puede forzar «correct») (377.3607ms)
+[HABLA-NET] {"at":1792546726488,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":0}
+✔ Profe: correcciones con ids o categorías maliciosas se limpian; las vacías o iguales se descartan (410.7627ms)
+✔ Profe: grammarFields no acepta claves del prototipo ni rutas como id de tema (230.0842ms)
+✔ SEG-509 (hoy): el texto del tema entra literal, con saltos de línea y encabezados falsos (217.4664ms)
+✖ SEG-509 (deseado): el tema va delimitado y sin poder abrir secciones nuevas del prompt (196.4565ms) # SEG-509 abierto: propuesta en A2-seguridad.md
+ℹ tests 9
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 3
+ℹ duration_ms 3279.8492
+
+✖ failing tests:
+
+test at tests\promptInjection.test.mjs:64:1
+✖ REG-A2: Pregúntale limita también el número de párrafos de la respuesta (189.1716ms) # answer_es no se recorta (propuesta: .slice(0, 4))
+  AssertionError [ERR_ASSERTION]: llegan 50 párrafos
+      at TestContext.<anonymous> (file:///D:/My%20Apps/HABLA/tests/promptInjection.test.mjs:68:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests\promptInjection.test.mjs:71:1
+✖ REG-A2: Pregúntale no se rompe si la IA devuelve tipos inesperados (sin esquema, p. ej. modelo de respaldo) (203.9561ms) # e.en.trim con e.en numérico lanza TypeError
+  TypeError: (raw.topics ?? []).map is not a function
+      at askMascot (eval at runInlinedModule (file:///D:/My%20Apps/HABLA/node_modules/vite/dist/node/module-runner.js:811:9), <anonymous>:118:48)
+      at async TestContext.<anonymous> (file:///D:/My%20Apps/HABLA/tests/promptInjection.test.mjs:74:13)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tests\promptInjection.test.mjs:137:1
+✖ SEG-509 (deseado): el tema va delimitado y sin poder abrir secciones nuevas del prompt (196.4565ms) # SEG-509 abierto: propuesta en A2-seguridad.md
+  AssertionError [ERR_ASSERTION]: el texto del alumno no puede crear un encabezado
+      at TestContext.<anonymous> (file:///D:/My%20Apps/HABLA/tests/promptInjection.test.mjs:141:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -188,8 +188,8 @@
       "related": ["negatives-be-and-auxiliaries", "negatives-do-does-did", "short-answers"],
       "exercises": [
         { "id": "contractions-1", "type": "choice", "prompt": "____ going to be a long day.", "options": ["It's", "Its", "Its'", "It"], "answer": 0, "whyEs": "It's = it is: it is going to be…", "trapsEs": ["", "Its sin apóstrofo es el posesivo «su».", "No existe: el apóstrofo no va al final.", "Falta el verbo be (is)."] },
-        { "id": "contractions-2", "type": "choice", "prompt": "In «She's finished her homework», 's means ____.", "options": ["has", "is", "was", "does"], "answer": 0, "whyEs": "Detrás viene un participio (finished): 's = has (presente perfecto).", "trapsEs": ["", "Is + finished sería «está terminada», pero aquí lleva objeto (her homework): es has.", "'s nunca es la contracción de was.", "'s puede ser does solo en preguntas informales como «What's he do?», no aquí."] },
-        { "id": "contractions-3", "type": "choice", "prompt": "In «I'd already eaten», I'd means ____.", "options": ["I had", "I would", "I did", "I could"], "answer": 0, "whyEs": "Detrás viene un participio (eaten): 'd = had (pasado perfecto).", "trapsEs": ["", "Would va con el verbo base (I'd eat), no con un participio.", "'d no es la contracción de did en frases afirmativas.", "Could nunca se contrae como 'd."] },
+        { "id": "contractions-2", "type": "choice", "prompt": "«She's finished her homework.» → She ____ finished her homework.", "options": ["has", "is", "was", "does"], "answer": 0, "whyEs": "Detrás viene un participio (finished) con objeto (her homework): 's = has (presente perfecto).", "trapsEs": ["", "Is + finished sería «está terminada», pero aquí lleva objeto (her homework): es has.", "'s nunca es la contracción de was.", "'s solo es does en preguntas informales como «What's he do?», no aquí."] },
+        { "id": "contractions-3", "type": "choice", "prompt": "«I'd already eaten.» → I ____ already eaten.", "options": ["had", "would", "did", "could"], "answer": 0, "whyEs": "Detrás viene un participio (eaten): 'd = had (pasado perfecto).", "trapsEs": ["", "Would va con el verbo base (I'd eat), no con un participio.", "'d no es la contracción de did en frases afirmativas.", "Could nunca se contrae como 'd."] },
         { "id": "contractions-4", "type": "choice", "prompt": "Are you from Brazil? — Yes, I ____.", "options": ["am", "'m", "is", "do"], "answer": 0, "whyEs": "En la respuesta corta afirmativa no se contrae: Yes, I am.", "trapsEs": ["", "Al final de la frase no se puede contraer.", "Con I el verbo be es am.", "La pregunta es con are (be), no con do."] },
         { "id": "contractions-5", "type": "gap", "prompt": "I ____ be late, I promise. (contraction of will not)", "answers": ["won't"], "whyEs": "Will not → won't (contracción irregular)." },
         { "id": "contractions-6", "type": "gap", "prompt": "They ____ here yet. (contraction of are not)", "answers": ["aren't"], "whyEs": "Are not → aren't." },
@@ -303,10 +303,10 @@
       "examples": [
         { "en": "What time does the meeting start?", "es": "¿A qué hora empieza la reunión?" },
         { "en": "How much does this jacket cost?", "es": "¿Cuánto cuesta esta chaqueta?" },
-        { "en": "Which bus should I take to get downtown?", "es": "¿Qué autobús tengo que coger para ir al centro?", "noteEs": "Which: elegir entre opciones conocidas." },
+        { "en": "Which bus should I take to get downtown?", "es": "¿Qué autobús tengo que tomar para ir al centro?", "noteEs": "Which: elegir entre opciones conocidas." },
         { "en": "Why are you still up? It's 2 a.m.", "es": "¿Por qué sigues despierto? Son las dos de la mañana." },
         { "en": "How often do you go to the gym?", "es": "¿Cada cuánto vas al gimnasio?" },
-        { "en": "What's your new apartment like?", "es": "¿Cómo es tu piso nuevo?", "noteEs": "What … like? pide una descripción." }
+        { "en": "What's your new apartment like?", "es": "¿Cómo es tu departamento nuevo?", "noteEs": "What … like? pide una descripción." }
       ],
       "commonMistakes": [
         { "wrong": "Where you live?", "right": "Where do you live?", "whyEs": "Falta el auxiliar do entre la palabra interrogativa y el sujeto." },
@@ -340,7 +340,7 @@
       "keywords": ["short answers", "respuestas cortas", "yes I do", "no I don't", "yes I am", "sí", "no", "responder", "contestar"],
       "categories": ["auxiliary"],
       "explanationEs": [
-        "En inglés suena seco contestar solo «Yes» o «No». Lo natural es añadir el sujeto y el auxiliar de la pregunta: «Do you like it? — Yes, I do».",
+        "Se puede contestar solo «Yes» o «No», pero suena más natural y amable añadir el sujeto y el auxiliar de la pregunta: «Do you like it? — Yes, I do».",
         "Repite el auxiliar de la pregunta: Are you…? → Yes, I am / No, I'm not. Can she…? → Yes, she can. Did they…? → No, they didn't. Have you…? → Yes, I have.",
         "En la afirmativa no se contrae: «Yes, I am», «Yes, it is», nunca «Yes, I'm». En la negativa sí: «No, it isn't».",
         "Responde con pronombre, no con el nombre: «Is Ana here? — Yes, she is»."
@@ -434,7 +434,7 @@
         }
       },
       "examples": [
-        { "en": "There's nothing in the fridge. Let's order pizza.", "es": "No hay nada en la nevera. Pidamos una pizza." },
+        { "en": "There's nothing in the fridge. Let's order pizza.", "es": "No hay nada en el refrigerador. Pidamos una pizza." },
         { "en": "I didn't buy anything at the mall.", "es": "No compré nada en el centro comercial." },
         { "en": "Nobody answered the phone.", "es": "No contestó nadie al teléfono." },
         { "en": "We don't have any plans for Sunday.", "es": "No tenemos ningún plan para el domingo." },
@@ -459,7 +459,7 @@
         { "id": "negative-words-double-negatives-8", "type": "order", "words": ["has", "Nobody", "yet", "called"], "answer": "Nobody has called yet", "whyEs": "Nobody + verbo afirmativo." }
       ],
       "speaking": [
-        { "promptEs": "Describe tu nevera o tu mochila: di qué no tienes, usando any y no.", "modelEn": "I don't have any eggs and there's no milk, but I have some cheese.", "checkEs": "Una sola negación por frase." },
+        { "promptEs": "Describe tu refrigerador o tu mochila: di qué no tienes, usando any y no.", "modelEn": "I don't have any eggs and there's no milk, but I have some cheese.", "checkEs": "Una sola negación por frase." },
         { "promptEs": "Cuenta un día aburrido: nadie, nada, a ningún sitio.", "modelEn": "Yesterday nobody called me, I didn't go anywhere and nothing interesting happened.", "checkEs": "nobody/nothing con verbo afirmativo; didn't + anywhere." }
       ],
       "classFocusEn": "Practise single negation with nothing/nobody/never or not … anything/anybody/ever. Gently correct Spanish-style double negatives like 'I don't know nothing'."
@@ -476,7 +476,7 @@
         "Cuando who, what o which (+ sustantivo) es el sujeto (quien hace la acción), la pregunta mantiene el orden de una afirmación y no lleva do/does/did: «Who called you?» (alguien te llamó: ¿quién?).",
         "Cuando es el objeto (quien recibe la acción), la pregunta es normal, con auxiliar: «Who did you call?» (tú llamaste a alguien: ¿a quién?).",
         "Truco: si la respuesta sería «X me llamó», es de sujeto; si sería «llamé a X», es de objeto. La «a» de «¿a quién…?» suele delatar una pregunta de objeto.",
-        "En las de sujeto, el verbo va con -s en presente o en pasado: «Who lives here?», «What happened?»."
+        "En las de sujeto, el verbo se conjuga como en una afirmación: con -s en presente («Who lives here?») o en pasado («What happened?»)."
       ],
       "forms": {
         "affirmative": {
@@ -569,7 +569,7 @@
         { "en": "She works with you, doesn't she?", "es": "Trabaja contigo, ¿no?" },
         { "en": "We haven't met before, have we?", "es": "No nos conocíamos, ¿verdad?" },
         { "en": "I'm late again, aren't I?", "es": "Llego tarde otra vez, ¿verdad?", "noteEs": "Con I am, la coletilla es aren't I." },
-        { "en": "Let's order pizza, shall we?", "es": "Pedimos pizza, ¿vale?" }
+        { "en": "Let's order pizza, shall we?", "es": "Pidamos pizza, ¿sí?" }
       ],
       "commonMistakes": [
         { "wrong": "You're Spanish, no?", "right": "You're Spanish, aren't you?", "whyEs": "Es un calco de «¿no?». Se entiende, pero lo natural es la coletilla con el auxiliar (o «right?» en informal)." },

@@ -32,7 +32,8 @@ export interface Settings {
   audioPrefs: Record<string, 'headset' | 'split' | 'phone'> // por auriculares: por dónde escuchar y hablar
   retestSnoozed: string // día (AAAA-MM-DD) en que dijo "Más tarde" al re-test
   homeworkSeen: number // fecha de la última tarea ya enseñada antes del Inicio
-  orientation: OrientationMode // automática, vertical u horizontal forzada (Tema y mascota)
+  orientation: OrientationMode // automática, vertical u horizontal forzada (Apariencia)
+  fontScale: number // 5.10.1 (REG-M-05): tamaño de letra (0,9 · 1 · 1,15 · 1,3), × la letra del sistema (lib/fontScale.ts)
   // Corrector fonético con Azure Speech (Ajustes → Modelos). Claves y secretos: mismo almacenamiento y misma
   // protección con el bloqueo del teléfono que la clave de Gemini; nunca en el código ni en las copias.
   azureKey: string
@@ -59,6 +60,7 @@ const DEFAULTS: Settings = {
   voiceIndex: null,
   earMode: false,
   dailyGoalMinutes: 5,
+  fontScale: 1, // REG-M-05: Normal = como siempre
   theme: 'marea', // Marea + Gota, claro por defecto (diseño V4)
   mode: 'light',
   teacher: 'emma',

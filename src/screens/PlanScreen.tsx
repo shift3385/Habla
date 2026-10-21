@@ -96,7 +96,7 @@ export default function PlanScreen({ settings, plan, level, onPlanChange, onStar
             <div className="txt-sub px-2 text-center text-xs">Adaptado a tu último re-test el {fmt(plan.adaptedAt)}.</div>
           )}
           {error && (
-            <div className="glass rounded-[22px] p-3.5 text-sm" style={{ color: '#f87171' }}>
+            <div className="glass rounded-[22px] p-3.5 text-sm" style={{ color: 'var(--bad)' }}>
               {error}
             </div>
           )}
@@ -123,8 +123,8 @@ export default function PlanScreen({ settings, plan, level, onPlanChange, onStar
                         {done >= LESSONS_PER_WEEK ? <Icon name="check" size={17} stroke={2.2} /> : w.n}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[15px] font-semibold">{w.titleEs}</span>
-                        <span className="txt-sub block truncate text-[12.5px]">
+                        <span className="block truncate fs-15 font-semibold">{w.titleEs}</span>
+                        <span className="txt-sub block truncate fs-12.5">
                           {isCur ? 'Esta semana' : past ? `Semana ${w.n}` : `Desde el ${fmt(starts)}`} · {done}/{LESSONS_PER_WEEK}
                           {w.review ? ' · repaso' : ''}
                         </span>
@@ -135,10 +135,10 @@ export default function PlanScreen({ settings, plan, level, onPlanChange, onStar
                     </button>
                     {expanded && (
                       <div className="anim-up px-3.5 pb-3.5">
-                        <div className="text-[13.5px] leading-snug">{w.focusEs}</div>
-                        <div className="txt-sub mt-1 text-[12.5px] leading-snug">{w.canDoEs}</div>
+                        <div className="fs-13.5 leading-snug">{w.focusEs}</div>
+                        <div className="txt-sub mt-1 fs-12.5 leading-snug">{w.canDoEs}</div>
                         {!w.lessons && (
-                          <div className="txt-sub mt-3 text-[13px]">
+                          <div className="txt-sub mt-3 fs-13">
                             {busy ??
                               (w.n > cur + 1 ? (
                                 'Las lecciones se preparan cuando llegue la semana, adaptadas a cómo vas.'
@@ -169,8 +169,8 @@ export default function PlanScreen({ settings, plan, level, onPlanChange, onStar
                                     {ok ? <Icon name="check" size={14} stroke={2.2} /> : l.n}
                                   </span>
                                   <span className="min-w-0 flex-1">
-                                    <span className="block text-[13.5px] leading-tight font-semibold">{l.titleEs}</span>
-                                    <span className="txt-sub block text-[11.5px]">
+                                    <span className="block fs-13.5 leading-tight font-semibold">{l.titleEs}</span>
+                                    <span className="txt-sub block fs-11.5">
                                       {KIND_ES[l.kind]}
                                       {ok ? ` · hecha el ${fmt(plan.done[l.id].date)}` : ''}
                                     </span>
@@ -184,7 +184,7 @@ export default function PlanScreen({ settings, plan, level, onPlanChange, onStar
                                   </button>
                                   <button
                                     onClick={() => onStartLesson(l.id)}
-                                    className={`h-8 flex-none rounded-2xl px-3 text-[12.5px] ${ok ? 'glass' : 'btn-acc'}`}
+                                    className={`h-8 flex-none rounded-2xl px-3 fs-12.5 ${ok ? 'glass' : 'btn-acc'}`}
                                   >
                                     {ok ? 'Repetir' : 'Empezar'}
                                   </button>

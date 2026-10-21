@@ -7,6 +7,29 @@
 
 /* Las variables (--bg, --tx, --acc…) las pone App.tsx según el tema y el modo elegidos. */
 
+/* 5.10.1 (REG-M-05): tamaño de letra. Solo crece el TEXTO (como los «sp» de Android, Dynamic Type de iOS o WCAG 1.4.4),
+   no los márgenes ni los botones: en Tailwind 4 el espaciado también va en rem, así que no se toca el font-size de
+   <html>. --fs (1 = como siempre) lo pone App.tsx (lib/fontScale.ts): tu elección × la letra del sistema, con topes.
+   - text-xs…5xl: los mismos tamaños de Tailwind multiplicados por --fs (el interlineado es proporcional).
+   - fs-NN: lo que antes era text-[NNpx] (mismo tamaño exacto con --fs = 1; admite medios: fs-12.5). */
+:root {
+  --fs: 1;
+}
+@theme {
+  --text-xs: calc(0.75rem * var(--fs, 1));
+  --text-sm: calc(0.875rem * var(--fs, 1));
+  --text-base: calc(1rem * var(--fs, 1));
+  --text-lg: calc(1.125rem * var(--fs, 1));
+  --text-xl: calc(1.25rem * var(--fs, 1));
+  --text-2xl: calc(1.5rem * var(--fs, 1));
+  --text-3xl: calc(1.875rem * var(--fs, 1));
+  --text-4xl: calc(2.25rem * var(--fs, 1));
+  --text-5xl: calc(3rem * var(--fs, 1));
+}
+@utility fs-* {
+  font-size: calc(--value(number) * 1px * var(--fs, 1));
+}
+
 html,
 body,
 #root {
@@ -18,6 +41,7 @@ body {
   background: var(--bg, #0a0605);
   color: var(--tx, #fff);
   font-family: Outfit, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: calc(16px * var(--fs, 1)); /* REG-M-05 */
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }
@@ -316,7 +340,7 @@ select {
     animation: hb-bob 2s ease-in-out infinite;
   }
   .input {
-    @apply h-[50px] w-full rounded-[18px] px-4 text-[15px] outline-none;
+    @apply h-[50px] w-full rounded-[18px] px-4 fs-15 outline-none;
     background: var(--field);
     border: 1px solid var(--gb);
     color: var(--tx);
@@ -525,5 +549,86 @@ html[data-landscape] .tab-content {
   .tip-bubble {
     --tip-bg: var(--bg);
     --tip-border: var(--gb);
+  }
+}
+
+/* 5.10.1 (REG-A4-07): foco visible con teclado o lector de pantalla (antes solo lo tenía .input). */
+:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+
+/* 5.10.1 (REG-A4-03): por si algo se pinta antes de que App ponga las variables del tema (las de modo oscuro). */
+:root {
+  --ok: #22c58b;
+  --bad: #f87171;
+}
+
+/* 5.10.1 (REG-A4-08): en vertical con poco alto (320×640) el Inicio con clase guardada, lección y Repaso desplazaba
+   30 px. La línea «¿De qué hablamos hoy?» (clase home-sub en Home.tsx) es decorativa: se oculta ahí. */
+@media (orientation: portrait) and (max-height: 700px) {
+  .home-sub {
+    display: none;
+  }
+}
+
+/* 5.10.1 (REG-M-05): arreglos con letra grande (html[data-fs] lo pone lib/fontScale.ts desde 1,1). Con «Normal» no
+   se aplica ninguno: la app se ve exactamente igual que antes. */
+html[data-fs] .fs-clamp {
+  /* truncate → 2 líneas: tarjetas de Ajustes, Repaso de hoy, clase guardada, título del tema de la clase */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html[data-fs] .seg-count {
+  /* «Gramática 12» se salía de su píldora */
+  display: none;
+}
+html[data-fs] .skill-row {
+  /* «Gramáti…» en las barras de nivel: la etiqueta toma el ancho que necesita */
+  grid-template-columns: auto minmax(40px, 1fr) auto !important;
+}
+html[data-fs] .pron-grid {
+  /* Precisión · Fluidez · Completa · Entonación: 2 × 2 en vez de cortarse («Comple…») */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+html[data-fs] .pron-arrow {
+  left: var(--a2) !important;
+}
+html[data-fs] .home-sub {
+  /* el Inicio no debe desplazar */
+  display: none;
+}
+html[data-landscape][data-fs] .cv-status,
+html[data-landscape][data-fs] .cv-card-hint {
+  /* clase en horizontal: que el micro no se salga por abajo */
+  display: none;
+}
+html[data-fs='xl'] .plan-mission {
+  /* Muy grande: la misión de la lección se ve al abrirla; así el Inicio no desplaza */
+  display: none;
+}
+html[data-fs='xl'] .prac-desc {
+  /* las tarjetas de Prácticas tienen alto fijo: con Muy grande, la descripción en 1 línea */
+  -webkit-line-clamp: 1;
+}
+html[data-fs='xl'] .home-title {
+  /* 5.10.1 (REV-F-01): «Good morning.» en dos líneas hacía desplazar el Inicio (Prácticas, +26 px): el saludo crece como mucho como «Grande» */
+  font-size: calc(27px * 1.15);
+}
+html[data-fs='xl'] .plan-week {
+  /* REV-F-01: con «Muy grande» la semana va en «Mi plan»; la cabecera de la lección cabe en una línea */
+  display: none;
+}
+@media (orientation: portrait) and (max-height: 700px) {
+  /* REV-F-02: en vertical bajo (320×640) la letra se queda en Grande; mismas compactaciones que con «Muy grande» */
+  html[data-fs] .plan-week,
+  html[data-fs] .plan-mission {
+    display: none;
+  }
+  html[data-fs] .prac-desc {
+    -webkit-line-clamp: 1;
   }
 }

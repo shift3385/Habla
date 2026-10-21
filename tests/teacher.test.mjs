@@ -7,12 +7,14 @@ after(closeServer)
 
 const ideas = [{ en: 'I think the best part of my weekend was' }, { en: "Honestly, I didn't do much because" }, { en: 'My favourite moment was when we' }]
 
-test('P6: la idea tal cual (o casi) se detecta; una respuesta propia que la continúa, no', async () => {
+test('P6: la idea tal cual se detecta; una respuesta propia que la continúa, no', async () => {
   const { echoesIdea } = await loadFresh('/src/lib/teacher.ts')
   assert.equal(echoesIdea('I think the best part of my weekend was…', ideas), true)
   assert.equal(echoesIdea('i think the best part of my weekend was', ideas), true)
   assert.equal(echoesIdea("Honestly, I didn't do much because.", ideas), true)
-  assert.equal(echoesIdea('I think the best part of my weekend was the', ideas), true, 'solo 1 palabra más')
+  // 5.10.1 (REG-A1-04): una palabra tuya ya es una respuesta (antes se rechazaba con hasta 2 palabras más).
+  assert.equal(echoesIdea('I think the best part of my weekend was the', ideas), false, '1 palabra más ya es tuya')
+  assert.equal(echoesIdea('I think the best part of my weekend was, um', ideas), true, 'solo muletillas')
   assert.equal(echoesIdea('I think the best part of my weekend was going to the beach with my family', ideas), false)
   assert.equal(echoesIdea('Yesterday I go to the park', ideas), false)
   assert.equal(echoesIdea('', ideas), false)

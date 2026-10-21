@@ -2,6 +2,7 @@ package com.shift.habla;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.media.AudioAttributes;
 import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
@@ -132,6 +133,11 @@ public class AudioRoutePlugin extends Plugin {
         return o;
     }
 
+    /** APK debug (com.shift.habla.debug): solo ahí se escriben nombres de dispositivos en logcat (REG-A2-06). */
+    private boolean isDebuggable() {
+        return (getContext().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    }
+
     private boolean hasBtPermission() {
         return Build.VERSION.SDK_INT < 31 || getPermissionState("bluetooth") == PermissionState.GRANTED;
     }
@@ -243,14 +249,27 @@ public class AudioRoutePlugin extends Plugin {
                     // MOV-4: setCommunicationDevice es ASÍNCRONO (antes se comprobaba al instante y daba «falló» aunque
                     // la ruta llegaba ~0,3 s después). Se espera a que sea efectiva, como el WebRTC de Google
                     // (AppRTCBluetoothManager: 4 s y 2 intentos). Fuera del hilo de los plugins para no bloquearlos.
+                    // 5.10.1 (REG-M-01): si los auriculares ya son el dispositivo de comunicación, no se vuelve a pedir
+                    // ni a esperar: la clase retiene la ruta y cada toque la consulta.
+                    AudioDeviceInfo cur = am.getCommunicationDevice();
+                    if (cur != null && cur.getId() == pick.getId()) {
+                        r.put("ok", true);
+                        r.put("ms", 0);
+                        r.put("device", dev(pick));
+                        r.put("state", describe());
+                        call.resolve(r);
+                        return;
+                    }
                     final AudioDeviceInfo target = pick;
                     new Thread(() -> {
                         long t0 = System.currentTimeMillis();
                         boolean ok = waitRoute(target, 2000) || waitRoute(target, 2000);
                         AudioDeviceInfo now = am.getCommunicationDevice();
+                        // 5.10.1 (REG-A2-06, FUG-405): el nombre de los auriculares solo sale en logcat en el APK debug.
+                        boolean dbg = isDebuggable();
                         Log.i("HablaAudio", "ruta auriculares " + (ok ? "lista" : "NO lista") + " en " + (System.currentTimeMillis() - t0) + " ms · "
-                            + target.getProductName() + " tipo " + target.getType() + " · ahora: "
-                            + (now == null ? "ninguno" : now.getProductName() + " tipo " + now.getType()) + " · modo " + am.getMode());
+                            + (dbg ? target.getProductName() + " " : "") + "tipo " + target.getType() + " · ahora: "
+                            + (now == null ? "ninguno" : (dbg ? now.getProductName() + " " : "") + "tipo " + now.getType()) + " · modo " + am.getMode());
                         r.put("ok", ok);
                         r.put("ms", System.currentTimeMillis() - t0);
                         r.put("device", dev(target));

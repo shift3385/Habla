@@ -75,12 +75,12 @@ export default function WordsScreen({ settings, registerBack }: Props) {
 
   return (
     <div className="anim-up flex flex-col gap-3">
-      <div className="flex h-[54px] items-center text-[28px] font-semibold tracking-[-.6px]">Palabras</div>
+      <div className="flex h-[54px] items-center fs-28 font-semibold tracking-[-.6px]">Palabras</div>
       {/* v5.10 (petición del dueño): buscador compacto. Una sola línea; la frase donde la viste se añade si la quieres y
           la explicación sale solo al tocar ⓘ. Así la lista de palabras tiene más sitio. */}
       <div className="glass min-w-0 rounded-[26px] p-2.5">
         <div className="flex items-center justify-between gap-2 pr-0.5 pl-2">
-          <span className="txt-acc2 text-[11px] tracking-[1.2px] uppercase">Buscador de palabras</span>
+          <span className="txt-acc2 fs-11 tracking-[1.2px] uppercase">Buscador de palabras</span>
           <button onClick={() => setShowInfo((v) => !v)} className="txt-sub grid h-7 w-7 place-items-center rounded-full" aria-label="Cómo funciona">
             <Icon name="info" size={15} />
           </button>
@@ -126,21 +126,21 @@ export default function WordsScreen({ settings, registerBack }: Props) {
               if (showContext) setContext('')
               setShowContext((v) => !v)
             }}
-            className="txt-acc2 flex h-8 items-center gap-1 text-[13px] font-medium"
+            className="txt-acc2 flex h-8 items-center gap-1 fs-13 font-medium"
           >
             <Icon name={showContext ? 'close' : 'pencil'} size={13} stroke={2} />
             {showContext ? 'Quitar la frase' : 'Añadir la frase donde la viste'}
           </button>
         </div>
         {showInfo && (
-          <p className="txt-sub px-1.5 pb-1 text-[12.5px] leading-snug">
+          <p className="txt-sub px-1.5 pb-1 fs-12.5 leading-snug">
             No es un traductor literal: te explica qué significa <b>en la frase donde la viste</b>. También al revés: escribe una palabra en
             español y te dice cómo se diría en inglés ahí. En una clase, toca cualquier palabra del profe para consultarla al momento.
           </p>
         )}
-        {hint && <p className="txt-sub px-1.5 text-[13px]">{hint}</p>}
+        {hint && <p className="txt-sub px-1.5 fs-13">{hint}</p>}
         {error && (
-          <p className="px-1.5 text-sm" style={{ color: '#f87171' }}>
+          <p className="px-1.5 text-sm" style={{ color: 'var(--bad)' }}>
             {error}
           </p>
         )}
@@ -164,8 +164,8 @@ export default function WordsScreen({ settings, registerBack }: Props) {
               render={(c) => (
                 <div key={c.id} className="glass flex items-center gap-3 rounded-[20px] px-4 py-3">
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] leading-tight font-semibold break-words">{c.answerEn}</span>
-                    <span className="txt-sub mt-0.5 line-clamp-2 block text-[12.5px] leading-snug break-words">{c.promptEs}</span>
+                    <span className="block fs-15 leading-tight font-semibold break-words">{c.answerEn}</span>
+                    <span className="txt-sub mt-0.5 line-clamp-2 block fs-12.5 leading-snug break-words">{c.promptEs}</span>
                   </span>
                   <button
                     onClick={async () => {
@@ -173,7 +173,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
                       if (known.length === 1) setSeg('all') // era la última: vuelve al historial
                       reload()
                     }}
-                    className="field h-9 flex-none rounded-[18px] px-3 text-[12.5px]"
+                    className="field h-9 flex-none rounded-[18px] px-3 fs-12.5"
                   >
                     Repasar otra vez
                   </button>
@@ -192,9 +192,9 @@ export default function WordsScreen({ settings, registerBack }: Props) {
                 <button key={h.id} onClick={() => setCurrent(h)} className="glass flex items-center gap-3 rounded-[20px] px-4 py-3 text-left">
                   {/* Palabra, traducción y frase en líneas propias: nada se sale de la tarjeta (NC-08). */}
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] leading-tight font-semibold break-words">{h.result.headword}</span>
-                    <span className="txt-acc2 mt-0.5 line-clamp-2 block text-[13.5px] leading-snug break-words">{h.result.translation}</span>
-                    {h.context && <span className="txt-sub mt-1 line-clamp-2 block text-[12px] leading-snug break-words italic">"{h.context}"</span>}
+                    <span className="block fs-15 leading-tight font-semibold break-words">{h.result.headword}</span>
+                    <span className="txt-acc2 mt-0.5 line-clamp-2 block fs-13.5 leading-snug break-words">{h.result.translation}</span>
+                    {h.context && <span className="txt-sub mt-1 line-clamp-2 block fs-12 leading-snug break-words italic">"{h.context}"</span>}
                   </span>
                   {h.saved && (
                     <span className="txt-acc2">

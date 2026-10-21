@@ -73,6 +73,11 @@ export interface AdviceInput {
   hasPurpose: boolean
   /** Tiene configurada la fonética de Azure. */
   hasAzure: boolean
+  /**
+   * 5.10.1 (UX-04): tu meta de velocidad (fluency.ts › speakingGoal) y su nivel. Sin ella, el consejo no da cifra
+   * (antes decía «ronda las 120», distinta de la del informe y de la nota).
+   */
+  wpmGoal?: { level: string; wpm: number }
 }
 
 /** Consejos de uso: qué significa cada nota, dónde se cambia cada cosa y trucos de la clase. */
@@ -82,14 +87,20 @@ export function buildAdvice(i: AdviceInput): Tip[] {
   a.push(
     { id: 'a-topics', text: '¿Quieres cambiar tus 3 temas del Inicio? Toca «Más temas» → «Cambiar mis 3 temas», o ve a Ajustes → Mi perfil y datos.' },
     { id: 'a-score', text: 'Al terminar cada clase verás tu nota de fluidez (0–100): mezcla tu velocidad, lo largas que son tus respuestas, las pausas y la precisión.' },
-    { id: 'a-ppm', text: '«ppm» son las palabras por minuto que dices. Para conversar con soltura, la meta ronda las 120.' },
+    {
+      id: 'a-ppm',
+      text: i.wpmGoal
+        ? `«ppm» son las palabras por minuto que dices. Para tu nivel (${i.wpmGoal.level}), la meta es unas ${i.wpmGoal.wpm}: la ves en el informe de cada clase.`
+        : '«ppm» son las palabras por minuto que dices. Tu meta, según tu nivel, sale en el informe de cada clase.',
+    },
     { id: 'a-pauses', text: 'Las «pausas» que te cuento son silencios de más de 1 segundo en medio de tu respuesta. Menos pausas, más fluidez.' },
     { id: 'a-pron', text: 'Con la fonética de Azure, bajo cada respuesta ves Precisión, Fluidez, Completa y Entonación. Toca cada nota y te explico qué mide.' },
     { id: 'a-pron2', text: 'Precisión mide cómo suena cada sonido de cada palabra; Entonación, la música de la frase: el acento y subir y bajar la voz.' },
     { id: 'a-ideas', text: 'Si en clase te quedas en blanco, toca «¿Qué digo?» y te doy 3 maneras de empezar tu respuesta.' },
     { id: 'a-lookup', text: 'Toca cualquier palabra de lo que dice el profe y te explico qué significa en esa frase.' },
     { id: 'a-ear', text: 'Con «Modo oído» el texto del profe se oculta hasta que lo tocas: entrenas tu oído antes de leer.' },
-    { id: 'a-lock', text: 'Desliza el micrófono hacia arriba hasta el candado y podrás hablar sin mantener el dedo. Hacia la izquierda, cancelas.' },
+    // 5.10.1 (UX-01): desde la 5.9 el micro es «toca para hablar, toca para enviar»: ya no hay candado ni deslizamiento.
+    { id: 'a-mic', text: 'Toca el micro para hablar y tócalo otra vez para enviar. Si no te gustó, la papelera descarta la grabación.' },
     { id: 'a-es', text: 'Toca «ES» bajo la respuesta del profe para verla en español.' },
     { id: 'a-words', text: 'Las palabras que guardas en la pestaña Palabras entran en tu repaso espaciado para que no se te olviden.' },
     { id: 'a-headset', text: 'Con auriculares con micrófono te entiendo mucho mejor, sobre todo si hay ruido.' },

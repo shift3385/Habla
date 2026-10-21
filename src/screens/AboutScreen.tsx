@@ -79,28 +79,28 @@ export default function AboutScreen({
                 <Mascot element={THEME_INFO[settings.theme].mascot} size={96} mood={egg ? 'happy' : 'idle'} interactive={false} />
               </div>
             </button>
-            <div className="mt-3.5 text-[30px] font-bold tracking-[-.8px]">
+            <div className="mt-3.5 fs-30 font-bold tracking-[-.8px]">
               Habla<span className="txt-acc">.</span>
             </div>
             <div className="txt-sub mt-0.5 text-sm">Tu profe virtual de inglés</div>
             <div className="mt-3.5 flex flex-wrap justify-center gap-2">
-              <span className="btn-acc flex h-8 items-center rounded-2xl px-3 text-[13px]">v{APP_VERSION}</span>
-              <span className="field flex h-8 items-center rounded-2xl px-3 text-[13px]">Build {APP_BUILD}</span>
-              <span className="field flex h-8 items-center gap-1.5 rounded-2xl px-3 text-[13px]">
+              <span className="btn-acc flex h-8 items-center rounded-2xl px-3 fs-13">v{APP_VERSION}</span>
+              <span className="field flex h-8 items-center rounded-2xl px-3 fs-13">Build {APP_BUILD}</span>
+              <span className="field flex h-8 items-center gap-1.5 rounded-2xl px-3 fs-13">
                 <span className="h-[7px] w-[7px] rounded-full" style={{ background: '#5fe3a1' }} />
                 Instalada
               </span>
             </div>
-            {egg && <div className="txt-acc2 anim-up mt-2.5 text-[12.5px]">Hecho con paciencia, café y muchos "could you repeat that?"</div>}
+            {egg && <div className="txt-acc2 anim-up mt-2.5 fs-12.5">Hecho con paciencia, café y muchos "could you repeat that?"</div>}
           </div>
 
           <button onClick={() => setPage('news')} className="glass rounded-[26px] p-4 text-left">
             <span className="flex items-center justify-between">
-              <span className="txt-acc2 text-[11px] tracking-[1.2px] uppercase">Novedades · {formatDate(latest.date)}</span>
+              <span className="txt-acc2 fs-11 tracking-[1.2px] uppercase">Novedades · {formatDate(latest.date)}</span>
               <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
             </span>
-            <span className="mt-1.5 block text-[17px] font-semibold">{latest.title}</span>
-            <span className="txt-sub mt-1 block text-[13px]">
+            <span className="mt-1.5 block fs-17 font-semibold">{latest.title}</span>
+            <span className="txt-sub mt-1 block fs-13">
               {[
                 latest.added?.length && `${latest.added.length} ${latest.added.length === 1 ? 'novedad' : 'novedades'}`,
                 latest.improved?.length && `${latest.improved.length} ${latest.improved.length === 1 ? 'mejora' : 'mejoras'}`,
@@ -128,7 +128,7 @@ export default function AboutScreen({
                 ['Ayuda', 'help', 'help'],
               ] as [string, IconName, Page][]
             ).map(([label, icon, p]) => (
-              <button key={p} onClick={() => setPage(p)} className="glass flex h-[86px] flex-col items-center justify-center gap-2 rounded-3xl text-[13px]">
+              <button key={p} onClick={() => setPage(p)} className="glass flex h-[86px] flex-col items-center justify-center gap-2 rounded-3xl fs-13">
                 <span className="field txt-acc2 grid h-9 w-9 place-items-center rounded-full">
                   <Icon name={icon} size={18} stroke={1.6} />
                 </span>
@@ -150,13 +150,13 @@ export default function AboutScreen({
               <div key={r.v} className="glass overflow-hidden rounded-[26px]">
                 <button onClick={() => setOpen(isOpen ? -1 : i)} className="flex w-full items-center gap-3 px-4 py-3.5 text-left">
                   <span
-                    className={`grid h-[30px] min-w-[54px] flex-none place-items-center rounded-[15px] px-2.5 text-[12.5px] font-semibold ${i === 0 ? 'btn-acc' : 'field'}`}
+                    className={`grid h-[30px] min-w-[54px] flex-none place-items-center rounded-[15px] px-2.5 fs-12.5 font-semibold ${i === 0 ? 'btn-acc' : 'field'}`}
                   >
                     {r.v}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-semibold">{r.title}</span>
-                    <span className="txt-sub block text-[12.5px]">
+                    <span className="block truncate fs-15 font-semibold">{r.title}</span>
+                    <span className="txt-sub block fs-12.5">
                       {formatDate(r.date)}
                       {r.v === APP_VERSION ? ' · instalada' : installedPatch ? ` · instalada (${installedPatch.v})` : ''}
                       {patches.length ? ` · ${patches.length} ${patches.length === 1 ? 'parche' : 'parches'}` : ''}
@@ -171,7 +171,7 @@ export default function AboutScreen({
                       // Parches de seguridad y corrección de esta versión: debajo de lo que trajo, cada uno en su
                       // propio desplegable (petición del dueño, 2026-10-06).
                       <div className="flex flex-col gap-2">
-                        <div className="txt-acc2 flex items-center gap-2 text-[11px] tracking-[1.2px] uppercase">
+                        <div className="txt-acc2 flex items-center gap-2 fs-11 tracking-[1.2px] uppercase">
                           <Icon name="shield" size={14} stroke={1.8} />
                           Parches de seguridad y corrección
                         </div>
@@ -184,12 +184,12 @@ export default function AboutScreen({
                                 className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left"
                                 aria-expanded={pOpen}
                               >
-                                <span className="glass grid h-[26px] min-w-[50px] flex-none place-items-center rounded-[13px] px-2 text-[12px] font-semibold">
+                                <span className="glass grid h-[26px] min-w-[50px] flex-none place-items-center rounded-[13px] px-2 fs-12 font-semibold">
                                   {p.v}
                                 </span>
                                 <span className="min-w-0 flex-1">
-                                  <span className="block text-[13.5px] leading-snug font-semibold">Parche de seguridad {p.v}</span>
-                                  <span className="txt-sub block text-[12px]">
+                                  <span className="block fs-13.5 leading-snug font-semibold">Parche de seguridad {p.v}</span>
+                                  <span className="txt-sub block fs-12">
                                     {formatDate(p.date)}
                                     {p.v === APP_VERSION ? ' · instalado' : ''}
                                   </span>
@@ -220,8 +220,8 @@ export default function AboutScreen({
             <span className="btn-acc grid h-14 w-14 flex-none place-items-center rounded-full text-xl">{AUTHOR.slice(0, 1)}</span>
             <span>
               <span className="txt-sub block text-xs">Idea, diseño y desarrollo</span>
-              <span className="block text-[19px] font-semibold">{AUTHOR}</span>
-              <span className="txt-sub block text-[13px]">Creado con Claude</span>
+              <span className="block fs-19 font-semibold">{AUTHOR}</span>
+              <span className="txt-sub block fs-13">Creado con Claude</span>
             </span>
           </div>
           <Rows
@@ -245,8 +245,8 @@ export default function AboutScreen({
               ['Test de nivel', 'Banco propio de 450 preguntas (estilo IELTS y Cambridge)'],
             ]}
           />
-          <div className="txt-sub px-4 text-center text-[12px] leading-snug">Versión {APP_VERSION} · build {APP_BUILD}</div>
-          <div className="txt-sub px-4 text-center text-[13px] leading-snug">
+          <div className="txt-sub px-4 text-center fs-12 leading-snug">Versión {APP_VERSION} · build {APP_BUILD}</div>
+          <div className="txt-sub px-4 text-center fs-13 leading-snug">
             Las noticias de los temas vienen de fuentes públicas y se resumen con IA.
           </div>
         </div>
@@ -271,8 +271,8 @@ export default function AboutScreen({
                 <Icon name={icon} size={17} stroke={1.6} />
               </span>
               <span>
-                <span className="block text-[15px] font-semibold">{title}</span>
-                <span className="txt-sub mt-0.5 block text-[13px] leading-snug">{desc}</span>
+                <span className="block fs-15 font-semibold">{title}</span>
+                <span className="txt-sub mt-0.5 block fs-13 leading-snug">{desc}</span>
               </span>
             </div>
           ))}
@@ -293,8 +293,8 @@ export default function AboutScreen({
                 <Icon name={icon} size={18} stroke={1.6} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">{title}</span>
-                <span className="txt-sub block text-[12.5px]">{desc}</span>
+                <span className="block fs-15 font-semibold">{title}</span>
+                <span className="txt-sub block fs-12.5">{desc}</span>
               </span>
               <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
             </button>
@@ -332,13 +332,13 @@ function ReleaseGroups({ r }: { r: Release }) {
         .filter(([, , items]) => items?.length)
         .map(([label, icon, items]) => (
           <div key={label}>
-            <div className="txt-acc2 flex items-center gap-2 text-[11px] tracking-[1.2px] uppercase">
+            <div className="txt-acc2 flex items-center gap-2 fs-11 tracking-[1.2px] uppercase">
               <Icon name={icon} size={14} stroke={1.8} />
               {label}
             </div>
             <div className="mt-1.5 flex flex-col gap-1.5">
               {items!.map((it) => (
-                <div key={it} className="field rounded-[14px] px-3 py-2 text-[13.5px] leading-snug" style={{ border: 0 }}>
+                <div key={it} className="field rounded-[14px] px-3 py-2 fs-13.5 leading-snug" style={{ border: 0 }}>
                   {it}
                 </div>
               ))}

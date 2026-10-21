@@ -278,3 +278,118 @@ test('«Para ti» con señales: errores con tema, tema del plan, categorías de 
   // Un tema dominado no sale aunque tenga errores.
   assert.ok(!ids('A2', { 'sample-present-perfect': { mastered: true } }, { mistakes }).includes('sample-present-perfect'))
 })
+
+// ---------------------------------------------------------------------------
+// 5.10.1 (D3): frase completa, órdenes alternativos y tarjetas antiguas, con el catálogo REAL (src/grammar/*.json).
+
+const realGrammar = async () => {
+  const real = await loadFresh('/src/lib/grammar.ts') // instancia nueva con el catálogo de la app (no la muestra)
+  const ex = (id) => {
+    const t = real.findTopic(id.replace(/-\d+$/, ''))
+    const x = t?.exercises.find((e) => e.id === id)
+    assert.ok(x, `no existe el ejercicio ${id}`)
+    return x
+  }
+  return { real, ex }
+}
+
+test('frase completa (REG-A3-01): sin la pista, sin el prefijo en español y con «I\'ll» unido (casos reales)', async () => {
+  const { real, ex } = await realGrammar()
+  const fs = (id) => real.fullSentence(ex(id))
+  assert.equal(fs('can-cant-2'), "Sorry, I can't come to the meeting tomorrow.") // antes: «… tomorrow. (can, negativa)»
+  assert.equal(fs('subject-object-possessive-pronouns-3'), "This isn't my scarf. Mine is blue, so this one must be hers.") // «(de ella)»
+  assert.equal(fs('should-could-would-2'), 'You should sleep more.') // antes: ««Deberías dormir más.» → You should…»
+  assert.equal(fs('will-shall-offers-1'), "The phone's ringing. — Don't worry, I'll get it.") // antes: «I 'll get it»
+  assert.equal(fs('had-better-7'), "It's important that you see a doctor soon.") // «… means: ____» → solo la opción
+  assert.equal(fs('contractions-2'), 'She has finished her homework.') // REG-A3-05
+  assert.equal(fs('passive-present-past-7'), 'Where were you born? — In Bogotá.') // pista «(be born)» pegada al hueco
+  assert.equal(fs('some-any-2'), "We don't have any bread. Can you buy some?") // pista nueva al final (REG-A3-07)
+})
+
+test('REG-A3-02 y REG-M-08: in-case-vs-if-8 y prepositions-of-time-6 dan frases inglesas claras', async () => {
+  const { real, ex } = await realGrammar()
+  const inCase = ex('in-case-vs-if-8')
+  assert.equal(real.fullSentence(inCase), "We're going on a long drive, so I'll buy some snacks now in case the kids get hungry.")
+  assert.ok(!/[áéíóúñ¿]/.test(real.cardPrompt(inCase) + inCase.options.join(' ')), 'el enunciado y las opciones van en inglés')
+  assert.equal(real.fullSentence(ex('prepositions-of-time-6')), 'Her train arrives in the afternoon, around four.')
+  assert.equal(real.checkExercise(ex('prepositions-of-time-6'), ['in']), true)
+})
+
+test('todo el catálogo: ninguna frase completa lleva pista, español, flecha ni una palabra repetida («in in»)', async () => {
+  const { real } = await realGrammar()
+  const names = /Tomás|Ramón|Díaz|Bogotá|Cancún|café|México|Martínez|José|María|Sofía|Lucía|Andrés|Héctor|Raúl|Iván|Óscar|Inés|Mónica/g
+  const bad = []
+  for (const t of real.grammarCatalog().topics)
+    for (const x of t.exercises) {
+      const s = real.fullSentence(x)
+      if (x.id === 'wh-questions-3') continue // «What does «awkward» mean?»: las comillas son parte de la frase
+      if (/[«»→¿¡()]|\w\s'(ll|d|m|re|ve|s)\b|means:|Which sentence|Which verb|_{3,}/.test(s) || /[áéíóúñ]/.test(s.replace(names, ''))) bad.push(`${x.id}: ${s}`)
+      const dup = s.match(/\b(\w+) \1\b/i)
+      if (dup && !/^(had had|that that)$/i.test(dup[0])) bad.push(`${x.id} (palabra repetida «${dup[0]}»): ${s}`)
+    }
+  assert.deepEqual(bad, [])
+})
+
+test('órdenes alternativos (REG-A3-06): «alsoAccepted» cuenta como acierto y la frase que se enseña es la tuya', async () => {
+  const { real, ex } = await realGrammar()
+  const ps7 = ex('present-simple-7')
+  assert.equal(real.checkExercise(ps7, 'My dad never works on Sundays'.split(' ')), true)
+  assert.equal(real.checkExercise(ps7, 'On Sundays my dad never works'.split(' ')), true)
+  assert.equal(real.checkExercise(ps7, 'My dad works never on Sundays'.split(' ')), false)
+  assert.equal(real.orderMatch(ps7, 'On Sundays my dad never works'.split(' ')), 'On Sundays my dad never works')
+  // Las fichas no llevan coma: «If you don't hurry you'll be late» vale por «If you don't hurry, you'll be late».
+  const fc5 = ex('first-conditional-5')
+  const tapped = ['If', 'you', "don't", 'hurry', "you'll", 'be', 'late']
+  assert.equal(real.checkExercise(fc5, tapped), true)
+  assert.equal(real.fullSentence(fc5, real.orderMatch(fc5, tapped)), "If you don't hurry, you'll be late.")
+  assert.equal(real.fullSentence(fc5), "You'll be late if you don't hurry.") // sin colocación elegida: la de «answer»
+  // Los 15 de la propuesta de A3 tienen su alternativa.
+  const withAlt = real.grammarCatalog().topics.flatMap((t) => t.exercises).filter((x) => x.type === 'order' && x.alsoAccepted?.length)
+  assert.equal(withAlt.length, 15)
+})
+
+test('huecos (REG-A3-07): otras respuestas válidas de must-vs-have-to-6', async () => {
+  const { real, ex } = await realGrammar()
+  const x = ex('must-vs-have-to-6')
+  for (const a of ['must', 'have to', 'need to', 'have got to', "'ve got to"]) assert.equal(real.checkExercise(x, [a]), true, a)
+  assert.equal(real.checkExercise(x, ['should']), false)
+})
+
+test('tarjetas ya creadas con la 5.10: se rehacen desde el ejercicio por su sourceId (idempotente)', async () => {
+  const { real, ex } = await realGrammar()
+  const old = (id, answerEn, promptEs, whyEs) => {
+    const x = ex(id)
+    const t = real.findTopic(id.replace(/-\d+$/, ''))
+    return { source: 'grammar', sourceId: real.exerciseCardId(id), promptEs: promptEs ?? real.cardPrompt(x), answerEn, hintEs: `${t.nameEs}: ${whyEs ?? x.whyEs}` }
+  }
+  // REG-A3-01: la pista pegada a la respuesta.
+  const c1 = old('can-cant-2', "Sorry, I can't come to the meeting tomorrow. (can, negativa)")
+  assert.deepEqual(real.grammarCardPatch(c1), { answerEn: "Sorry, I can't come to the meeting tomorrow." })
+  // REG-A3-02: respuesta en español y enunciado antiguo.
+  const c2 = old('in-case-vs-if-8', 'Ahora, por precaución', "«I'll buy some snacks in case the kids get hungry.» ¿Cuándo compras los snacks?", "«In case» = por si acaso: la acción ocurre ya, pase lo que pase.")
+  const p2 = real.grammarCardPatch(c2)
+  assert.equal(p2.answerEn, "We're going on a long drive, so I'll buy some snacks now in case the kids get hungry.")
+  assert.equal(p2.promptEs, "We're going on a long drive, so I'll buy some snacks now ____ the kids get hungry.")
+  assert.ok(p2.hintEs.includes('Los compras ya, por precaución'))
+  // REG-M-08: «gets in in».
+  const c3 = old('prepositions-of-time-6', 'Her train gets in in the afternoon, around four.', 'Her train gets in ____ the afternoon, around four.')
+  assert.deepEqual(real.grammarCardPatch(c3), { promptEs: 'Her train arrives ____ the afternoon, around four.', answerEn: 'Her train arrives in the afternoon, around four.' })
+  // Idempotente: aplicado el parche, ya no hay nada que cambiar.
+  for (const c of [c1, c2, c3]) assert.equal(real.grammarCardPatch({ ...c, ...real.grammarCardPatch(c) }), null)
+  // Otras tarjetas no se tocan: errores de clase, palabras guardadas y ejercicios que ya no existen.
+  assert.equal(real.grammarCardPatch({ ...c1, source: 'mistake' }), null)
+  assert.equal(real.grammarCardPatch({ ...c1, sourceId: 12345 }), null)
+})
+
+test('validador: «alsoAccepted» con otras palabras, igual que «answer» o con punto final es un error', () => {
+  const s = sample()
+  const bad = structuredClone(s[0].data)
+  const order = bad.topics[0].exercises.find((x) => x.type === 'order') // «Did you read the email»
+  order.alsoAccepted = ['Did you read the mail', 'did you read the email', 'You did read the email.']
+  const r = validateSections([{ file: 'sample-tenses.json', data: bad }, s[1]])
+  const all = r.errors.join('\n')
+  for (const frag of ['«Did you read the mail» no usa exactamente', '«did you read the email» es igual que "answer"', '«You did read the email.» sin punto final'])
+    assert.ok(all.includes(frag), `falta «${frag}» en:\n${all}`)
+  order.alsoAccepted = ['You did read the email']
+  assert.deepEqual(validateSections([{ file: 'sample-tenses.json', data: bad }, s[1]]).errors, [])
+})

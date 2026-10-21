@@ -25,7 +25,19 @@ public class MainActivity extends BridgeActivity {
         if (wv != null) {
             chrome = new HablaChromeClient(bridge);
             wv.setWebChromeClient(chrome);
+            applyTextZoom(wv);
         }
+    }
+
+    /**
+     * 5.10.1 (REG-M-05): el WebView heredaba la letra del sistema SIN tope (POCO con font_scale 0,86 → un texto de
+     * 100 px se pinta a 90 px; con «Grande» en el Galaxy A11, 1,3, el micro de la clase se sale de la pantalla en
+     * horizontal). Ahora el WebView no escala nada (textZoom 100 %) y la app escala SOLO el texto con su ajuste
+     * «Tamaño de letra» × la letra del sistema (que lee con OrientationPlugin.getFontScale), con topes: 1,3 en vertical
+     * y 1,15 en horizontal (lib/fontScale.ts). Al cambiar la letra en Android, la actividad se recrea y se vuelve a leer.
+     */
+    private void applyTextZoom(WebView wv) {
+        if (wv.getSettings().getTextZoom() != 100) wv.getSettings().setTextZoom(100);
     }
 
     /**
@@ -59,6 +71,8 @@ public class MainActivity extends BridgeActivity {
         if (wv != null) {
             wv.resumeTimers();
             wv.onResume();
+            // REG-M-05: el WebView no escala el texto por su cuenta (lo hace la app, con topes).
+            applyTextZoom(wv);
         }
     }
 }

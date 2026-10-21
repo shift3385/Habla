@@ -7,6 +7,8 @@ import LookupSheet from '../components/LookupSheet'
 import PrepareScreen, { type PrepareState } from '../components/PrepareScreen'
 import { friendlyError } from '../lib/errors'
 import TalkButton, { type Phase } from '../components/TalkButton'
+import { DISCARD_HINTS, localDiscard, logDiscard, SEND_ANYWAY_SECONDS, type DiscardReason } from '../components/talkGesture'
+import { armRoute, disarmRoute, holdRoute } from '../lib/audioRoute'
 import TappableText from '../components/TappableText'
 import { sentenceAround } from '../lib/lookup'
 import { splitDialogue } from '../lib/dialogue'
@@ -22,9 +24,9 @@ import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLes
 import { fastModels, mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording, type SpeechAnalysis } from '../lib/speech'
 import { deleteSessionIfEmpty } from '../lib/stats'
-import { answerIdeas, buildSystemPrompt, echoesIdea, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
+import { answerIdeas, buildSystemPrompt, echoesIdea, replySegments, START_MESSAGE, teacherTurn, type Idea } from '../lib/teacher'
 import { CUSTOM_ID, customCategory, generateTopic, getCategory, randomCategory } from '../lib/topics'
-import { speak, stopSpeaking, toggleSpeak } from '../lib/tts'
+import { speak, speakSegments, stopSpeaking, toggleSpeak } from '../lib/tts'
 import { speakingKey } from '../lib/speaking'
 import type { PronResult } from '../lib/pronunciation'
 import { phoneticsActive, runPhonetics } from '../lib/phonetics'
@@ -68,8 +70,6 @@ interface Props {
   registerBack: (handler: (() => void) | null) => void
 }
 
-const MIN_SECONDS = 0.7
-
 function haptic(style: ImpactStyle) {
   Haptics.impact({ style }).catch(() => {})
 }
@@ -99,6 +99,9 @@ export default function Conversation({
   const [cardSeen, setCardSeen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hint, setHint] = useState<string | null>(null)
+  // 5.10.1 (REG-M-02): aviso de una grabación descartada. Se queda a la vista (en un recuadro, junto al micro) hasta el
+  // siguiente toque del micro; con una grabación larga «sin voz» se puede enviar igualmente (puede ser voz muy baja).
+  const [dropped, setDropped] = useState<{ reason: DiscardReason; sendAnyway?: SpokenAnswer } | null>(null)
   const [canRetry, setCanRetry] = useState(false)
   const [retryHasAudio, setRetryHasAudio] = useState(false)
   const [revealed, setRevealed] = useState<Set<number>>(new Set())
@@ -130,7 +133,7 @@ export default function Conversation({
     // Solo al cambiar de fase o de modo: así las ideas de «¿Qué digo?» no se esconden solas al abrirlas.
   }, [phase, inputMode])
   // v5.9 (nota del dueño): con la fonética activa, al entrar la mascota recuerda que se puede apagar o encender.
-  const [phonTip, setPhonTip] = useState(() => phoneticsActive(settings) && !finishNow)
+  const [phonTip, setPhonTip] = useState(() => phoneticsActive(settings) && !finishNow && !resume) // 5.10h: no en cada reanudación
   useEffect(() => {
     if (!phonTip) return
     const id = setTimeout(() => setPhonTip(false), 9000)
@@ -168,6 +171,16 @@ export default function Conversation({
   }, [])
   const gone = () => abort.current.signal.aborted
 
+  /** REG-M-02: descarta una grabación con un aviso visible y persistente, y lo deja en el registro. */
+  const discard = (reason: DiscardReason, extra: Record<string, number | string | boolean | undefined> = {}, sendAnyway?: SpokenAnswer) => {
+    logDiscard(reason, 'clase', extra)
+    setHint(null)
+    setDropped({ reason, sendAnyway })
+    setPhase('idle')
+    // REG-M-01: te toca repetir; la ruta de los auriculares se prepara otra vez (en segundo plano, no: lifecycle la soltó).
+    if (reason !== 'segundo-plano') armRoute()
+  }
+
   const models = (): Models => mainModels(settingsRef.current, abort.current.signal)
   // Ideas, tema, informe y consultas: modelo rápido.
   const quick = (): Models => fastModels(settingsRef.current, abort.current.signal)
@@ -193,11 +206,18 @@ export default function Conversation({
     return () => clearInterval(id)
   }, [phase, recordStart])
 
+  // REG-A3-04: la clase es de Gramática o no desde que se abre (ref: say() es estable y no depende del render).
+  const grammarClass = useRef(!!gramTopic)
   const say = useCallback(async (text: string) => {
     if (abort.current.signal.aborted) return
     setPhase('speaking')
     try {
-      await speak(text, settingsRef.current.ttsRate, settingsRef.current.voiceIndex)
+      // REG-M-01 (ronda 2): la ruta de los auriculares se suelta antes de la primera sílaba (el profe suena por A2DP,
+      // no con calidad de llamada); se vuelve a preparar sola cuando acaba (audioRoute, «preparar al acabar el profe»).
+      await disarmRoute()
+      // REG-A3-04: en las clases de Gramática, las frases en español de la tarea («…») se leen con voz española.
+      if (grammarClass.current) await speakSegments(replySegments(text), text)
+      else await speak(text, settingsRef.current.ttsRate, settingsRef.current.voiceIndex)
     } catch {
       setHint('No se pudo reproducir la voz. Revisa el motor de voz de Android (Ajustes → Texto a voz).')
     }
@@ -265,15 +285,14 @@ export default function Conversation({
           // Escrita: tu texto tal cual es la "transcripción".
           const said = typed ?? res.transcript
           if (spoken && (!res.heardSpeech || !said)) {
-            setHint('No te he entendido. Prueba otra vez, un poco más cerca del micrófono.')
-            setPhase('idle')
+            // REG-M-02 (caso 21:51): Gemini contestó 200 sin transcripción y antes solo quedaba una línea gris.
+            discard('gemini-sin-voz', { seconds: spoken.seconds, heard: res.heardSpeech, chars: said.length })
             return
           }
           // v5.10 (P6): si lo «dicho» es solo una idea de «¿Qué digo?», no se corrige ni se guarda: casi seguro que el
           // micro captó la voz del teléfono leyéndola. Se pide grabar de nuevo.
           if (spoken && echoesIdea(said, shownIdeas.current)) {
-            setHint('Te entendí justo la idea de «¿Qué digo?», sin nada más. Si no la dijiste tú (a veces el micro capta la voz del teléfono), vuelve a grabar tu respuesta.')
-            setPhase('idle')
+            discard('idea-leida', { seconds: spoken.seconds, words: said.split(/\s+/).length })
             return
           }
           shownIdeas.current = []
@@ -458,13 +477,17 @@ export default function Conversation({
   // Al minimizar o cerrar la app con la clase abierta, también se guarda (el micrófono y la voz los cierra lifecycle).
   useEffect(() => whenBackground(persist), [persist])
   // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); el botón no debe seguir «grabando».
+  // REG-A1-01: también mientras se abre el micro (antes solo grabando: el botón se quedaba en «Abriendo…»).
   useEffect(() => {
-    if (phase !== 'recording') return
-    return whenBackground(() => {
-      setPhase('idle')
-      setHint('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
-    })
+    if (phase !== 'recording' && phase !== 'opening') return
+    return whenBackground(() => discard('segundo-plano', { phase }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
+
+  // 5.10.1 (REG-M-01): con la clase a la vista (chat, ya preparada), la ruta de los auriculares se prepara cada vez que
+  // acaba el profe y se suelta al enviar, a los 20 s sin tocar, al terminar (informe), al salir y en segundo plano
+  // (audioRoute, lifecycle). Preparar la ruta no abre el micrófono: solo se abre al tocar y se cierra al enviar.
+  useEffect(() => (view === 'chat' && !bye && prep === null ? holdRoute() : undefined), [view, bye, prep])
 
   /** Salir sin terminar: la clase queda guardada y la mascota se despide hasta la vuelta. */
   const leave = useCallback(async () => {
@@ -490,9 +513,12 @@ export default function Conversation({
   const onPress = () => {
     setError(null)
     setHint(null)
+    setDropped(null) // REG-M-02: el aviso de la grabación descartada se va con el siguiente toque
     setIdeas(null)
     haptic(ImpactStyle.Medium)
     setPhase('opening') // P7: que se vea que el micro aún no graba
+    // REG-A1-01: billete tomado AL TOCAR; si durante la espera sales, terminas o pasas a segundo plano, no se abre.
+    const ticket = recorder.current.ticket()
     starting.current = (async () => {
       // v5.10 (P6): si sonaba algo (una idea, el profe), se para y se espera a que el altavoz calle antes de abrir el
       // micro: si no, la voz del teléfono podía colarse en la grabación.
@@ -501,8 +527,11 @@ export default function Conversation({
       if (wasSpeaking) await new Promise((r) => setTimeout(r, 400))
       try {
         // AUD-MIC-301/304: false = se canceló la apertura (segundo plano, salir) o ya se estaba grabando.
-        if (!(await recorder.current.begin())) {
+        if (!(await recorder.current.begin(ticket))) {
+          // REG-M-02 (caso 22:13:08): antes el botón volvía a «Toca para hablar» sin decir nada.
+          if (gone()) return
           setPhase((p) => (p === 'recording' ? p : 'idle'))
+          if (!recorder.current.isRecording) setDropped((d) => d ?? { reason: 'no-abrio' })
           return
         }
         haptic(ImpactStyle.Light) // P7: la vibración corta avisa de que ya puedes hablar
@@ -532,11 +561,9 @@ export default function Conversation({
     haptic(ImpactStyle.Light)
     // v5.9 (AUD-MIC-305): al enviar se suelta el micrófono; se vuelve a abrir en el siguiente toque.
     const { blob, seconds } = await recorder.current.finish()
-    if (seconds < MIN_SECONDS || blob.size === 0) {
-      setHint('Toca el micro, habla y vuelve a tocarlo para enviar.')
-      setPhase('idle')
-      return
-    }
+    if (gone()) return
+    const short = localDiscard({ seconds, bytes: blob.size, empty: false })
+    if (short) return discard(short, { seconds, bytes: blob.size })
     setPhase('transcribing')
     try {
       // Análisis local: si no hay voz, ni siquiera se llama a Gemini.
@@ -545,18 +572,19 @@ export default function Conversation({
       // desconectados) no se manda, y la próxima vuelve a buscar un micro que funcione.
       const empty = isEmptyRecording(blob, analysis)
       if (empty) distrustMic()
-      if (empty || (analysis && !analysis.hasSpeech)) {
-        setHint('No te he oído. Habla un poco más fuerte o más cerca del micrófono.')
-        setPhase('idle')
-        return
-      }
       if (gone()) return
+      const reason = localDiscard({ seconds, bytes: blob.size, empty, hasSpeech: analysis?.hasSpeech })
       const answer: SpokenAnswer = {
-        base64: await blobToBase64(blob),
+        base64: reason === 'vacia' ? '' : await blobToBase64(blob),
         mimeType: blob.type.split(';')[0] || 'audio/webm',
         seconds,
         analysis,
         blob,
+      }
+      if (reason) {
+        // REG-M-02 (casos 21:52, 21:59 y 22:49): una grabación larga «sin voz» puede ser voz baja: se puede enviar.
+        const sendable = reason === 'sin-voz' && seconds >= SEND_ANYWAY_SECONDS ? answer : undefined
+        return discard(reason, { seconds, bytes: blob.size, analyzed: !!analysis, mic: recorder.current.label }, sendable)
       }
       pending.current = answer
       await askTeacher(answer)
@@ -568,9 +596,19 @@ export default function Conversation({
 
   const onCancel = async () => {
     await starting.current
-    await recorder.current.finish() // se descarta el audio y se suelta el micro
-    setPhase('idle')
-    setHint('Grabación descartada')
+    const { seconds } = await recorder.current.finish() // se descarta el audio y se suelta el micro
+    if (!gone()) discard('cancelada', { seconds })
+  }
+
+  /** REG-M-02: «Enviar igualmente» una grabación que el análisis local dio por silenciosa. */
+  const sendAnyway = () => {
+    const answer = dropped?.sendAnyway
+    if (!answer || busy) return
+    console.info(`[HABLA-MIC] enviada igualmente tras «sin voz» · seconds=${Math.round(answer.seconds * 10) / 10}`)
+    setDropped(null)
+    setError(null)
+    pending.current = answer
+    askTeacher(answer)
   }
 
   const busy = phase === 'thinking' || phase === 'transcribing' || phase === 'starting'
@@ -809,7 +847,7 @@ export default function Conversation({
             ttsRate={settings.ttsRate}
             voiceIndex={settings.voiceIndex}
           />
-          <button onClick={onExit} className="btn-acc mt-4 h-[54px] w-full rounded-full text-[16px]">
+          <button onClick={onExit} className="btn-acc mt-4 h-[54px] w-full rounded-full fs-16">
             Volver al inicio
           </button>
         </div>
@@ -828,7 +866,7 @@ export default function Conversation({
           <Mascot element={mascotEl} mood={mood} size={64} />
           <div>
             <div className="text-base font-semibold">{teacherName(settings.theme)}</div>
-            <div className="txt-sub text-xs">{chatStatus}</div>
+            <div className="cv-status txt-sub text-xs">{chatStatus}</div>
           </div>
         </div>
         <button onClick={finish} className="glass h-11 flex-none rounded-[22px] px-4 text-sm font-medium">
@@ -851,10 +889,10 @@ export default function Conversation({
           style={{ accentColor: 'var(--acc)' }}
           aria-label="Velocidad de la voz"
         />
-        <span className="txt-sub w-10 text-[13px] tabular-nums">{settings.ttsRate.toFixed(2)}×</span>
+        <span className="txt-sub w-10 fs-13 tabular-nums">{settings.ttsRate.toFixed(2)}×</span>
         <button
           onClick={toggleEar}
-          className={`flex h-[34px] flex-none items-center gap-1.5 rounded-[17px] px-3 text-[13px] ${settings.earMode ? 'btn-acc' : 'glass'}`}
+          className={`flex h-[34px] flex-none items-center gap-1.5 rounded-[17px] px-3 fs-13 ${settings.earMode ? 'btn-acc' : 'glass'}`}
         >
           <Icon name="ear" size={15} stroke={1.8} />
           Modo oído
@@ -871,7 +909,7 @@ export default function Conversation({
       {phonTip && (
         <button onClick={() => setPhonTip(false)} className="cv-phon-tip mx-[18px] mb-2.5 flex items-start gap-2.5 text-left">
           <Mascot element={mascotEl} mood="speaking" size={34} />
-          <span className="tip-bubble flex-1 rounded-[16px] px-3 py-2 text-[12.5px] leading-snug">
+          <span className="tip-bubble flex-1 rounded-[16px] px-3 py-2 fs-12.5 leading-snug">
             Tu <b>fonética de Azure</b> está activa: te pongo nota de pronunciación en cada respuesta. Puedes apagarla o encenderla cuando
             quieras con el botón de la onda, junto a «Modo oído».
           </span>
@@ -893,10 +931,10 @@ export default function Conversation({
               <Icon name={card.icon} size={17} />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="txt-acc2 block text-[10.5px] tracking-[1.2px] uppercase">{card.label}</span>
-              <span className="block truncate text-base font-semibold">{card.title}</span>
+              <span className="txt-acc2 block fs-10.5 tracking-[1.2px] uppercase">{card.label}</span>
+              <span className="fs-clamp block truncate text-base font-semibold">{card.title}</span>
               {!cardSeen && !cardOpen && (card.sub || chips.length) ? (
-                <span className="txt-sub block text-[11.5px]">{planInfo ? 'Toca para ver el objetivo de esta clase' : 'Toca para ver el objetivo de esta conversación'}</span>
+                <span className="cv-card-hint txt-sub block fs-11.5">{planInfo ? 'Toca para ver el objetivo de esta clase' : 'Toca para ver el objetivo de esta conversación'}</span>
               ) : null}
             </span>
             <span
@@ -908,8 +946,8 @@ export default function Conversation({
           </button>
           {cardOpen && (card.sub || chips.length) ? (
             <div className="anim-up pl-12">
-              {topic?.titleEs && <div className="txt-sub mt-1 text-[13px]">{topic.titleEs}</div>}
-              {card.sub && <div className="mt-1 text-[13px] leading-snug">{card.sub}</div>}
+              {topic?.titleEs && <div className="txt-sub mt-1 fs-13">{topic.titleEs}</div>}
+              {card.sub && <div className="mt-1 fs-13 leading-snug">{card.sub}</div>}
               {chips.length > 0 &&
                 // Frases (lección del plan) o palabras largas: cada idea en su caja, inglés y español en líneas
                 // propias que se ajustan al ancho. Palabras cortas (tema del día): píldoras que también se ajustan.
@@ -919,14 +957,14 @@ export default function Conversation({
                       <button
                         key={v.en}
                         onClick={() => toggleSpeak(v.en, settings.ttsRate, settings.voiceIndex)}
-                        className="field flex w-full items-start gap-2 rounded-[16px] px-3 py-2 text-left text-[13.5px] leading-snug"
+                        className="field flex w-full items-start gap-2 rounded-[16px] px-3 py-2 text-left fs-13.5 leading-snug"
                       >
                         <span className="txt-acc2 mt-0.5 flex-none">
                           <SpeakIcon speakKey={v.en} size={14} stroke={1.8} />
                         </span>
                         <span className="min-w-0 flex-1 break-words">
                           <b className="block font-semibold">{v.en}</b>
-                          <span className="txt-sub block text-[12.5px]">{v.es}</span>
+                          <span className="txt-sub block fs-12.5">{v.es}</span>
                         </span>
                       </button>
                     ))}
@@ -937,7 +975,7 @@ export default function Conversation({
                       <button
                         key={v.en}
                         onClick={() => toggleSpeak(v.en, settings.ttsRate, settings.voiceIndex)}
-                        className="field flex min-h-8 max-w-full items-center gap-1.5 rounded-2xl px-2.5 py-1 text-left text-[13px] break-words"
+                        className="field flex min-h-8 max-w-full items-center gap-1.5 rounded-2xl px-2.5 py-1 text-left fs-13 break-words"
                       >
                         <SpeakIcon speakKey={v.en} size={13} stroke={1.8} />
                         <span className="min-w-0">
@@ -949,7 +987,7 @@ export default function Conversation({
                   </div>
                 ))}
               {topic?.sources && topic.sources.length > 0 && (
-                <div className="txt-sub mt-2 truncate text-[11px]">Fuente: {topic.sources.map((s) => s.title).join(' · ')}</div>
+                <div className="txt-sub mt-2 truncate fs-11">Fuente: {topic.sources.map((s) => s.title).join(' · ')}</div>
               )}
             </div>
           ) : null}
@@ -970,7 +1008,7 @@ export default function Conversation({
                 >
                   {m.text}
                 </div>
-                <div className="txt-sub mt-1 mr-1 flex gap-2.5 text-[11px] tabular-nums">
+                <div className="txt-sub mt-1 mr-1 flex gap-2.5 fs-11 tabular-nums">
                   {tm.wpm !== null && <span>{tm.wpm} ppm</span>}
                   <span>{tm.words} palabras</span>
                   {m.typed ? (
@@ -1024,18 +1062,18 @@ export default function Conversation({
               {showEs && m.translation && <div className="txt-sub mt-1.5 text-sm leading-snug">{m.translation}</div>}
               {(fixes.length > 0 || pron || pronWaiting || pronError) && (
                 <div className="mt-2.5 flex flex-col gap-1.5">
-                  {fixes.length > 1 && <div className="txt-sub text-[11.5px]">{fixes.length} correcciones</div>}
+                  {fixes.length > 1 && <div className="txt-sub fs-11.5">{fixes.length} correcciones</div>}
                   {fixes.map((c, k) => (
                     <CorrectionView key={k} c={c} />
                   ))}
                   {pron ? (
                     <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} pausable />
                   ) : pronWaiting ? (
-                    <div className="txt-sub flex items-center gap-1.5 text-[12px]">
+                    <div className="txt-sub flex items-center gap-1.5 fs-12">
                       <Icon name="ear" size={13} /> Revisando tu pronunciación…
                     </div>
                   ) : pronError ? (
-                    <div className="txt-sub flex items-center gap-1.5 text-[12px]">
+                    <div className="txt-sub flex items-center gap-1.5 fs-12">
                       <Icon name="ear" size={13} /> Sin nota de pronunciación: {pronError.replace(/\.$/, '')}.
                     </div>
                   ) : null}
@@ -1046,7 +1084,7 @@ export default function Conversation({
                   // v5.9: si este mensaje es el que suena (leído solo o con Repetir), tocar lo para.
                   onClick={() => (speakingKey() === m.text ? stopSpeaking() : say(m.text))}
                   disabled={phase !== 'idle' && phase !== 'speaking'}
-                  className="txt-sub flex items-center gap-1 text-[12.5px]"
+                  className="txt-sub flex items-center gap-1 fs-12.5"
                 >
                   <SpeakIcon speakKey={m.text} size={14} stroke={1.8} />
                   Repetir
@@ -1061,7 +1099,7 @@ export default function Conversation({
                         return n
                       })
                     }
-                    className="flex items-center gap-1 text-[12.5px]"
+                    className="flex items-center gap-1 fs-12.5"
                     style={{ color: showEs ? 'var(--acc2)' : 'var(--sub)' }}
                   >
                     <Icon name="globe" size={14} />
@@ -1092,7 +1130,7 @@ export default function Conversation({
               <button
                 key={i.en}
                 onClick={() => toggleSpeak(i.en, settings.ttsRate, settings.voiceIndex)}
-                className="glass flex items-start gap-2 rounded-[19px] px-3.5 py-2 text-left text-[13.5px]"
+                className="glass flex items-start gap-2 rounded-[19px] px-3.5 py-2 text-left fs-13.5"
               >
                 <SpeakIcon speakKey={i.en} size={14} stroke={1.8} className="txt-acc mt-[3px] shrink-0" />
                 <span>
@@ -1104,7 +1142,7 @@ export default function Conversation({
         )}
         {error && (
           <div className="glass w-full rounded-[20px] px-3.5 py-2.5 text-sm">
-            <span style={{ color: '#f87171' }}>{error}</span>
+            <span style={{ color: 'var(--bad)' }}>{error}</span>
             {canRetry && (
               <button onClick={retry} className="btn-acc mt-2 h-10 w-full rounded-[20px] text-sm">
                 {retryHasAudio ? 'Reenviar mi audio' : 'Reintentar'}
@@ -1112,12 +1150,26 @@ export default function Conversation({
             )}
           </div>
         )}
-        {hint && !error && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+        {hint && !error && !dropped && <div className="txt-sub text-center fs-13">{hint}</div>}
         {lastTeacher && (phase === 'idle' || phase === 'speaking') && (
-          <button onClick={toggleIdeas} className="cv-ideas-btn glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 text-[13.5px]">
+          <button onClick={toggleIdeas} className="cv-ideas-btn glass flex h-9 items-center gap-1.5 rounded-[18px] px-3.5 fs-13.5">
             <Icon name="bulb" size={15} stroke={1.8} color="var(--acc)" />
             {ideasLoading ? 'Pensando…' : ideas ? 'Ocultar ideas' : '¿Qué digo?'}
           </button>
+        )}
+        {dropped && !error && (
+          // REG-M-02: recuadro junto al micro (no una línea gris) que se queda hasta el siguiente toque.
+          <div role="status" className="tip-bubble anim-up flex w-full items-start gap-2 rounded-[20px] px-3.5 py-2.5 text-sm">
+            <Icon name="mic" size={16} stroke={1.8} color="var(--acc)" />
+            <div className="min-w-0 flex-1">
+              {DISCARD_HINTS[dropped.reason]}
+              {dropped.sendAnyway && (
+                <button onClick={sendAnyway} disabled={busy} className="glass mt-2 block h-9 w-full rounded-[18px] fs-13">
+                  Enviar igualmente
+                </button>
+              )}
+            </div>
+          </div>
         )}
         {inputMode === 'voice' ? (
           <TalkButton phase={phase} elapsed={elapsed} onPress={onPress} onRelease={onRelease} onCancel={onCancel} onKeyboard={() => setInputMode('text')}

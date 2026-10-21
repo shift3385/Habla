@@ -43,7 +43,7 @@
             },
             {
               "en": "She can drive.",
-              "es": "Ella sabe conducir."
+              "es": "Ella sabe manejar."
             }
           ]
         },
@@ -85,7 +85,7 @@
         },
         {
           "en": "You can park here after six.",
-          "es": "Puedes aparcar aquí después de las seis.",
+          "es": "Puedes estacionar aquí después de las seis.",
           "noteEs": "Permiso: algo está permitido."
         },
         {
@@ -228,6 +228,9 @@
             "She"
           ],
           "answer": "She can't drive the car today",
+          "alsoAccepted": [
+            "Today she can't drive the car"
+          ],
           "whyEs": "Sujeto + can't + verbo + complemento + expresión de tiempo."
         }
       ],
@@ -281,7 +284,7 @@
             },
             {
               "en": "We could meet on Friday.",
-              "es": "Podríamos quedar el viernes."
+              "es": "Podríamos vernos el viernes."
             }
           ]
         },
@@ -316,7 +319,7 @@
         },
         {
           "en": "When I lived in Lima, I could walk to work.",
-          "es": "Cuando vivía en Lima, podía ir andando al trabajo."
+          "es": "Cuando vivía en Lima, podía ir caminando al trabajo."
         },
         {
           "en": "This could take a few minutes.",
@@ -570,7 +573,7 @@
         },
         {
           "en": "Maybe we can meet next week.",
-          "es": "Quizás podamos quedar la semana que viene.",
+          "es": "Quizás podamos vernos la semana que viene.",
           "noteEs": "«Maybe» va solo, al principio de la frase."
         }
       ],
@@ -766,7 +769,7 @@
           "examples": [
             {
               "en": "You mustn't park here.",
-              "es": "No puedes aparcar aquí (está prohibido)."
+              "es": "No puedes estacionar aquí (está prohibido)."
             },
             {
               "en": "You don't have to bring anything.",
@@ -791,7 +794,7 @@
       "examples": [
         {
           "en": "I have to take my car to the mechanic.",
-          "es": "Tengo que llevar el coche al mecánico."
+          "es": "Tengo que llevar el carro al mecánico."
         },
         {
           "en": "You mustn't share your password with anyone.",
@@ -930,7 +933,10 @@
           "prompt": "Drivers ____ stop at a red light. It's the law.",
           "answers": [
             "must",
-            "have to"
+            "have to",
+            "need to",
+            "have got to",
+            "'ve got to"
           ],
           "whyEs": "Obligación: «must» (norma) o «have to»."
         },
@@ -1012,7 +1018,7 @@
           "examples": [
             {
               "en": "You shouldn't drive when you're tired.",
-              "es": "No deberías conducir cansado."
+              "es": "No deberías manejar cansado."
             }
           ]
         },
@@ -1518,7 +1524,7 @@
         },
         {
           "en": "Shall we meet at the entrance?",
-          "es": "¿Quedamos en la entrada?",
+          "es": "¿Nos vemos en la entrada?",
           "noteEs": "Propuesta."
         },
         {
@@ -1632,7 +1638,7 @@
         {
           "id": "will-shall-offers-6",
           "type": "gap",
-          "prompt": "A: I'm hungry. B: ____ make you a sandwich.",
+          "prompt": "A: I'm hungry. B: ____ make you a sandwich. (will, ofrecimiento)",
           "answers": [
             "I'll",
             "I will"
@@ -1705,7 +1711,7 @@
           "examples": [
             {
               "en": "I need to charge my phone.",
-              "es": "Tengo que cargar el móvil."
+              "es": "Tengo que cargar el celular."
             },
             {
               "en": "She needs a new laptop.",
@@ -2175,7 +2181,7 @@
           "examples": [
             {
               "en": "We'd better hurry.",
-              "es": "Más vale que nos demos prisa."
+              "es": "Más vale que nos apuremos."
             }
           ]
         },
@@ -2209,7 +2215,7 @@
         },
         {
           "en": "We'd better not drive. It's snowing a lot.",
-          "es": "Mejor no conducimos. Está nevando mucho."
+          "es": "Mejor no manejamos. Está nevando mucho."
         },
         {
           "en": "You'd better bring a jacket. It gets cold at night.",
@@ -2398,7 +2404,7 @@
             },
             {
               "en": "It might be in the car.",
-              "es": "Puede que esté en el coche."
+              "es": "Puede que esté en el carro."
             }
           ]
         },
@@ -2432,7 +2438,7 @@
       "examples": [
         {
           "en": "You've been driving all day. You must be tired.",
-          "es": "Has conducido todo el día. Debes de estar cansado."
+          "es": "Has manejado todo el día. Debes de estar cansado."
         },
         {
           "en": "That can't be my bus. It's too early.",
@@ -2587,7 +2593,7 @@
       "speaking": [
         {
           "promptEs": "Imagina una foto de una persona con bata blanca en un hospital. Haz tres deducciones: seguro que sí, quizás y seguro que no.",
-          "modelEn": "She must be a doctor. She might be on her break. She can't be on holiday.",
+          "modelEn": "She must be a doctor. She might be on her break. She can't be on vacation.",
           "checkEs": "Usa «must be», «might/could be» y «can't be»."
         },
         {
@@ -2682,7 +2688,7 @@
         },
         {
           "en": "I can't find my phone. I might have left it at the restaurant.",
-          "es": "No encuentro el móvil. Puede que me lo haya dejado en el restaurante."
+          "es": "No encuentro el celular. Puede que me lo haya dejado en el restaurante."
         },
         {
           "en": "He can't have finished already. He only started ten minutes ago.",

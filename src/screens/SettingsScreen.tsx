@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { applyBackup, exportBackup, readBackup } from '../lib/backup'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { applyBackup, exportBackup, readBackup, type ReadyBackup } from '../lib/backup'
 import type { CalibrationRecord, Profile } from '../lib/db'
 import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, type NetLog } from '../lib/gemini'
 import { verifyGeminiKey } from '../lib/geminiKey'
@@ -23,14 +23,16 @@ import { englishVoices, toggleSpeak, useSpeaking, type VoiceOption } from '../li
 import { Icon, type IconName } from '../ui/icons'
 import Switch from '../ui/Switch'
 import { TEACHERS, THEME_INFO, THEME_KEYS, THEMES, type Mode, type TeacherKey, type ThemeKey, type ThemeVars, teacherName } from '../ui/theme'
-import Mascot from '../ui/Mascot'
+import Mascot, { type MascotElement } from '../ui/Mascot'
+import { FONT_SCALES, fontScaleCapped, normalizeFontScale, systemFontScale } from '../lib/fontScale'
+import MascotPage from '../components/MascotPage'
 
 export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag'
 type Page = SettingsPage
 
 const PAGES: Record<Page, { title: string; icon: IconName }> = {
   voice: { title: 'Profe y voz', icon: 'mic' },
-  look: { title: 'Tema y mascota', icon: 'palette' },
+  look: { title: 'Apariencia', icon: 'palette' }, // 5.10.1 (REG-M-05): antes «Tema y mascota»; ahora también la letra
   goal: { title: 'Meta diaria', icon: 'target' },
   profile: { title: 'Mi perfil y datos', icon: 'pencil' },
   level: { title: 'Mi nivel', icon: 'bars' },
@@ -54,8 +56,13 @@ interface Props {
   onDataReplaced?: () => void
 }
 
-export default function SettingsScreen({ settings, update, registerBack, onRetest, onOpenAbout, initialPage, onDataReplaced }: Props) {
+export default function SettingsScreen({ settings, t, update, registerBack, onRetest, onOpenAbout, initialPage, onDataReplaced }: Props) {
   const [page, setPage] = useState<Page | null>(initialPage ?? null)
+  // 5.10.1 (REG-A4-04): con la pregunta de la mascota abierta (importar una copia), Atrás la cierra antes que la página.
+  const dialogBack = useRef<(() => void) | null>(null)
+  const setDialogBack = useCallback((h: (() => void) | null) => {
+    dialogBack.current = h
+  }, [])
   const [profile, setProfile] = useState<Profile | null>(null)
 
   useEffect(() => {
@@ -64,7 +71,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
 
   // Atrás (Android) desde una sección vuelve al panel.
   useEffect(() => {
-    registerBack(page ? () => setPage(null) : null)
+    registerBack(page ? () => (dialogBack.current ? dialogBack.current() : setPage(null)) : null)
     return () => registerBack(null)
   }, [page, registerBack])
 
@@ -89,6 +96,9 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
             </Card>
             <div className="txt-sub mt-1 px-1 text-sm">Mis datos</div>
             <DataPage
+              t={t}
+              mascot={THEME_INFO[settings.theme].mascot}
+              setDialogBack={setDialogBack}
               onImported={() => {
                 getProfile().then(setProfile)
                 onDataReplaced?.()
@@ -109,8 +119,8 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
                 <Icon name="chart" size={18} stroke={1.6} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">Diagnóstico</span>
-                <span className="txt-sub block text-[12.5px]">Velocidad de Gemini y errores recientes</span>
+                <span className="block fs-15 font-semibold">Diagnóstico</span>
+                <span className="txt-sub block fs-12.5">Velocidad de Gemini y errores recientes</span>
               </span>
               <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
             </button>
@@ -118,6 +128,9 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
         )}
         {page === 'diag' && <DiagPage />}
         {page === 'data' && <DataPage
+              t={t}
+              mascot={THEME_INFO[settings.theme].mascot}
+              setDialogBack={setDialogBack}
               onImported={() => {
                 getProfile().then(setProfile)
                 onDataReplaced?.()
@@ -135,7 +148,8 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
       key: 'look',
       icon: settings.mode === 'dark' ? 'moon' : 'sun',
       value: `${theme.mascotName} · ${theme.name}`,
-      label: 'Tema y mascota',
+      value2: normalizeFontScale(settings.fontScale) === 1 ? null : `Letra ${fontLabel(settings.fontScale).toLowerCase()}`,
+      label: 'Apariencia',
       onClick: () => setPage('look'),
     },
     { key: 'goal', icon: 'target', value: `${settings.dailyGoalMinutes} min al día`, label: 'Meta diaria', onClick: () => setPage('goal') },
@@ -155,7 +169,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
 
   return (
     <div className="anim-up flex flex-col gap-3">
-      <div className="flex h-[48px] items-center text-[28px] font-semibold tracking-[-.6px]">Ajustes</div>
+      <div className="flex h-[48px] items-center fs-28 font-semibold tracking-[-.6px]">Ajustes</div>
       {/* Resumen de tu nivel, contado por la mascota: tócalo para ver Mi nivel; con el re-test disponible, la
           etiqueta invita a revalidar el nivel y lo abre directamente. */}
       <div
@@ -172,8 +186,8 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
           </div>
           <div className="min-w-0 flex-1">
             <div className="leading-none font-semibold tracking-[-1.2px]" style={{ color: 'var(--acc)' }}>
-              <span className="text-[22px] tracking-[-0.4px]">Nivel </span>
-              <span className="text-[38px]">{profile?.levels.overall ?? '—'}</span>
+              <span className="fs-22 tracking-[-0.4px]">Nivel </span>
+              <span className="fs-38">{profile?.levels.overall ?? '—'}</span>
             </div>
           </div>
           {days !== null && days <= 0 ? (
@@ -182,12 +196,12 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
                 e.stopPropagation()
                 onRetest()
               }}
-              className="btn-acc max-w-[46%] flex-none rounded-[16px] px-3 py-1.5 text-center text-[12.5px] leading-tight font-semibold"
+              className="btn-acc max-w-[46%] flex-none rounded-[16px] px-3 py-1.5 text-center fs-12.5 leading-tight font-semibold"
             >
               ¡Toca aquí para revalidar tu nivel!
             </button>
           ) : (
-            <span className="flex-none rounded-full px-2.5 py-1 text-[11.5px]" style={{ border: '1px solid var(--gb)' }}>
+            <span className="flex-none rounded-full px-2.5 py-1 fs-11.5" style={{ border: '1px solid var(--gb)' }}>
               {days === null ? 'Sin test todavía' : `Nuevo test el ${new Date(retestAt!).toLocaleDateString('es', { day: 'numeric', month: 'short' })}`}
             </span>
           )}
@@ -198,7 +212,7 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
           </div>
         )}
         {/* La mascota invita a tocar para ver el detalle. */}
-        <div className="txt-acc2 mt-2.5 flex items-center justify-center gap-1 rounded-[14px] py-1.5 text-[13px] font-medium" style={{ background: 'var(--field)' }}>
+        <div className="txt-acc2 mt-2.5 flex items-center justify-center gap-1 rounded-[14px] py-1.5 fs-13 font-medium" style={{ background: 'var(--field)' }}>
           Toca aquí y te cuento los detalles de tu nivel
           <Icon name="chevR" size={13} stroke={2} />
         </div>
@@ -213,9 +227,9 @@ export default function SettingsScreen({ settings, update, registerBack, onRetes
               <Icon name="chevR" size={15} stroke={1.8} color="var(--sub)" />
             </span>
             <span className="w-full min-w-0">
-              <span className="block truncate text-[15px] leading-tight font-semibold">{x.value}</span>
-              {x.value2 && <span className="block truncate text-[15px] leading-tight font-semibold">{x.value2}</span>}
-              <span className="txt-sub block truncate text-[12px]">{x.label}</span>
+              <span className="fs-clamp block truncate fs-15 leading-tight font-semibold">{x.value}</span>
+              {x.value2 && <span className="fs-clamp block truncate fs-15 leading-tight font-semibold">{x.value2}</span>}
+              <span className="fs-clamp txt-sub block truncate fs-12">{x.label}</span>
             </span>
           </button>
         ))}
@@ -232,7 +246,7 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
 
 function StatusLine({ s }: { s: Status }) {
   if (!s) return null
-  const color = s.kind === 'error' ? '#f87171' : s.kind === 'ok' ? 'var(--acc2)' : 'var(--sub)'
+  const color = s.kind === 'error' ? 'var(--bad)' : s.kind === 'ok' ? 'var(--acc2)' : 'var(--sub)'
   return (
     <p className="mt-3 text-sm" style={{ color }}>
       {s.text}
@@ -314,7 +328,7 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
             <Icon name="chevD" size={16} stroke={1.8} />
           </span>
         </div>
-        <button onClick={() => update({ earMode: !settings.earMode })} className="mt-3.5 flex w-full items-center justify-between text-left text-[15px]">
+        <button onClick={() => update({ earMode: !settings.earMode })} className="mt-3.5 flex w-full items-center justify-between text-left fs-15">
           <span>
             Modo oído por defecto
             <span className="txt-sub block text-xs">Texto del profe oculto hasta tocarlo</span>
@@ -324,17 +338,17 @@ function VoicePage({ settings, update }: { settings: Settings; update: (p: Parti
         {/* v5.10: el estado lo indica el icono ▶/⏸, sin «<mascota> hablando… · parar». */}
         <button
           onClick={test}
-          className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium"
+          className="field mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl fs-15 font-medium"
           aria-label={testing ? 'Parar la prueba de voz' : 'Probar voz'}
         >
           <Icon name={testing ? 'pause' : 'speakerWave'} size={18} stroke={testing ? 2.2 : 1.7} />
           Probar voz
         </button>
-        <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
+        <button onClick={openAudioPicker} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl fs-15 font-medium">
           <Icon name="headphones" size={18} />
           Audio con auriculares
         </button>
-        <button onClick={openSoundTest} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl text-[15px] font-medium">
+        <button onClick={openSoundTest} className="field mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-3xl fs-15 font-medium">
           <Icon name="mic" size={18} />
           Prueba de sonido
         </button>
@@ -354,9 +368,76 @@ function swatch(theme: ThemeKey, mode: Mode): React.CSSProperties {
 }
 
 /** Tema y mascota (diseño V4): se eligen juntos, como "compañero". Cada tema trae su modo por defecto. */
+/** Nombre de la opción de letra elegida (Pequeña, Normal, Grande, Muy grande). */
+const fontLabel = (v: number) => FONT_SCALES.find((o) => o.value === normalizeFontScale(v))?.label ?? 'Normal'
+
+/**
+ * 5.10.1 (REG-M-05): «Tamaño de letra» con 4 valores fijos y vista previa en vivo (el cambio se aplica al momento a
+ * toda la app). Solo crece el texto; se combina con la letra del sistema Android y tiene tope (lib/fontScale.ts).
+ */
+function FontSizeCard({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
+  const cur = normalizeFontScale(settings.fontScale)
+  const sys = systemFontScale()
+  const info = THEME_INFO[settings.theme]
+  const cappedLandscape = fontScaleCapped(cur, sys, true)
+  return (
+    <Card>
+      <div className="txt-sub text-sm">Tamaño de letra</div>
+      <div className="field mt-2 grid grid-cols-4 gap-1 rounded-[22px] p-1" role="radiogroup" aria-label="Tamaño de letra">
+        {FONT_SCALES.map((o) => (
+          <button
+            key={o.value}
+            role="radio"
+            aria-checked={cur === o.value}
+            aria-label={o.label}
+            onClick={() => update({ fontScale: o.value })}
+            className={`flex min-h-[56px] flex-col items-center justify-center gap-0.5 rounded-[18px] px-1 py-1 ${cur === o.value ? 'btn-acc font-semibold' : 'txt-sub font-medium'}`}
+          >
+            {/* «Aa» de tamaño fijo y creciente: así se ve la diferencia aunque la letra ya sea grande. */}
+            <span aria-hidden style={{ fontSize: Math.round(15 * o.value) + 'px', lineHeight: 1.1 }}>
+              Aa
+            </span>
+            <span className="text-center fs-11 leading-tight">{o.label}</span>
+          </button>
+        ))}
+      </div>
+      {/* Vista previa: una burbuja del profe, un botón y una fila de lista, con la letra que acabas de elegir. */}
+      <div className="mt-3 flex flex-col gap-2" aria-label="Vista previa">
+        <div className="flex items-start gap-2">
+          <Mascot element={info.mascot} mood="speaking" size={36} interactive={false} />
+          <div className="tip-bubble min-w-0 flex-1 rounded-[16px] px-3 py-2 leading-snug">
+            <div className="fs-15">What did you do last weekend?</div>
+            <div className="txt-sub fs-13">¿Qué hiciste el fin de semana pasado?</div>
+          </div>
+        </div>
+        <div className="btn-acc flex min-h-[48px] items-center justify-center rounded-[24px] px-4 py-2 text-center fs-15" aria-hidden>
+          Empezar
+        </div>
+        <div className="glass flex min-h-[52px] items-center gap-3 rounded-[20px] px-3.5 py-2" aria-hidden>
+          <span className="min-w-0 flex-1">
+            <span className="block fs-15 leading-tight font-semibold">Repaso de hoy</span>
+            <span className="txt-sub block fs-12.5 leading-tight">3 frases para decir en voz alta</span>
+          </span>
+          <Icon name="chevR" size={16} />
+        </div>
+      </div>
+      {sys > 1.05 && (
+        <div className="txt-sub mt-2 fs-12 leading-snug">Tu teléfono ya tiene la letra grande: la tengo en cuenta.</div>
+      )}
+      {cappedLandscape && (
+        <div className="txt-sub mt-2 fs-12 leading-snug">
+          {/* 5.10.1 (REV-F-02): el mismo tope en vertical con poco alto (p. ej. 320×640). */}
+          En horizontal y en pantallas bajas la limito a Grande para que siempre se vea el micro.
+        </div>
+      )}
+    </Card>
+  )
+}
+
 function LookPage({ settings, update }: { settings: Settings; update: (p: Partial<Settings>) => void }) {
   return (
     <>
+      <FontSizeCard settings={settings} update={update} />
       {THEME_KEYS.map((k) => {
         const info = THEME_INFO[k]
         const sel = settings.theme === k
@@ -372,7 +453,7 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-lg font-semibold">{info.mascotName}</span>
-              <span className="txt-sub block text-[13px]">
+              <span className="txt-sub block fs-13">
                 Tema {info.name} · {info.kind}
               </span>
             </span>
@@ -386,7 +467,7 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
           </button>
         )
       })}
-      <div className="txt-sub -mt-0.5 px-2.5 text-center text-[13px] leading-snug">
+      <div className="txt-sub -mt-0.5 px-2.5 text-center fs-13 leading-snug">
         Tu progreso, tu racha y la voz de tu profe no cambian. Tócala 5 veces seguidas: cada mascota guarda un secreto.
       </div>
       <Card>
@@ -413,7 +494,7 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
               className={`flex min-h-[64px] flex-col justify-center rounded-[18px] px-3 py-2 text-left ${settings.orientation === o.key ? 'btn-acc' : 'field'}`}
               aria-pressed={settings.orientation === o.key}
             >
-              <span className="flex items-center gap-1.5 text-[14px] font-semibold">
+              <span className="flex items-center gap-1.5 fs-14 font-semibold">
                 <span
                   className="inline-block flex-none rounded-[3px]"
                   style={{
@@ -425,17 +506,17 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
                 />
                 {o.title}
               </span>
-              <span className={`text-[11.5px] leading-snug ${settings.orientation === o.key ? 'opacity-85' : 'txt-sub'}`}>{o.desc}</span>
+              <span className={`fs-11.5 leading-snug ${settings.orientation === o.key ? 'opacity-85' : 'txt-sub'}`}>{o.desc}</span>
             </button>
           ))}
         </div>
-        <div className="txt-sub mt-2 text-[12px] leading-snug">
+        <div className="txt-sub mt-2 fs-12 leading-snug">
           Útil si tu teléfono no gira solo o si una parte de la pantalla se ve mal: en horizontal, lo que quedaba en el borde izquierdo pasa arriba o abajo.
         </div>
       </Card>
       <Card>
-        <div className="text-[15px] font-semibold">Globos de {THEME_INFO[settings.theme].mascotName} en el Inicio</div>
-        <div className="txt-sub mt-0.5 text-[12px] leading-snug">
+        <div className="fs-15 font-semibold">Globos de {THEME_INFO[settings.theme].mascotName} en el Inicio</div>
+        <div className="txt-sub mt-0.5 fs-12 leading-snug">
           Solo los globos que salen junto a tu mascota en el Inicio. Las demás ayudas (como la de las notas de pronunciación) no cambian.
         </div>
         {(
@@ -444,7 +525,7 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
             ['mascotAdvice', 'Consejos de uso', 'Qué significa cada nota, dónde cambiar tus temas o tu perfil y trucos de la clase'],
           ] as const
         ).map(([key, title, desc]) => (
-          <button key={key} onClick={() => update({ [key]: !settings[key] })} className="mt-3 flex w-full items-center justify-between gap-3 text-left text-[15px]">
+          <button key={key} onClick={() => update({ [key]: !settings[key] })} className="mt-3 flex w-full items-center justify-between gap-3 text-left fs-15">
             <span>
               {title}
               <span className="txt-sub block text-xs">{desc}</span>
@@ -452,7 +533,7 @@ function LookPage({ settings, update }: { settings: Settings; update: (p: Partia
             <Switch on={settings[key]} />
           </button>
         ))}
-        <div className="txt-sub mt-3 text-[12px] leading-snug">
+        <div className="txt-sub mt-3 fs-12 leading-snug">
           Salen de uno en uno: el primero a los pocos segundos de abrir el Inicio, cada globo se queda lo que tardas en leerlo (de 9 a 20 s) y entre uno y otro pasa entre 40 s y un minuto largo. Toca a tu mascota para oír el siguiente cuando quieras.
         </div>
       </Card>
@@ -489,17 +570,17 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
               onClick={() => update({ dailyGoalMinutes: n })}
               className={`flex h-[110px] flex-col items-center justify-center gap-0.5 rounded-[26px] ${sel ? 'btn-acc' : 'glass'}`}
             >
-              <span className="text-[34px] font-semibold tracking-[-1px]">{n}</span>
-              <span className={`text-[13px] ${sel ? '' : 'txt-sub'}`}>min · ≈ {n * 3} de clase</span>
+              <span className="fs-34 font-semibold tracking-[-1px]">{n}</span>
+              <span className={`fs-13 ${sel ? '' : 'txt-sub'}`}>min · ≈ {n * 3} de clase</span>
             </button>
           )
         })}
       </div>
-      <div className="txt-sub px-2.5 text-center text-[13px] leading-snug">
+      <div className="txt-sub px-2.5 text-center fs-13 leading-snug">
         Minutos hablando tú (no de sesión). 5 minutos de voz equivalen a unos 15 de clase.
       </div>
       <Card>
-        <button onClick={toggleReminder} className="flex w-full items-center justify-between text-left text-[15px]">
+        <button onClick={toggleReminder} className="flex w-full items-center justify-between text-left fs-15">
           <span>
             Recordatorio diario
             <span className="txt-sub block text-xs">Un aviso con la lección del día, si aún no la hiciste</span>
@@ -507,7 +588,7 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
           <Switch on={settings.reminderOn} />
         </button>
         {settings.reminderOn && (
-          <label className="mt-3.5 flex items-center justify-between text-[15px]">
+          <label className="mt-3.5 flex items-center justify-between fs-15">
             <span>Hora del aviso</span>
             <input
               type="time"
@@ -518,13 +599,13 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
           </label>
         )}
         {settings.reminderOn && (
-          <button onClick={tryReminder} className="txt-acc2 mt-3 w-full rounded-full py-2.5 text-[14px] font-medium" style={{ background: 'var(--field)' }}>
+          <button onClick={tryReminder} className="txt-acc2 mt-3 w-full rounded-full py-2.5 fs-14 font-medium" style={{ background: 'var(--field)' }}>
             Probar el aviso (llega en 5 s)
           </button>
         )}
         {probe === 'sent' && <p className="txt-sub mt-2 text-center text-xs">Bloquea o sal de la app: tu mascota te avisará en unos segundos.</p>}
         {denied && (
-          <p className="mt-3 text-sm" style={{ color: '#f87171' }}>
+          <p className="mt-3 text-sm" style={{ color: 'var(--bad)' }}>
             Android no dio permiso para notificaciones, así que no te llegará el aviso. Actívalo en los ajustes del teléfono:
             Apps (en Xiaomi o POCO: Aplicaciones → Administrar aplicaciones) → Habla → Notificaciones. En Xiaomi o POCO, pon también
             Ahorro de batería → Sin restricciones, para que Android no borre los avisos.
@@ -563,10 +644,10 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
     <>
       <Card className="text-center">
         <div className="txt-sub text-sm">Nivel general</div>
-        <div className="mt-1 text-[48px] leading-none font-semibold tracking-[-1.5px]" style={{ color: 'var(--acc)' }}>
+        <div className="mt-1 fs-48 leading-none font-semibold tracking-[-1.5px]" style={{ color: 'var(--acc)' }}>
           {profile.levels.overall}
         </div>
-        <div className="txt-sub mt-2 text-[13px] leading-snug">
+        <div className="txt-sub mt-2 fs-13 leading-snug">
           {profile.calibratedAt ? `Medido en el test del ${fmt(profile.calibratedAt)}.` : 'Aún sin test.'} No se puede
           cambiar a mano: tus clases proponen tu progreso y el re-test de cada 4 semanas lo ajusta (70 % test + 30 % clases).
         </div>
@@ -579,7 +660,7 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
             <span>Habla</span>
             <b className="txt-acc2">{traj.speaking === speakingNow ? `se mantiene en ${speakingNow}` : `${speakingNow} → ${traj.speaking}`}</b>
           </div>
-          <div className="txt-sub mt-1 text-[12.5px] leading-snug">
+          <div className="txt-sub mt-1 fs-12.5 leading-snug">
             {profile.trajectory?.sessions
               ? `Según tus últimas ${profile.trajectory.sessions} clases habladas. `
               : 'Tras 5 clases habladas verás aquí lo que proponen. '}
@@ -618,15 +699,15 @@ function LevelPage({ profile, onRetest }: { profile: Profile; onRetest: () => vo
                   <span className="font-medium">{fmt(tst.date)}</span>
                   <b className="txt-acc2">{tst.levels.overall}</b>
                 </span>
-                <span className="txt-sub block text-[12.5px] leading-snug">{miniSummary(tst)}</span>
-                <span className="txt-acc2 mt-0.5 block text-[12px]">Ver el resumen completo{tst.summary ? ' y guardarlo' : ''}</span>
+                <span className="txt-sub block fs-12.5 leading-snug">{miniSummary(tst)}</span>
+                <span className="txt-acc2 mt-0.5 block fs-12">Ver el resumen completo{tst.summary ? ' y guardarlo' : ''}</span>
               </span>
               <Icon name="chevR" size={15} stroke={1.8} color="var(--sub)" />
             </button>
           ))}
         </Card>
       )}
-      <button onClick={onRetest} disabled={!canRetest} className="btn-acc h-[52px] rounded-full text-[15px]">
+      <button onClick={onRetest} disabled={!canRetest} className="btn-acc h-[52px] rounded-full fs-15">
         {canRetest ? 'Hacer el nuevo test de nivel' : `Nuevo test disponible el ${fmt(retestAt!)}`}
       </button>
     </>
@@ -650,7 +731,7 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
       return
     }
     if (!key && saved) {
-      const r = await confirmIdentity('Para ver tu clave de Gemini')
+      const r = await confirmIdentity('Para ver tu clave de Gemini', 'gemini')
       if (!r.ok) return setStatus({ kind: 'error', text: 'No se confirmó tu identidad: la clave sigue oculta.' })
       if (r.insecure && Capacitor.getPlatform() === 'android') setStatus({ kind: 'info', text: INSECURE_HINT })
       setKey(saved)
@@ -709,7 +790,7 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
     if (!k) return setStatus({ kind: 'error', text: 'Pega tu clave de Gemini.' })
     // Cambiar una clave que ya existe exige confirmar con el bloqueo del teléfono.
     if (saved && k !== saved) {
-      const r = await confirmIdentity('Para cambiar tu clave de Gemini')
+      const r = await confirmIdentity('Para cambiar tu clave de Gemini', 'gemini')
       if (!r.ok) return setStatus({ kind: 'error', text: 'No se confirmó tu identidad: la clave no se cambió.' })
     }
     // AUD-FLU-209: primero se comprueba con Google; solo si la acepta sustituye a la anterior.
@@ -746,7 +827,7 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
   return (
     <>
       <Card>
-        <div className="txt-sub text-[13px] leading-snug">
+        <div className="txt-sub fs-13 leading-snug">
           Consigue tu clave en aistudio.google.com → "Get API key". Se guarda solo en este teléfono y no se incluye en las copias de seguridad. Para verla o cambiarla te pediremos el patrón, PIN o huella del teléfono.
         </div>
         <div className="txt-sub mt-3 text-xs tracking-[1px]">GEMINI_API_KEY</div>
@@ -763,7 +844,7 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
             <Icon name="eye" size={18} />
           </button>
         </div>
-        <button onClick={save} disabled={checking} className="btn-acc mt-2.5 h-[50px] w-full rounded-[25px] text-[15px]">
+        <button onClick={save} disabled={checking} className="btn-acc mt-2.5 h-[50px] w-full rounded-[25px] fs-15">
           {checking ? 'Comprobando…' : key.trim() && key.trim() !== saved ? 'Guardar y comprobar' : saved ? 'Comprobar mi clave' : 'Guardar y comprobar'}
         </button>
         <StatusLine s={status} />
@@ -824,9 +905,25 @@ function GeminiPage({ settings, update }: { settings: Settings; update: (p: Part
   )
 }
 
-function DataPage({ onImported }: { onImported: () => void }) {
+function DataPage({
+  onImported,
+  t,
+  mascot,
+  setDialogBack,
+}: {
+  onImported: () => void
+  t: ThemeVars
+  mascot: MascotElement
+  setDialogBack: (h: (() => void) | null) => void
+}) {
   const [status, setStatus] = useState<Status>(null)
   const fileInput = useRef<HTMLInputElement>(null)
+  // 5.10.1 (REG-A4-04/MOV-2): la copia ya comprobada espera a que la mascota pregunte (antes, confirm() nativo en inglés).
+  const [pending, setPending] = useState<{ ready: ReadyBackup; what: string } | null>(null)
+  useEffect(() => {
+    setDialogBack(pending ? () => setPending(null) : null)
+    return () => setDialogBack(null)
+  }, [pending, setDialogBack])
 
   const doExport = async () => {
     setStatus({ kind: 'info', text: 'Preparando copia…' })
@@ -846,10 +943,7 @@ function DataPage({ onImported }: { onImported: () => void }) {
       const { sessions, mistakes } = ready.summary
       const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
       const what = `${count(sessions, 'sesión', 'sesiones')} y ${count(mistakes, 'error', 'errores')}`
-      if (!confirm(`La copia tiene ${what}. Esto SUSTITUYE todo tu progreso actual por el del archivo (antes guardo una copia de lo que tienes ahora). ¿Continuar?`)) return
-      const r = await applyBackup(ready)
-      setStatus({ kind: 'ok', text: `Importado: ${what} ✓${r.safetyCopy ? ` · Lo que tenías antes quedó en ${r.safetyCopy}` : ''}` })
-      onImported()
+      setPending({ ready, what })
     } catch (e) {
       setStatus({ kind: 'error', text: (e as Error).message })
     } finally {
@@ -857,17 +951,42 @@ function DataPage({ onImported }: { onImported: () => void }) {
     }
   }
 
+  const doApply = async () => {
+    if (!pending) return
+    const { ready, what } = pending
+    setPending(null)
+    try {
+      const r = await applyBackup(ready)
+      setStatus({ kind: 'ok', text: `Importado: ${what} ✓${r.safetyCopy ? ` · Lo que tenías antes quedó en ${r.safetyCopy}` : ''}` })
+      onImported()
+    } catch (e) {
+      setStatus({ kind: 'error', text: (e as Error).message })
+    }
+  }
+
   return (
     <Card>
+      {pending && (
+        <MascotPage
+          overlay={{ t }}
+          element={mascot}
+          mood="thinking"
+          title="¿Cambiar tu progreso por el de la copia?"
+          subtitle={`La copia tiene ${pending.what}. Todo lo que tienes ahora se sustituye por lo del archivo. Antes guardo una copia de lo tuyo, por si acaso.`}
+          primary={{ label: 'No, me quedo como estoy', onClick: () => setPending(null) }}
+          secondary={{ label: 'Sí, usar la copia', onClick: doApply }}
+          onBack={() => setPending(null)}
+        />
+      )}
       <div className="txt-sub text-sm leading-snug">
         Exporta tu progreso a un archivo JSON antes de reinstalar o cambiar de teléfono, e impórtalo después.
       </div>
       <div className="mt-3.5 grid grid-cols-2 gap-2">
-        <button onClick={doExport} className="field flex h-[50px] items-center justify-center gap-2 rounded-[25px] text-[15px] font-medium">
+        <button onClick={doExport} className="field flex h-[50px] items-center justify-center gap-2 rounded-[25px] fs-15 font-medium">
           <Icon name="upload" size={17} />
           Exportar
         </button>
-        <button onClick={() => fileInput.current?.click()} className="field flex h-[50px] items-center justify-center gap-2 rounded-[25px] text-[15px] font-medium">
+        <button onClick={() => fileInput.current?.click()} className="field flex h-[50px] items-center justify-center gap-2 rounded-[25px] fs-15 font-medium">
           <Icon name="download" size={17} />
           Importar
         </button>
@@ -875,7 +994,7 @@ function DataPage({ onImported }: { onImported: () => void }) {
       <input ref={fileInput} type="file" accept="application/json,.json" className="hidden" onChange={(e) => doImport(e.target.files?.[0])} />
       <StatusLine s={status} />
       {/* AUD-FLU-210: qué se queda en el teléfono y qué sale. */}
-      <div className="txt-sub mt-4 text-[13px] leading-snug">
+      <div className="txt-sub mt-4 fs-13 leading-snug">
         <b>Tu privacidad.</b> Tu progreso, tus errores, tus palabras y tus claves se guardan solo en este teléfono. Para que tu profe te
         entienda, tu voz (o lo que escribes) se envía a Google (Gemini) en cada respuesta, en el test, el repaso y el dictado, junto con tu
         nombre, tu nivel y tus intereses. Con la fonética de Azure activa, ese audio va también a Microsoft. Las copias que exportas no llevan
@@ -941,7 +1060,7 @@ function DiagPage() {
             <div className="txt-sub text-xs">correctas</div>
           </div>
           <div>
-            <div className="text-2xl font-semibold" style={{ color: fails ? '#f87171' : undefined }}>
+            <div className="text-2xl font-semibold" style={{ color: fails ? 'var(--bad)' : undefined }}>
               {fails}
             </div>
             <div className="txt-sub text-xs">fallidas</div>
@@ -973,13 +1092,13 @@ function DiagPage() {
         {log.slice(0, 40).map((e, i) => (
           <div
             key={i}
-            className="flex items-center gap-2 border-b py-1.5 text-[12.5px] tabular-nums last:border-b-0"
+            className="flex items-center gap-2 border-b py-1.5 fs-12.5 tabular-nums last:border-b-0"
             style={{ borderColor: 'var(--gb)' }}
           >
             <span className="txt-sub w-10 flex-none">{time(e.at)}</span>
             <span className="w-[72px] flex-none truncate">{taskLabel(e.what)}</span>
             <span className="txt-sub min-w-0 flex-1 truncate">{e.model.replace('gemini-', '')}</span>
-            <span className="w-[68px] flex-none text-right" style={{ color: e.status === 200 ? 'var(--acc2)' : '#f87171' }}>
+            <span className="w-[68px] flex-none text-right" style={{ color: e.status === 200 ? 'var(--acc2)' : 'var(--bad)' }}>
               {statusLabel(e)}
             </span>
             <span className="w-11 flex-none text-right">{(e.ms / 1000).toFixed(1)} s</span>

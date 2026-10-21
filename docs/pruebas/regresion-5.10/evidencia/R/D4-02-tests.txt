@@ -1,0 +1,86 @@
+✔ Una copia correcta (forma de buildBackup) se acepta con sus recuentos (127.3218ms)
+✔ REV-U3-1: copias antiguas legítimas se aceptan (v4.1 sin consultas ni tarjetas, v4.6 sin tarjetas, sin perfil) (21.675ms)
+✔ Consultas con y sin synonyms/antonyms se aceptan; con un tipo erróneo se rechazan (16.3939ms)
+✔ v5.10: la tabla de Gramática es opcional (copias antiguas sin ella) y se comprueba si viene (19.6175ms)
+✔ SEG-501 / RES-704 / E2E-601: copias dañadas se rechazan con un mensaje en español (13.0288ms)
+✔ Versión más nueva: pide actualizar la app; JSON roto: lo dice (13.0175ms)
+✔ __proto__ en una fila no contamina objetos (18.3251ms)
+✔ RES-704: repairProfile completa un perfil roto para que el arranque no falle (87.252ms)
+✔ REG-A2-03: confirmar una credencial no abre la gracia de las otras (139.5653ms)
+✔ REG-A2-03: sin bloqueo de pantalla o con la confirmación fallida no se abre ninguna gracia (10.9933ms)
+✔ REG-A2-03: cada llamada pide su credencial (2.0649ms)
+✔ REG-A2-04: solo se limpian los archivos que Habla deja para Compartir (232.4446ms)
+✔ REG-A2-04: la copia y el resumen del test se olvidan tras Compartir, y la caché se limpia al arrancar (0.741ms)
+✔ REG-M-09: horas, ordinales, miles, decimales y % se pasan a palabras (nada de «ten:zero») (113.0874ms)
+✔ REG-M-09: Gemini con cifras y Azure con palabras cuentan como lo mismo (0.9726ms)
+✔ REG-A3-19: las palabras de función van detrás de las de contenido (salvo si te las comiste) (0.4253ms)
+✔ REG-A3-19: consejo en español por sonido típico del hispanohablante (0.5165ms)
+✔ REG-A3-19: la frase del coach da el consejo en español (sin IPA si hay consejo) y no lo repite (0.574ms)
+✔ REG-A1-04: solo la idea exacta (con muletillas) cuenta como «leíste la idea»; idea + algo tuyo, no (534.9279ms)
+✔ REG-A3-15 y REG-A3-17: el profe no felicita con correcciones y no queda la instrucción huérfana has_error (198.7856ms)
+✔ REG-A3-03 y REG-A3-04: la clase de Gramática anula las 3 reglas del profe y marca el español con « » (123.8231ms)
+✔ REG-A3-04: replySegments lee lo de « » en español y el resto en inglés, sin las comillas (149.8738ms)
+[HABLA-NET] {"at":1792553472870,"what":"You are a precise, encouraging English teacher gra","model":"modelo-falso","thinking":true,"kb":2,"status":200,"ms":6}
+✔ REG-A3-16: en «Dilo tú» cualquier error impide «correct» y hay que nombrarlo (327.7487ms)
+✔ 5.8c: «Remember:\nat» se pinta y se lee «Remember: at» (y las horas no cambian) (179.4788ms)
+[HABLA-NET] {"at":1792553473198,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":0}
+✔ REG-A2-05: el profe no se rompe con tipos inesperados (modelo sin esquema) y limpia la respuesta (143.4817ms)
+[HABLA-NET] {"at":1792553473364,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":1}
+✔ REG-A2-05: correcciones que no son una lista no rompen el turno (166.0142ms)
+✔ REG-A4-03: verde y rojo con contraste ≥ 4,5:1 sobre el cristal en los 8 temas (169.2243ms)
+✔ UX-01: ningún consejo enseña el gesto del candado (desde la 5.9 el micro es «toca y toca») (21.3877ms)
+✔ UX-03/04: metas por nivel, una sola fuente para informe, consejo y nota (145.6209ms)
+✔ REG-A1-07: una copia con algo que esta app no conoce dice «versión más nueva», no «dañado» (19.6334ms)
+✔ REG-A2-05: «Pregúntale» con tipos raros no lanza y recorta párrafos (205.0083ms)
+✔ REG-A2-07: el vocabulario del tema solo admite textos (sin objetos que rompan el render) (24.0693ms)
+✔ REG-A1-07 (ronda 2): la exportación usa backupVersionFor y la copia resultante se vuelve a leer (8.4341ms)
+✔ countWords: sin muletillas ni puntuación (291.5294ms)
+✔ turnMetrics: velocidad solo con ≥ 1,5 s y ≥ 3 palabras; lo escrito no tiene velocidad (1.5391ms)
+✔ sessionMetrics: sin respuestas tuyas no hay métricas (0.3866ms)
+✔ sessionMetrics: una clase hablada con buena fluidez (0.7316ms)
+✔ sessionMetrics: errores y pausas bajan la nota; las correcciones antiguas (correction) también cuentan (0.7772ms)
+✔ sessionMetrics: solo escrito → nota por longitud y precisión, sin velocidad (0.5328ms)
+✔ scoreLevel: umbrales de la nota (0.2858ms)
+✔ FLU-900: con el recordatorio bloqueado, la mascota lo dice primero y lleva a arreglarlo (199.6339ms)
+✔ Sin bloqueo no hay aviso de notificaciones (18.7303ms)
+[HABLA-NET] {"at":1792553472232,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":5}
+✔ Pregúntale: ids de temas inventados o peligrosos se descartan; el HTML queda como texto plano (660.9746ms)
+[HABLA-NET] {"at":1792553472522,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":0}
+✔ Pregúntale: una respuesta enorme no cuela más de 4 ejemplos ni 3 temas (284.0036ms)
+[HABLA-NET] {"at":1792553472675,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":1}
+✔ REG-A2-05: Pregúntale limita también el número de párrafos de la respuesta (153.6289ms)
+[HABLA-NET] {"at":1792553472855,"what":"You are Mascota, a cheerful mascot and expert Engl","model":"modelo-falso","thinking":true,"kb":9,"status":200,"ms":0}
+✔ REG-A2-05: Pregúntale no se rompe si la IA devuelve tipos inesperados (sin esquema, p. ej. modelo de respaldo) (179.737ms)
+[HABLA-NET] {"at":1792553473139,"what":"You are a precise, encouraging English teacher gra","model":"modelo-falso","thinking":true,"kb":2,"status":200,"ms":0}
+✔ Dilo tú: un veredicto fuera de la lista cuenta como «wrong» (la IA no puede forzar «correct») (283.5725ms)
+[HABLA-NET] {"at":1792553473442,"what":"system","model":"modelo-falso","thinking":true,"kb":1,"status":200,"ms":0}
+✔ Profe: correcciones con ids o categorías maliciosas se limpian; las vacías o iguales se descartan (303.3445ms)
+✔ Profe: grammarFields no acepta claves del prototipo ni rutas como id de tema (137.0509ms)
+✔ SEG-509 (hoy): el texto del tema entra literal, con saltos de línea y encabezados falsos (159.0734ms)
+✖ SEG-509 (deseado): el tema va delimitado y sin poder abrir secciones nuevas del prompt (145.0006ms) # SEG-509 abierto: propuesta en A2-seguridad.md
+✔ P6: la idea tal cual se detecta; una respuesta propia que la continúa, no (511.4718ms)
+✔ P5: una corrección puede enlazar varios temas (máx. 3, sin repetir, solo ids que existen) (313.1138ms)
+ℹ tests 53
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 2739.4601
+
+✖ failing tests:
+
+test at tests\promptInjection.test.mjs:138:1
+✖ SEG-509 (deseado): el tema va delimitado y sin poder abrir secciones nuevas del prompt (145.0006ms) # SEG-509 abierto: propuesta en A2-seguridad.md
+  AssertionError [ERR_ASSERTION]: el texto del alumno no puede crear un encabezado
+      at TestContext.<anonymous> (file:///D:/My%20Apps/HABLA/tests/promptInjection.test.mjs:142:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

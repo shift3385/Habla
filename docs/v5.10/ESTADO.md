@@ -1,4 +1,5 @@
 # 5.10 «Gramática» — estado (fuente de verdad del avance)
+> **Actualización 2026-10-21:** la 5.10 se entregó (builds 38–40) y su corrección es la **5.10.1** (build 41): ver `docs/pruebas/regresion-5.10/`. La tabla de abajo es histórica.
 
 > Si se corta la sesión: abre Claude Code en `D:\My Apps\HABLA` y escribe
 > `Lee docs/v5.10/ESTADO.md y continúa la 5.10 (Gramática).`

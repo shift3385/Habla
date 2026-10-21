@@ -1,0 +1,82 @@
+ejercicios 667 · frases sospechosas 7
+   negatives-be-and-auxiliaries-1: Sorry, Mr. Díaz isn't in the office today.
+   wh-questions-3: What does «awkward» mean?
+   regular-irregular-verbs-1: Last summer we went to Cancún.
+   passive-present-past-7: Where were you born? — In Bogotá.
+   by-until-5: We didn't leave the café until the rain stopped.
+   reflexive-pronouns-5: Marta and Tomás text each other every night. They're in love.
+   common-false-friends-5: Ramón is very sensible: he always thinks carefully before he spends money.
+{
+ "in-case-vs-if-8": {
+  "ex": {
+   "id": "in-case-vs-if-8",
+   "type": "choice",
+   "prompt": "We're going on a long drive, so I'll buy some snacks now ____ the kids get hungry.",
+   "options": [
+    "in case",
+    "if",
+    "unless",
+    "in case of"
+   ],
+   "answer": 0,
+   "whyEs": "Los compras ya, por precaución, tengan hambre o no: «in case» (por si).",
+   "trapsEs": [
+    "",
+    "«If» = solo si: los comprarías cuando ya tuvieran hambre, no ahora.",
+    "«Unless» = a menos que: diría lo contrario.",
+    "«In case of» va con un sustantivo («in case of hunger»), no con una frase."
+   ]
+  },
+  "full": "We're going on a long drive, so I'll buy some snacks now in case the kids get hungry.",
+  "card": {
+   "promptEs": "We're going on a long drive, so I'll buy some snacks now ____ the kids get hungry.",
+   "answerEn": "We're going on a long drive, so I'll buy some snacks now in case the kids get hungry.",
+   "hintEs": "In case frente a if (por si acaso / si): Los compras ya, por precaución, tengan hambre o no: «in case» (por si)."
+  }
+ },
+ "passive-perfect-modals-3": {
+  "ex": {
+   "id": "passive-perfect-modals-3",
+   "type": "choice",
+   "prompt": "This form must ____ with a black pen.",
+   "options": [
+    "be filled in",
+    "filled in",
+    "be fill in",
+    "been filled in"
+   ],
+   "answer": 0,
+   "whyEs": "Modal + be + participio: «must be filled in» (tiene que rellenarse).",
+   "trapsEs": [
+    "",
+    "Falta «be» después del modal.",
+    "Falta el participio: «filled».",
+    "Después de un modal va «be», no «been»."
+   ]
+  },
+  "full": "This form must be filled in with a black pen.",
+  "card": {
+   "promptEs": "This form must ____ with a black pen.",
+   "answerEn": "This form must be filled in with a black pen.",
+   "hintEs": "La pasiva en tiempos perfectos y con modales: Modal + be + participio: «must be filled in» (tiene que rellenarse)."
+  }
+ },
+ "prepositions-of-time-6": {
+  "ex": {
+   "id": "prepositions-of-time-6",
+   "type": "gap",
+   "prompt": "Her train arrives ____ the afternoon, around four.",
+   "answers": [
+    "in"
+   ],
+   "whyEs": "Las partes del día van con «in the…»: in the morning, in the afternoon, in the evening."
+  },
+  "full": "Her train arrives in the afternoon, around four.",
+  "card": {
+   "promptEs": "Her train arrives ____ the afternoon, around four.",
+   "answerEn": "Her train arrives in the afternoon, around four.",
+   "hintEs": "Preposiciones de tiempo: in, on, at: Las partes del día van con «in the…»: in the morning, in the afternoon, in the evening."
+  }
+ }
+}
+checkExercise exports: checkExercise, orderMatch

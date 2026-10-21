@@ -22,6 +22,7 @@ const SPEAK_SCHEMA: JsonSchema = {
   },
 }
 
+// 5.10.1 (REG-A3-16): como en la clase (P3b), cualquier error impide «correct», también uno fuera de la estructura.
 /** «Dilo tú»: Gemini transcribe la frase y comprueba que usa bien la estructura del tema (como el Repaso). */
 export async function evaluateSpeaking(
   apiKey: string,
@@ -36,8 +37,8 @@ What must be checked: ${challenge.checkEs}
 A model answer (one of many valid ones): "${challenge.modelEn}"
 The audio is the student's spoken answer. Their own content is welcome: do NOT require the model answer.
 - "transcript": exactly what they said (keep mistakes).
-- "verdict": "correct" if it answers the challenge in correct, natural English AND uses the target structure correctly; "almost" if the structure is used but with one small error, or the answer is incomplete; "wrong" if the structure is missing or wrong, or there is no real answer.
-- "feedback_es": 1–2 short, encouraging sentences in Spanish. If not correct, say exactly what to change, with the corrected sentence in English.`
+- "verdict": "correct" only if the WHOLE answer is correct, natural English AND uses the target structure correctly; "almost" if the structure is right but there is one small error ANYWHERE in the sentence (article, -s, preposition, word order…), or the answer is incomplete; "wrong" if the structure is missing or wrong, or there is no real answer. Any error at all, even outside the target structure, means it is NOT "correct".
+- "feedback_es": 1–2 short, encouraging sentences in Spanish. Name EVERY error you found (the target structure first) and give the corrected sentence in English. Never say it is correct if you mention an error; if the verdict is "correct", do not invent corrections.`
   const raw = await withRetry(models, (model) =>
     askGemini<{ transcript: string; verdict: Verdict; feedback_es: string }>(apiKey, model, {
       system: 'You are a precise, encouraging English teacher grading short spoken answers about one grammar point.',
@@ -47,9 +48,9 @@ The audio is the student's spoken answer. Their own content is welcome: do NOT r
     }),
   )
   return {
-    transcript: (raw.transcript ?? '').trim(),
+    transcript: str(raw.transcript),
     verdict: ['correct', 'almost', 'wrong'].includes(raw.verdict) ? raw.verdict : 'wrong',
-    feedbackEs: (raw.feedback_es ?? '').trim(),
+    feedbackEs: str(raw.feedback_es),
   }
 }
 
@@ -105,10 +106,31 @@ If the question is not about English, answer kindly in one paragraph that you on
       temperature: 0.4,
     }),
   )
-  const topics = [...new Set((raw.topics ?? []).map(validTopicId).filter((x): x is string => !!x))].slice(0, 3)
+  return parseMascotAnswer(raw)
+}
+
+const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : [])
+const str = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
+
+/**
+ * 5.10.1 (REG-A2-05): respuesta de «Pregúntale» con tipos defensivos. Con el esquema Gemini respeta los tipos, pero un
+ * modelo o reintento sin esquema podía mandar 'topics' como cadena o un 'en' numérico, y salía un TypeError en inglés.
+ * Además, como mucho 4 párrafos (el prompt pide 1–4) de ~600 caracteres.
+ */
+export function parseMascotAnswer(raw: unknown): MascotAnswer {
+  const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
+  const topics = [...new Set(arr(r.topics).map(validTopicId).filter((x): x is string => !!x))].slice(0, 3)
   return {
-    answerEs: (raw.answer_es ?? []).map((p) => String(p).trim()).filter(Boolean),
-    examples: (raw.examples ?? []).filter((e) => e?.en?.trim()).map((e) => ({ en: e.en.trim(), es: (e.es ?? '').trim() })).slice(0, 4),
+    answerEs: arr(r.answer_es)
+      .map(str)
+      .filter(Boolean)
+      .map((p) => p.slice(0, 600))
+      .slice(0, 4),
+    examples: arr(r.examples)
+      .map((e) => (e && typeof e === 'object' ? (e as Record<string, unknown>) : {}))
+      .map((e) => ({ en: str(e.en), es: str(e.es) }))
+      .filter((e) => e.en)
+      .slice(0, 4),
     topics,
   }
 }

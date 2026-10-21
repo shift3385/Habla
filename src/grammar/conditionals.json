@@ -31,7 +31,7 @@
           "pattern": "If + sujeto + don't/doesn't + verbo, … · …, sujeto + don't/doesn't + verbo",
           "examples": [
             { "en": "If plants don't get water, they die.", "es": "Si las plantas no reciben agua, se mueren." },
-            { "en": "If my phone is on silent, I don't hear the alarm.", "es": "Si mi móvil está en silencio, no oigo la alarma." }
+            { "en": "If my phone is on silent, I don't hear the alarm.", "es": "Si mi celular está en silencio, no oigo la alarma." }
           ]
         },
         "question": {
@@ -45,7 +45,7 @@
       "examples": [
         { "en": "If you mix blue and yellow, you get green.", "es": "Si mezclas azul y amarillo, sale verde." },
         { "en": "If I work from home, I save two hours a day.", "es": "Si trabajo desde casa, me ahorro dos horas al día.", "noteEs": "Rutina: siempre que pasa una cosa, pasa la otra." },
-        { "en": "The phone turns off automatically if the battery is very low.", "es": "El móvil se apaga solo si la batería está muy baja.", "noteEs": "Con «if» detrás no hace falta coma." },
+        { "en": "The phone turns off automatically if the battery is very low.", "es": "El celular se apaga solo si la batería está muy baja.", "noteEs": "Con «if» detrás no hace falta coma." },
         { "en": "When I'm stressed, I eat chocolate.", "es": "Cuando estoy estresado, como chocolate.", "noteEs": "En el condicional cero, «when» e «if» significan casi lo mismo." },
         { "en": "If you don't understand a word, ask me.", "es": "Si no entiendes una palabra, pregúntame.", "noteEs": "Instrucción: imperativo en el resultado." }
       ],
@@ -107,7 +107,7 @@
         {
           "id": "zero-conditional-7",
           "type": "gap",
-          "prompt": "____ the app work if I'm offline?",
+          "prompt": "____ the app work if I'm offline? (do o does)",
           "answers": ["Does"],
           "whyEs": "Pregunta en presente simple con «the app» (it): «Does…?»."
         }
@@ -135,14 +135,14 @@
         "affirmative": {
           "pattern": "If + presente simple, sujeto + will ('ll) + verbo",
           "examples": [
-            { "en": "If you leave now, you'll catch the bus.", "es": "Si sales ahora, cogerás el autobús." },
+            { "en": "If you leave now, you'll catch the bus.", "es": "Si sales ahora, tomarás el autobús." },
             { "en": "If it's sunny tomorrow, we'll go to the beach.", "es": "Si mañana hace sol, iremos a la playa." }
           ]
         },
         "negative": {
           "pattern": "If + sujeto + don't/doesn't + verbo, … · …, sujeto + won't + verbo",
           "examples": [
-            { "en": "If you don't hurry, you'll miss the train.", "es": "Si no te das prisa, perderás el tren." },
+            { "en": "If you don't hurry, you'll miss the train.", "es": "Si no te apuras, perderás el tren." },
             { "en": "If it rains, we won't play tennis.", "es": "Si llueve, no jugaremos al tenis." }
           ]
         },
@@ -157,10 +157,10 @@
       "examples": [
         { "en": "If I finish early, I'll call you.", "es": "Si termino pronto, te llamo." },
         { "en": "If the price goes down, I'll buy a new laptop.", "es": "Si baja el precio, me compraré un portátil nuevo." },
-        { "en": "If you don't charge your phone, it won't last until tonight.", "es": "Si no cargas el móvil, no te durará hasta la noche.", "noteEs": "Negativa en las dos partes: «don't» en el «if» y «won't» en el resultado." },
+        { "en": "If you don't charge your phone, it won't last until tonight.", "es": "Si no cargas el celular, no te durará hasta la noche.", "noteEs": "Negativa en las dos partes: «don't» en el «if» y «won't» en el resultado." },
         { "en": "I'll be surprised if he arrives on time.", "es": "Me sorprenderá que llegue a tiempo.", "noteEs": "El «if» puede ir en la segunda parte, sin coma." },
         { "en": "If you see Ana, tell her I said hi.", "es": "Si ves a Ana, dile que la saludo.", "noteEs": "Resultado en imperativo." },
-        { "en": "If we take a taxi, we might get there before the rain.", "es": "Si cogemos un taxi, a lo mejor llegamos antes de la lluvia.", "noteEs": "«Might» en lugar de «will»: menos seguro." }
+        { "en": "If we take a taxi, we might get there before the rain.", "es": "Si tomamos un taxi, a lo mejor llegamos antes de la lluvia.", "noteEs": "«Might» en lugar de «will»: menos seguro." }
       ],
       "commonMistakes": [
         { "wrong": "If it will rain tomorrow, I will stay at home.", "right": "If it rains tomorrow, I'll stay at home.", "whyEs": "Después de «if» va presente, como en español («si llueve», no «si lloverá»)." },
@@ -208,6 +208,9 @@
           "type": "order",
           "words": ["late", "if", "You'll", "hurry", "be", "don't", "you"],
           "answer": "You'll be late if you don't hurry",
+          "alsoAccepted": [
+            "If you don't hurry, you'll be late"
+          ],
           "whyEs": "Resultado con «will» + if + condición negativa en presente."
         },
         {
@@ -327,6 +330,9 @@
           "type": "order",
           "words": ["enough", "buy", "if", "I'd", "house", "I", "a", "had", "money"],
           "answer": "I'd buy a house if I had enough money",
+          "alsoAccepted": [
+            "If I had enough money, I'd buy a house"
+          ],
           "whyEs": "Resultado con «I'd» (I would) + if + pasado simple."
         },
         {
@@ -434,6 +440,9 @@
           "type": "order",
           "words": ["you", "I'd", "were", "I", "a", "break", "take", "if"],
           "answer": "I'd take a break if I were you",
+          "alsoAccepted": [
+            "If I were you, I'd take a break"
+          ],
           "whyEs": "Consejo con el «if» detrás: «I'd + verbo + if I were you»."
         },
         {
@@ -459,7 +468,7 @@
           "options": ["If I were you", "If I am you", "If I would be you", "If you were me"],
           "answer": 0,
           "whyEs": "Quien aconseja se imagina en el lugar del otro: «If I were you».",
-          "trapsEs": ["", "Situación imaginaria: necesita pasado («were»).", "«Would» no va en la parte del «if».", "Al revés: tú no te imaginas que el otro es tú; «If I were you»."]
+          "trapsEs": ["", "Situación imaginaria: necesita pasado («were»).", "«Would» no va en la parte del «if».", "Es al revés: «If you were me» lo dice quien pide consejo («What would you do if you were me?»); quien aconseja dice «If I were you»."]
         },
         {
           "id": "if-i-were-you-7",
@@ -471,7 +480,7 @@
       ],
       "speaking": [
         { "promptEs": "Tu amigo no sabe si aceptar un trabajo lejos de casa. Dale un consejo con «If I were you».", "modelEn": "If I were you, I'd accept the job. It's a great opportunity.", "checkEs": "«If I were you» + «I'd» + verbo base." },
-        { "promptEs": "Un compañero quiere comprar el móvil más caro a plazos. Dile qué no harías tú en su lugar.", "modelEn": "If I were you, I wouldn't buy it now. I'd wait for the price to go down.", "checkEs": "Consejo negativo con «I wouldn't»." },
+        { "promptEs": "Un compañero quiere comprar el celular más caro a plazos. Dile qué no harías tú en su lugar.", "modelEn": "If I were you, I wouldn't buy it now. I'd wait for the price to go down.", "checkEs": "Consejo negativo con «I wouldn't»." },
         { "promptEs": "Pídele consejo a tu profe para mejorar tu inglés hablado.", "modelEn": "What would you do if you were me? I want to improve my speaking.", "checkEs": "Pregunta con «What would you do if you were me?»." }
       ],
       "classFocusEn": "Practice giving and asking for advice with 'If I were you, I'd / I wouldn't…' and 'What would you do if you were me?'. Correct 'If I am you' and 'If I would be you'."
@@ -517,7 +526,7 @@
         { "en": "If the GPS hadn't failed, we would have arrived on time.", "es": "Si no hubiera fallado el GPS, habríamos llegado a tiempo." },
         { "en": "She might have won if she had trained more.", "es": "A lo mejor habría ganado si hubiera entrenado más.", "noteEs": "«Might have»: un resultado posible, no seguro." },
         { "en": "If I'd known you were in town, I'd have called you.", "es": "Si hubiera sabido que estabas en la ciudad, te habría llamado.", "noteEs": "En el «if», 'd = had; en el resultado, 'd = would." },
-        { "en": "We could have taken the earlier train if you had been ready.", "es": "Podríamos haber cogido el tren anterior si hubieras estado listo.", "noteEs": "«Could have» = habríamos podido." },
+        { "en": "We could have taken the earlier train if you had been ready.", "es": "Podríamos haber tomado el tren anterior si hubieras estado listo.", "noteEs": "«Could have» = habríamos podido." },
         { "en": "Had I known about the traffic, I would have taken another route.", "es": "De haber sabido lo del tráfico, habría tomado otra ruta.", "noteEs": "Inversión formal: «Had I known» = «If I had known»." }
       ],
       "commonMistakes": [
@@ -573,7 +582,7 @@
           "prompt": "If I had seen the sign, I ____ there.",
           "options": ["wouldn't have parked", "didn't park", "hadn't parked", "won't park"],
           "answer": 0,
-          "whyEs": "Resultado imaginario en el pasado: «wouldn't have» + participio («no habría aparcado»).",
+          "whyEs": "Resultado imaginario en el pasado: «wouldn't have» + participio («no habría estacionado»).",
           "trapsEs": ["", "Pasado simple: el resultado necesita «would have».", "«Had + participio» es para la parte del «if», no para el resultado.", "Futuro: no encaja con una condición pasada."]
         },
         {
@@ -608,7 +617,7 @@
         "affirmative": {
           "pattern": "Resultado + as long as / provided (that) / unless + presente simple",
           "examples": [
-            { "en": "You can borrow my car as long as you bring it back by eight.", "es": "Puedes llevarte mi coche siempre que lo devuelvas antes de las ocho." },
+            { "en": "You can borrow my car as long as you bring it back by eight.", "es": "Puedes llevarte mi carro siempre que lo devuelvas antes de las ocho." },
             { "en": "We'll start at nine provided that everyone is here.", "es": "Empezaremos a las nueve siempre que estén todos." }
           ]
         },
@@ -688,6 +697,9 @@
           "type": "order",
           "words": ["provided", "We'll", "finish", "the", "on", "weather", "is", "good", "time"],
           "answer": "We'll finish on time provided the weather is good",
+          "alsoAccepted": [
+            "Provided the weather is good, we'll finish on time"
+          ],
           "whyEs": "Resultado + «provided» (siempre que) + condición en presente."
         },
         {
@@ -708,7 +720,7 @@
         }
       ],
       "speaking": [
-        { "promptEs": "Dile a un amigo en qué condiciones le prestas tu coche (usa «as long as»).", "modelEn": "You can borrow my car as long as you fill up the tank and bring it back tonight.", "checkEs": "«As long as» + presente simple." },
+        { "promptEs": "Dile a un amigo en qué condiciones le prestas tu carro (usa «as long as»).", "modelEn": "You can borrow my car as long as you fill up the tank and bring it back tonight.", "checkEs": "«As long as» + presente simple." },
         { "promptEs": "Explica algo que nunca haces a menos que sea necesario (usa «unless»).", "modelEn": "I never take taxis unless it's very late or it's raining.", "checkEs": "«Unless» + verbo afirmativo, sin doble negación." },
         { "promptEs": "Negocia con tu jefe: trabajarás el sábado con una condición (usa «provided that»).", "modelEn": "I'll work on Saturday provided that I can take Monday off.", "checkEs": "«Provided that» + presente, aunque hables del futuro." }
       ],
@@ -732,7 +744,7 @@
           "pattern": "Acción (ahora) + in case + presente simple",
           "examples": [
             { "en": "I'll take a jacket in case it gets cold.", "es": "Me llevaré una chaqueta por si hace frío." },
-            { "en": "Save the file in case the computer crashes.", "es": "Guarda el archivo por si se cuelga el ordenador." }
+            { "en": "Save the file in case the computer crashes.", "es": "Guarda el archivo por si se traba la computadora." }
           ]
         },
         "negative": {
@@ -751,7 +763,7 @@
         }
       },
       "examples": [
-        { "en": "I always carry a power bank in case my phone dies.", "es": "Siempre llevo una batería externa por si se me queda sin batería el móvil." },
+        { "en": "I always carry a power bank in case my phone dies.", "es": "Siempre llevo una batería externa por si se me queda sin batería el celular." },
         { "en": "Write down my number in case you get lost.", "es": "Apúntate mi número por si te pierdes.", "noteEs": "Lo apuntas ya. Compara: «Call me if you get lost» (llámame solo si te pierdes)." },
         { "en": "I made a copy of my passport in case I lost it.", "es": "Hice una copia del pasaporte por si lo perdía.", "noteEs": "Frase en pasado: «in case» + pasado." },
         { "en": "Take some cash, just in case.", "es": "Llévate algo de efectivo, por si acaso." },
@@ -760,7 +772,7 @@
       ],
       "commonMistakes": [
         { "wrong": "Take an umbrella in case it will rain.", "right": "Take an umbrella in case it rains.", "whyEs": "Detrás de «in case» va presente, igual que en español («por si llueve»)." },
-        { "wrong": "Take an umbrella if it rains. (queriendo decir «por si llueve»)", "right": "Take an umbrella in case it rains.", "whyEs": "«If» significaría que solo lo coges cuando ya llueve. «Por si» = «in case»." },
+        { "wrong": "Take an umbrella if it rains. (queriendo decir «por si llueve»)", "right": "Take an umbrella in case it rains.", "whyEs": "«If» significaría que solo lo agarras cuando ya llueve. «Por si» = «in case»." },
         { "wrong": "I'll call you in case I'm late. (queriendo decir «si llego tarde»)", "right": "I'll call you if I'm late.", "whyEs": "Solo llamas si llegas tarde: es una condición → «if». (En inglés estadounidense a veces se oye «in case» con ese sentido, pero «if» es lo claro.)" },
         { "wrong": "Take this, in case of you need it.", "right": "Take this, in case you need it.", "whyEs": "«In case of» va con un sustantivo («in case of rain»); con una frase, solo «in case»." }
       ],
@@ -789,7 +801,7 @@
           "type": "gap",
           "prompt": "I'll take a book ____ ____ the flight is delayed.",
           "answers": ["in / case"],
-          "whyEs": "Coges el libro ya, por si se retrasa el vuelo: «in case»."
+          "whyEs": "Agarras el libro ya, por si se retrasa el vuelo: «in case»."
         },
         {
           "id": "in-case-vs-if-4",
@@ -826,11 +838,11 @@
         {
           "id": "in-case-vs-if-8",
           "type": "choice",
-          "prompt": "«I'll buy some snacks in case the kids get hungry.» ¿Cuándo compras los snacks?",
-          "options": ["Ahora, por precaución", "Solo cuando los niños tengan hambre", "Nunca, si los niños no tienen hambre", "Después de que los niños coman"],
+          "prompt": "We're going on a long drive, so I'll buy some snacks now ____ the kids get hungry.",
+          "options": ["in case", "if", "unless", "in case of"],
           "answer": 0,
-          "whyEs": "«In case» = por si acaso: la acción ocurre ya, pase lo que pase.",
-          "trapsEs": ["", "Eso sería «if the kids get hungry».", "Con «in case» compras igualmente, tengan hambre o no.", "No: «in case» es una precaución previa."]
+          "whyEs": "Los compras ya, por precaución, tengan hambre o no: «in case» (por si).",
+          "trapsEs": ["", "«If» = solo si: los comprarías cuando ya tuvieran hambre, no ahora.", "«Unless» = a menos que: diría lo contrario.", "«In case of» va con un sustantivo («in case of hunger»), no con una frase."]
         }
       ],
       "speaking": [
@@ -880,8 +892,8 @@
         { "en": "If I had gone to bed earlier, I wouldn't be so tired now.", "es": "Si me hubiera acostado antes, ahora no estaría tan cansado." },
         { "en": "If she weren't afraid of flying, she would have come to the wedding.", "es": "Si no le diera miedo volar, habría venido a la boda.", "noteEs": "Miedo permanente (presente) → consecuencia pasada." },
         { "en": "If we had bought that house, we would be paying a huge mortgage now.", "es": "Si hubiéramos comprado esa casa, ahora estaríamos pagando una hipoteca enorme." },
-        { "en": "If I didn't have a car, I couldn't have helped you yesterday.", "es": "Si no tuviera coche, no habría podido ayudarte ayer." },
-        { "en": "If you had charged your phone, you could call a taxi now.", "es": "Si hubieras cargado el móvil, ahora podrías llamar a un taxi." }
+        { "en": "If I didn't have a car, I couldn't have helped you yesterday.", "es": "Si no tuviera carro, no habría podido ayudarte ayer." },
+        { "en": "If you had charged your phone, you could call a taxi now.", "es": "Si hubieras cargado el celular, ahora podrías llamar a un taxi." }
       ],
       "commonMistakes": [
         { "wrong": "If I would have saved money, I would be rich now.", "right": "If I had saved money, I would be rich now.", "whyEs": "«Would» nunca va en la parte del «if»: «si hubiera ahorrado» = «had saved»." },
@@ -927,6 +939,9 @@
           "type": "order",
           "words": ["now", "be", "I", "wouldn't", "here", "if", "missed", "I'd", "the", "plane"],
           "answer": "I wouldn't be here now if I'd missed the plane",
+          "alsoAccepted": [
+            "If I'd missed the plane, I wouldn't be here now"
+          ],
           "whyEs": "Efecto presente («wouldn't be here now») + condición pasada («I'd missed» = I had missed)."
         },
         {

@@ -1,0 +1,44 @@
+✔ REG-A1-01: un billete tomado antes de releaseAllMics() (segundo plano en la espera de P6) no abre el micro (137.3159ms)
+✔ REG-A1-01: un billete tomado antes de close() («Terminar» o salir de la clase) no abre el micro (21.6814ms)
+✔ REG-A1-01: con un billete vigente (o sin billete) se graba como siempre (86.2296ms)
+✔ REG-A1-01: releaseAllMics() de una vez anterior no invalida un toque posterior (61.2424ms)
+✔ REG-M-01: unos auriculares que pasaron la prueba no se vuelven a medir aunque se olvide defaultOk (30.3752ms)
+✔ REG-M-01: otros auriculares (sin probar) sí se miden; y una grabación vacía quita la confianza (470.757ms)
+✔ REG-M-01: una apertura medida con señal en modo auriculares los deja como probados (75.0873ms)
+✔ REG-M-01: al soltar un micro abierto se avisa (onMicClosed) para soltar la ruta; sin micro, no (65.7608ms)
+✔ REG-M-01 (ronda 2): en el Inicio no se prepara nada; al entrar en la clase (sin voz) se prepara, sin micro (123.0298ms)
+✔ REG-M-01 (ronda 2): mientras habla el profe la ruta está suelta (A2DP) y se prepara al acabar (107.9355ms)
+✔ REG-M-01 (ronda 2): sin tocar el micro, la ruta preparada se suelta sola (~20 s; aquí 120 ms) (251.7371ms)
+✔ REG-M-01 (ronda 2): al tocar con la ruta lista solo se consulta; se mantiene grabando y se suelta al enviar (279.4109ms)
+✔ REG-M-01 (ronda 2): si tocas antes de que esté lista, se aplica en el toque (48.4912ms)
+✔ REG-M-01 (privacidad): en segundo plano se suelta aunque la clase siga abierta, y al volver se prepara otra vez (169.9963ms)
+✔ REG-M-01: elegir otro modo suelta la ruta; tras la prueba de sonido en el Inicio, también (107.8724ms)
+✔ REV-D1-01: salir o minimizar mientras se pide la ruta no la deja puesta (setRoute tardío) (609.3197ms)
+✔ REG-M-01: dos pantallas que graban: la ruta sigue hasta que sale la última (109.7926ms)
+✔ REG-M-01: la clase suelta la ruta antes de que hable el profe (say → disarmRoute) (1.81ms)
+✔ REG-A3-04 / 5.10h / REG-A4-03: Gramática con speakSegments, aviso de fonética no al reanudar, colores del tema (3.1776ms)
+✔ REG-M-01: lifecycle suelta y reaplica la ruta en segundo plano y al volver (1.3687ms)
+✔ REG-M-02: localDiscard da el motivo de cada camino de descarte local (9.4959ms)
+✔ REG-M-02: cada motivo tiene su aviso y el registro dice «descartada: motivo …» sin el texto del usuario (11.0302ms)
+✔ REG-M-02: la clase descarta siempre por discard() (aviso persistente + registro), nunca con una línea gris suelta (1.5301ms)
+✔ REG-A4-02 / REG-A1-01: Repaso, «Dilo tú», test y clase muestran «Abriendo el micro… espera» y usan el billete (2.8903ms)
+✔ REG-A2-06: AudioRoutePlugin solo escribe el nombre de los auriculares en logcat en el APK debug (1.0067ms)
+✔ REG-M-03: frases cortas y distintas al repetir; espera de 400 ms (teléfono) y 600 ms (Bluetooth) (115.9178ms)
+✔ REG-M-03: dos palabras por encima del ruido y 800 ms de silencio → oído (8.5048ms)
+✔ REG-M-03: el ruido de fondo constante (música, ventilador) no cuenta como voz; el umbral es relativo (7.8844ms)
+✔ REG-M-03: un golpe o una tos corta (< 400 ms) no pasa la prueba; sin voz en 8 s → no te oigo (7.4079ms)
+✔ REG-M-03: 2,5 s de voz seguida ya basta (no espera al silencio); voz suficiente al acabar el tiempo, también (5.7888ms)
+✔ REG-M-03: rmsOfBytes con muestras de 8 bits (silencio = 128) (5.1908ms)
+✔ REG-M-03: «probado» por auriculares en Preferences: no se repite salvo nuevos, otro modo o fallo (5.5995ms)
+✔ REG-M-03: un micro mudo en uso real (distrustMic) avisa con el nombre de los auriculares (30.8915ms)
+✔ REG-M-03: durante la prueba, las voces de la clase de debajo no tocan la ruta; al acabar se recoloca (110.6642ms)
+✔ REG-M-03: la prueba es de un paso, sin «Sí, te oigo», con «No te oigo» siempre y «Ver la frase» tras 2 fallos (1.8319ms)
+✔ REG-M-03: no sale antes de la bienvenida y la clave, ni durante el test de nivel; no se repite si ya se probó (1.4297ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3202.9504

@@ -5,6 +5,7 @@ import type { BankQuestion } from './bank'
 import type { CalibrationRecord, Skill } from './db'
 import { overallBreakdown } from './levels'
 import type { BlockResult, GrammarAnswer } from './placement'
+import { forgetSharedFile } from './backup'
 
 // Resumen final de cada test (se guarda con el test y se puede abrir y guardar como archivo cuando quieras).
 
@@ -149,6 +150,8 @@ export async function saveSummaryFile(rec: CalibrationRecord): Promise<string | 
     await Share.share({ title: 'Resumen de mi test de Habla', files: [cached.uri] })
   } catch {
     // El usuario cerró Compartir: no pasa nada.
+  } finally {
+    forgetSharedFile(fileName) // 5.10.1 (REG-A2-04): no se queda en la caché
   }
   return saved
 }

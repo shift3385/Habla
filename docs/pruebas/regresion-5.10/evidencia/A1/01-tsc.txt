@@ -1,0 +1,3 @@
+﻿### 01-tsc
+exit=0 tiempo=32.3s
+

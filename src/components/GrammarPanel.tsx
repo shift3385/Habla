@@ -63,7 +63,7 @@ export default function GrammarPanel({
           value={query}
           onChange={(e) => onQuery(e.target.value)}
           placeholder="Buscar tema de gramática"
-          className="input h-[44px] w-full min-w-0 pr-10 pl-10 text-[14.5px]"
+          className="input h-[44px] w-full min-w-0 pr-10 pl-10 fs-14.5"
           autoCapitalize="none"
           autoCorrect="off"
           enterKeyHint="search"
@@ -72,7 +72,7 @@ export default function GrammarPanel({
         {query && (
           <button
             onClick={() => onQuery('')}
-            className="txt-sub absolute top-1/2 right-1.5 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full"
+            className="txt-sub absolute top-1/2 right-1 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full"
             aria-label="Borrar la búsqueda"
           >
             <Icon name="close" size={15} />
@@ -86,7 +86,7 @@ export default function GrammarPanel({
           <span className="btn-acc grid h-8 w-8 flex-none place-items-center rounded-full">
             <Icon name="bubble" size={15} />
           </span>
-          <span className="min-w-0 flex-1 truncate text-[13.5px]">
+          <span className="min-w-0 flex-1 truncate fs-13.5">
             <b className="font-semibold">Pregúntale a {mascotName}</b>
             <span className="txt-sub"> · «{query.trim()}»</span>
           </span>
@@ -126,11 +126,11 @@ export default function GrammarPanel({
                   <Icon name={sectionIcon(s.icon)} size={18} stroke={1.7} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] leading-tight font-semibold break-words">{s.titleEs}</span>
-                  <span className="txt-sub mt-0.5 block text-[12px] leading-tight">
+                  <span className="block fs-15 leading-tight font-semibold break-words">{s.titleEs}</span>
+                  <span className="txt-sub mt-0.5 block fs-12 leading-tight">
                     {s.titleEn} · {s.topics.length} {s.topics.length === 1 ? 'tema' : 'temas'}
                     {done > 0 && (
-                      <b className="font-semibold" style={{ color: '#22c58b' }}>
+                      <b className="font-semibold" style={{ color: 'var(--ok)' }}>
                         {' '}
                         · {done} ✓
                       </b>

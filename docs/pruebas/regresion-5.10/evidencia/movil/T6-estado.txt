@@ -1,0 +1,58 @@
+00:39:59 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:03 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:06 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:10 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:13 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:17 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:20 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:24 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:27 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:31 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:34 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:37 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:41 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:44 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:48 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:51 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:55 - mode (internal) = NORMAL     mAudioState: 10 
+00:40:58 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:02 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:05 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:09 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:12 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:16 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:19 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:23 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:26 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:30 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:33 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:36 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:40 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:43 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:47 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:50 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:54 - mode (internal) = NORMAL     mAudioState: 10 
+00:41:57 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:01 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:04 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:08 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:11 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:15 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:18 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:22 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:25 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:29 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:32 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:36 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:39 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:43 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:46 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:50 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:53 - mode (internal) = NORMAL     mAudioState: 10 
+00:42:56 - mode (internal) = NORMAL     mAudioState: 10 
+00:43:00 - mode (internal) = NORMAL     mAudioState: 10 
+00:43:03 - mode (internal) = NORMAL     mAudioState: 10 
+00:43:07 - mode (internal) = NORMAL     mAudioState: 10 
+00:43:10 - mode (internal) = NORMAL     mAudioState: 10 
+00:43:14 - mode (internal) = NORMAL     mAudioState: 10 
+00:43:18 - mode (internal) = NORMAL     mAudioState: 10 

@@ -44,6 +44,8 @@ export interface OrderExercise extends ExerciseBase {
   type: 'order'
   words: string[]
   answer: string // frase sin punto final
+  // 5.10.1 (REG-A3-06): otras colocaciones correctas con las mismas palabras («On Sundays my dad never works»).
+  alsoAccepted?: string[]
 }
 export type GrammarExercise = ChoiceExercise | GapExercise | OrderExercise
 
@@ -220,7 +222,19 @@ export function checkExercise(ex: GrammarExercise, value: number | string[]): bo
     const given = value.map(normAnswer).join(' / ')
     return ex.answers.some((a) => a.split(' / ').map(normAnswer).join(' / ') === given)
   }
-  return normAnswer(value.join(' ')) === normAnswer(ex.answer)
+  return orderMatch(ex, value) !== undefined
+}
+
+/** Texto comparable de un orden de palabras (sin comas: «If you don't hurry, you'll be late» = sin la coma). */
+const normOrder = (s: string) => normAnswer(s).replace(/,/g, '').replace(/\s+/g, ' ').trim()
+
+/**
+ * 5.10.1 (REG-A3-06): frase de `answer` o de `alsoAccepted` que coincide con las palabras en el orden elegido (o
+ * undefined si ninguna). Así una colocación también correcta («On Sundays my dad never works») no cuenta como fallo.
+ */
+export function orderMatch(ex: OrderExercise, value: string[]): string | undefined {
+  const said = normOrder(value.join(' '))
+  return [ex.answer, ...(ex.alsoAccepted ?? [])].find((a) => normOrder(a) === said)
 }
 
 /** Primera respuesta válida de un hueco, por partes (para enseñarla al fallar). */
@@ -231,16 +245,29 @@ export const gapParts = (ex: GapExercise) => ex.answers[0].split(' / ')
  * los huecos rellenos y sin las pistas entre paréntesis («How long ____ you ____ (learn) English?» → «How long have you
  * been learning English?»). Un «choice» sin hueco (p. ej. «¿Cuál es correcta?») da la opción correcta.
  */
-export function fullSentence(ex: GrammarExercise): string {
+export function fullSentence(ex: GrammarExercise, orderAnswer?: string): string {
   // «order» va sin punto final (FORMATO): se le pone «?» si empieza como una pregunta, para que la voz entone bien.
-  if (ex.type === 'order') return /[.!?]$/.test(ex.answer) ? ex.answer : ex.answer + (QUESTION_START.test(ex.answer) ? '?' : '.')
+  // `orderAnswer`: la colocación que eligió el alumno si era una de `alsoAccepted` (5.10.1, REG-A3-06).
+  if (ex.type === 'order') {
+    const a = orderAnswer ?? ex.answer
+    return /[.!?]$/.test(a) ? a : a + (QUESTION_START.test(a) ? '?' : '.')
+  }
   const parts = ex.type === 'choice' ? [ex.options[ex.answer]] : gapParts(ex)
   if (!gapCount(ex.prompt)) return ex.type === 'choice' ? ex.options[ex.answer] : ex.prompt
+  // 5.10.1 (REG-A3-01): enunciado-pregunta («… means: ____», «Which sentence…? ____»): la frase es la opción correcta.
+  if (ex.type === 'choice' && /[:?]\s*_{3,}\s*$/.test(ex.prompt)) return ex.options[ex.answer]
   // Con un solo texto y dos huecos (opción «Have / run»), se reparte por « / ».
   const fill = parts.length === 1 && gapCount(ex.prompt) > 1 ? parts[0].split(' / ') : parts
   let k = 0
+  // 5.10.1 (REG-A3-01, propuesta de A3): antes solo se quitaba la pista pegada al hueco y la frase que se ve con ▶, se
+  // lee y se guarda en el Repaso arrastraba «(can, negativa)», ««Deberías dormir más.» →» o «I 'll». En el catálogo
+  // todos los paréntesis que no siguen a un hueco están al final del enunciado: quitar el último no borra inglés.
   return ex.prompt
+    .replace(/^«[^»]*»\s*→\s*/, '') // «Deberías dormir más.» → … / «I'm hungry.» → …
+    .replace(/^[^→«]*[.?!]\s*→\s*/, '') // «If you don't practice, you won't improve. → …»
     .replace(/_{3,}(\s*\([^)]*\))?/g, () => fill[Math.min(k++, fill.length - 1)] ?? '')
+    .replace(/\s*\([^)]*\)\s*$/, '') // pista al final: «(can, negativa)», «(de ella)», «(make o do)»
+    .replace(/(\w)\s+'(ll|d|m|re|ve|s)\b/g, "$1'$2") // opción «'ll» en «I ____ get it» → «I'll get it»
     .replace(/\s+([.,!?])/g, '$1')
     .replace(/\s+/g, ' ')
     .trim()
@@ -251,6 +278,47 @@ export function fullSentence(ex: GrammarExercise): string {
 export function cardPrompt(ex: GrammarExercise): string {
   if (ex.type === 'order') return ex.words.join(' · ')
   return ex.prompt
+}
+
+/** Textos de la tarjeta del Repaso de un ejercicio (los mismos que guarda `recordAnswer` en grammarProgress.ts). */
+export interface GrammarCardText {
+  promptEs: string
+  answerEn: string
+  hintEs: string
+}
+
+export const grammarCardText = (topic: GrammarTopic, ex: GrammarExercise): GrammarCardText => ({
+  promptEs: cardPrompt(ex).trim(), // addGrammarCard (srs.ts) guarda los dos recortados
+  answerEn: fullSentence(ex).trim(),
+  hintEs: `${topic.nameEs}: ${ex.whyEs}`,
+})
+
+// Índice sourceId → ejercicio del catálogo actual (se rehace si cambia el catálogo, p. ej. en las pruebas).
+let cardIndex: { of: Catalog; map: Map<number, { topic: GrammarTopic; ex: GrammarExercise }> } | null = null
+function exerciseByCardId(sourceId: number) {
+  if (cardIndex?.of !== catalog) {
+    const map = new Map<number, { topic: GrammarTopic; ex: GrammarExercise }>()
+    for (const topic of catalog.topics) for (const ex of topic.exercises) map.set(exerciseCardId(ex.id), { topic, ex })
+    cardIndex = { of: catalog, map }
+  }
+  return cardIndex.map.get(sourceId)
+}
+
+/**
+ * 5.10.1 (REG-A3-01, REG-A3-02, REG-M-08): las tarjetas de Gramática creadas con la 5.10 guardaron la frase de entonces
+ * («… (can, negativa)», la respuesta en español de in-case-vs-if-8, «gets in in the afternoon»). Devuelve los campos
+ * que hay que actualizar para que la tarjeta enseñe lo que dice HOY el ejercicio (por su `sourceId`), o null si ya está
+ * bien, no es de Gramática o el ejercicio ya no existe. Idempotente: con la tarjeta ya corregida devuelve null.
+ * La aplica `syncCards()` (srs.ts) al abrir el Inicio y el Repaso; el progreso FSRS de la tarjeta no se toca.
+ */
+export function grammarCardPatch(card: { source: string; sourceId: number } & GrammarCardText): Partial<GrammarCardText> | null {
+  if (card.source !== 'grammar') return null
+  const hit = exerciseByCardId(card.sourceId)
+  if (!hit) return null
+  const now = grammarCardText(hit.topic, hit.ex)
+  const patch: Partial<GrammarCardText> = {}
+  for (const k of ['promptEs', 'answerEn', 'hintEs'] as const) if (card[k] !== now[k]) patch[k] = now[k]
+  return Object.keys(patch).length ? patch : null
 }
 
 // ---------------------------------------------------------------------------
@@ -391,6 +459,20 @@ export const validTopicId = (id: unknown): string | undefined => (typeof id === 
  * Ahora es una clase DIRIGIDA a la regla: explica brevemente, pide traducir («¿cómo dirías…?»), completar o corregir
  * frases, transformar (afirmativa → negativa → pregunta) y solo después preguntas abiertas que obliguen a usarla.
  */
+/**
+ * 5.10.1 (REG-A3-03, REG-A3-04; D4, parte de grammarBrief): reglas del prompt base del profe (teacher.ts) que la clase
+ * dirigida anula de forma explícita. Antes solo decía «OVERRIDES the chatting style» y Gemini alternaba: unas veces
+ * explicaba y otras no, pedía «más detalles» a una traducción de 6 palabras o acababa con una pregunta abierta.
+ * El español va siempre entre « »: la app lo lee con la voz española (teacher.ts › replySegments).
+ */
+const GRAMMAR_OVERRIDES = `Rules replaced in this lesson (they override the general instructions above):
+- Do NOT end with an open question that invites a long answer: end with the NEXT TASK, which may need only a short answer.
+- Do NOT ask for more details when a task answer is short: a short correct answer is a complete answer.
+- You MAY explain the correction inside "reply", in ONE short sentence about THIS rule (the other errors stay only in "corrections").
+- Put every Spanish word or sentence inside « » (e.g. How would you say in English: «Ayer no fui al trabajo»?), never Spanish without them, and never use « » for English (quote English with "…"): the app reads what is inside « » with a Spanish voice.
+- Spanish sentences for translation: short (max ~10 words), everyday, with vocabulary at the student's speaking level; never reuse an example sentence you already gave.
+- If the student fails the same point twice in a row, make the next task easier (give the first words, two options to choose from, or a model to repeat), then go back up.`
+
 export function grammarBrief(t: GrammarTopic): string {
   const forms = (['affirmative', 'negative', 'question'] as const)
     .map((k) => (t.forms[k] ? `${k}: ${t.forms[k]!.pattern} (e.g. "${t.forms[k]!.examples[0]?.en ?? ''}")` : ''))
@@ -413,10 +495,11 @@ Typical mistakes of Spanish speakers to target: ${traps || '(none listed)'}.
 
 How to teach (vary the activity every 1–2 turns, one task per turn, short and clear):
 1. Start: in 1–2 short sentences, remind the key rule with one example, then give the FIRST task.
-2. Tasks to rotate: (a) "How would you say in English: «…»?" (give a short Spanish sentence that needs the rule); (b) "What's missing in this sentence? …" or "Complete: …" (a sentence with a gap); (c) "Is this correct? «…»" (one of the typical mistakes); (d) "Now say it in the negative / as a question"; (e) only after several correct answers, a short personal question that forces the structure (e.g. "Tell me two things you … yesterday").
+2. Tasks to rotate: (a) "How would you say in English: «…»?" (give a short Spanish sentence that needs the rule); (b) "What's missing in this sentence? …" or "Complete: …" (a sentence with a gap); (c) "Is this correct? "…"" (one of the typical mistakes, in English between straight quotes); (d) "Now say it in the negative / as a question"; (e) only after several correct answers, a short personal question that forces the structure (e.g. "Tell me two things you … yesterday").
 3. After each answer: say clearly if the structure was right or wrong; if wrong, explain WHY with the rule in one short sentence (you may add a few Spanish words for the key point) and give the correct sentence, then a similar new task. If right, praise briefly and make the next task a bit harder.
 4. Corrections: the "corrections" list must still contain EVERY real error in the answer (word order, extra or missing words, wrong verb, mixed-up sentences…), exactly as in a normal class, not only the ones about THIS rule; put the errors about this rule first. The lesson thread stays on THIS rule: do not switch the next task to the other mistakes.
 5. Never call an answer "correct", "perfect" or "spot on" if it has any error. If the student gives two versions (e.g. "Maybe can I swim or I can swim"), say which one is right and why the other is wrong, and correct the wrong one too. If the answer is confused or mixed up, say so kindly and give the clean sentence before the next task.
+${GRAMMAR_OVERRIDES}
 Keep each reply short (it is read aloud). Always end with the next task or question.`
 }
 

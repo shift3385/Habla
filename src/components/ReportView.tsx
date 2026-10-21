@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import type { Correction, SessionMetrics, SessionReport, Topic } from '../lib/db'
+import { speakingGoal } from '../lib/fluency'
 import { topicsOfCorrections } from '../lib/grammar'
 import { openGrammarTopic } from '../lib/grammarLink'
+import { getProfile } from '../lib/profile'
 import { toggleSpeak } from '../lib/tts'
 import { Icon, type IconName } from '../ui/icons'
 import CorrectionView from './CorrectionView'
@@ -15,6 +18,8 @@ interface Props {
   onRetryReport?: () => void
   corrections: Correction[]
   topic?: Topic
+  /** Nivel al hablar del alumno (MCER) para las metas; si no se pasa, se lee del perfil. */
+  speakingLevel?: string
   ttsRate: number
   voiceIndex: number | null
 }
@@ -27,6 +32,20 @@ function formatSeconds(s: number) {
 export default function ReportView(p: Props) {
   const grammarTopics = topicsOfCorrections(p.corrections)
   const m = p.metrics
+  // 5.10.1 (UX-03/04): metas de TU nivel al hablar (antes, «meta B2: 110+» para todos).
+  const [profileLevel, setProfileLevel] = useState<string | undefined>()
+  useEffect(() => {
+    if (p.speakingLevel) return
+    let alive = true
+    getProfile()
+      .then((pr) => alive && setProfileLevel(pr.levels.speaking))
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [p.speakingLevel])
+  const level = p.speakingLevel ?? profileLevel
+  const goal = speakingGoal(level)
   return (
     <div className="flex flex-col gap-3">
       <div className="glass flex flex-col items-center gap-2 rounded-[28px] px-4 pt-5 pb-4">
@@ -36,8 +55,8 @@ export default function ReportView(p: Props) {
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-center">
-        <Stat value={m.spokenTurns === 0 ? '—' : m.wpm} label="palabras/min" hint="meta B2: 110+" />
-        <Stat value={m.avgWords} label="palabras/resp." hint="meta: 30+" />
+        <Stat value={m.spokenTurns === 0 ? '—' : m.wpm} label="palabras/min" hint={level ? `meta ${goal.level}: ${goal.wpm}+` : undefined} />
+        <Stat value={m.avgWords} label="palabras/resp." hint={level ? `meta ${goal.level}: ${goal.words}+` : undefined} />
         <Stat value={m.pauses} label="pausas > 1 s" hint={`${m.pausesPerMin.toLocaleString('es')}/min`} />
         <Stat value={m.words} label="palabras" />
         <Stat value={formatSeconds(m.speechSeconds)} label="hablando" />
@@ -49,7 +68,7 @@ export default function ReportView(p: Props) {
       )}
       {p.reportError && (
         <div className="glass rounded-[24px] p-4 text-sm">
-          <span style={{ color: '#f87171' }}>{p.reportError}</span>
+          <span style={{ color: 'var(--bad)' }}>{p.reportError}</span>
           {p.onRetryReport && (
             <button onClick={p.onRetryReport} className="field mt-2.5 h-11 w-full rounded-[22px] font-medium">
               Reintentar informe
@@ -101,7 +120,7 @@ export default function ReportView(p: Props) {
           {/* v5.10 (D3): los temas de las correcciones de esta clase, para repasarlos con explicación y ejercicios. */}
           <div className="flex flex-wrap gap-2">
             {grammarTopics.map((t) => (
-              <button key={t.id} onClick={() => openGrammarTopic(t.id)} className="field flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px]">
+              <button key={t.id} onClick={() => openGrammarTopic(t.id)} className="field flex items-center gap-1.5 rounded-full px-3 py-1.5 fs-13">
                 <span aria-hidden>📘</span> {t.nameEs}
               </button>
             ))}
@@ -127,8 +146,8 @@ export function Stat({ value, label, hint }: { value: string | number; label: st
   return (
     <div className="glass rounded-[20px] px-2 py-3">
       <div className="text-xl font-semibold tabular-nums">{value}</div>
-      <div className="txt-sub text-[11px] leading-tight">{label}</div>
-      {hint && <div className="txt-sub mt-0.5 text-[10px] opacity-80">{hint}</div>}
+      <div className="txt-sub fs-11 leading-tight">{label}</div>
+      {hint && <div className="txt-sub mt-0.5 fs-10 opacity-80">{hint}</div>}
     </div>
   )
 }
@@ -136,7 +155,7 @@ export function Stat({ value, label, hint }: { value: string | number; label: st
 /** Tarjeta con título e icono (también la usa el resumen del Repaso, v5.10). */
 export function Card({ title, icon, children }: { title: string; icon: IconName; children: React.ReactNode }) {
   return (
-    <div className="glass rounded-[24px] p-4 text-[15px] leading-snug">
+    <div className="glass rounded-[24px] p-4 fs-15 leading-snug">
       <h3 className="mb-2 flex items-center gap-2 font-semibold">
         <span className="txt-acc2">
           <Icon name={icon} size={17} />

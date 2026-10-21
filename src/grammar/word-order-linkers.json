@@ -114,14 +114,14 @@
         { "en": "We often order pizza on Friday nights.", "es": "Solemos pedir pizza los viernes por la noche." },
         { "en": "I've always wanted to visit Japan.", "es": "Siempre he querido ir a Japón.", "noteEs": "Con un auxiliar (have), el adverbio va detrás de él." },
         { "en": "She hardly ever checks her messages.", "es": "Ella casi nunca mira sus mensajes." },
-        { "en": "I check my phone about fifty times a day.", "es": "Miro el móvil unas cincuenta veces al día.", "noteEs": "Las expresiones de frecuencia van al final." },
+        { "en": "I check my phone about fifty times a day.", "es": "Miro el celular unas cincuenta veces al día.", "noteEs": "Las expresiones de frecuencia van al final." },
         { "en": "The trains here are never on time.", "es": "Aquí los trenes nunca llegan puntuales." }
       ],
       "commonMistakes": [
         { "wrong": "I go always to the gym after work.", "right": "I always go to the gym after work.", "whyEs": "El adverbio de frecuencia va delante del verbo principal, no detrás como en «voy siempre»." },
         { "wrong": "She always is busy.", "right": "She is always busy.", "whyEs": "Con el verbo «be», el adverbio va detrás." },
         { "wrong": "I don't never drink soda.", "right": "I never drink soda.", "whyEs": "«Never» ya es negativo; en inglés no se usan dos negaciones como en «no bebo nunca»." },
-        { "wrong": "I visit my parents one time per month.", "right": "I visit my parents once a month.", "whyEs": "Se dice once (una vez), twice (dos veces), three times… y «a month / a week», no «per»." }
+        { "wrong": "I visit my parents one time per month.", "right": "I visit my parents once a month.", "whyEs": "Lo natural es once (una vez), twice (dos veces), three times… + «a month / a week». «Per month» suena formal y «one time» es coloquial." }
       ],
       "related": ["present-simple", "basic-word-order", "negative-words-double-negatives"],
       "exercises": [
@@ -177,7 +177,7 @@
         }
       },
       "examples": [
-        { "en": "My new apartment is bigger than my old one.", "es": "Mi piso nuevo es más grande que el anterior." },
+        { "en": "My new apartment is bigger than my old one.", "es": "Mi departamento nuevo es más grande que el anterior." },
         { "en": "This is the best coffee in town.", "es": "Es el mejor café de la ciudad.", "noteEs": "Superlativo + «in» con un lugar." },
         { "en": "The second exam was easier than the first.", "es": "El segundo examen fue más fácil que el primero." },
         { "en": "It was the worst flight of my life.", "es": "Fue el peor vuelo de mi vida.", "noteEs": "Con un periodo (my life, the year) se usa «of»." },
@@ -223,7 +223,7 @@
         "affirmative": {
           "pattern": "a / an + opinión + tamaño + edad + color + origen + material + nombre",
           "examples": [
-            { "en": "She drives a small red car.", "es": "Ella tiene un coche rojo pequeño." },
+            { "en": "She drives a small red car.", "es": "Ella tiene un carro rojo pequeño." },
             { "en": "We stayed in a lovely old farmhouse.", "es": "Nos quedamos en una casa de campo antigua preciosa." }
           ]
         },
@@ -264,11 +264,11 @@
         { "id": "order-of-adjectives-5", "type": "order", "words": ["old", "bought", "an", "I", "wooden", "table"], "answer": "I bought an old wooden table", "whyEs": "Edad (old) → material (wooden) + nombre." },
         { "id": "order-of-adjectives-6", "type": "gap", "prompt": "They live in a ____ house near the river. (old, beautiful)", "answers": ["beautiful old"], "whyEs": "La opinión (beautiful) va antes que la edad (old)." },
         { "id": "order-of-adjectives-7", "type": "gap", "prompt": "She gave me a ____ scarf for my birthday. (silk, red)", "answers": ["red silk"], "whyEs": "El color (red) va antes que el material (silk)." },
-        { "id": "order-of-adjectives-8", "type": "choice", "prompt": "Elige la frase correcta: «unas gafas de sol negras y caras»", "options": ["some expensive black sunglasses", "some black expensive sunglasses", "some sunglasses black expensive", "some expensives black sunglasses"], "answer": 0, "whyEs": "Opinión (expensive) → color (black) + nombre.", "trapsEs": ["", "La opinión va antes que el color.", "Los adjetivos van delante del nombre.", "Los adjetivos no tienen plural."] }
+        { "id": "order-of-adjectives-8", "type": "choice", "prompt": "Elige la frase correcta: «unos lentes de sol negros y caros»", "options": ["some expensive black sunglasses", "some black expensive sunglasses", "some sunglasses black expensive", "some expensives black sunglasses"], "answer": 0, "whyEs": "Opinión (expensive) → color (black) + nombre.", "trapsEs": ["", "La opinión va antes que el color.", "Los adjetivos van delante del nombre.", "Los adjetivos no tienen plural."] }
       ],
       "speaking": [
         { "promptEs": "Describe a tu profe algo que llevas puesto o que tienes cerca, con dos o tres adjetivos.", "modelEn": "I'm wearing a comfortable old gray sweater.", "checkEs": "Opinión → edad → color, todo delante del nombre y sin plural." },
-        { "promptEs": "Describe la casa o el piso donde te gustaría vivir.", "modelEn": "I'd like to live in a big modern apartment with a small green garden.", "checkEs": "Adjetivos delante del nombre, en orden: tamaño → edad → color." }
+        { "promptEs": "Describe la casa o el departamento donde te gustaría vivir.", "modelEn": "I'd like to live in a big modern apartment with a small green garden.", "checkEs": "Adjetivos delante del nombre, en orden: tamaño → edad → color." }
       ],
       "classFocusEn": "Practice the order of adjectives before a noun (opinion, size, age, shape, color, origin, material, purpose), with no plural adjectives. Correct 'a jacket black', 'greens bottles' and 'a leather black bag'."
     },
@@ -312,7 +312,7 @@
         { "en": "Call me as soon as possible.", "es": "Llámame lo antes posible.", "noteEs": "Expresión fija: as soon as possible (ASAP)." },
         { "en": "The bigger the city, the more expensive the rent.", "es": "Cuanto más grande es la ciudad, más caro es el alquiler." },
         { "en": "My English isn't as good as I want, but it's improving.", "es": "Mi inglés no es tan bueno como quiero, pero va mejorando." },
-        { "en": "This phone has twice as much memory as my old one.", "es": "Este móvil tiene el doble de memoria que el que tenía." },
+        { "en": "This phone has twice as much memory as my old one.", "es": "Este celular tiene el doble de memoria que el que tenía." },
         { "en": "The less you sleep, the worse you feel.", "es": "Cuanto menos duermes, peor te sientes." }
       ],
       "commonMistakes": [
@@ -378,7 +378,7 @@
       "examples": [
         { "en": "I lost the headphones you gave me.", "es": "He perdido los auriculares que me regalaste.", "noteEs": "«that» omitido: es el objeto de «gave»." },
         { "en": "I have a colleague whose wife is from Brazil.", "es": "Tengo un compañero cuya mujer es de Brasil." },
-        { "en": "My phone, which is only a year old, has stopped working.", "es": "Mi móvil, que solo tiene un año, ha dejado de funcionar.", "noteEs": "Entre comas: «which», nunca «that»." },
+        { "en": "My phone, which is only a year old, has stopped working.", "es": "Mi celular, que solo tiene un año, ha dejado de funcionar.", "noteEs": "Entre comas: «which», nunca «that»." },
         { "en": "We need someone who speaks Portuguese.", "es": "Necesitamos a alguien que hable portugués." },
         { "en": "This is the neighborhood where I grew up.", "es": "Este es el barrio donde crecí." }
       ],
@@ -467,7 +467,7 @@
         { "id": "linking-words-8", "type": "gap", "prompt": "We stayed home because ____ the storm.", "answers": ["of"], "whyEs": "Delante de un nombre: «because of»." }
       ],
       "speaking": [
-        { "promptEs": "Cuéntale a tu profe algo que hiciste aunque no te apetecía.", "modelEn": "Although I was tired, I went to the gym yesterday.", "checkEs": "«Although» + frase, sin «but» en la otra parte." },
+        { "promptEs": "Cuéntale a tu profe algo que hiciste aunque no tenías ganas.", "modelEn": "Although I was tired, I went to the gym yesterday.", "checkEs": "«Although» + frase, sin «but» en la otra parte." },
         { "promptEs": "Explica por qué llegaste tarde alguna vez y qué pasó después.", "modelEn": "I was late because of the traffic, so I missed the start of the meeting.", "checkEs": "«because of» + nombre y «so» para la consecuencia." },
         { "promptEs": "Di algo bueno y algo malo de tu ciudad usando «however».", "modelEn": "My city has great food. However, the traffic is terrible.", "checkEs": "«However» al principio de la segunda frase, con coma." }
       ],

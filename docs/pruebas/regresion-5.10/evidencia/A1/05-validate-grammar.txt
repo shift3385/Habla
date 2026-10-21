@@ -1,0 +1,6 @@
+﻿### 05-validate-grammar
+exit=0 tiempo=0.7s
+
+12 archivos · 12 secciones · 90 temas · 667 ejercicios
+OK (0 avisos)
+

@@ -289,6 +289,18 @@ export function validateSections(entries, { bank = [], icons = null } = {}) {
           if (a !== w) err(xw, `"answer" no usa exactamente las palabras de "words"`)
           if (x.words.join(' ') === x.answer.trim()) warn(xw, '"words" ya está en el orden correcto')
           texts.push([xw, 'la frase ordenada', x.answer])
+          // 5.10.1 (REG-A3-06): otras colocaciones válidas, con exactamente las mismas palabras (sin contar comas).
+          if (x.alsoAccepted !== undefined) {
+            const bag = (s) => s.toLowerCase().replace(/,/g, '').trim().split(/\s+/).sort().join(' ')
+            if (!Array.isArray(x.alsoAccepted) || !x.alsoAccepted.length || !x.alsoAccepted.every(isStr)) err(xw, '"alsoAccepted" debe ser una lista de frases')
+            else
+              for (const alt of x.alsoAccepted) {
+                if (bag(alt) !== bag(x.answer)) err(xw, `"alsoAccepted" «${alt}» no usa exactamente las palabras de "words"`)
+                else if (alt.toLowerCase().replace(/,/g, '').trim() === x.answer.toLowerCase().replace(/,/g, '').trim()) err(xw, `"alsoAccepted" «${alt}» es igual que "answer"`)
+                if (/\.\s*$/.test(alt)) err(xw, `"alsoAccepted" «${alt}» sin punto final`)
+                texts.push([xw, 'la frase ordenada alternativa', alt])
+              }
+          }
         } else err(xw, `tipo desconocido: ${x.type} (choice, gap u order)`)
       }
     }

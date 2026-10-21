@@ -21,7 +21,7 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
       </button>
       <div className="glass rounded-[24px] p-4 text-center">
         <div className="txt-sub text-sm">Test del {date}</div>
-        <div className="text-[44px] leading-none font-semibold tracking-[-1.5px]" style={{ color: 'var(--acc)' }}>
+        <div className="fs-44 leading-none font-semibold tracking-[-1.5px]" style={{ color: 'var(--acc)' }}>
           {record.levels.overall}
         </div>
         <div className="mt-3 rounded-[16px] px-1 py-2.5" style={{ background: 'var(--field)' }}>
@@ -30,7 +30,7 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
       </div>
       {s ? (
         <>
-          <div className="glass rounded-[24px] p-4 text-[14px]">
+          <div className="glass rounded-[24px] p-4 fs-14">
             <div className="mb-1 font-semibold">Cómo te fue</div>
             {s.sections.map((x) => (
               <div key={x.title} className="flex items-center justify-between gap-2 py-1">
@@ -46,7 +46,7 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
             </div>
           </div>
           {s.speaking.criteria && (
-            <div className="glass rounded-[24px] p-4 text-[14px]">
+            <div className="glass rounded-[24px] p-4 fs-14">
               <div className="mb-1 font-semibold">Tu habla</div>
               {Object.entries(s.speaking.criteria).map(([k, v]) => (
                 <div key={k} className="py-1">
@@ -54,19 +54,19 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
                     <span>{CRIT_ES[k] ?? k}</span>
                     <b className="txt-acc2">{v}</b>
                   </div>
-                  {s.speaking.reasons?.[k] && <div className="txt-sub text-[12.5px] leading-snug">{s.speaking.reasons[k]}</div>}
+                  {s.speaking.reasons?.[k] && <div className="txt-sub fs-12.5 leading-snug">{s.speaking.reasons[k]}</div>}
                 </div>
               ))}
             </div>
           )}
         </>
       ) : (
-        <div className="glass txt-sub rounded-[24px] p-4 text-[13.5px] leading-snug">
+        <div className="glass txt-sub rounded-[24px] p-4 fs-13.5 leading-snug">
           Este test es de antes de la versión 5.7: solo se guardaron los niveles y lo que se dijo de tu habla. Los próximos tests guardan el resumen completo.
         </div>
       )}
       {(record.strengthsEs?.length ?? 0) > 0 && (
-        <div className="glass rounded-[24px] p-4 text-[14px]">
+        <div className="glass rounded-[24px] p-4 fs-14">
           <div className="mb-1 font-semibold">Lo que haces bien</div>
           <ul className="list-disc space-y-1 pl-5">
             {record.strengthsEs.map((x, i) => (
@@ -76,7 +76,7 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
         </div>
       )}
       {(record.weaknessesEs?.length ?? 0) > 0 && (
-        <div className="glass rounded-[24px] p-4 text-[14px]">
+        <div className="glass rounded-[24px] p-4 fs-14">
           <div className="mb-1 font-semibold">Qué trabajar</div>
           <ul className="list-disc space-y-1 pl-5">
             {record.weaknessesEs.map((x, i) => (
@@ -88,11 +88,11 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
       {s?.sections.map((x) => <Section key={x.title} sec={x} />)}
       <button
         onClick={async () => setSaved((await saveSummaryFile(record)) ?? 'Compartido')}
-        className="btn-acc flex h-[52px] items-center justify-center gap-2 rounded-full text-[15px]"
+        className="btn-acc flex h-[52px] items-center justify-center gap-2 rounded-full fs-15"
       >
         <Icon name="download" size={18} /> Guardar el resumen
       </button>
-      {saved && <div className="txt-sub text-center text-[13px]">Guardado: {saved}</div>}
+      {saved && <div className="txt-sub text-center fs-13">Guardado: {saved}</div>}
     </div>
   )
 }
@@ -101,7 +101,7 @@ export default function TestSummaryView({ record, onBack }: { record: Calibratio
 function Section({ sec }: { sec: SummarySection }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="glass rounded-[24px] px-4 py-3 text-[14px]">
+    <div className="glass rounded-[24px] px-4 py-3 fs-14">
       <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between gap-2 text-left">
         <span className="min-w-0 font-semibold">{sec.title}</span>
         <span className="txt-sub flex flex-none items-center gap-1 tabular-nums">

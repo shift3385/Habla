@@ -4,7 +4,8 @@ import type { Grade } from 'ts-fsrs'
 import PrepareScreen from '../components/PrepareScreen'
 import ReviewSummaryView from '../components/ReviewSummaryView'
 import TalkButton, { type Phase } from '../components/TalkButton'
-import { MIN_SEND_MS } from '../components/talkGesture'
+import { DISCARD_HINTS, logDiscard, MIN_SEND_MS } from '../components/talkGesture'
+import { holdRoute } from '../lib/audioRoute'
 import type { SrsCard } from '../lib/db'
 import { friendlyError } from '../lib/errors'
 import MascotPage from '../components/MascotPage'
@@ -34,10 +35,13 @@ import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import { THEME_INFO, type ThemeVars, teacherName } from '../ui/theme'
 
-type Step = 'ask' | 'recording' | 'checking' | 'result'
+type Step = 'ask' | 'opening' | 'recording' | 'checking' | 'result'
 
-/** Estado del botón de hablar (el mismo de la clase) en cada paso de la tarjeta. */
-const PHASE: Record<Exclude<Step, 'result'>, Phase> = { ask: 'idle', recording: 'recording', checking: 'thinking' }
+/**
+ * Estado del botón de hablar (el mismo de la clase) en cada paso de la tarjeta. 5.10.1 (REG-A4-02, P7): mientras abre
+ * el micro, el botón dice «Abriendo el micro… espera» y no acepta toques, como en la clase.
+ */
+const PHASE: Record<Exclude<Step, 'result'>, Phase> = { ask: 'idle', opening: 'opening', recording: 'recording', checking: 'thinking' }
 
 /** Al aparecer los botones de elegir, se desplazan a la vista (en horizontal quedaban debajo). Estable: solo al montar. */
 const showOnMount = (el: HTMLElement | null) => el?.scrollIntoView({ block: 'nearest' })
@@ -57,9 +61,9 @@ const SOURCE_LABEL: Record<SrsCard['source'], string> = {
 }
 
 const VERDICT = {
-  correct: { label: '¡Correcto!', icon: 'check' as const, color: '#5fe3a1' },
+  correct: { label: '¡Correcto!', icon: 'check' as const, color: 'var(--ok)' },
   almost: { label: 'Casi', icon: 'spark' as const, color: 'var(--acc)' },
-  wrong: { label: 'Aún no', icon: 'back' as const, color: '#f87171' },
+  wrong: { label: 'Aún no', icon: 'back' as const, color: 'var(--bad)' },
   unknown: { label: 'Esta era la respuesta', icon: 'help' as const, color: 'var(--acc2)' },
 }
 
@@ -116,13 +120,19 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   }, [step])
 
   // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); la tarjeta no debe seguir «grabando».
+  // REG-A1-01: tampoco quedarse en «Abriendo el micro…» si se minimiza durante la apertura.
   useEffect(() => {
-    if (step !== 'recording') return
+    if (step !== 'recording' && step !== 'opening') return
     return whenBackground(() => {
+      logDiscard('segundo-plano', 'repaso', { step })
       setStep('ask')
-      setError('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
+      setError(DISCARD_HINTS['segundo-plano'])
     })
   }, [step])
+
+  // 5.10.1 (REG-M-01): con el repaso abierto (y la app en uso) la ruta de los auriculares se queda puesta; se suelta al
+  // ver la evaluación final, al salir y en segundo plano. No abre el micro.
+  useEffect(() => (ended ? undefined : holdRoute()), [ended])
 
   // v5.10 (punto 5): el micro es el mismo TalkButton de la clase (toca para hablar / toca para enviar, anillo de 60 s,
   // barras con la voz real, papelera). El envío automático a los 60 s lo hace el propio TalkButton con `elapsed`.
@@ -130,14 +140,21 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     if (!queue?.[i] || step !== 'ask') return
     setError(null)
     setHint(null)
+    // REG-A1-01: billete al tocar, antes de esperar a que calle la voz.
+    const ticket = recorder.current.ticket()
+    setStep('opening') // REG-A4-02 (P7)
     await stopSpeaking()
     try {
       // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste, «No lo sé» o segundo plano).
-      if (!(await recorder.current.begin())) return
+      if (!(await recorder.current.begin(ticket))) {
+        setStep((s) => (s === 'opening' ? 'ask' : s))
+        return
+      }
       recStart.current = performance.now()
       setElapsed(0)
       setStep('recording')
     } catch (e) {
+      setStep('ask')
       setError(e instanceof MicError ? e.message : 'No se pudo grabar.')
     }
   }
@@ -158,13 +175,15 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
   const onCancel = async () => {
     if (step !== 'recording' || sending.current) return
     sending.current = true
+    let seconds = 0
     try {
-      await recorder.current.finish()
+      seconds = (await recorder.current.finish()).seconds
     } finally {
       sending.current = false
     }
+    logDiscard('cancelada', 'repaso', { seconds })
     setStep('ask')
-    setHint('Grabación descartada')
+    setHint(DISCARD_HINTS.cancelada)
   }
 
   const send = async () => {
@@ -202,7 +221,10 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
     })
     if (!heard) {
       giveReference('')
-      setError('No te he oído. Inténtalo otra vez.')
+      // REG-M-02: el motivo queda en el registro y el aviso (en rojo) se queda hasta el siguiente toque.
+      const reason = seconds < 0.8 || blob.size === 0 ? 'corta' : empty ? 'vacia' : 'sin-voz'
+      logDiscard(reason, 'repaso', { seconds, bytes: blob.size, analyzed: !!analysis, mic: recorder.current.label })
+      setError(DISCARD_HINTS[reason])
       setStep('ask')
       return
     }
@@ -276,12 +298,12 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
       <div className={pad}>
         <div className="anim-up flex flex-1 flex-col items-center justify-center gap-4 text-center">
           <Mascot element={THEME_INFO[settings.theme].mascot} size={170} mood="happy" />
-          <h1 className="text-[28px] font-semibold tracking-[-.6px]">¡Todo repasado!</h1>
-          <p className="txt-sub max-w-[300px] text-[15px] leading-snug">
+          <h1 className="fs-28 font-semibold tracking-[-.6px]">¡Todo repasado!</h1>
+          <p className="txt-sub max-w-[300px] fs-15 leading-snug">
             No tienes frases pendientes. Cuando el profe te corrija o guardes palabras, aparecerán aquí para repasarlas en el momento justo.
           </p>
         </div>
-        <button onClick={onExit} className="btn-acc h-[56px] rounded-full text-[16px]">
+        <button onClick={onExit} className="btn-acc h-[56px] rounded-full fs-16">
           Volver
         </button>
       </div>
@@ -380,7 +402,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
         {/* v5.10 (petición del dueño): el repaso se puede terminar cuando quieras, sin agotar las frases. Con al menos una
             respondida (antes no hay nada que evaluar) lleva a la evaluación de lo hecho; las que faltan siguen pendientes. */}
         {(attempts.length > 0 || (step === 'result' && !!result)) && (
-          <button onClick={leave} className="field flex h-8 flex-none items-center gap-1.5 rounded-full px-3 text-[13px] font-medium" style={{ border: 0 }}>
+          <button onClick={leave} className="field flex h-8 flex-none items-center gap-1.5 rounded-full px-3 fs-13 font-medium" style={{ border: 0 }}>
             <Icon name="check" size={14} stroke={2} />
             Terminar
           </button>
@@ -393,9 +415,9 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
           {/* v5.10: en las de Gramática se ve el ejercicio en inglés (hueco o palabras) y se dice la frase entera. */}
           {card.source === 'grammar' ? 'Di la frase completa en inglés' : '¿Cómo se dice en inglés?'}
         </div>
-        <div className="glass mt-2 rounded-[26px] p-5 text-[21px] leading-snug font-medium">{card.promptEs}</div>
+        <div className="glass mt-2 rounded-[26px] p-5 fs-21 leading-snug font-medium">{card.promptEs}</div>
         {card.hintEs && step !== 'result' && (
-          <button onClick={() => setShowHint((s) => !s)} className="txt-sub mt-2 flex items-center gap-1.5 self-start text-[13px]">
+          <button onClick={() => setShowHint((s) => !s)} className="txt-sub mt-2 flex items-center gap-1.5 self-start fs-13">
             <Icon name="bulb" size={14} color="var(--acc)" />
             {showHint ? card.hintEs : 'Ver pista'}
           </button>
@@ -403,12 +425,12 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
 
         {step === 'result' && v && (
           <div className="anim-up mt-4 flex flex-col gap-2.5">
-            <div className="flex items-center gap-2 text-[17px] font-semibold" style={{ color: v.color }}>
+            <div className="flex items-center gap-2 fs-17 font-semibold" style={{ color: v.color }}>
               <Icon name={v.icon} size={20} stroke={2} />
               {v.label}
             </div>
             {result !== 'unknown' && result?.transcript && (
-              <div className="txt-sub text-[14px]">
+              <div className="txt-sub fs-14">
                 Dijiste: <i>"{result.transcript}"</i>
               </div>
             )}
@@ -416,15 +438,15 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
               <span className="btn-acc grid h-9 w-9 flex-none place-items-center rounded-full">
                 <SpeakIcon speakKey={card.answerEn} size={16} />
               </span>
-              <span className="text-[16px] font-semibold">{card.answerEn}</span>
+              <span className="fs-16 font-semibold">{card.answerEn}</span>
             </button>
-            {result !== 'unknown' && result?.feedbackEs && <div className="text-[14px] leading-snug">{result.feedbackEs}</div>}
-            {card.hintEs && <div className="txt-sub text-[13px] leading-snug">💡 {card.hintEs}</div>}
-            {pron === 'pending' && <div className="txt-sub text-[12.5px]">Azure está puntuando tu pronunciación…</div>}
+            {result !== 'unknown' && result?.feedbackEs && <div className="fs-14 leading-snug">{result.feedbackEs}</div>}
+            {card.hintEs && <div className="txt-sub fs-13 leading-snug">💡 {card.hintEs}</div>}
+            {pron === 'pending' && <div className="txt-sub fs-12.5">Azure está puntuando tu pronunciación…</div>}
             {pron && pron !== 'pending' && typeof pron !== 'string' && (
               <PronunciationView r={pron} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} pausable />
             )}
-            {typeof pron === 'string' && pron !== 'pending' && <div className="txt-sub text-[12px]">Sin nota de pronunciación: {pron}</div>}
+            {typeof pron === 'string' && pron !== 'pending' && <div className="txt-sub fs-12">Sin nota de pronunciación: {pron}</div>}
           </div>
         )}
 
@@ -433,7 +455,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
         {step === 'result' ? (
           <div ref={showOnMount}>
             {/* v5.9 (nota del dueño): decides TÚ cuándo vuelve, según lo que te costó; hace falta elegir para seguir. */}
-            <div className="mb-2 text-center text-[14px] font-semibold">¿Cuándo quieres volver a verla?</div>
+            <div className="mb-2 text-center fs-14 font-semibold">¿Cuándo quieres volver a verla?</div>
             <div className="grid grid-cols-4 gap-1.5">
               {GRADES.map(({ grade: g, label }) => (
                 <button
@@ -441,26 +463,26 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
                   onClick={() => grade(g)}
                   className={`flex h-[62px] flex-col items-center justify-center rounded-[18px] px-1 ${g === suggested ? 'btn-acc' : 'glass'}`}
                 >
-                  <span className="text-[14px] leading-tight font-semibold">{intervals[g]}</span>
-                  <span className={`text-[11px] leading-tight ${g === suggested ? 'opacity-80' : 'txt-sub'}`}>{label}</span>
+                  <span className="fs-14 leading-tight font-semibold">{intervals[g]}</span>
+                  <span className={`fs-11 leading-tight ${g === suggested ? 'opacity-80' : 'txt-sub'}`}>{label}</span>
                 </button>
               ))}
             </div>
-            <div className="txt-sub mt-1.5 text-center text-[12px] leading-snug">
+            <div className="txt-sub mt-1.5 text-center fs-12 leading-snug">
               {suggested !== null ? 'Te marco una según cómo te salió, pero eliges tú. ' : ''}Elige una para pasar a la siguiente.
             </div>
-            <button onClick={known} className="txt-sub mt-2 h-10 w-full rounded-[20px] text-[13.5px]" style={{ border: '1.5px dashed var(--sub)' }}>
+            <button onClick={known} className="txt-sub mt-2 h-10 w-full rounded-[20px] fs-13.5" style={{ border: '1.5px dashed var(--sub)' }}>
               Ya me la sé: no volver a repasarla
             </button>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
             {error && (
-              <div className="text-center text-[13px]" style={{ color: '#f87171' }}>
+              <div className="text-center fs-13" style={{ color: 'var(--bad)' }}>
                 {error}
               </div>
             )}
-            {hint && !error && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+            {hint && !error && <div className="txt-sub text-center fs-13">{hint}</div>}
             <TalkButton
               phase={PHASE[step]}
               elapsed={elapsed}
@@ -470,7 +492,7 @@ export default function ReviewScreen({ settings, t, update, onExit, registerBack
               level={() => recorder.current.level()}
             />
             {step === 'ask' && (
-              <button onClick={dontKnow} className="txt-sub mt-1 h-10 rounded-[20px] px-4 text-[14px]" style={{ border: '1.5px dashed var(--sub)' }}>
+              <button onClick={dontKnow} className="txt-sub mt-1 h-10 rounded-[20px] px-4 fs-14" style={{ border: '1.5px dashed var(--sub)' }}>
                 No lo sé, muéstrame la respuesta
               </button>
             )}

@@ -329,11 +329,11 @@
         },
         {
           "en": "Have you ever driven on the left?",
-          "es": "¿Alguna vez has conducido por la izquierda?"
+          "es": "¿Alguna vez has manejado por la izquierda?"
         },
         {
           "en": "She bought a new phone, but she didn't like it.",
-          "es": "Se compró un móvil nuevo, pero no le gustó."
+          "es": "Se compró un celular nuevo, pero no le gustó."
         },
         {
           "en": "I've forgotten my password again.",
@@ -353,8 +353,8 @@
         },
         {
           "wrong": "I have went there twice.",
-          "right": "I have gone there twice. / I have been there twice.",
-          "whyEs": "Detrás de «have» va el participio («gone»), no el pasado («went»)."
+          "right": "I have been there twice.",
+          "whyEs": "Detrás de «have» va el participio, no el pasado («went»). Para experiencias se usa «been» («he estado»); «I have gone» significa que se fue y sigue allí."
         },
         {
           "wrong": "I work-ed yesterday. (pronunciado con dos sílabas)",
@@ -562,7 +562,7 @@
         },
         {
           "en": "Do you have a car? — No, I don't.",
-          "es": "¿Tienes coche? — No.",
+          "es": "¿Tienes carro? — No.",
           "noteEs": "En EE. UU., la pregunta normal es con «do»."
         }
       ],
@@ -737,7 +737,7 @@
         "vocabulary"
       ],
       "explanationEs": [
-        "«Hay» se dice «there is» con singular o incontable («There's a bank near here», «There is some milk») y «there are» con plural («There are two bank branches»).",
+        "«Hay» se dice «there is» con singular o incontable («There's a bank near here», «There is some milk») y «there are» con plural («There are two banks on this street»).",
         "No traduzcas «hay» con «have» ni empieces la frase sin sujeto: «Has a problem» o «Is a problem» están mal. Siempre «There is a problem».",
         "Cambia el verbo «be» para otros tiempos: «there was / there were» (había, hubo), «there will be» (habrá), «there has been» (ha habido). En preguntas, se invierte: «Is there…?», «Are there…?»."
       ],
@@ -750,7 +750,7 @@
               "es": "Hay una farmacia en la esquina."
             },
             {
-              "en": "There are three people in the queue.",
+              "en": "There are three people in line.",
               "es": "Hay tres personas en la cola."
             }
           ]
@@ -1003,7 +1003,7 @@
             },
             {
               "en": "I didn't do my homework.",
-              "es": "No hice los deberes."
+              "es": "No hice la tarea."
             }
           ]
         },
@@ -1053,7 +1053,7 @@
         {
           "wrong": "I have to make my homework.",
           "right": "I have to do my homework.",
-          "whyEs": "Las tareas y deberes van con «do»."
+          "whyEs": "Las tareas (de la casa o de la escuela) van con «do»."
         },
         {
           "wrong": "Can you make me a favor?",
@@ -1236,7 +1236,7 @@
       "explanationEs": [
         "Los verbos de estado describen lo que piensas, sientes o tienes, no una acción. Normalmente no van en forma continua aunque hablemos de ahora: «I know», no «I'm knowing».",
         "Los más comunes: know, understand, believe, remember, mean (pensar y saber); like, love, hate, want, need, prefer (gustos y deseos); have (poseer), own, belong (posesión); seem, cost (cómo es algo).",
-        "Algunos cambian de sentido y entonces sí van en -ing: «I think it's good» (opino) / «I'm thinking about it» (lo estoy pensando); «I have a car» / «I'm having lunch» (comer); «I see» (entiendo) / «I'm seeing a friend» (quedar). «I'm loving it» es publicitario o informal."
+        "Algunos cambian de sentido y entonces sí van en -ing: «I think it's good» (opino) / «I'm thinking about it» (lo estoy pensando); «I have a car» / «I'm having lunch» (comer); «I see» (entiendo) / «I'm seeing a friend» (verse con alguien). «I'm loving it» es publicitario o informal."
       ],
       "forms": {
         "affirmative": {
@@ -1434,7 +1434,7 @@
       "speaking": [
         {
           "promptEs": "Di tres cosas que sabes, quieres o necesitas ahora mismo.",
-          "modelEn": "I know a lot about computers. I want a holiday. I need more sleep.",
+          "modelEn": "I know a lot about computers. I want a vacation. I need more sleep.",
           "checkEs": "Usa verbos de estado en presente simple, sin -ing."
         },
         {
@@ -1720,7 +1720,7 @@
       ],
       "explanationEs": [
         "«Stop + -ing» = dejar de hacer algo («I stopped smoking»: dejé de fumar). «Stop + to» = parar para hacer otra cosa («I stopped to smoke»: paré para fumar).",
-        "«Remember / forget + to» = acordarse u olvidarse de algo que tienes que hacer («Remember to call»: acuérdate de llamar). «Remember / forget + -ing» = recordar algo que ya hiciste («I remember calling»: recuerdo haber llamado; casi siempre «I'll never forget…»).",
+        "«Remember / forget + to» = acordarse u olvidarse de algo que tienes que hacer («Remember to call»: acuérdate de llamar). «Remember + -ing» = recordar algo que ya hiciste («I remember calling»: recuerdo haber llamado). Con «forget + -ing» casi siempre se dice «I'll never forget…».",
         "«Try + to» = intentar algo difícil («I tried to open it»: intenté abrirlo). «Try + -ing» = probar algo para ver si funciona («Try restarting it»: prueba a reiniciarlo). «Regret to» = lamentar (anuncios formales) y «regret -ing» = arrepentirse."
       ],
       "forms": {
@@ -1885,7 +1885,7 @@
         {
           "id": "verbs-change-meaning-6",
           "type": "choice",
-          "prompt": "We regret ____ you that your flight has been cancelled.",
+          "prompt": "We regret ____ you that your flight has been canceled.",
           "options": [
             "to inform",
             "informing",
@@ -2095,6 +2095,9 @@
             "off"
           ],
           "answer": "Turn it off please",
+          "alsoAccepted": [
+            "Please turn it off"
+          ],
           "whyEs": "Con pronombre: verbo + it + partícula."
         },
         {

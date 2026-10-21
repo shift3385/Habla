@@ -28,9 +28,31 @@ export function turnMetrics(t: Turn): TurnMetrics {
   }
 }
 
-/** Referencias aproximadas de velocidad al hablar (palabras/minuto) para un no nativo. */
+/**
+ * 5.10.1 (UX-03, UX-04): metas al hablar según tu nivel (MCER de «speaking»): palabras por minuto y palabras por
+ * respuesta. Es la ÚNICA fuente de las metas: la usan el informe de la clase, el consejo de la mascota y la nota (cuyo
+ * 100 % de velocidad es la meta de C1). Antes había tres cifras distintas (meta B2 110+, «ronda las 120» y 125) y una A2
+ * veía siempre la meta de B2.
+ */
+export const SPEAKING_GOALS: Record<string, { wpm: number; words: number }> = {
+  A1: { wpm: 60, words: 8 },
+  A2: { wpm: 75, words: 12 },
+  B1: { wpm: 95, words: 20 },
+  B2: { wpm: 110, words: 30 },
+  C1: { wpm: 125, words: 40 },
+  C2: { wpm: 125, words: 40 },
+}
+
+/** Las metas de un nivel («A2», «B1+»…); sin nivel conocido, las de B1. */
+export function speakingGoal(level: string | undefined): { level: string; wpm: number; words: number } {
+  const key = (level ?? '').trim().toUpperCase().slice(0, 2)
+  const lv = SPEAKING_GOALS[key] ? key : 'B1'
+  return { level: lv, ...SPEAKING_GOALS[lv] }
+}
+
+/** Referencias de velocidad al hablar (palabras/minuto) para la nota: de un principiante a la meta de C1. */
 const WPM_FLOOR = 45
-const WPM_TARGET = 125
+const WPM_TARGET = SPEAKING_GOALS.C1.wpm
 
 export function sessionMetrics(turns: Turn[]): SessionMetrics | null {
   const user = turns.filter((t) => t.role === 'user')

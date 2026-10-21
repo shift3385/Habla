@@ -1,4 +1,5 @@
 import { App as CapApp } from '@capacitor/app'
+import { resumeRoute, suspendRoute } from './audioRoute'
 import { releaseAllMics } from './recorder'
 import { stopSpeaking } from './tts'
 
@@ -36,6 +37,8 @@ function goBackground() {
   if (inBackground) return
   inBackground = true
   releaseAllMics()
+  // 5.10.1 (REG-M-01, privacidad): la ruta de los auriculares que retiene la clase se suelta siempre en segundo plano.
+  suspendRoute()
   stopSpeaking().catch(() => {})
   onBackground.forEach((fn) => {
     try {
@@ -49,6 +52,7 @@ function goBackground() {
 function goForeground() {
   if (!inBackground) return
   inBackground = false
+  resumeRoute() // si la clase sigue abierta, la ruta se vuelve a fijar (sin abrir el micro)
   onForeground.forEach((fn) => fn())
 }
 

@@ -152,7 +152,7 @@
           "pattern": "Sujeto + asked (+ persona) + why / if + sujeto + didn't / wasn't / hadn't…",
           "examples": [
             { "en": "She asked why I wasn't at the meeting.", "es": "Preguntó por qué no estaba en la reunión." },
-            { "en": "My teacher asked me why I hadn't done my homework.", "es": "Mi profesor me preguntó por qué no había hecho los deberes." }
+            { "en": "My teacher asked me why I hadn't done my homework.", "es": "Mi profesor me preguntó por qué no había hecho la tarea." }
           ]
         },
         "question": {
@@ -264,7 +264,7 @@
         "negative": {
           "pattern": "Sujeto + told / asked / warned + persona + not to + verbo",
           "examples": [
-            { "en": "My dad told me not to drive at night.", "es": "Mi padre me dijo que no condujera de noche." },
+            { "en": "My dad told me not to drive at night.", "es": "Mi padre me dijo que no manejara de noche." },
             { "en": "They asked us not to make noise after ten.", "es": "Nos pidieron que no hiciéramos ruido después de las diez." }
           ]
         },
@@ -282,7 +282,7 @@
         { "en": "«Can you send me the file?» → My colleague asked me to send her the file.", "es": "«¿Me mandas el archivo?» → Mi compañera me pidió que le mandara el archivo.", "noteEs": "Una pregunta que en realidad es una petición → «asked + persona + to»." },
         { "en": "«You should see a doctor.» → My friend advised me to see a doctor.", "es": "«Deberías ir al médico.» → Mi amigo me aconsejó que fuera al médico." },
         { "en": "«Don't forget to buy bread.» → She reminded me to buy bread.", "es": "«No te olvides de comprar pan.» → Me recordó que comprara pan." },
-        { "en": "«Don't touch the cables!» → The electrician warned us not to touch the cables.", "es": "«¡No toquéis los cables!» → El electricista nos advirtió que no tocáramos los cables." }
+        { "en": "«Don't touch the cables!» → The electrician warned us not to touch the cables.", "es": "«¡No toquen los cables!» → El electricista nos advirtió que no tocáramos los cables." }
       ],
       "commonMistakes": [
         { "wrong": "She told me that I came early.", "right": "She told me to come early.", "whyEs": "El «me dijo que viniera» del español (subjuntivo) se dice con «to + verbo» en inglés." },

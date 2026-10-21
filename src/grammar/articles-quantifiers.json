@@ -4,7 +4,7 @@
   "titleEn": "Articles and Quantifiers",
   "titleEs": "Artículos y cantidades",
   "icon": "cards",
-  "descriptionEs": "A, an, the o nada; contables e incontables; some, any, much, many, a few, a little.",
+  "descriptionEs": "A, an, the o sin artículo; contables e incontables; some, any, much, many, a few, a little.",
   "topics": [
     {
       "id": "a-an",
@@ -30,7 +30,7 @@
         "negative": {
           "pattern": "Sujeto + don't/doesn't have · isn't + a/an + sustantivo",
           "examples": [
-            { "en": "I don't have a car.", "es": "No tengo coche." },
+            { "en": "I don't have a car.", "es": "No tengo carro." },
             { "en": "He isn't a doctor; he's a nurse.", "es": "No es médico; es enfermero." }
           ]
         },
@@ -53,7 +53,7 @@
         { "wrong": "I am engineer.", "right": "I am an engineer.", "whyEs": "En español decimos «soy ingeniero» sin artículo; en inglés las profesiones llevan «a / an»." },
         { "wrong": "I waited a hour.", "right": "I waited an hour.", "whyEs": "La h de «hour» no se pronuncia: empieza por sonido de vocal → «an»." },
         { "wrong": "She goes to an university.", "right": "She goes to a university.", "whyEs": "«University» suena /ju/ al principio (sonido de consonante) → «a»." },
-        { "wrong": "I don't have car.", "right": "I don't have a car.", "whyEs": "«No tengo coche» va sin artículo en español, pero en inglés un contable en singular necesita «a»." }
+        { "wrong": "I don't have car.", "right": "I don't have a car.", "whyEs": "«No tengo carro» va sin artículo en español, pero en inglés un contable en singular necesita «a»." }
       ],
       "related": ["definite-zero-article", "countable-uncountable-nouns", "there-is-there-are"],
       "exercises": [
@@ -133,7 +133,7 @@
       "name": "Definite Article and Zero Article",
       "nameEs": "El artículo «the» y la ausencia de artículo",
       "level": "A2",
-      "summaryEs": "Cuándo usar «the» (algo concreto o único) y cuándo nada (hablar en general, comidas, idiomas, deportes…).",
+      "summaryEs": "Cuándo usar «the» (algo concreto o único) y cuándo no se pone artículo (hablar en general, comidas, idiomas, deportes…).",
       "keywords": ["the", "zero article", "sin artículo", "el", "la", "los", "las", "definite article", "en general", "the life", "I love dogs"],
       "categories": ["article"],
       "explanationEs": [
@@ -160,7 +160,7 @@
           "pattern": "Do you like + Ø plural / incontable? · Where is / Can you pass me + the…?",
           "examples": [
             { "en": "Do you like cats?", "es": "¿Te gustan los gatos?" },
-            { "en": "Where's the remote control?", "es": "¿Dónde está el mando de la tele?" }
+            { "en": "Where's the remote control?", "es": "¿Dónde está el control de la tele?" }
           ]
         }
       },
@@ -261,7 +261,7 @@
       "categories": ["uncountable", "article"],
       "explanationEs": [
         "Los contables se pueden contar: llevan «a / an» y tienen plural («a chair, two chairs»). Los incontables no: no llevan «a / an», no tienen plural y el verbo va en singular («The water is cold»).",
-        "Trampa para hispanohablantes: estas palabras son incontables en inglés aunque en español se cuenten: information, advice (consejos), news (noticias), furniture (muebles), homework (deberes), luggage / baggage (equipaje), equipment, work (trabajo), research.",
+        "Trampa para hispanohablantes: estas palabras son incontables en inglés aunque en español se cuenten: information, advice (consejos), news (noticias), furniture (muebles), homework (tarea), luggage / baggage (equipaje), equipment, work (trabajo), research.",
         "Para contarlas se usa una unidad: «a piece of advice», «two pieces of furniture», «a bottle of water», «a slice of bread». Algunas palabras son de los dos tipos: «coffee» (el café) y «a coffee» (un café, una taza)."
       ],
       "forms": {
@@ -291,7 +291,7 @@
         { "en": "Can you give me some advice about my résumé?", "es": "¿Me das unos consejos sobre mi currículum?", "noteEs": "«Advice» es incontable: «some advice», no «advices»." },
         { "en": "The news isn't very good, I'm afraid.", "es": "Me temo que las noticias no son muy buenas.", "noteEs": "«News» parece plural, pero el verbo va en singular." },
         { "en": "We bought two pieces of furniture for the living room.", "es": "Compramos dos muebles para el salón.", "noteEs": "Para contar: «a piece of»." },
-        { "en": "I have a lot of homework this weekend.", "es": "Tengo muchos deberes este fin de semana." },
+        { "en": "I have a lot of homework this weekend.", "es": "Tengo mucha tarea este fin de semana." },
         { "en": "Two coffees, please.", "es": "Dos cafés, por favor.", "noteEs": "En el bar, «a coffee» = una taza de café: contable." },
         { "en": "How much luggage can I take on the plane?", "es": "¿Cuánto equipaje puedo llevar en el avión?" }
       ],
@@ -393,7 +393,7 @@
         "affirmative": {
           "pattern": "Sujeto + verbo + some + plural / incontable",
           "examples": [
-            { "en": "There are some eggs in the fridge.", "es": "Hay huevos en la nevera." },
+            { "en": "There are some eggs in the fridge.", "es": "Hay huevos en el refrigerador." },
             { "en": "I need some help with this form.", "es": "Necesito ayuda con este formulario." }
           ]
         },
@@ -438,7 +438,7 @@
         {
           "id": "some-any-2",
           "type": "gap",
-          "prompt": "We don't have ____ bread. Can you buy some?",
+          "prompt": "We don't have ____ bread. Can you buy some? (some o any)",
           "answers": ["any"],
           "whyEs": "Negativa: «don't have any»."
         },
@@ -485,7 +485,7 @@
         }
       ],
       "speaking": [
-        { "promptEs": "Di qué hay y qué no hay en tu nevera ahora mismo.", "modelEn": "There's some milk and some cheese, but there aren't any eggs and there isn't any fruit.", "checkEs": "«Some» en afirmativa y «any» en negativa." },
+        { "promptEs": "Di qué hay y qué no hay en tu refrigerador ahora mismo.", "modelEn": "There's some milk and some cheese, but there aren't any eggs and there isn't any fruit.", "checkEs": "«Some» en afirmativa y «any» en negativa." },
         { "promptEs": "Ofrece algo de beber a un invitado y pregúntale si tiene alguna pregunta.", "modelEn": "Would you like some coffee? Do you have any questions?", "checkEs": "«Some» al ofrecer y «any» en una pregunta normal." }
       ],
       "classFocusEn": "Practice some (affirmatives, offers, requests) and any (negatives, questions). Correct 'I don't have some…' and double negatives like 'I didn't buy nothing'."
@@ -530,7 +530,7 @@
         { "en": "How much does this jacket cost?", "es": "¿Cuánto cuesta esta chaqueta?", "noteEs": "Precios: «how much»." },
         { "en": "I only know a few words in Japanese.", "es": "Solo sé unas pocas palabras en japonés." },
         { "en": "Add a little salt and stir.", "es": "Añade un poco de sal y remueve." },
-        { "en": "There are too many cars in the city center.", "es": "Hay demasiados coches en el centro." },
+        { "en": "There are too many cars in the city center.", "es": "Hay demasiados carros en el centro." },
         { "en": "Very few people answered the survey.", "es": "Muy poca gente respondió a la encuesta.", "noteEs": "«Few» sin «a»: pocos, con tono negativo." },
         { "en": "We still have a little time, so let's get a coffee.", "es": "Todavía tenemos un poco de tiempo, así que vamos a tomar un café." }
       ],

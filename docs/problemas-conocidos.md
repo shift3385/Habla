@@ -2,21 +2,18 @@
 
 La lista oficial y priorizada de defectos de la v5.8 está en **`docs/auditoria/resultados/INFORME.md`** (§5, §6 y §8), con identificadores `AUD-…`, evidencias y plan de corrección. Aquí va un resumen de lo más importante y, sobre todo, **lo que no está en la auditoría**: conocimiento de las sesiones de desarrollo.
 
-## 1. Defectos abiertos (resumen de la auditoría)
+## 1. Defectos abiertos (a 2026-10-21, v5.10.1)
+
+La regresión de la 5.10 (`docs/pruebas/regresion-5.10/INFORME.md`) y la corrección de la 5.10.1 (`CORRECCION.md`, `REVISION-5.10.1.md`) cerraron los P1 de esa regresión. Ya **corregidos** (no volver a listarlos): todo el bloque de la auditoría 5.8 de micrófono (5.8.1), APK depurable (5.8.2), importar sin validar, clave errónea, CPU en reposo (en parte, MOV-3), micro abierto toda la clase (5.9), privacidad sin aviso, re-test sin salida, recordatorio sin permiso, E3 de la 5.9.1 (auriculares), micro lento con auriculares (REG-M-01) y grabaciones perdidas sin aviso (REG-M-02).
 
 | Prioridad | Problema | Dónde |
 |---|---|---|
-| ~~P0~~ **Corregido en 5.8.1 (pendiente de prueba en el teléfono)** | Micrófono huérfano por doble toque (AUD-MIC-302), `open()` no cancelable (AUD-MIC-301), Debate grabando tras «Atrás» (AUD-MIC-303), segundo dedo (AUD-MIC-304), `fallback()` en silencio sin cancelación de eco (AUD-MIC-800), red nativa (AUD-MIC-308). Detalle en `docs/correccion/NC-v5.8.1.md` | `recorder.ts`, `TopicAskPage.tsx`, `TalkButton.tsx`, `MainActivity.java`, `HablaChromeClient.java` |
-| Medio | **Micro ya abierto con el hilo JS bloqueado:** Android no tiene API para cortar desde Java una captura que el WebView ya abrió; la red nativa de la 5.8.1 solo deniega aperturas nuevas en segundo plano. Si el JS está bloqueado, la captura sigue hasta que se libera (Android la silencia a los ~5 s) (resto de AUD-MIC-308) | `MainActivity.java`, `lifecycle.ts` |
-| **Alto** | **APK depurable:** cualquier PC con la depuración USB autorizada lee las claves (Gemini, Azure, secreto de Monitor) sin huella. La huella solo protege la pantalla (AUD-SEG-001) | build *debug* |
-| **Pendiente (5.9.1, E3)** | **Auriculares desconectados:** la app no vuelve sola al micro del teléfono; las grabaciones salían vacías y el repaso daba «Gemini error 400». La 5.9.1 ya no envía audio vacío y vuelve a medir el micro (`isEmptyRecording`, `distrustMic`), pero falta saber por qué no se cambió de micro: reproducir en el POCO con «Habla debug» y los auriculares del dueño (`docs/correccion/NC-v5.9.1.md` §E3) | `AudioPicker.tsx`, `audioRoute.ts`, `AudioRoutePlugin.java`, `recorder.ts` |
-| Medio | **Micro abierto toda la clase** (punto verde, modo llamada) aunque no se hable (AUD-MIC-305). Es una decisión de diseño pendiente para la 5.9 | `Conversation.tsx` |
-| Medio | **Importar no valida:** una copia vacía borra el progreso diciendo «Importado ✓»; una mal formada deja la app en negro (AUD-SEG-501, AUD-RES-704) | `backup.ts`, arranque en `App.tsx` |
-| Medio | **Clave de Gemini nueva y errónea** pisa la buena antes de comprobarla en Ajustes (AUD-FLU-209). En la bienvenida sí se comprueba antes | `SettingsScreen.tsx` |
-| Medio | **CPU en primer plano:** el fondo animado y la mascota ocupan 1,7–3 núcleos sin tocar nada; el teléfono se calienta (AUD-RES-700) | `ui/Background.tsx`, `ui/Mascot.tsx` |
-| Medio | **Privacidad sin aviso:** nombre, ocupación, motivos e intereses van a Google en cada turno; la voz va a Google y, con la fonética, a Microsoft. El tutorial dice que el progreso se guarda solo en el teléfono, que es cierto para los datos guardados pero no para lo enviado (AUD-FLU-210) | textos de la bienvenida y Ajustes |
-| Medio | **El re-test no tiene salida** una vez empezado, y un re-test que falla al evaluarse deja un borrador con los audios (AUD-FLU-202, AUD-FLU-204) | `Calibration.tsx` |
-| Bajo | **Recordatorio sin permiso:** falla en silencio si falta el permiso de notificaciones. Desde la 5.8, Meta diaria avisa, pero solo si entras ahí (AUD-FLU-900) | `reminders.ts` |
+| Medio | **Micro ya abierto con el hilo JS bloqueado** (resto de AUD-MIC-308): Android no permite cortar desde Java una captura que el WebView ya abrió; el dueño decidió estudiarlo más adelante | `MainActivity.java`, `lifecycle.ts` |
+| Bajo | **REG-N-01:** la prueba de sonido nueva puede salir encima del aviso «Dejamos una clase a medias» y, si el primer intento no oye voz, cambiar sin avisar el modo de los auriculares a «micro del teléfono» (en corrección al cerrar la 5.10.1) | `AudioPicker.tsx`, `SoundTest.tsx`, `App.tsx` |
+| Bajo | **CPU en reposo** con una clase larga abierta: 28–52 % (debug) + renderer; el JS está inactivo, cuesta pintar la mascota. Medir en la release antes de abrir NC | `ui/Mascot.tsx` |
+| Bajo | **Seguridad (backlog):** sin CSP (SEG-503), tema y noticia sin delimitar en el prompt (SEG-509, test `todo`), `file_paths.xml` con `external-path` (se dejó a propósito) | `index.html`, `teacher.ts`, `res/xml` |
+| Bajo | **Regla CSS inválida desde la 5.7:** `html[data-landscape] .shell … > .relative.z-[2]` (corchetes sin escapar) nunca se ha aplicado; corregirla cambiaría el horizontal: hacerlo con pruebas en la 5.11 | `index.css:393` |
+| Bajo | Con letra «Muy grande», la pestaña Prácticas del Inicio desplaza 3–5 px a 390×844 | `Home.tsx` |
 
 ## 2. Seguridad e incidentes de las claves
 

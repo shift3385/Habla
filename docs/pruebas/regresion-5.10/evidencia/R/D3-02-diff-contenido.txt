@@ -1,0 +1,146 @@
+cambios en campos ES: 125 · de ellos con léxico neutro: 65 · cambios en campos EN/otros: 48
+
+=== Muestra de español neutro (cada 6.º) ===
+articles-quantifiers.json.topics.0.forms.negative.examples.0.es
+      - "No tengo coche."
+      + "No tengo carro."
+conditionals.json.topics.1.examples.2.es
+      - "Si no cargas el móvil, no te durará hasta la noche."
+      + "Si no cargas el celular, no te durará hasta la noche."
+conditionals.json.topics.6.forms.affirmative.examples.1.es
+      - "Guarda el archivo por si se cuelga el ordenador."
+      + "Guarda el archivo por si se traba la computadora."
+modals.json.topics.0.forms.affirmative.examples.1.es
+      - "Ella sabe conducir."
+      + "Ella sabe manejar."
+negatives-questions.json.topics.4.examples.2.es
+      - "¿Qué autobús tengo que coger para ir al centro?"
+      + "¿Qué autobús tengo que tomar para ir al centro?"
+passive.json.topics.1.commonMistakes.1.whyEs
+      - "Sin «been» parece que el coche ha reparado algo. «Lo han reparado» = «has been repaired»."
+      + "Sin «been» parece que el carro ha reparado algo. «Lo han reparado» = «has been repaired»."
+prepositions.json.topics.1.examples.0.es
+      - "Me dejé las gafas en el coche."
+      + "Dejé los lentes en el carro."
+tenses.json.topics.1.forms.negative.examples.1.es
+      - "Esta semana no estamos usando el coche."
+      + "Esta semana no estamos usando el carro."
+tenses.json.topics.8.examples.0.es
+      - "Cuando llegué a casa, mi compañero de piso ya había hecho la cena."
+      + "Cuando llegué a casa, mi compañero de departamento ya había hecho la cena."
+wishes-advice.json.topics.1.examples.3.es
+      - "Si se estropeara el coche, tendríamos que coger un autobús."
+      + "Si se descompusiera el carro, tendríamos que tomar un autobús."
+word-order-linkers.json.topics.2.examples.0.es
+      - "Mi piso nuevo es más grande que el anterior."
+      + "Mi departamento nuevo es más grande que el anterior."
+
+=== Campos ingleses cambiados (todos) ===
+articles-quantifiers.json.topics.3.exercises.1.prompt
+      - "We don't have ____ bread. Can you buy some?"
+      + "We don't have ____ bread. Can you buy some? (some o any)"
+conditionals.json.topics.0.exercises.6.prompt
+      - "____ the app work if I'm offline?"
+      + "____ the app work if I'm offline? (do o does)"
+conditionals.json.topics.1.exercises.4.alsoAccepted: estructura
+conditionals.json.topics.2.exercises.4.alsoAccepted: estructura
+conditionals.json.topics.3.exercises.2.alsoAccepted: estructura
+conditionals.json.topics.5.exercises.5.alsoAccepted: estructura
+conditionals.json.topics.6.exercises.7.prompt
+      - "«I'll buy some snacks in case the kids get hungry.» ¿Cuándo compras los snacks?"
+      + "We're going on a long drive, so I'll buy some snacks now ____ the kids get hungry."
+conditionals.json.topics.6.exercises.7.options.0
+      - "Ahora, por precaución"
+      + "in case"
+conditionals.json.topics.6.exercises.7.options.1
+      - "Solo cuando los niños tengan hambre"
+      + "if"
+conditionals.json.topics.6.exercises.7.options.2
+      - "Nunca, si los niños no tienen hambre"
+      + "unless"
+conditionals.json.topics.6.exercises.7.options.3
+      - "Después de que los niños coman"
+      + "in case of"
+conditionals.json.topics.7.exercises.4.alsoAccepted: estructura
+modals.json.topics.0.exercises.6.alsoAccepted: estructura
+modals.json.topics.3.exercises.5.answers.2: estructura
+modals.json.topics.3.exercises.5.answers.3: estructura
+modals.json.topics.3.exercises.5.answers.4: estructura
+modals.json.topics.6.exercises.5.prompt
+      - "A: I'm hungry. B: ____ make you a sandwich."
+      + "A: I'm hungry. B: ____ make you a sandwich. (will, ofrecimiento)"
+modals.json.topics.10.speaking.0.modelEn
+      - "She must be a doctor. She might be on her break. She can't be on holiday."
+      + "She must be a doctor. She might be on her break. She can't be on vacation."
+negatives-questions.json.topics.2.exercises.1.prompt
+      - "In «She's finished her homework», 's means ____."
+      + "«She's finished her homework.» → She ____ finished her homework."
+negatives-questions.json.topics.2.exercises.2.prompt
+      - "In «I'd already eaten», I'd means ____."
+      + "«I'd already eaten.» → I ____ already eaten."
+negatives-questions.json.topics.2.exercises.2.options.0
+      - "I had"
+      + "had"
+negatives-questions.json.topics.2.exercises.2.options.1
+      - "I would"
+      + "would"
+negatives-questions.json.topics.2.exercises.2.options.2
+      - "I did"
+      + "did"
+negatives-questions.json.topics.2.exercises.2.options.3
+      - "I could"
+      + "could"
+passive.json.topics.0.exercises.6.prompt
+      - "Where ____ you ____ (bear)? — In Bogotá."
+      + "Where ____ you ____ (be born)? — In Bogotá."
+passive.json.topics.1.exercises.2.prompt
+      - "This form must ____ in black ink."
+      + "This form must ____ with a black pen."
+passive.json.topics.2.exercises.2.alsoAccepted: estructura
+prepositions.json.topics.0.exercises.5.prompt
+      - "Her train gets in ____ the afternoon, around four."
+      + "Her train arrives ____ the afternoon, around four."
+tenses.json.topics.0.exercises.6.alsoAccepted: estructura
+tenses.json.topics.1.exercises.5.alsoAccepted: estructura
+tenses.json.topics.4.exercises.4.prompt
+      - "She broke her arm while she ____."
+      + "She ____ down the slope when she fell and broke her arm."
+tenses.json.topics.7.exercises.6.alsoAccepted: estructura
+tenses.json.topics.10.exercises.5.alsoAccepted: estructura
+tenses.json.topics.11.exercises.5.alsoAccepted: estructura
+tenses.json.topics.12.keywords.5
+      - "quedar"
+      + "verse con"
+tenses.json.topics.12.exercises.5.alsoAccepted: estructura
+tenses.json.topics.14.exercises.5.alsoAccepted: estructura
+verbs.json.topics.1.commonMistakes.2.right
+      - "I have gone there twice. / I have been there twice."
+      + "I have been there twice."
+verbs.json.topics.3.forms.affirmative.examples.1.en
+      - "There are three people in the queue."
+      + "There are three people in line."
+verbs.json.topics.5.speaking.0.modelEn
+      - "I know a lot about computers. I want a holiday. I need more sleep."
+      + "I know a lot about computers. I want a vacation. I need more sleep."
+verbs.json.topics.7.exercises.5.prompt
+      - "We regret ____ you that your flight has been cancelled."
+      + "We regret ____ you that your flight has been canceled."
+verbs.json.topics.8.exercises.2.alsoAccepted: estructura
+wishes-advice.json.topics.0.speaking.0.modelEn
+      - "You should practise every day. You could watch series in English. I would use an app like this one."
+      + "You should practice every day. You could watch series in English. I would use an app like this one."
+wishes-advice.json.topics.2.exercises.1.options.2
+      - "travelled"
+      + "traveled"
+wishes-advice.json.topics.4.speaking.0.modelEn
+      - "I wish I hadn't stopped playing the guitar. I wish I had travelled more when I was younger."
+      + "I wish I hadn't stopped playing the guitar. I wish I had traveled more when I was younger."
+wishes-advice.json.topics.5.speaking.0.modelEn
+      - "If only I had a bigger flat! If only I had learned English at school!"
+      + "If only I had a bigger apartment! If only I had learned English at school!"
+wishes-advice.json.topics.7.exercises.1.prompt
+      - "If the train had been cancelled, we ____ a taxi."
+      + "If the train had been canceled, we ____ a taxi."
+word-order-linkers.json.topics.3.exercises.7.prompt
+      - "Elige la frase correcta: «unas gafas de sol negras y caras»"
+      + "Elige la frase correcta: «unos lentes de sol negros y caros»"

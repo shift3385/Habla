@@ -67,6 +67,38 @@ export const RELEASES: Release[] = [
     fixed: [
       'Tras leer una idea de «¿Qué digo?», a veces se enviaba la idea en vez de lo que dijiste: ahora se espera a que calle la voz y, si se cuela, te pide grabar otra vez',
     ],
+    patches: [
+      {
+        v: '5.10.1',
+        date: '2026-10-21',
+        title: 'Actualización de parches de seguridad y corrección de la v5.10',
+        fixed: [
+          'Con auriculares, el micro está listo en cuanto tu profe termina de hablar: ya no tarda 3–6 s en cada toque. Tu profe sigue sonando con buena calidad y los auriculares solo pasan a modo llamada mientras te toca hablar',
+          'Si una grabación no se envía (muy corta, sin voz o era la idea leída), siempre te digo por qué, y el aviso se queda hasta que vuelves a tocar el micro. Con «Enviar igualmente» si crees que sí hablaste',
+          '«Abriendo el micro… espera» también en el Repaso, en «Dilo tú» y en el test',
+          'Si sales de la app justo al tocar el micro, ya no se abre después',
+          'La explicación de Gramática deja de sonar al pasar a Ejercicios, abrir «Pregúntale», empezar una clase o salir del tema',
+          'Las fechas se leen bien: «May 5th» suena «May fifth». Y cada palabra con su voz: las españolas en español y las inglesas en inglés',
+          'Ejercicios: la frase correcta que oyes y que va al Repaso ya no lleva la pista del enunciado. Tus tarjetas antiguas se corrigen solas',
+          'Ejercicios que daban por mala una respuesta válida (otro orden correcto, otra palabra posible) ahora la aceptan',
+          '«¿Leíste la idea?» solo salta si dijiste la idea tal cual, no si la usaste para decir algo tuyo',
+          'La copia de seguridad y el resumen del test ya no se quedan en el teléfono después de compartirlos',
+          'Ver la clave de Gemini ya no deja abierta un minuto la de Azure: cada clave pide tu huella',
+        ],
+        improved: [
+          'Prueba de sonido en un solo paso: tu mascota te pide que repitas una frase y te escucha sola, sin tocar nada. Solo sale con auriculares nuevos y nunca antes de la bienvenida ni durante el test',
+          'Ajustes → Apariencia: elige el tamaño de la letra (Pequeña, Normal, Grande, Muy grande) con vista previa. La app respeta también la letra de tu teléfono',
+          'Mientras tu mascota te explica un tema largo, la música de otras apps se pausa (y vuelve al acabar) en vez de subir y bajar',
+          'Pronunciación: cada sonido a cuidar trae un consejo en español para decirlo bien',
+          'Las clases de Gramática no te felicitan si tu respuesta tiene fallos, y la frase en español de la tarea se lee con voz española',
+          'Gramática en español neutro («tomar», «ustedes», «celular»…), inglés americano coherente y explicaciones revisadas',
+          'Avisos con tu mascota en lugar de las ventanas del sistema en inglés (terminar una clase, importar una copia)',
+          'Tu informe te pone la meta de tu nivel, no la de un B2',
+          '«Pregúntale» conserva su respuesta cuando abres un tema y vuelves; Atrás te deja a la misma altura de la pantalla',
+          'Colores de acierto y fallo legibles en los temas claros, y botones más fáciles de tocar',
+        ],
+      },
+    ],
   },
   {
     v: '5.9',

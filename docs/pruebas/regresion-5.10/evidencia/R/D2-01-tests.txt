@@ -1,0 +1,122 @@
+✔ REG-A1-02: grabando, un ▶ no cambia «pausar» por «bajar» ni suelta el foco del micro (127.1465ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-02: el más fuerte gana (micro > lectura larga > ▶) y al soltar el fuerte se baja al siguiente (18.4527ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-03: la voz suelta el foco 600 ms después: dos frases seguidas, una sola petición (827.2155ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-03: con la app oculta (temporizadores congelados) el foco se suelta al instante (8.5588ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-06: una frase larga (> ~12 s) pausa la música; una corta la baja (6.4081ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-06/07 + A1-03: la explicación por tramos es UNA lectura: un ⏸ fijo y un solo foco «pausar» (752.4039ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-M-07: tocar ⏸ a mitad o pararla con stopSpeakingIf corta todos los tramos y suelta el foco (751.7151ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-03: el profe y otra frase seguidas no hacen rebotar la música; un ▶ corto baja, no pausa (1556.9214ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ REG-A1-06: con Leo y sin voz masculina, el inglés va con tono 0,8 y el español con tono normal (749.2615ms)
+✔ REG-M-10: «on May 5th» es un solo tramo inglés y se lee «fifth» (nada de «th» en español) (5.1647ms)
+✔ REG-M-10: ordinales en palabras (1.4112ms)
+✔ REG-M-10: horas, años y números sueltos (0.8716ms)
+✔ REG-A3-13 · 1: «actualmente» y «embarazada» (Falsos amigos) en español (2.6273ms)
+✔ REG-A3-13 · 2: «Soy ingeniero» en español; «I'm an engineer» en inglés (0.8591ms)
+✔ REG-A3-13 · 3: «If + presente simple, will + verbo»: la metalengua en español (0.6194ms)
+✔ REG-A3-13 · 4: «me levanto» en español (0.414ms)
+✔ REG-A3-13 · 5: «no vi nada» y «no vino nadie» en español (0.5022ms)
+✔ REG-A3-13 · 6: «cualquier», «aunque», «sin embargo», «porque» en español (0.9136ms)
+✔ REG-A3-14 · 7: «Although, however, despite…» en inglés (0.3534ms)
+✔ REG-A3-14 · 8: «already = ya» → already en inglés (0.3119ms)
+✔ REG-A3-14 · 9: «nobody, no one / not … anybody» en un tramo inglés (0.246ms)
+✔ REG-A3-14 · 10: «edad (old, new)» → old en inglés (0.2734ms)
+✔ REG-A3-14 · 11: «Con «to»: want, need, decide, hope, plan, promise, agree, refuse» en un tramo (0.1954ms)
+✔ REG-A3-14 · 12: «at the bus stop» en un tramo; «and her husband» en inglés (0.4616ms)
+✔ REG-A3-14 · 13: «no uses «wish»» → «uses» en español (0.3288ms)
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (204.0951ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (75.8097ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (34.2385ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (182.3517ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (26.5828ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (67.5042ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (63.0429ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (171.1563ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 5200 ms; grabando a los 6000 ms (modo auto)
+✔ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (325.7196ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+[HABLA-MIC] abierto en 3600 ms; grabando a los 4400 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión (220.5981ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (219.6922ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 5200 ms; grabando a los 6000 ms (modo auto)
+✔ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (296.4779ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+✔ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (170.7747ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto (31.4588ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto (48.0237ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-309: cada grabación tiene sus propios trozos (62.2491ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo headset); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 8400 ms; grabando a los 9200 ms (modo headset)
+✔ MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado) (546.6159ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+✔ REV-T1-1: si el micro del teléfono no se puede abrir en el reintento, se prueba el por defecto sin procesado (358.416ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+✔ REV-T1-1: si fallan también las alternativas, MicError en español y nada abierto (201.0149ms)
+✔ speaking: el final tardío de una frase interrumpida no devuelve la nueva a ▶ (126.8237ms)
+✔ toggleSpeak: ▶ → ⏸ → ▶, otro botón para el anterior y al terminar solo vuelve a ▶ (80.6268ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ stopSpeaking mientras se prepara la voz: la frase ya no se lanza (29.3892ms)
+✔ presente simple: el inglés sin comillas va con voz inglesa (4.3962ms)
+✔ citas: «…» en inglés con voz inglesa; las citas en español siguen en español (2.0925ms)
+✔ la «a» española delante de inglés sigue en español; la fonética /…/ no se lee (0.5274ms)
+✔ texto solo en español: un tramo (0.2333ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 51
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5098.9498

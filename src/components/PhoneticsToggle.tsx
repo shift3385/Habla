@@ -25,7 +25,7 @@ export default function PhoneticsToggle({
       type="button"
       disabled={exhausted}
       onClick={() => update(on ? { phoneticsOn: false, phoneticsUserOff: true } : { phoneticsOn: true, phoneticsUserOff: false })}
-      className={`flex h-[34px] flex-none items-center justify-center gap-1.5 rounded-[17px] text-[13px] disabled:opacity-50 ${compact ? 'w-[34px]' : 'px-3'} ${on ? 'btn-acc' : 'glass'}`}
+      className={`flex h-[34px] flex-none items-center justify-center gap-1.5 rounded-[17px] fs-13 disabled:opacity-50 ${compact ? 'w-[34px]' : 'px-3'} ${on ? 'btn-acc' : 'glass'}`}
       aria-pressed={on}
       aria-label={exhausted ? 'Fonética agotada este mes' : on ? 'Fonética activada: tocar para apagarla' : 'Fonética apagada: tocar para activarla'}
     >

@@ -7,7 +7,7 @@ import Calibration from './screens/Calibration'
 import Conversation from './screens/Conversation'
 import Home from './screens/Home'
 import Onboarding from './screens/Onboarding'
-import { applyBackup, readBackup } from './lib/backup'
+import { applyBackup, cleanShareCache, readBackup } from './lib/backup'
 import { expireRetestLeftovers } from './lib/testDraft'
 import { db } from './lib/db'
 import { getScenario } from './lib/scenarios'
@@ -43,6 +43,7 @@ import GrammarSheet from './components/GrammarSheet'
 import { onOpenGrammarTopic } from './lib/grammarLink'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, THEME_INFO, themeVars } from './ui/theme'
+import { applyFontScale } from './lib/fontScale'
 
 type Tab = 'home' | 'words' | 'progress' | 'settings'
 
@@ -115,6 +116,12 @@ export default function App() {
   const savedRef = useRef<SavedClass | null>(null)
   const [askNew, setAskNew] = useState<(() => void) | null>(null)
   const [askExit, setAskExit] = useState(false)
+  // 5.10.1 (REG-A4-04/MOV-2): «¿Terminar la clase?» con la mascota (antes, confirm() nativo con «Cancel/OK» en inglés).
+  const [askFinish, setAskFinish] = useState(false)
+  const askFinishRef = useRef(false)
+  useEffect(() => {
+    askFinishRef.current = askFinish
+  }, [askFinish])
   const loadSaved = useCallback(async () => {
     const s = await getSavedClass()
     savedRef.current = s
@@ -164,6 +171,8 @@ export default function App() {
       }
       // Restos de un re-test abandonado hace más de un mes (audios incluidos): fuera (AUD-FLU-204).
       if (p.calibratedAt) expireRetestLeftovers().catch(() => {})
+      // 5.10.1 (REG-A2-04): copias y resúmenes del test que quedaran en la caché tras Compartir.
+      cleanShareCache().catch(() => {})
       setStreak(dash.streak)
       setHomework(dash.lastHomework)
       setSettings(s)
@@ -251,7 +260,12 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings])
 
-  // Orientación elegida en Tema y mascota (p. ej. horizontal fija si el teléfono no gira).
+  // 5.10.1 (REG-M-05): tamaño de letra (solo el texto), combinado con la letra del sistema y con topes.
+  const fontScale = settings?.fontScale ?? 1
+  useEffect(() => {
+    applyFontScale(fontScale)
+  }, [fontScale])
+  // Orientación elegida en Apariencia (p. ej. horizontal fija si el teléfono no gira).
   const orientation = settings?.orientation ?? 'auto'
   useEffect(() => {
     applyOrientation(orientation)
@@ -260,7 +274,8 @@ export default function App() {
   // Botón "atrás" de Android: primero la pantalla activa; si no, vuelve a Inicio; en Inicio sale.
   useEffect(() => {
     const sub = CapApp.addListener('backButton', () => {
-      if (sheetBack.current) sheetBack.current()
+      if (askFinishRef.current) setAskFinish(false) // 5.10.1 (REG-A4-04): Atrás cierra la pregunta (= no terminar)
+      else if (sheetBack.current) sheetBack.current()
       else if (backHandler.current) backHandler.current()
       else if (tabRef.current !== 'home') setTab('home')
       // En el Inicio: la mascota pregunta antes de cerrar (NC-15).
@@ -299,7 +314,11 @@ export default function App() {
   if (!settings || !t || calibrated === null) return null
 
   // Selector de audio con auriculares: puede aparecer en cualquier pantalla.
-  const audioPicker = <AudioPicker settings={settings} t={t} update={update} />
+  // 5.10.1 (REG-M-03, D1): el selector y la prueba de sonido no salen antes de terminar la bienvenida y el tutorial (con la
+  // clave de Gemini guardada: `onboarded` la exige) ni en mitad del test de nivel; mientras, solo se aplica lo ya elegido.
+  // REG-N-01: tampoco encima de los avisos a pantalla completa (NoticeGate: clase a medias, novedades…).
+  const audioReady = !splash && settings.onboarded && !gate.length
+  const audioPicker = <AudioPicker settings={settings} t={t} update={update} ready={audioReady} />
   const picker = (
     <>
       {audioPicker}
@@ -389,7 +408,7 @@ export default function App() {
 
   if (!calibrated || retest) {
     return (
-      <Shell t={t} overlay={audioPicker}>
+      <Shell t={t} overlay={<AudioPicker settings={settings} t={t} update={update} ready={false} />}>
         <Calibration
           settings={settings}
           t={t}
@@ -537,7 +556,12 @@ export default function App() {
   function finishSavedClass() {
     const s = savedRef.current
     if (!s) return
-    if (!confirm(`¿Terminar «${s.title}» y ver tu evaluación? Ya no podrás seguirla.`)) return
+    setAskFinish(true) // 5.10.1 (REG-A4-04): lo pregunta la mascota; si dice que sí, doFinishSavedClass()
+  }
+  function doFinishSavedClass() {
+    setAskFinish(false)
+    const s = savedRef.current
+    if (!s) return
     backHandler.current = null
     setPlanOpen(false)
     setLesson({
@@ -546,6 +570,7 @@ export default function App() {
       categoryId: s.categoryId,
       customTopic: s.customTopic,
       planLesson: s.planLesson,
+      grammarTopic: s.grammarTopic,
       resume: s,
       finishNow: true,
     })
@@ -555,6 +580,18 @@ export default function App() {
   const mascotEl = THEME_INFO[settings.theme].mascot
   const dialogs = (
     <>
+      {askFinish && (
+        <MascotPage
+          overlay={{ t }}
+          element={mascotEl}
+          mood="thinking"
+          title="¿Terminar la clase?"
+          subtitle={`Si terminas «${savedClass?.title ?? 'tu clase'}» ahora, te doy la evaluación con lo que hablaste y ya no podrás seguirla.`}
+          primary={{ label: 'No, la sigo otro día', onClick: () => setAskFinish(false) }}
+          secondary={{ label: 'Sí, terminar y evaluar', onClick: doFinishSavedClass }}
+          onBack={() => setAskFinish(false)}
+        />
+      )}
       {askNew && (
         <MascotPage
           overlay={{ t }}

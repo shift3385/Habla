@@ -44,10 +44,10 @@
       },
       "examples": [
         { "en": "Spanish is spoken in more than twenty countries.", "es": "El español se habla en más de veinte países.", "noteEs": "«Se habla» → pasiva en inglés." },
-        { "en": "My phone was stolen on the train.", "es": "Me robaron el móvil en el tren.", "noteEs": "No sabemos quién fue: pasiva." },
+        { "en": "My phone was stolen on the train.", "es": "Me robaron el celular en el tren.", "noteEs": "No sabemos quién fue: pasiva." },
         { "en": "The meeting was canceled because of the storm.", "es": "La reunión se canceló por la tormenta." },
-        { "en": "These cars are made in Mexico.", "es": "Estos coches se fabrican en México." },
-        { "en": "The road is being repaired, so take another route.", "es": "Están arreglando la carretera, así que coge otra ruta.", "noteEs": "«Is being + participio»: está pasando ahora." },
+        { "en": "These cars are made in Mexico.", "es": "Estos carros se fabrican en México." },
+        { "en": "The road is being repaired, so take another route.", "es": "Están arreglando la carretera, así que toma otra ruta.", "noteEs": "«Is being + participio»: está pasando ahora." },
         { "en": "I was born in Lima in 1992.", "es": "Nací en Lima en 1992.", "noteEs": "«Nacer» siempre es «be born»." }
       ],
       "commonMistakes": [
@@ -109,7 +109,7 @@
         {
           "id": "passive-present-past-7",
           "type": "gap",
-          "prompt": "Where ____ you ____ (bear)? — In Bogotá.",
+          "prompt": "Where ____ you ____ (be born)? — In Bogotá.",
           "answers": ["were / born"],
           "whyEs": "«¿Dónde naciste?» = «Where were you born?»: pasiva con el participio «born»."
         },
@@ -169,11 +169,11 @@
         { "en": "The results will be published next week.", "es": "Los resultados se publicarán la semana que viene." },
         { "en": "This medicine should be taken with food.", "es": "Este medicamento debe tomarse con comida." },
         { "en": "The package should have been delivered yesterday.", "es": "El paquete tendría que haberse entregado ayer.", "noteEs": "Modal + have been + participio: algo que debió pasar y no pasó." },
-        { "en": "Phones can't be used during the exam.", "es": "No se pueden usar los móviles durante el examen." }
+        { "en": "Phones can't be used during the exam.", "es": "No se pueden usar los celulares durante el examen." }
       ],
       "commonMistakes": [
         { "wrong": "The project has been finish.", "right": "The project has been finished.", "whyEs": "Después de «been» va el participio («finished»), no el verbo base." },
-        { "wrong": "My car has repaired.", "right": "My car has been repaired.", "whyEs": "Sin «been» parece que el coche ha reparado algo. «Lo han reparado» = «has been repaired»." },
+        { "wrong": "My car has repaired.", "right": "My car has been repaired.", "whyEs": "Sin «been» parece que el carro ha reparado algo. «Lo han reparado» = «has been repaired»." },
         { "wrong": "The work must be do today.", "right": "The work must be done today.", "whyEs": "Modal + be + participio: «done», no «do» («tiene que hacerse hoy»)." }
       ],
       "related": ["passive-present-past", "present-perfect", "past-modals", "causative-have-something-done"],
@@ -197,7 +197,7 @@
         {
           "id": "passive-perfect-modals-3",
           "type": "choice",
-          "prompt": "This form must ____ in black ink.",
+          "prompt": "This form must ____ with a black pen.",
           "options": ["be filled in", "filled in", "be fill in", "been filled in"],
           "answer": 0,
           "whyEs": "Modal + be + participio: «must be filled in» (tiene que rellenarse).",
@@ -273,7 +273,7 @@
         "negative": {
           "pattern": "Sujeto + don't/doesn't/didn't + have/get + objeto + participio",
           "examples": [
-            { "en": "I didn't have the car washed this week.", "es": "Esta semana no llevé el coche a lavar." },
+            { "en": "I didn't have the car washed this week.", "es": "Esta semana no llevé el carro a lavar." },
             { "en": "We don't get our groceries delivered.", "es": "No nos traen la compra a casa." }
           ]
         },
@@ -281,16 +281,16 @@
           "pattern": "(Wh-) + do/does/did + sujeto + have/get + objeto + participio?",
           "examples": [
             { "en": "Where do you have your hair cut?", "es": "¿Dónde te cortas el pelo?" },
-            { "en": "Did you get your phone screen fixed?", "es": "¿Te arreglaron la pantalla del móvil?" }
+            { "en": "Did you get your phone screen fixed?", "es": "¿Te arreglaron la pantalla del celular?" }
           ]
         }
       },
       "examples": [
         { "en": "I need to get my eyes checked.", "es": "Tengo que ir a que me revisen la vista." },
-        { "en": "She had her dress made by a local designer.", "es": "Se hizo el vestido con una diseñadora de la zona.", "noteEs": "Con «by» dices quién lo hizo." },
+        { "en": "She had her dress made by a local designer.", "es": "Le hizo el vestido una diseñadora de la zona.", "noteEs": "Con «by» dices quién lo hizo." },
         { "en": "We had our roof repaired after the storm.", "es": "Nos arreglaron el tejado después de la tormenta." },
         { "en": "He had his wallet stolen on the subway.", "es": "Le robaron la cartera en el metro.", "noteEs": "Algo malo que le hicieron: no lo pidió." },
-        { "en": "I'm going to get my car serviced tomorrow.", "es": "Mañana llevo el coche a revisión." }
+        { "en": "I'm going to get my car serviced tomorrow.", "es": "Mañana llevo el carro a revisión." }
       ],
       "commonMistakes": [
         { "wrong": "I cut my hair last Saturday. (en la peluquería)", "right": "I had my hair cut last Saturday.", "whyEs": "En español «me corté el pelo» vale aunque lo haga el peluquero. En inglés, «I cut my hair» significa que te lo cortaste tú." },
@@ -320,6 +320,9 @@
           "type": "order",
           "words": ["I'm", "my", "getting", "checked", "eyes", "tomorrow"],
           "answer": "I'm getting my eyes checked tomorrow",
+          "alsoAccepted": [
+            "Tomorrow I'm getting my eyes checked"
+          ],
           "whyEs": "Get + objeto + participio, en presente continuo para un plan."
         },
         {
@@ -358,7 +361,7 @@
         }
       ],
       "speaking": [
-        { "promptEs": "Cuenta tres cosas que pagas para que te las hagan (pelo, coche, ropa…).", "modelEn": "I have my hair cut every month, I get my car washed at a car wash and I have my suits cleaned at the dry cleaner's.", "checkEs": "Have/get + objeto + participio." },
+        { "promptEs": "Cuenta tres cosas que pagas para que te las hagan (pelo, carro, ropa…).", "modelEn": "I have my hair cut every month, I get my car washed at a car wash and I have my suits cleaned at the dry cleaner's.", "checkEs": "Have/get + objeto + participio." },
         { "promptEs": "Cuenta algo malo que te pasó: algo que te robaron o te rompieron.", "modelEn": "Last year I had my phone stolen at a concert.", "checkEs": "«Had + objeto + participio» para algo que te hicieron otros." }
       ],
       "classFocusEn": "Practice 'have/get something done' for services and bad experiences. Correct 'I cut my hair' (when someone else did it) and the wrong order 'have repaired my car'."

@@ -1,0 +1,7 @@
+00:32:28.452 silencio
+00:32:28.953 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:32:29.941 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:32:30.211 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:32:32.490 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:32:32.767 Voz-Google@BLUETOOTH_A2DP(uso 1, 0 dB) 
+00:32:44.113 silencio

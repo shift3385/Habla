@@ -112,24 +112,52 @@ const fold = (s: string) =>
     .replace(/\s+/g, ' ')
     .trim()
 
+// 5.10.1 (REG-A1-04): titubeos que no cuentan como «algo tuyo» en ningún sitio de la frase…
+const HESITATIONS = new Set(['um', 'umm', 'uh', 'uhm', 'er', 'erm', 'eh', 'ah', 'hmm', 'mm', 'mmm'])
+// …y muletillas que, en lo que DIJISTE, solo se ignoran al principio o al final («so, I think…», «…was, yeah»).
+const EDGE_FILLERS = new Set([...HESITATIONS, 'so', 'and', 'yeah', 'well', 'like', 'okay', 'ok'])
+
+/** Las palabras de una frase sin mayúsculas, puntuación ni titubeos (um, uh…). */
+const plainWords = (s: string): string[] =>
+  fold(s)
+    .split(' ')
+    .filter((x) => x && !HESITATIONS.has(x))
+
 /**
- * v5.10 (P6): ¿la transcripción es, casi palabra por palabra, una de las ideas de «¿Qué digo?» que se acaban de
- * enseñar? Las ideas son comienzos de frase (6–12 palabras) para seguir con lo tuyo: si lo «dicho» es solo la idea,
- * lo más probable es que el micro captara la voz del teléfono leyéndola (o una alucinación con audio pobre).
+ * v5.10 (P6): ¿la transcripción es una de las ideas de «¿Qué digo?» que se acaban de enseñar? Si lo «dicho» es solo la
+ * idea, lo más probable es que el micro captara la voz del teléfono leyéndola (la voz lee el texto tal cual).
+ * 5.10.1 (REG-A1-04): solo cuenta la idea EXACTA y ENTERA (sin mayúsculas, puntuación ni «…»). En lo dicho se ignoran
+ * los titubeos y las muletillas de los extremos («so», «yeah»…); en la idea solo los titubeos, porque «well», «like» o
+ * «so» pueden ser contenido (REV-D4-01: idea «I don't sleep well» + «I don't sleep» es una respuesta, no la idea).
+ * Antes bastaba con empezar igual y añadir hasta 2 palabras, y se rechazaban respuestas reales de un A2 que hace justo lo
+ * que pide «¿Qué digo?» («…my weekend was the party»).
  */
 export function echoesIdea(transcript: string, ideas: readonly { en: string }[]): boolean {
-  const said = fold(transcript)
-  if (!said) return false
+  const said = plainWords(transcript)
+  if (!said.length) return false
+  let lead = 0
+  while (lead < said.length && EDGE_FILLERS.has(said[lead])) lead++
+  let trail = 0
+  while (trail < said.length - lead && EDGE_FILLERS.has(said[said.length - 1 - trail])) trail++
   return ideas.some((i) => {
-    const idea = fold(i.en)
+    const idea = plainWords(i?.en ?? '').join(' ')
     if (!idea) return false
-    if (said === idea) return true
-    const w = said.split(' ')
-    const iw = idea.split(' ')
-    // Lo dicho no añade casi nada a la idea: como mucho 2 palabras más y empieza igual.
-    return said.startsWith(idea) && w.length - iw.length <= 2
+    // Lo dicho, quitando de 0 a todas las muletillas de cada extremo, tiene que ser la idea entera.
+    for (let a = 0; a <= lead; a++) {
+      for (let b = 0; b <= trail; b++) {
+        if (said.slice(a, said.length - b).join(' ') === idea) return true
+      }
+    }
+    return false
   })
 }
+
+/**
+ * 5.10.1 (REG-A3-15): coherencia entre lo que se dice y lo que se corrige en TODAS las clases (antes solo estaba en el
+ * brief de Gramática): con correcciones en pantalla, el profe no puede decir «Great English!».
+ */
+export const REPLY_AGREES =
+  '- "reply" must agree with "corrections": if "corrections" is not empty, never call the answer correct, perfect, great English or spot on; react to the content and, if you praise, praise the idea, not the grammar.'
 
 /** v5.10 (D3): ids de los temas de Gramática, compactos (solo ids, ~1–2 KB), para que el profe marque cada corrección. */
 function grammarIds(): string {
@@ -178,7 +206,7 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 
 # Transcribing the audio
 - "transcript": write EXACTLY what the student said, verbatim. Do NOT fix grammar, word choice or word order: the mistakes are what we need to see. Keep hesitations like "uh" or "um" only when clearly audible. If they switch to Spanish, write those words in Spanish.
-- If the audio has no intelligible speech (silence, noise, a cough), set heard_speech to false, leave transcript empty, set has_error to false, and put in "reply" a short friendly request to repeat.
+- If the audio has no intelligible speech (silence, noise, a cough), set heard_speech to false, leave transcript empty and put in "reply" a short friendly request to repeat.
 - For text messages (not audio), set heard_speech to true and leave transcript empty. The student typed them: correct grammar and wrong words, but ignore capital letters, punctuation and small typos.
 
 # How you speak
@@ -202,6 +230,7 @@ ${profile.weaknesses.length ? profile.weaknesses.map((w) => `  - ${w}`).join('\n
 - "spanish": a natural Spanish translation of the corrected fragment (it will be used later as a translation drill).
 - "grammar_topics": the ids of the grammar topics the error belongs to (1–3, the most relevant first), chosen ONLY from the list below (the app links the correction to their explanations). Include EVERY topic the correction involves: e.g. "in my breakfast" → "for breakfast" involves both prepositions of time and for/since/during/ago. Use [] for pure vocabulary or pronunciation errors, or when no topic clearly fits.
 ${grammarIds()}
+${REPLY_AGREES}
 
 # Structures this student often gets wrong (create natural chances to practise them)
 ${structures || '- articles and uncountable nouns\n- auxiliary verbs in continuous tenses and the passive\n- false friends, only when misused ("actually" = "en realidad", "currently" = "actualmente")'}
@@ -254,24 +283,68 @@ export async function teacherTurn(
     (model) => askGemini<RawTeacherResponse>(apiKey, model, { system, contents, schema: TEACHER_SCHEMA }),
     onRetry,
   )
-  const corrections: Correction[] = (raw.corrections ?? [])
-    .filter((c) => c?.original?.trim() && c.corrected?.trim() && c.original.trim() !== c.corrected.trim())
-    .map((c) => ({
-      original: c.original.trim(),
-      corrected: c.corrected.trim(),
-      explanationEs: (c.explanation_es ?? '').trim(),
+  // 5.10.1 (REG-A2-05): tipos defensivos. Con el esquema Gemini respeta los tipos, pero un modelo de respaldo o un
+  // reintento sin esquema podría mandar un número u objeto, y `.trim()` lanzaría un TypeError en inglés.
+  const corrections: Correction[] = (Array.isArray(raw.corrections) ? raw.corrections : [])
+    .map((c) => ({ c, original: str(c?.original), corrected: str(c?.corrected) }))
+    .filter(({ original, corrected }) => original && corrected && original !== corrected)
+    .map(({ c, original, corrected }) => ({
+      original,
+      corrected,
+      explanationEs: str(c.explanation_es),
       category: CATEGORIES.includes(c.category) ? c.category : 'other',
-      spanish: (c.spanish ?? '').trim(),
+      spanish: str(c.spanish),
       // v5.10: solo ids que existen en el catálogo; uno inventado o vacío no se guarda.
       ...grammarFields(c),
     }))
   return {
     heardSpeech: raw.heard_speech !== false,
-    transcript: (raw.transcript ?? '').trim(),
-    reply: (raw.reply ?? '').trim(),
-    replyEs: (raw.reply_es ?? '').trim(),
+    transcript: str(raw.transcript),
+    reply: tidyReply(str(raw.reply)),
+    replyEs: tidyReply(str(raw.reply_es)),
     corrections,
   }
+}
+
+/**
+ * 5.10.1 (5.8c, uso real): la respuesta se pinta y se lee en una sola línea. Gemini a veces separa con un salto de
+ * línea y sin espacio («Remember:» + salto + «at is for times») y en pantalla salía «Remember:at». Los saltos pasan a
+ * un espacio y tras «:» seguido de una letra se pone uno (en inglés las horas van con cifras: «10:30» no cambia).
+ */
+export const tidyReply = (s: string): string =>
+  s
+    .replace(/[ \t]*[\r\n]+[ \t]*/g, ' ')
+    .replace(/:(?=\p{L})/gu, ': ')
+    .replace(/ {2,}/g, ' ')
+    .trim()
+
+/** 5.10.1 (REG-A2-05): texto de una respuesta de la IA, o '' si no es una cadena. */
+export const str = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
+
+/**
+ * 5.10.1 (REG-A3-04): tramos de la respuesta del profe en la clase de Gramática, listos para leer cada uno con su voz.
+ * El brief obliga a poner TODO el español entre « » (y el inglés citado entre "…"), así que aquí no se adivina: lo de
+ * dentro de « » es español y el resto, inglés. Las comillas « » se quitan (no se leen). Fuera de la clase de Gramática
+ * no hace falta: la respuesta del profe es solo inglés.
+ */
+export function replySegments(reply: string): { lang: 'es' | 'en'; text: string }[] {
+  const out: { lang: 'es' | 'en'; text: string }[] = []
+  const push = (lang: 'es' | 'en', text: string) => {
+    if (!text.trim()) return
+    const cur = out.at(-1)
+    // Puntuación suelta («?», «.»): se queda con el tramo anterior (ayuda a la pausa y no crea un tramo vacío).
+    if (cur && !/[\p{L}\p{N}]/u.test(text)) cur.text += text.trim()
+    else if (cur && cur.lang === lang) cur.text += ` ${text.trim()}`
+    else out.push({ lang, text: text.trim() })
+  }
+  let last = 0
+  for (const m of reply.matchAll(/«([^»]*)»/g)) {
+    push('en', reply.slice(last, m.index))
+    push('es', m[1])
+    last = m.index! + m[0].length
+  }
+  push('en', reply.slice(last))
+  return out
 }
 
 // ---------------------------------------------------------------------------

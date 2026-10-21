@@ -102,7 +102,7 @@ export default function ProgressScreen({
   return (
     <div className="anim-up flex flex-col gap-3">
       <div className="flex h-[54px] items-center justify-between">
-        <div className="text-[28px] font-semibold tracking-[-.6px]">Progreso</div>
+        <div className="fs-28 font-semibold tracking-[-.6px]">Progreso</div>
         <div className="glass flex h-[42px] items-center gap-1.5 rounded-[21px] px-3.5 text-sm font-semibold">
           <Icon name="flame" size={17} stroke={1.8} color="var(--acc)" />
           {dash?.streak ?? 0} {dash?.streak === 1 ? 'día' : 'días'}
@@ -113,11 +113,11 @@ export default function ProgressScreen({
         <div className="flex items-center gap-4">
           <SmallRing pct={mins / goal} size={76} />
           <div className="flex-1">
-            <div className="txt-sub text-[13px]">Hoy</div>
+            <div className="txt-sub fs-13">Hoy</div>
             <div className="text-2xl font-semibold tracking-[-.4px]">
               {mins.toLocaleString('es')} / {goal} min
             </div>
-            <div className="txt-sub text-[13px]">Semana: {weekTotal.toLocaleString('es')} min</div>
+            <div className="txt-sub fs-13">Semana: {weekTotal.toLocaleString('es')} min</div>
           </div>
         </div>
         <div className="mt-3.5 grid h-24 grid-cols-7 items-end gap-2.5" role="img" aria-label="Minutos hablando cada día de esta semana">
@@ -154,7 +154,7 @@ export default function ProgressScreen({
         <div key="errors" className="anim-up flex flex-col gap-2">
           {errors.length === 0 && <Empty text="Aquí aparecerán las correcciones que te haga tu profe." />}
           {errors.length > 0 && (
-            <button onClick={onReview} className="btn-acc flex h-12 items-center justify-center gap-2 rounded-3xl text-[15px]">
+            <button onClick={onReview} className="btn-acc flex h-12 items-center justify-center gap-2 rounded-3xl fs-15">
               <Icon name="cards" size={18} />
               Repasar mis errores en voz alta
             </button>
@@ -172,7 +172,7 @@ export default function ProgressScreen({
                     <span className="txt-sub line-through">{e.original}</span>
                     <br />
                     <span className="font-semibold">{e.corrected}</span>
-                    {openErr === i && e.explanationEs && <span className="txt-sub mt-1 block text-[13px]">{e.explanationEs}</span>}
+                    {openErr === i && e.explanationEs && <span className="txt-sub mt-1 block fs-13">{e.explanationEs}</span>}
                   </div>
                   <div className="txt-sub flex-none text-xs">{e.count === 1 ? '1 vez' : `${e.count} veces`}</div>
                 </button>
@@ -238,8 +238,8 @@ export default function ProgressScreen({
                   <button key={s.id} onClick={() => openSession(s)} className="glass flex items-center gap-3 rounded-[20px] p-2.5 text-left">
                     <span className="field txt-acc2 grid h-11 w-11 flex-none place-items-center rounded-full font-semibold">{s.metrics!.score}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] font-semibold">{sessionTitle(s)}</span>
-                      <span className="txt-sub block text-[12.5px]">
+                      <span className="block truncate fs-15 font-semibold">{sessionTitle(s)}</span>
+                      <span className="txt-sub block fs-12.5">
                         {shortDate(s.startedAt)} · {s.metrics!.wpm} ppm · {s.metrics!.turns} {s.metrics!.turns === 1 ? 'respuesta' : 'respuestas'}
                       </span>
                     </span>

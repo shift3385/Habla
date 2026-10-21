@@ -54,14 +54,14 @@ export default function GrammarSectionScreen({
           <Icon name={sectionIcon(section.icon)} size={18} />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[22px] leading-tight font-semibold tracking-[-.4px] break-words">{section.titleEs}</div>
-          <div className="txt-sub text-[12.5px] leading-tight">
+          <div className="fs-22 leading-tight font-semibold tracking-[-.4px] break-words">{section.titleEs}</div>
+          <div className="txt-sub fs-12.5 leading-tight">
             {section.titleEn} · {section.topics.length} {section.topics.length === 1 ? 'tema' : 'temas'}
             {done > 0 ? ` · ${done} ${done === 1 ? 'dominado' : 'dominados'}` : ''}
           </div>
         </div>
       </div>
-      <div className="txt-sub text-[13.5px] leading-snug">{section.descriptionEs}</div>
+      <div className="txt-sub fs-13.5 leading-snug">{section.descriptionEs}</div>
       <InfiniteList
         items={section.topics}
         render={(t) => (

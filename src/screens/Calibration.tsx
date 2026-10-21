@@ -54,6 +54,8 @@ import { getProfile } from '../lib/profile'
 import { buildSummary } from '../lib/testSummary'
 import { clearDraft, clearProgress, loadDraft, loadProgress, saveDraft, saveProgress, type TestDraft, type TestProgress } from '../lib/testDraft'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
+import { holdRoute } from '../lib/audioRoute'
+import { DISCARD_HINTS, logDiscard } from '../components/talkGesture'
 import { mainModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording } from '../lib/speech'
 import { englishVoices, speak, stopSpeaking } from '../lib/tts'
@@ -141,7 +143,7 @@ function Header({ section, onPause }: { section: number; onPause?: () => void })
         <div className="flex items-center gap-2">
           <div className="txt-sub text-sm">{section >= 0 ? `${section + 1}/4 · ${SECTIONS[section]}` : ''}</div>
           {onPause && (
-            <button onClick={onPause} className="glass flex h-8 items-center gap-1 rounded-full px-3 text-[13px] font-medium" aria-label="Posponer el test">
+            <button onClick={onPause} className="glass flex h-8 items-center gap-1 rounded-full px-3 fs-13 font-medium" aria-label="Posponer el test">
               <span aria-hidden>⏸</span> Posponer
             </button>
           )}
@@ -161,7 +163,7 @@ function Option({ text, sel, onClick, disabled }: { text: string; sel: boolean; 
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex min-h-[48px] w-full items-center rounded-[18px] px-4 py-2.5 text-left text-[15px] ${sel ? 'btn-acc' : 'glass'}`}
+      className={`flex min-h-[48px] w-full items-center rounded-[18px] px-4 py-2.5 text-left fs-15 ${sel ? 'btn-acc' : 'glass'}`}
     >
       {text}
     </button>
@@ -173,18 +175,18 @@ function UnknownOption({ sel, onClick, short }: { sel: boolean; onClick: () => v
   return (
     <button
       onClick={onClick}
-      className="flex min-h-[44px] w-full items-center gap-2.5 rounded-[18px] px-4 py-2 text-left text-[14.5px] transition-colors"
+      className="flex min-h-[44px] w-full items-center gap-2.5 rounded-[18px] px-4 py-2 text-left fs-14.5 transition-colors"
       style={{
         border: `1.5px dashed ${sel ? 'var(--acc2)' : 'var(--sub)'}`,
         background: sel ? 'var(--field)' : 'transparent',
         color: sel ? 'var(--acc2)' : 'var(--sub)',
       }}
     >
-      <span className="grid h-6 w-6 flex-none place-items-center rounded-full text-[13px] font-semibold" style={{ border: '1.5px solid currentColor' }}>
+      <span className="grid h-6 w-6 flex-none place-items-center rounded-full fs-13 font-semibold" style={{ border: '1.5px solid currentColor' }}>
         ?
       </span>
       <span>
-        No lo sé {!short && <span className="text-[12px] opacity-80">· mejor ser sincero que adivinar</span>}
+        No lo sé {!short && <span className="fs-12 opacity-80">· mejor ser sincero que adivinar</span>}
       </span>
     </button>
   )
@@ -202,7 +204,7 @@ function ShortAnswer({ value, onChange, placeholder }: { value: Value; onChange:
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        className="glass h-[50px] w-full rounded-[18px] px-4 text-[16px] outline-none"
+        className="glass h-[50px] w-full rounded-[18px] px-4 fs-16 outline-none"
         style={{ color: 'var(--tx)' }}
       />
       <UnknownOption short sel={value === -1} onClick={() => onChange(value === -1 ? null : -1)} />
@@ -307,7 +309,8 @@ export default function Calibration({ settings, update, onDone, onPause, registe
   const [tasks, setTasks] = useState<SpeakingTask[]>([])
   const [speech, setSpeech] = useState<(SpeakingAnswer | null | 'skipped')[]>([null, null, null])
   const [micFailures, setMicFailures] = useState(0)
-  const [recState, setRecState] = useState<'idle' | 'recording' | 'processing'>('idle')
+  // 5.10.1 (REG-A4-02, P7): 'opening' mientras abre el micro («Abriendo el micro… espera», sin aceptar toques).
+  const [recState, setRecState] = useState<'idle' | 'opening' | 'recording' | 'processing'>('idle')
   const [elapsed, setElapsed] = useState(0)
   const recorder = useRef(new Recorder())
   const recStart = useRef(0)
@@ -572,17 +575,24 @@ export default function Calibration({ settings, update, onDone, onPause, registe
   }
 
   const toggleRecord = async (i: number) => {
-    if (recState === 'processing') return
+    if (recState === 'processing' || recState === 'opening') return
     if (recState === 'idle') {
+      // REG-A1-01: billete al tocar, antes de esperar a que calle la voz.
+      const ticket = recorder.current.ticket()
+      setRecState('opening') // REG-A4-02 (P7)
       await stopSpeaking()
       try {
         // AUD-MIC-302: un doble toque comparte la misma apertura; false = cancelada (saliste o segundo plano).
-        if (!(await recorder.current.begin())) return
+        if (!(await recorder.current.begin(ticket))) {
+          setRecState((r) => (r === 'opening' ? 'idle' : r))
+          return
+        }
         recStart.current = performance.now()
         setElapsed(0)
         setHint(null)
         setRecState('recording')
       } catch (e) {
+        setRecState('idle')
         setHint(e instanceof MicError ? e.message : 'No se pudo grabar.')
         setMicFailures((n) => n + 1)
       }
@@ -596,7 +606,9 @@ export default function Calibration({ settings, update, onDone, onPause, registe
       // Error 400 del repaso (2026-10-08): también una grabación con solo la cabecera cuenta como micro que falla.
       const empty = isEmptyRecording(blob, analysis)
       if (seconds < 5 || empty || (analysis && !analysis.hasSpeech)) {
-        setHint('Necesito oírte un poco más. Inténtalo otra vez y habla al menos 20 segundos.')
+        // REG-M-02: el motivo queda en el registro (el aviso ya se queda hasta el siguiente toque).
+        logDiscard(empty ? 'vacia' : seconds < 5 ? 'corta' : 'sin-voz', 'test', { seconds, bytes: blob.size, analyzed: !!analysis })
+        setHint(empty ? DISCARD_HINTS.vacia : 'Necesito oírte un poco más. Inténtalo otra vez y habla al menos 20 segundos.')
         if (empty) {
           distrustMic()
           setMicFailures((n) => n + 1)
@@ -630,13 +642,20 @@ export default function Calibration({ settings, update, onDone, onPause, registe
   }
 
   // MOV-1: al pasar a segundo plano se cierra el micro (lifecycle); la tarea no debe seguir mostrando «grabando».
+  // REG-A1-01: también durante la apertura (si no, el botón se quedaba en «Abriendo el micro…»).
   useEffect(() => {
-    if (recState !== 'recording') return
+    if (recState !== 'recording' && recState !== 'opening') return
     return whenBackground(() => {
+      logDiscard('segundo-plano', 'test', { recState })
       setRecState('idle')
-      setHint('Se cortó la grabación al salir de Habla. Toca el micro y vuelve a grabar.')
+      setHint(DISCARD_HINTS['segundo-plano'])
     })
   }, [recState])
+
+  // 5.10.1 (REG-M-01): en las tareas de habla (y con la app en uso) la ruta de los auriculares se queda puesta; se
+  // suelta al pasar a otra parte del test, al salir y en segundo plano. No abre el micro.
+  const speakingStep = step.k === 'speaking'
+  useEffect(() => (speakingStep ? holdRoute() : undefined), [speakingStep])
 
   const skipTask = (i: number) => {
     setSpeech((s) => s.map((x, j) => (j === i ? 'skipped' : x)))
@@ -817,7 +836,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
       >
         <ul className="flex flex-col gap-2.5">
           {info.points.map((p) => (
-            <li key={p} className="flex gap-2.5 text-[15px] leading-snug">
+            <li key={p} className="flex gap-2.5 fs-15 leading-snug">
               <span className="txt-acc mt-0.5 flex-none">
                 <Icon name="check" size={17} stroke={2.2} />
               </span>
@@ -830,7 +849,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
             <span className="txt-acc2 mt-0.5 flex-none">
               <Icon name={info.icon} size={20} />
             </span>
-            <span className="text-[14px] leading-snug">{info.tip}</span>
+            <span className="fs-14 leading-snug">{info.tip}</span>
           </div>
         )}
       </MascotPage>
@@ -866,10 +885,10 @@ export default function Calibration({ settings, update, onDone, onPause, registe
           <div className="txt-sub text-sm">
             Pregunta {gAnswers.length + 1} de {gItems.length} · {it.format === 'mc' ? 'elige la correcta' : 'escribe la forma correcta'}
           </div>
-          <div className="glass mt-3 rounded-[24px] p-5 text-[19px] leading-snug font-medium">
+          <div className="glass mt-3 rounded-[24px] p-5 fs-19 leading-snug font-medium">
             {it.prompt}
             {it.format === 'short' && (
-              <span className="txt-acc2 ml-2 text-[16px] whitespace-nowrap">({it.hint})</span>
+              <span className="txt-acc2 ml-2 fs-16 whitespace-nowrap">({it.hint})</span>
             )}
           </div>
           {it.format === 'mc' ? (
@@ -885,7 +904,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
               <button
                 onClick={() => answerGrammar(gValue === -1 || gValue === null ? -1 : String(gValue))}
                 disabled={gValue === null}
-                className="btn-acc h-[54px] rounded-full text-[16px] disabled:opacity-45"
+                className="btn-acc h-[54px] rounded-full fs-16 disabled:opacity-45"
               >
                 Siguiente
               </button>
@@ -906,13 +925,13 @@ export default function Calibration({ settings, update, onDone, onPause, registe
           <div key={`r${n}`} className="anim-in no-scrollbar -mx-1 flex min-h-0 flex-1 flex-col overflow-y-auto px-1">
             <div className="txt-sub text-sm">Texto {n + 1} de 2 · {item.questions.length} preguntas</div>
             <div className="glass mt-3 rounded-[24px] p-4">
-              <div className="mb-2 text-[17px] font-semibold">{item.title}</div>
-              <div className="text-[15.5px] leading-relaxed whitespace-pre-line">{item.text}</div>
+              <div className="mb-2 fs-17 font-semibold">{item.title}</div>
+              <div className="fs-15.5 leading-relaxed whitespace-pre-line">{item.text}</div>
             </div>
             {item.questions.map((q, qi) => (
               <Question key={qi} q={q} n={qi + 1} value={cur[qi]} onChange={(v) => setAnswer(qi, v)} />
             ))}
-            <button onClick={() => finishReadingBlock(n)} disabled={!allDone} className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full text-[16px] disabled:opacity-45">
+            <button onClick={() => finishReadingBlock(n)} disabled={!allDone} className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full fs-16 disabled:opacity-45">
               {allDone ? 'Siguiente' : `Responde las ${item.questions.length} preguntas`}
             </button>
           </div>
@@ -931,10 +950,10 @@ export default function Calibration({ settings, update, onDone, onPause, registe
             <div className="glass mt-3 rounded-[24px] p-4">
               {inPreview ? (
                 <div className="flex items-center gap-4">
-                  <div className="btn-acc grid h-16 w-16 flex-none place-items-center rounded-full text-[22px] font-semibold tabular-nums">{countdown}</div>
-                  <div className="flex-1 text-[14.5px] leading-snug">
+                  <div className="btn-acc grid h-16 w-16 flex-none place-items-center rounded-full fs-22 font-semibold tabular-nums">{countdown}</div>
+                  <div className="flex-1 fs-14.5 leading-snug">
                     Lee las preguntas antes de escuchar. El audio se activa en {countdown} s.
-                    <button onClick={() => setPhase('listen')} className="txt-acc2 mt-1 block text-[13.5px] underline underline-offset-2">
+                    <button onClick={() => setPhase('listen')} className="txt-acc2 mt-1 block fs-13.5 underline underline-offset-2">
                       Ya las leí, escuchar
                     </button>
                   </div>
@@ -951,7 +970,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
                   </button>
                   <div className="flex-1">
                     <Wave n={14} on={playing} />
-                    <div className="txt-sub mt-1 text-[13px]">
+                    <div className="txt-sub mt-1 fs-13">
                       {locked
                         ? 'Nota cerrada · puedes seguir escuchando para practicar'
                         : playing
@@ -964,20 +983,20 @@ export default function Calibration({ settings, update, onDone, onPause, registe
                 </div>
               )}
               {confirm3 && (
-                <div className="mt-3 rounded-[18px] p-3 text-[14px] leading-snug" style={{ background: 'var(--field)' }}>
+                <div className="mt-3 rounded-[18px] p-3 fs-14 leading-snug" style={{ background: 'var(--field)' }}>
                   <b>Última escucha con nota.</b> Al terminar, las preguntas sin responder contarán como «No sé». Después podrás seguir escuchando, pero ya no puntuará.
                   <div className="mt-2.5 flex gap-2">
-                    <button onClick={play} className="btn-acc h-10 flex-1 rounded-full text-[14px]">
+                    <button onClick={play} className="btn-acc h-10 flex-1 rounded-full fs-14">
                       Escuchar
                     </button>
-                    <button onClick={() => setConfirm3(false)} className="glass h-10 flex-1 rounded-full text-[14px]">
+                    <button onClick={() => setConfirm3(false)} className="glass h-10 flex-1 rounded-full fs-14">
                       Aún no
                     </button>
                   </div>
                 </div>
               )}
               {locked && (
-                <div className="txt-sub mt-3 text-[12.5px] leading-snug">
+                <div className="txt-sub mt-3 fs-12.5 leading-snug">
                   Regla de evaluación: lo que respondas a partir de ahora es práctica y no cuenta para tu nota.
                 </div>
               )}
@@ -988,7 +1007,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
             <button
               onClick={() => finishListeningBlock(n)}
               disabled={plays === 0 || playing}
-              className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full text-[16px] disabled:opacity-45"
+              className="btn-acc mt-5 mb-1 h-[54px] flex-none rounded-full fs-16 disabled:opacity-45"
             >
               {plays === 0 ? 'Escucha el audio primero' : 'Terminar y ver respuestas'}
             </button>
@@ -1040,10 +1059,10 @@ export default function Calibration({ settings, update, onDone, onPause, registe
           <div className="flex items-center gap-3">
             <Mascot element={mascot} size={64} mood={okCount / Math.max(1, rows.length) >= 0.6 ? 'happy' : 'idle'} />
             <div className="min-w-0">
-              <div className="text-[20px] font-semibold">
+              <div className="fs-20 font-semibold">
                 {okCount} de {rows.length} correctas
               </div>
-              <div className="txt-sub text-[13.5px] leading-snug">Así fue {what}. Mira las respuestas antes de seguir.</div>
+              <div className="txt-sub fs-13.5 leading-snug">Así fue {what}. Mira las respuestas antes de seguir.</div>
             </div>
           </div>
           {b?.item.skill === 'listening' && <Transcript item={b.item} />}
@@ -1052,7 +1071,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
               <ReviewCard key={i} n={i + 1} row={r} />
             ))}
           </div>
-          <button onClick={() => afterReview(kind, n)} className="btn-acc mt-4 mb-1 h-[54px] flex-none rounded-full text-[16px]">
+          <button onClick={() => afterReview(kind, n)} className="btn-acc mt-4 mb-1 h-[54px] flex-none rounded-full fs-16">
             {next}
           </button>
         </div>
@@ -1076,7 +1095,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
           <div className="glass mt-3 rounded-[24px] p-4">
             <div className="flex items-start gap-3">
               <Mascot element={mascot} size={52} mood={recording ? 'listening' : recState === 'processing' ? 'thinking' : 'idle'} />
-              <div className="flex-1 text-[16.5px] leading-snug">
+              <div className="flex-1 fs-16.5 leading-snug">
                 {task.item.task === 1 ? (
                   <ol className="list-decimal space-y-1 pl-5">
                     {task.prompts.map((p) => (
@@ -1087,7 +1106,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
                   task.prompts[0]
                 )}
                 {task.cues && (
-                  <ul className="txt-sub mt-2 list-disc space-y-0.5 pl-5 text-[14px]">
+                  <ul className="txt-sub mt-2 list-disc space-y-0.5 pl-5 fs-14">
                     {task.cues.map((c) => (
                       <li key={c}>{c}</li>
                     ))}
@@ -1095,7 +1114,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
                 )}
               </div>
             </div>
-            <button onClick={() => sayTask(task)} className="txt-sub mt-2 flex items-center gap-1.5 text-[13px]">
+            <button onClick={() => sayTask(task)} className="txt-sub mt-2 flex items-center gap-1.5 fs-13">
               <Icon name="speaker" size={14} /> Escuchar otra vez
             </button>
           </div>
@@ -1104,7 +1123,8 @@ export default function Calibration({ settings, update, onDone, onPause, registe
               <Wave on={recording} />
               <button
                 onClick={() => toggleRecord(i)}
-                className="grid h-[92px] w-[92px] place-items-center rounded-full"
+                disabled={recState === 'opening'}
+                className="grid h-[92px] w-[92px] place-items-center rounded-full disabled:opacity-60"
                 style={{
                   border: '1px solid rgba(255,255,255,.35)',
                   background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 45%), var(--acc)',
@@ -1122,7 +1142,9 @@ export default function Calibration({ settings, update, onDone, onPause, registe
             <div className="txt-sub text-center text-sm tabular-nums">
               {recording
                 ? `${Math.floor(elapsed)} s · toca para terminar`
-                : recState === 'processing'
+                : recState === 'opening'
+                  ? 'Abriendo el micro… espera'
+                  : recState === 'processing'
                   ? 'Procesando…'
                   : speech[i] === 'skipped'
                     ? 'Pregunta saltada · puedes intentar grabarla otra vez'
@@ -1132,17 +1154,17 @@ export default function Calibration({ settings, update, onDone, onPause, registe
                         ? 'Toca y contesta las dos preguntas seguidas'
                         : 'Toca para empezar a hablar'}
             </div>
-            {hint && <div className="txt-sub text-center text-[13px]">{hint}</div>}
+            {hint && <div className="txt-sub text-center fs-13">{hint}</div>}
             <PhoneticsToggle settings={settings} update={update} />
-            {pron[i] === 'pending' && <div className="txt-sub text-center text-[12.5px]">Azure está puntuando tu pronunciación…</div>}
+            {pron[i] === 'pending' && <div className="txt-sub text-center fs-12.5">Azure está puntuando tu pronunciación…</div>}
             {pron[i] && pron[i] !== 'pending' && typeof pron[i] !== 'string' && (
               <div className="w-full">
-                <div className="txt-sub mb-1 text-center text-[12px]">Tu pronunciación (solo informativa: no cuenta para tu nivel)</div>
+                <div className="txt-sub mb-1 text-center fs-12">Tu pronunciación (solo informativa: no cuenta para tu nivel)</div>
                 <PronunciationView r={pron[i] as PronResult} onSay={(w) => speak(w, settings.ttsRate, settings.voiceIndex)} />
               </div>
             )}
             {micFailures > 0 && !done && recState === 'idle' && (
-              <button onClick={() => skipTask(i)} className="txt-sub h-10 rounded-[20px] px-4 text-[13.5px]" style={{ border: '1.5px dashed var(--sub)' }}>
+              <button onClick={() => skipTask(i)} className="txt-sub h-10 rounded-[20px] px-4 fs-13.5" style={{ border: '1.5px dashed var(--sub)' }}>
                 ¿Sigue sin funcionar? Saltar esta pregunta
               </button>
             )}
@@ -1157,7 +1179,7 @@ export default function Calibration({ settings, update, onDone, onPause, registe
               else finish()
             }}
             disabled={!done || recState !== 'idle'}
-            className="btn-acc h-[54px] flex-none rounded-full text-[16px] disabled:opacity-45"
+            className="btn-acc h-[54px] flex-none rounded-full fs-16 disabled:opacity-45"
           >
             {i < 2 ? 'Siguiente' : 'Ver mi nivel'}
           </button>
@@ -1182,13 +1204,13 @@ interface ReviewRow {
 /** Una fila del resumen: pregunta, tu respuesta y, si fallaste, la correcta (mismo formato en todos los tests). */
 function ReviewCard({ n, row }: { n: number; row: ReviewRow }) {
   return (
-    <div className="glass rounded-[18px] px-4 py-3 text-[14px] leading-snug">
+    <div className="glass rounded-[18px] px-4 py-3 fs-14 leading-snug">
       <div className="font-medium">
         {n}. {row.prompt}
       </div>
       <div className="mt-1 flex items-start gap-2">
         <span className={`flex-none ${row.ok ? 'txt-acc' : 'txt-sub'}`}>
-          {row.ok ? <Icon name="check" size={16} stroke={2.2} /> : <span className="text-[14px] font-semibold">✕</span>}
+          {row.ok ? <Icon name="check" size={16} stroke={2.2} /> : <span className="fs-14 font-semibold">✕</span>}
         </span>
         <span className="min-w-0 break-words">
           {row.late ? (
@@ -1216,14 +1238,14 @@ function Transcript({ item }: { item: ListeningItem }) {
   const name = (id: string) => item.speakers.find((x) => x.id === id)?.name ?? id
   return (
     <div className="glass mt-3 rounded-[18px] px-4 py-3">
-      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between text-left text-[14.5px] font-semibold">
+      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between text-left fs-14.5 font-semibold">
         Ver lo que se dijo
         <Icon name="chevD" size={15} stroke={2} />
       </button>
       {open && (
         <ul className="mt-2 flex flex-col gap-2">
           {item.script.map((l, i) => (
-            <li key={i} className="text-[14px] leading-snug">
+            <li key={i} className="fs-14 leading-snug">
               {item.speakers.length > 1 && <b className="txt-acc2 mr-1.5">{name(l.s)}:</b>}
               {l.t}
             </li>
@@ -1278,7 +1300,7 @@ interface Page {
 }
 
 function Card({ children }: { children: ReactNode }) {
-  return <div className="glass rounded-[20px] px-4 py-3 text-[14.5px] leading-snug">{children}</div>
+  return <div className="glass rounded-[20px] px-4 py-3 fs-14.5 leading-snug">{children}</div>
 }
 
 /** Primer test hecho antes del banco calibrado: se repite y sustituye por completo (sin 70/30). */
@@ -1315,7 +1337,7 @@ function firstPages(mascotName: string): Page[] {
           ].map(([a, b]) => (
             <div key={a} className="glass rounded-[20px] px-3.5 py-3">
               <div className="font-semibold">{a}</div>
-              <div className="txt-sub text-[12.5px]">{b}</div>
+              <div className="txt-sub fs-12.5">{b}</div>
             </div>
           ))}
         </div>
@@ -1340,7 +1362,7 @@ function firstPages(mascotName: string): Page[] {
             <div className="my-2.5 rounded-[16px] px-1 py-2.5" style={{ background: 'var(--field)' }}>
               <Fraction left="Nivel =" num="Gram. + Lect. + Aud. + Habla" den="4" />
             </div>
-            <ul className="txt-sub flex list-disc flex-col gap-0.5 pl-5 text-[13.5px]">
+            <ul className="txt-sub flex list-disc flex-col gap-0.5 pl-5 fs-13.5">
               <li>A1 = 1, A2 = 2 … C2 = 6. Las cuatro pesan lo mismo.</li>
               <li>Un ,5 exacto se redondea hacia abajo.</li>
               <li>Nunca supera en más de 2 a tu destreza más baja.</li>
@@ -1394,15 +1416,15 @@ function retestPages(p: Profile, mascotName: string): Page[] {
             const prop = traj[k]
             return (
               <div key={k} className="glass flex items-center gap-3 rounded-[18px] px-4 py-2.5">
-                <span className="w-[86px] text-[14.5px] font-medium">{SKILL_ES[k]}</span>
-                <span className="txt-sub flex-1 text-[12.5px] leading-snug">
+                <span className="w-[86px] fs-14.5 font-medium">{SKILL_ES[k]}</span>
+                <span className="txt-sub flex-1 fs-12.5 leading-snug">
                   {k === 'speaking'
                     ? sessions
                       ? `según tus últimas ${sessions} clases habladas`
                       : 'aún sin clases suficientes: se mantiene'
                     : 'las clases no la miden por separado: se mantiene'}
                 </span>
-                <span className="txt-acc2 text-[15px] font-semibold whitespace-nowrap">{prop === now ? now : `${now} → ${prop}`}</span>
+                <span className="txt-acc2 fs-15 font-semibold whitespace-nowrap">{prop === now ? now : `${now} → ${prop}`}</span>
               </div>
             )
           })}
@@ -1415,10 +1437,10 @@ function retestPages(p: Profile, mascotName: string): Page[] {
       body: (
         <div className="flex flex-col gap-2">
           <Card>
-            <div className="text-center text-[16px] font-semibold">
+            <div className="text-center fs-16 font-semibold">
               nivel = {Math.round(TEST_WEIGHT * 100)} % test + {Math.round((1 - TEST_WEIGHT) * 100)} % clases
             </div>
-            <div className="txt-sub mt-1 text-center text-[12.5px]">por cada destreza, con A1 = 1 … C2 = 6 · un ,5 se redondea hacia abajo</div>
+            <div className="txt-sub mt-1 text-center fs-12.5">por cada destreza, con A1 = 1 … C2 = 6 · un ,5 se redondea hacia abajo</div>
           </Card>
           <Card>
             Ejemplo: si en el test sacas <b>{ex.test}</b> en habla y tus clases proponen <b>{ex.traj}</b>: 0,7 × {levelIdx(ex.test) + 1} + 0,3 × {levelIdx(ex.traj) + 1} ={' '}
@@ -1446,7 +1468,7 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
         <div className="glass flex flex-col items-center gap-1 rounded-[28px] p-5 text-center">
           <Mascot element={mascot} size={96} mood="happy" />
           <div className="txt-sub mt-1 text-sm">{r.prev && !r.trajectory ? `${mascotName}: tu nivel recalibrado` : r.prev ? `${mascotName}: tu nivel tras el re-test` : `${mascotName}: ¡ya te conozco! Tu nivel es`}</div>
-          <div className="text-[56px] leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
+          <div className="fs-56 leading-none font-semibold tracking-[-2px]" style={{ color: 'var(--acc)' }}>
             {r.levels.overall}
           </div>
           {r.prev && (
@@ -1456,7 +1478,7 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
           )}
         </div>
 
-        <div className="glass rounded-[24px] p-4 text-[14px] leading-snug">
+        <div className="glass rounded-[24px] p-4 fs-14 leading-snug">
           <div className="mb-3 font-semibold">Cómo lo calculé</div>
           <div className="rounded-[18px] px-2 py-3" style={{ background: 'var(--field)', color: 'var(--tx)' }}>
             <Fraction
@@ -1485,12 +1507,12 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
         </div>
 
         {r.prev && r.trajectory && (
-          <div className="glass rounded-[24px] p-4 text-[14px]">
+          <div className="glass rounded-[24px] p-4 fs-14">
             <div className="mb-1 font-semibold">Test 70 % + clases 30 %</div>
             {skills.map((k) => (
               <div key={k} className="flex items-center gap-2 py-1">
                 <span className="w-[78px]">{SKILL_ES[k]}</span>
-                <span className="txt-sub flex-1 text-[12.5px]">
+                <span className="txt-sub flex-1 fs-12.5">
                   test {r.testLevels[k]} · clases {r.trajectory![k]}
                 </span>
                 <span className="txt-acc2 font-semibold">{r.levels[k]}</span>
@@ -1510,14 +1532,14 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
                   k,
                   <>
                     <span
-                      className="rounded-full px-1.5 py-0.5 text-[10.5px]"
+                      className="rounded-full px-1.5 py-0.5 fs-10.5"
                       style={{ border: '1px solid var(--gb)', color: r.confidence[k] === 'low' ? 'var(--acc2)' : 'var(--sub)' }}
                       title="Confianza"
                     >
                       {CONF_ES[r.confidence[k]]}
                     </span>
                     {before && before !== r.levels[k] && (
-                      <span className="txt-sub text-[11px]">
+                      <span className="txt-sub fs-11">
                         {before}
                         {levelIdx(r.levels[k]) > levelIdx(before) ? '↗' : '↘'}
                       </span>
@@ -1527,14 +1549,14 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
               }),
             )}
           />
-          <div className="txt-sub mt-2 text-[12px] leading-snug">
+          <div className="txt-sub mt-2 fs-12 leading-snug">
             Confianza: alta con dos bloques aprobados en niveles contiguos, media con uno, baja si hubo poca evidencia.
             {lowConf.length > 0 && ` En ${lowConf.map((k) => SKILL_ES[k].toLowerCase()).join(' y ')} la evidencia fue poca: el próximo re-test lo confirmará.`}
           </div>
         </div>
 
         {r.speaking.criteria && (
-          <div className="glass rounded-[24px] p-4 text-[14px]">
+          <div className="glass rounded-[24px] p-4 fs-14">
             <div className="mb-1 font-semibold">Tu habla: mediana de 4 criterios</div>
             {SPEAK_CRITERIA.map((c) => (
               <div key={c} className="py-1">
@@ -1542,15 +1564,15 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
                   <span>{CRITERION_ES[c]}</span>
                   <span className="txt-acc2 font-semibold">{r.speaking.criteria[c]}</span>
                 </div>
-                {r.speaking.reasonsEs[c] && <div className="txt-sub text-[12.5px] leading-snug">{r.speaking.reasonsEs[c]}</div>}
+                {r.speaking.reasonsEs[c] && <div className="txt-sub fs-12.5 leading-snug">{r.speaking.reasonsEs[c]}</div>}
               </div>
             ))}
-            <div className="txt-sub mt-1 text-[12.5px] leading-snug">{r.speaking.summaryEs}</div>
+            <div className="txt-sub mt-1 fs-12.5 leading-snug">{r.speaking.summaryEs}</div>
           </div>
         )}
 
         {r.speaking.strengthsEs.length > 0 && (
-          <div className="glass rounded-[24px] p-4 text-[15px]">
+          <div className="glass rounded-[24px] p-4 fs-15">
             <div className="mb-1.5 font-semibold">Lo que haces bien</div>
             <ul className="list-disc space-y-1 pl-5">
               {r.speaking.strengthsEs.map((s, i) => (
@@ -1559,7 +1581,7 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
             </ul>
           </div>
         )}
-        <div className="glass rounded-[24px] p-4 text-[15px]">
+        <div className="glass rounded-[24px] p-4 fs-15">
           <div className="mb-1.5 font-semibold">En qué te voy a ayudar</div>
           <ul className="list-disc space-y-1 pl-5">
             {r.speaking.weaknessesEs.map((s, i) => (
@@ -1567,13 +1589,13 @@ function Result({ r, mascot, mascotName, onDone }: { r: CalibrationResult; masco
             ))}
           </ul>
         </div>
-        <div className="txt-sub px-2 text-center text-[12.5px] leading-snug">
+        <div className="txt-sub px-2 text-center fs-12.5 leading-snug">
           {r.prev
             ? 'Tu plan de 12 semanas se adapta ahora a este resultado.'
             : 'A partir de ahora tus clases irán proponiendo tu progreso; el re-test de dentro de 4 semanas lo ajustará.'}{' '}
           Banco del test v{BANK_VERSION}.
         </div>
-        <button onClick={onDone} className="btn-acc mt-1 h-[58px] flex-none rounded-full text-[17px]">
+        <button onClick={onDone} className="btn-acc mt-1 h-[58px] flex-none rounded-full fs-17">
           Empezar a hablar
         </button>
       </div>

@@ -6,6 +6,12 @@
 
 export const BACKUP_FORMAT = 'habla-backup'
 export const BACKUP_VERSION = 1
+/**
+ * 5.10.1 (REG-A1-07): la versión más alta que esta app sabe leer. Una copia con cosas que una app anterior no conoce
+ * (tarjetas de Gramática, progreso de Gramática) se exporta como 2 ('backupVersionFor'): así la 5.10.1+ la lee, y una
+ * app futura que suba otra vez el número hace que esta diga «versión más nueva» en vez de «archivo dañado».
+ */
+export const BACKUP_MAX_VERSION = 2
 /** Tamaño máximo del archivo: una copia real de un año de uso ocupa unos pocos MB. */
 export const MAX_BACKUP_BYTES = 20 * 1024 * 1024
 
@@ -50,6 +56,14 @@ const oneOf =
   (...xs: string[]): Rule =>
   (v) =>
     typeof v === 'string' && xs.includes(v)
+// 5.10.1 (REG-A1-07): listas que crecen con las versiones (p. ej. 'source' de las tarjetas: 'grammar' llegó en la
+// 5.10). Un valor de texto fuera de la lista es de una versión más nueva, no un archivo dañado.
+const GROWING = new WeakSet<Rule>()
+const growingOneOf = (...xs: string[]): Rule => {
+  const r = oneOf(...xs)
+  GROWING.add(r)
+  return r
+}
 const opt =
   (r: Rule): Rule =>
   (v) =>
@@ -145,7 +159,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
   },
   cards: {
     id,
-    source: oneOf('mistake', 'lookup', 'grammar'), // v5.10: ejercicios de Gramática fallados
+    source: growingOneOf('mistake', 'lookup', 'grammar'), // v5.10: ejercicios de Gramática fallados
     sourceId: num,
     promptEs: str,
     answerEn: str,
@@ -170,6 +184,7 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
   },
 }
 
+const NEWER = 'La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada.'
 const DAMAGED = 'El archivo de copia está dañado o no es de Habla; no se cambió nada.'
 
 export type BackupCheck = { ok: true; backup: CheckedBackup } | { ok: false; error: string }
@@ -180,8 +195,10 @@ export function checkBackup(data: unknown): BackupCheck {
   if (!isObj(data) || data.format !== BACKUP_FORMAT) return { ok: false, error: 'Este archivo no es una copia de seguridad de Habla; no se cambió nada.' }
   const version = data.version
   if (typeof version !== 'number' || !Number.isInteger(version) || version < 1) return fail('versión de la copia desconocida')
-  if (version > BACKUP_VERSION) return { ok: false, error: 'La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada.' }
+  if (version > BACKUP_MAX_VERSION) return { ok: false, error: NEWER }
   if (!isObj(data.tables)) return fail('no tiene tablas')
+  // 5.10.1 (REG-A1-07): una tabla que esta app no conoce es de una versión más nueva (importarla a medias perdería datos).
+  if (Object.keys(data.tables).some((k) => !(BACKUP_TABLES as readonly string[]).includes(k))) return { ok: false, error: NEWER }
   const tables = {} as CheckedBackup['tables']
   for (const t of BACKUP_TABLES) {
     const rows = data.tables[t] === undefined && OPTIONAL_TABLES.includes(t) ? [] : data.tables[t]
@@ -191,7 +208,10 @@ export function checkBackup(data: unknown): BackupCheck {
       const row = rows[i]
       if (!isObj(row)) return fail(`${NAMES[t]}, fila ${i + 1}: no es un registro`)
       for (const [field, rule] of Object.entries(SCHEMA[t])) {
-        if (!rule(row[field])) return fail(`${NAMES[t]}, fila ${i + 1}: el campo «${field}» falta o tiene un tipo incorrecto`)
+        if (!rule(row[field])) {
+          if (GROWING.has(rule) && typeof row[field] === 'string') return { ok: false, error: NEWER }
+          return fail(`${NAMES[t]}, fila ${i + 1}: el campo «${field}» falta o tiene un tipo incorrecto`)
+        }
       }
       if (ids.has(row.id)) return fail(`${NAMES[t]}: el registro ${String(row.id)} está repetido`)
       ids.add(row.id)
@@ -205,6 +225,16 @@ export function checkBackup(data: unknown): BackupCheck {
   const keys = new Set(tables.cards.map((c) => `${String(c.source)}:${String(c.sourceId)}`))
   if (keys.size !== tables.cards.length) return fail('hay tarjetas de repaso repetidas')
   return { ok: true, backup: { format: BACKUP_FORMAT, version, exportedAt: typeof data.exportedAt === 'string' ? data.exportedAt : undefined, tables } }
+}
+
+/**
+ * 5.10.1 (REG-A1-07): versión con la que exportar unas tablas. 1 si una app 5.8/5.9 puede leerlas enteras; 2 si llevan
+ * Gramática (tarjetas 'source: 'grammar'' o progreso), que esas apps no conocen: así dicen «versión más nueva»
+ * (su comprobación rechaza 'version > 1') en vez de «archivo dañado» o de perder el progreso de Gramática sin avisar.
+ */
+export function backupVersionFor(tables: Partial<Record<BackupTable, readonly Record<string, unknown>[]>>): number {
+  const grammarCards = (tables.cards ?? []).some((c) => c?.source === 'grammar')
+  return grammarCards || (tables.grammar ?? []).length > 0 ? 2 : BACKUP_VERSION
 }
 
 /** Interpreta el texto de la copia y la comprueba entera. */

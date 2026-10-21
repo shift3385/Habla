@@ -119,6 +119,19 @@ const ANGLES = ['surprising', 'funny', 'controversial', 'inspiring', 'practical'
  * Genera el tema de la sesión. Las categorías "live" buscan una noticia real con Google Search;
  * si la búsqueda falla (cuota, modelo sin soporte…), se genera un tema sin búsqueda.
  */
+/**
+ * 5.10.1 (REG-A2-07): vocabulario del tema con tipos comprobados. La llamada con Google Search no lleva esquema: un
+ * '{"en": {...}}' llegaba al render y React lanzaba «Objects are not valid as a React child».
+ */
+export function cleanVocab(raw: unknown): { en: string; es: string }[] {
+  const s = (v: unknown) => (typeof v === 'string' ? v.trim().slice(0, 60) : '')
+  return (Array.isArray(raw) ? raw : [])
+    .map((v) => (v && typeof v === 'object' ? (v as Record<string, unknown>) : {}))
+    .map((v) => ({ en: s(v.en), es: s(v.es) }))
+    .filter((v) => v.en && v.es)
+    .slice(0, 3)
+}
+
 export async function generateTopic(
   apiKey: string,
   models: Models,
@@ -161,7 +174,7 @@ Return ONLY a JSON object with:
     titleEs: String(raw.title_es ?? '').trim(),
     summary: String(raw.summary ?? '').trim(),
     question: String(raw.question ?? '').trim(),
-    vocab: (Array.isArray(raw.vocab) ? raw.vocab : []).filter((v) => v?.en && v?.es).slice(0, 3),
+    vocab: cleanVocab(raw.vocab),
     sources: sources?.slice(0, 3),
   })
 

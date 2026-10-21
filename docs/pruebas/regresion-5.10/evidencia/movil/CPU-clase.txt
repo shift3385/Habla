@@ -1,0 +1,10 @@
+== clase-reposo ventana 1
+25542 51.7 com.shift.habla.debug
+25542 47.0 com.shift.habla.debug
+27999 27.5 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+27999 26.3 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+== clase-reposo ventana 2
+25542 46.3 com.shift.habla.debug
+25542 28.5 com.shift.habla.debug
+27999 26.2 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+27999 17.8 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0

@@ -1,0 +1,181 @@
+﻿### 11-test-con-nuevos
+
+> habla@0.0.0 test
+> node --test "tests/**/*.test.mjs"
+
+✔ FUG-401: Resource IDs maliciosos o mal formados se rechazan y NO sale ninguna petición (ni el token) (298.3794ms)
+✔ FUG-401: un Resource ID correcto va solo a login.microsoftonline.com y a management.azure.com (19.846ms)
+✔ FUG-401: Tenant y Client ID con forma incorrecta se rechazan antes de pedir el token (32.5685ms)
+✔ Una copia correcta (forma de buildBackup) se acepta con sus recuentos (236.8668ms)
+✔ REV-U3-1: copias antiguas legítimas se aceptan (v4.1 sin consultas ni tarjetas, v4.6 sin tarjetas, sin perfil) (24.9438ms)
+✔ Consultas con y sin synonyms/antonyms se aceptan; con un tipo erróneo se rechazan (46.7447ms)
+✔ v5.10: la tabla de Gramática es opcional (copias antiguas sin ella) y se comprueba si viene (18.2063ms)
+✔ SEG-501 / RES-704 / E2E-601: copias dañadas se rechazan con un mensaje en español (15.5672ms)
+✔ Versión más nueva: pide actualizar la app; JSON roto: lo dice (64.6229ms)
+✔ __proto__ en una fila no contamina objetos (38.847ms)
+✔ RES-704: repairProfile completa un perfil roto para que el arranque no falle (90.671ms)
+✔ carga: los 450 ítems del banco, con ids únicos (903.6193ms)
+✔ pickItems: no repite lo ya visto mientras quede banco y respeta los excluidos (2.6084ms)
+✔ pickItems: con el banco agotado repite lo menos usado y evita los temas pedidos si puede (0.7165ms)
+✔ recordUse: suma usos y añade a vistos sin duplicar (1.4249ms)
+✔ normalizeAnswer: mayúsculas, puntuación y contracciones (1.1315ms)
+✔ stem: misma raíz para formas derivadas; los números no se recortan (0.7804ms)
+✔ checkShort: exacta, sin artículo, misma raíz; palabras distintas no; tolerancia de una letra solo en audición (1.4009ms)
+✔ scriptSeconds / wordCount: ≈150 palabras por minuto (0.9407ms)
+✔ isEmptyRecording: vacía, solo cabecera sin decodificar, y grabaciones reales (491.9251ms)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+✔ distrustMic: tras fiarse del micro por defecto, la siguiente apertura vuelve a medir y cambia a uno con señal (393.4513ms)
+✔ countWords: sin muletillas ni puntuación (482.2295ms)
+✔ turnMetrics: velocidad solo con ≥ 1,5 s y ≥ 3 palabras; lo escrito no tiene velocidad (1.5153ms)
+✔ sessionMetrics: sin respuestas tuyas no hay métricas (0.506ms)
+✔ sessionMetrics: una clase hablada con buena fluidez (0.7337ms)
+✔ sessionMetrics: errores y pausas bajan la nota; las correcciones antiguas (correction) también cuentan (0.634ms)
+✔ sessionMetrics: solo escrito → nota por longitud y precisión, sin velocidad (0.3518ms)
+✔ scoreLevel: umbrales de la nota (0.4198ms)
+✔ Clave rechazada por Google: no hay nada que guardar (se conserva la anterior) (542.4148ms)
+✔ Sin conexión: tampoco se guarda (64.7378ms)
+✔ Clave aceptada: devuelve la clave limpia y los modelos válidos para ella (69.2059ms)
+✔ Clave aceptada pero sin el modelo elegido: elige uno disponible (60.0305ms)
+✔ Clave vacía: error sin llamar a Google (56.3027ms)
+✔ REV-U4-1 / E2E-604: textos al comprobar la clave (sin «Revísala en Ajustes» ni «prueba otro modelo») (27.1542ms)
+✔ catálogo: secciones ordenadas por "order" e índices por id (859.1539ms)
+✔ catálogo: el orden de los archivos no importa y un id repetido no duplica el tema (3.045ms)
+✔ buscador: por nombre en inglés o español, sin tildes ni mayúsculas (1.6213ms)
+✔ buscador: palabras clave y resumen; prioriza el nombre (0.7153ms)
+✔ ejercicios: comprobación de choice, gap (uno y dos huecos) y order (0.6619ms)
+✔ ejercicios: frase completa para la voz y la tarjeta del Repaso (1.2217ms)
+✔ id numérico de la tarjeta: estable, positivo e igual en la app y en el validador (0.8513ms)
+✔ dominado: ≥ 80 % de la última ronda (0.3582ms)
+✔ «Para ti»: tu nivel y el siguiente, sin los dominados, primero los empezados (1.194ms)
+✔ validador: la muestra pasa (solo avisos de related hacia secciones que no existen) (6.1321ms)
+✔ validador: detecta los errores del FORMATO (6.7442ms)
+✔ validador: huecos y partes de la respuesta deben cuadrar (2.891ms)
+✔ validador: comparación con el banco (huecos, pistas entre paréntesis, subcadenas) (1.0553ms)
+✔ validador: ejemplos, order, modelEn y errores típicos también se comparan con el banco (3.4093ms)
+✔ barajar: estable con la misma semilla, la correcta sigue siendo la misma opción y las trampas la acompañan (0.9545ms)
+✔ plan: el tema que nombra un texto; gana la frase más larga y un empate no enlaza nada (1.3445ms)
+✔ profe: solo se guardan ids que existen (nunca uno inventado por Gemini) (0.2371ms)
+✔ clase centrada: el brief lleva el tema, el nivel, el foco y las formas (0.5676ms)
+✔ informe: temas de las correcciones en orden, sin repetir y sin ids desconocidos (0.4482ms)
+✔ «Para ti» con señales: errores con tema, tema del plan, categorías de respaldo y sin dominados (0.5068ms)
+✔ levelIdx / levelAt: «+» se ignora, lo desconocido cuenta como B1 y los extremos se recortan (419.0761ms)
+✔ nivel general: media de las 4 destrezas, un ,5 exacto hacia abajo (1.0701ms)
+✔ nivel general: nunca más de 2 niveles por encima de la destreza más baja (0.3664ms)
+✔ re-test 70/30: el test pesa más; un ,5 exacto va hacia abajo (1.2575ms)
+✔ trayectoria: solo el habla la proponen las clases; el resto es el nivel actual (0.4919ms)
+✔ re-test: a los 28 días; un test anterior al banco (sin bankVersion) se puede repetir ya (0.4834ms)
+✔ velocidad de voz por nivel: sube con el nivel (0.4628ms)
+✔ Palabra → sinónimo → antónimo → atrás → atrás; con uno solo no se quita nada (la hoja se cierra) (341.8774ms)
+✔ Raíz por hacer (palabra tocada en la clase) y casos que no apilan (16.2602ms)
+✔ relatedWords: limpia, sin repetidos ni la propia palabra, máximo 6; acepta consultas antiguas sin el campo (28.7547ms)
+✔ FLU-900: con el recordatorio bloqueado, la mascota lo dice primero y lleva a arreglarlo (424.1534ms)
+✔ Sin bloqueo no hay aviso de notificaciones (18.9691ms)
+✔ gramática: escalera de 20 (15 opción múltiple + 5 huecos), de A1 a C2 y sin repetir (809.9539ms)
+✔ checkGrammar: opción correcta y hueco con la respuesta aceptada (2.1358ms)
+✔ nivel de gramática: el más alto aprobado con los anteriores; C1/C2 exigen un hueco acertado (2.6698ms)
+✔ fin anticipado: todo mal en dos niveles seguidos (2.7279ms)
+✔ lectura y audición: niveles de inicio (mínimo A2) y salto del segundo bloque (0.5521ms)
+✔ checkQuestion: sin responder o «No sé» nunca cuenta; errata tolerada solo con tolerateTypo (0.6748ms)
+✔ nivel por bloques y confianza (0.9688ms)
+✔ habla: tarea 3 sencilla si las dos primeras ≤ A2; mediana hacia abajo (0.9898ms)
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-302: dos begin() simultáneos (doble toque) abren UN solo stream y UN MediaRecorder (433.328ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-302 / ARQ-100: begin() mientras la apertura inicial de la clase (open) sigue en curso comparte la apertura (124.8796ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: close() mientras getUserMedia está pendiente deja 0 pistas vivas y no graba (45.1925ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: close() durante la medición de señal no abre el micro de respaldo (fallback) (181.805ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ MIC-301: releaseAllMics() (segundo plano) cancela una apertura en curso (26.7692ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-301: tras una apertura cancelada, la siguiente pulsación vuelve a abrir con normalidad (68.7119ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-304: un segundo start() con una grabación en marcha se ignora (sin MediaRecorder huérfano) (78.1741ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] solo silencio, pero sin micro Bluetooth: sigo con el micro por defecto
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ MIC-800: silencio sin micro Bluetooth = habitación en silencio; se queda el micro con procesado, sin reintentos (171.3015ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 5200 ms; grabando a los 6000 ms (modo auto)
+✔ MIC-800: micro mudo con auriculares BT → como mucho 1 reintento, con el micro del teléfono y procesado; stream registrado (300.0843ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); usando "Speakerphone"
+[HABLA-MIC] abierto en 3600 ms; grabando a los 4400 ms (modo auto)
+[HABLA-MIC] abierto en 400 ms; grabando a los 1200 ms (modo auto)
+✔ MIC-800: el reintento con el micro del teléfono que da señal se recuerda para la sesión (221.7297ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-800: un micro SIN cancelación de eco nunca se recuerda para la sesión (222.6884ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 5200 ms; grabando a los 6000 ms (modo auto)
+✔ MIC-800: una pista silenciada por el sistema (muted) cuenta como micro mudo aunque no haya Bluetooth (285.7544ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+✔ MIC-301: close() mientras el reintento (fallback) espera a getUserMedia deja 0 pistas vivas (172.8389ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ Permiso denegado: MicError con el texto del permiso, sin reintento y sin nada abierto (32.7509ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ Micro ocupado: un reintento con un stream nuevo y, si vuelve a fallar, MicError sin nada abierto (45.6139ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] abierto en 1200 ms; grabando a los 2000 ms (modo auto)
+✔ MIC-309: cada grabación tiene sus propios trozos (63.6045ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo headset); pruebo otro
+[HABLA-MIC] "Speakerphone" tampoco da señal; lo uso igualmente (sin más reintentos)
+[HABLA-MIC] abierto en 8400 ms; grabando a los 9200 ms (modo headset)
+✔ MIC-800: modo auriculares con el micro BT mudo → 1 solo reintento (micro del teléfono con procesado) (551.2613ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+[HABLA-MIC] micrófono por defecto mudo (modo auto); uso "por defecto sin procesado" solo esta vez
+[HABLA-MIC] abierto en 2800 ms; grabando a los 3600 ms (modo auto)
+✔ REV-T1-1: si el micro del teléfono no se puede abrir en el reintento, se prueba el por defecto sin procesado (361.3504ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+[HABLA-MIC] el micrófono por defecto no da señal (modo auto); pruebo otro
+[HABLA-MIC] no se pudo abrir "Speakerphone"; pruebo "por defecto sin procesado"
+✔ REV-T1-1: si fallan también las alternativas, MicError en español y nada abierto (205.64ms)
+✔ Precisión: correcto = 1, casi = 0,5, aún no y no lo sé = 0; sin intentos, 0 (450.9323ms)
+✔ Recuento, media de pronunciación (solo las que llegaron) y segundos (21.9624ms)
+✔ Lo que más costó: agrupa por tarjeta («Otra vez»), primero «No lo sé», sin las correctas, máx. 5 (16.832ms)
+✔ Feedback: el título y el consejo cambian con la precisión y con lo que falló (17.3703ms)
+✔ Saliste a mitad: el feedback dice cuántas quedaron (10.9247ms)
+✔ speaking: el final tardío de una frase interrumpida no devuelve la nueva a ▶ (484.8057ms)
+✔ toggleSpeak: ▶ → ⏸ → ▶, otro botón para el anterior y al terminar solo vuelve a ▶ (140.5532ms)
+Capacitor plugin "AudioRoute" already registered. Cannot register plugins twice.
+✔ stopSpeaking mientras se prepara la voz: la frase ya no se lanza (39.6463ms)
+✔ presente simple: el inglés sin comillas va con voz inglesa (5.9632ms)
+✔ citas: «…» en inglés con voz inglesa; las citas en español siguen en español (3.2782ms)
+✔ la «a» española delante de inglés sigue en español; la fonética /…/ no se lee (0.6486ms)
+✔ texto solo en español: un tramo (0.3195ms)
+✔ Toque en reposo: empieza a grabar; ocupado (pensando, procesando): se ignora (123.3669ms)
+✔ MIC-305: con la grabación en marcha, un toque envía (12.0109ms)
+✔ MIC-302/304: el rebote de un doble toque (o un segundo dedo) justo al empezar no envía una grabación vacía (7.5126ms)
+✔ P6: la idea tal cual (o casi) se detecta; una respuesta propia que la continúa, no (475.2812ms)
+✔ P5: una corrección puede enlazar varios temas (máx. 3, sin repetir, solo ids que existen) (475.4626ms)
+ℹ tests 110
+ℹ suites 0
+ℹ pass 110
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5226.5082
+

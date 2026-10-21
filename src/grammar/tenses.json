@@ -65,7 +65,7 @@
         { "id": "present-simple-4", "type": "gap", "prompt": "What time ____ the museum ____ (close) on Fridays?", "answers": ["does / close"], "whyEs": "Horario fijo en pregunta: does + sujeto + verbo base." },
         { "id": "present-simple-5", "type": "choice", "prompt": "She always ____ her keys in the same drawer.", "options": ["keeps", "is keep", "keep", "keeping"], "answer": 0, "whyEs": "Always marca un hábito: presente simple, con -s porque el sujeto es she.", "trapsEs": ["", "No existe: is no va con el verbo base.", "Falta la -s de tercera persona.", "La forma -ing no funciona sola como verbo."] },
         { "id": "present-simple-6", "type": "gap", "prompt": "My little brother ____ (watch) cartoons every morning.", "answers": ["watches"], "whyEs": "Tercera persona: los verbos en -ch, -sh, -s, -x y -o añaden -es (watches)." },
-        { "id": "present-simple-7", "type": "order", "words": ["never", "My", "on", "works", "Sundays", "dad"], "answer": "My dad never works on Sundays", "whyEs": "El adverbio de frecuencia (never) va antes del verbo principal." },
+        { "id": "present-simple-7", "type": "order", "words": ["never", "My", "on", "works", "Sundays", "dad"], "answer": "My dad never works on Sundays", "alsoAccepted": ["On Sundays my dad never works"], "whyEs": "El adverbio de frecuencia (never) va antes del verbo principal." },
         { "id": "present-simple-8", "type": "order", "words": ["you", "Do", "to", "listen", "podcasts", "usually"], "answer": "Do you usually listen to podcasts", "whyEs": "Do + sujeto + adverbio de frecuencia + verbo base." }
       ],
       "speaking": [
@@ -101,7 +101,7 @@
           "pattern": "Sujeto + am not / isn't / aren't + verbo-ing",
           "examples": [
             { "en": "She isn't listening to me.", "es": "No me está escuchando." },
-            { "en": "We aren't using the car this week.", "es": "Esta semana no estamos usando el coche." }
+            { "en": "We aren't using the car this week.", "es": "Esta semana no estamos usando el carro." }
           ]
         },
         "question": {
@@ -132,7 +132,7 @@
         { "id": "present-continuous-3", "type": "gap", "prompt": "Mark can't come to the phone. He ____ (take) a shower.", "answers": ["is taking"], "whyEs": "Acción en este momento: is + taking (take pierde la -e)." },
         { "id": "present-continuous-4", "type": "gap", "prompt": "Why ____ you ____ (smile)? What's so funny?", "answers": ["are / smiling"], "whyEs": "Pregunta sobre lo que pasa ahora: are + sujeto + -ing. Smile pierde la -e: smiling." },
         { "id": "present-continuous-5", "type": "choice", "prompt": "The kids are ____ in the pool.", "options": ["swimming", "swiming", "swimmming", "swim"], "answer": 0, "whyEs": "Swim termina en consonante-vocal-consonante: se dobla la m una vez (swimming).", "trapsEs": ["", "Falta doblar la m.", "Solo se dobla una vez: dos m, no tres.", "Después de are va la forma -ing, no el verbo base."] },
-        { "id": "present-continuous-6", "type": "order", "words": ["isn't", "My", "working", "laptop", "today"], "answer": "My laptop isn't working today", "whyEs": "Sujeto + isn't + -ing: algo que falla ahora, de forma temporal." },
+        { "id": "present-continuous-6", "type": "order", "words": ["isn't", "My", "working", "laptop", "today"], "answer": "My laptop isn't working today", "alsoAccepted": ["Today my laptop isn't working"], "whyEs": "Sujeto + isn't + -ing: algo que falla ahora, de forma temporal." },
         { "id": "present-continuous-7", "type": "order", "words": ["are", "What", "doing", "you", "right", "now"], "answer": "What are you doing right now", "whyEs": "Wh- + are + sujeto + -ing." }
       ],
       "speaking": [
@@ -159,7 +159,7 @@
         "affirmative": {
           "pattern": "Simple: sujeto + verbo(-s) · Continuo: sujeto + am/is/are + verbo-ing",
           "examples": [
-            { "en": "He usually drives to work, but today he's taking the train.", "es": "Normalmente va al trabajo en coche, pero hoy va en tren." }
+            { "en": "He usually drives to work, but today he's taking the train.", "es": "Normalmente va al trabajo en carro, pero hoy va en tren." }
           ]
         },
         "negative": {
@@ -178,7 +178,7 @@
         }
       },
       "examples": [
-        { "en": "I normally walk to work, but this week I'm driving because of the rain.", "es": "Normalmente voy andando al trabajo, pero esta semana voy en coche por la lluvia." },
+        { "en": "I normally walk to work, but this week I'm driving because of the rain.", "es": "Normalmente voy caminando al trabajo, pero esta semana voy en carro por la lluvia." },
         { "en": "What do you do? — I'm a designer.", "es": "¿A qué te dedicas? — Soy diseñadora.", "noteEs": "«What do you do?» pregunta por la profesión." },
         { "en": "What are you doing? — I'm fixing the printer.", "es": "¿Qué estás haciendo? — Estoy arreglando la impresora.", "noteEs": "Pregunta por lo que haces en este momento." },
         { "en": "She speaks three languages, and right now she's learning Japanese.", "es": "Habla tres idiomas y ahora está aprendiendo japonés." },
@@ -226,7 +226,7 @@
           "pattern": "Sujeto + verbo en pasado (-ed o forma irregular)",
           "examples": [
             { "en": "We watched a movie last night.", "es": "Anoche vimos una película." },
-            { "en": "I bought a new phone last month.", "es": "El mes pasado me compré un móvil nuevo." }
+            { "en": "I bought a new phone last month.", "es": "El mes pasado me compré un celular nuevo." }
           ]
         },
         "negative": {
@@ -245,7 +245,7 @@
       },
       "examples": [
         { "en": "I moved to this city three years ago.", "es": "Me mudé a esta ciudad hace tres años.", "noteEs": "Ago va detrás del tiempo: three years ago = hace tres años." },
-        { "en": "We missed the train, so we took a taxi.", "es": "Perdimos el tren, así que cogimos un taxi." },
+        { "en": "We missed the train, so we took a taxi.", "es": "Perdimos el tren, así que tomamos un taxi." },
         { "en": "She studied engineering at university.", "es": "Estudió ingeniería en la universidad.", "noteEs": "Study → studied: consonante + y cambia a -ied." },
         { "en": "I lost my wallet on the bus yesterday.", "es": "Ayer perdí la cartera en el autobús." },
         { "en": "When did you start this job?", "es": "¿Cuándo empezaste en este trabajo?" },
@@ -310,7 +310,7 @@
         }
       },
       "examples": [
-        { "en": "I was walking to work when I saw an accident.", "es": "Iba andando al trabajo cuando vi un accidente.", "noteEs": "Fondo (was walking) + acción corta (saw)." },
+        { "en": "I was walking to work when I saw an accident.", "es": "Iba caminando al trabajo cuando vi un accidente.", "noteEs": "Fondo (was walking) + acción corta (saw)." },
         { "en": "While we were waiting for the bus, it started to snow.", "es": "Mientras esperábamos el autobús, empezó a nevar." },
         { "en": "She was living in London when she met her husband.", "es": "Vivía en Londres cuando conoció a su marido." },
         { "en": "Sorry, I didn't hear the phone. I was taking a shower.", "es": "Perdona, no oí el teléfono. Me estaba duchando." },
@@ -327,7 +327,7 @@
         { "id": "past-continuous-2", "type": "choice", "prompt": "What ____ you doing at 11 p.m. last night?", "options": ["were", "was", "did", "are"], "answer": 0, "whyEs": "Acción en curso en un momento del pasado, con you: were + -ing.", "trapsEs": ["", "Was no va con you.", "Did no se combina con la forma -ing.", "Es presente; last night pide pasado."] },
         { "id": "past-continuous-3", "type": "gap", "prompt": "While Tom ____ (drive), his phone rang.", "answers": ["was driving"], "whyEs": "While + acción larga en continuo; la interrupción (rang) en simple." },
         { "id": "past-continuous-4", "type": "gap", "prompt": "The kids ____ (not / sleep) when we got home at midnight; they were playing video games.", "answers": ["weren't sleeping", "were not sleeping"], "whyEs": "Lo que (no) estaba pasando en ese momento: weren't + -ing." },
-        { "id": "past-continuous-5", "type": "choice", "prompt": "She broke her arm while she ____.", "options": ["was skiing", "skied", "is skiing", "was ski"], "answer": 0, "whyEs": "While + acción larga en curso: was + -ing.", "trapsEs": ["", "Con while lo natural es el continuo para la acción de fondo.", "Es presente; la historia está en pasado.", "Después de was va la forma -ing."] },
+        { "id": "past-continuous-5", "type": "choice", "prompt": "She ____ down the slope when she fell and broke her arm.", "options": ["was skiing", "skied", "is skiing", "was ski"], "answer": 0, "whyEs": "La acción larga en marcha (was skiing) se interrumpe por la corta (fell): was + -ing.", "trapsEs": ["", "Pasado simple: suena a un descenso completo, no a lo que estaba haciendo cuando se cayó.", "Es presente; la historia está en pasado.", "Después de was va la forma -ing."] },
         { "id": "past-continuous-6", "type": "order", "words": ["were", "They", "the", "watching", "game"], "answer": "They were watching the game", "whyEs": "Sujeto + were + -ing." },
         { "id": "past-continuous-7", "type": "order", "words": ["you", "Were", "sleeping", "I", "when", "called"], "answer": "Were you sleeping when I called", "whyEs": "Were + sujeto + -ing, y la acción corta con when en pasado simple." }
       ],
@@ -382,7 +382,7 @@
       ],
       "commonMistakes": [
         { "wrong": "I know my best friend since 2008.", "right": "I have known my best friend since 2008.", "whyEs": "En español usamos presente («conozco a mi mejor amigo desde…»); en inglés, con since o for hasta hoy, presente perfecto." },
-        { "wrong": "I have seen her yesterday.", "right": "I saw her yesterday.", "whyEs": "En España se dice «la he visto hoy», pero con un momento terminado como yesterday el inglés exige pasado simple." },
+        { "wrong": "I have seen her yesterday.", "right": "I saw her yesterday.", "whyEs": "Aunque en España se diga «la he visto esta mañana», con un momento ya terminado como yesterday el inglés exige pasado simple, igual que en español decimos «la vi ayer»." },
         { "wrong": "Have you finished yet your homework?", "right": "Have you finished your homework yet?", "whyEs": "Yet va al final de la frase." },
         { "wrong": "I have 30 years working here.", "right": "I have worked here for 30 years.", "whyEs": "Calco de «tengo 30 años trabajando aquí». En inglés: presente perfecto + for." }
       ],
@@ -509,7 +509,7 @@
         { "en": "It's been raining since this morning.", "es": "Lleva lloviendo desde esta mañana." },
         { "en": "Your eyes are red. Have you been crying?", "es": "Tienes los ojos rojos. ¿Has estado llorando?", "noteEs": "Huella de una actividad reciente." },
         { "en": "She's been working on that project since January.", "es": "Lleva trabajando en ese proyecto desde enero." },
-        { "en": "We've been looking for a new apartment for weeks.", "es": "Llevamos semanas buscando piso." }
+        { "en": "We've been looking for a new apartment for weeks.", "es": "Llevamos semanas buscando departamento." }
       ],
       "commonMistakes": [
         { "wrong": "I am waiting for you since an hour.", "right": "I've been waiting for you for an hour.", "whyEs": "«Te espero desde hace una hora»: en inglés, presente perfecto continuo, y con una cantidad de tiempo va for, no since." },
@@ -524,7 +524,7 @@
         { "id": "present-perfect-continuous-4", "type": "gap", "prompt": "How long ____ you ____ (wait) for me?", "answers": ["have / been waiting"], "whyEs": "How long + duración hasta ahora: have + sujeto + been + -ing." },
         { "id": "present-perfect-continuous-5", "type": "gap", "prompt": "She ____ (paint) the kitchen since 9 a.m., and she still hasn't finished.", "answers": ["has been painting"], "whyEs": "Actividad que sigue en curso (todavía no ha terminado): has been + -ing." },
         { "id": "present-perfect-continuous-6", "type": "order", "words": ["been", "I've", "you", "calling", "all", "day"], "answer": "I've been calling you all day", "whyEs": "Sujeto + have been + -ing + duración." },
-        { "id": "present-perfect-continuous-7", "type": "order", "words": ["has", "It", "raining", "been", "since", "Monday"], "answer": "It has been raining since Monday", "whyEs": "Has been + -ing con since + punto de inicio." }
+        { "id": "present-perfect-continuous-7", "type": "order", "words": ["has", "It", "raining", "been", "since", "Monday"], "answer": "It has been raining since Monday", "alsoAccepted": ["Since Monday it has been raining"], "whyEs": "Has been + -ing con since + punto de inicio." }
       ],
       "speaking": [
         { "promptEs": "Cuéntale a tu profe cuánto tiempo llevas haciendo algo que todavía haces (un hobby, un curso, un trabajo).", "modelEn": "I've been playing the guitar for three years.", "checkEs": "have/has been + -ing con for o since." },
@@ -567,7 +567,7 @@
         }
       },
       "examples": [
-        { "en": "When I got home, my roommate had already cooked dinner.", "es": "Cuando llegué a casa, mi compañero de piso ya había hecho la cena." },
+        { "en": "When I got home, my roommate had already cooked dinner.", "es": "Cuando llegué a casa, mi compañero de departamento ya había hecho la cena." },
         { "en": "I didn't recognize him because he had grown a beard.", "es": "No lo reconocí porque se había dejado barba." },
         { "en": "She was nervous because she had never flown before.", "es": "Estaba nerviosa porque nunca había volado." },
         { "en": "By the time the police arrived, the thief had escaped.", "es": "Cuando llegó la policía, el ladrón ya se había escapado." },
@@ -582,7 +582,7 @@
       "exercises": [
         { "id": "past-perfect-1", "type": "choice", "prompt": "When we got to the cinema, the film ____.", "options": ["had already started", "already starts", "has already started", "was already start"], "answer": 0, "whyEs": "La película empezó antes de que llegáramos: had + participio.", "trapsEs": ["", "Es presente; la historia está en pasado.", "Presente perfecto: no encaja en un relato en pasado.", "No existe: was no va con el verbo base."] },
         { "id": "past-perfect-2", "type": "choice", "prompt": "I ____ that city before, so everything was new to me.", "options": ["had never visited", "never visit", "have never visited", "was never visiting"], "answer": 0, "whyEs": "Experiencia anterior a un momento del pasado: had never + participio.", "trapsEs": ["", "Es presente; el relato está en pasado.", "Presente perfecto: llega hasta hoy, y aquí la referencia es pasada (was).", "El continuo no expresa experiencia."] },
-        { "id": "past-perfect-3", "type": "choice", "prompt": "She was upset because someone ____ her bike.", "options": ["had stolen", "has stolen", "steals", "had stole"], "answer": 0, "whyEs": "El robo ocurrió antes de que ella se enfadara: had + participio (stolen).", "trapsEs": ["", "Presente perfecto: no encaja con was upset.", "Es presente.", "Después de had va el participio (stolen), no el pasado (stole)."] },
+        { "id": "past-perfect-3", "type": "choice", "prompt": "She was upset because someone ____ her bike.", "options": ["had stolen", "has stolen", "steals", "had stole"], "answer": 0, "whyEs": "El robo ocurrió antes de que ella se enojara: had + participio (stolen).", "trapsEs": ["", "Presente perfecto: no encaja con was upset.", "Es presente.", "Después de had va el participio (stolen), no el pasado (stole)."] },
         { "id": "past-perfect-4", "type": "gap", "prompt": "They ____ (not / finish) dinner when the guests arrived.", "answers": ["hadn't finished", "had not finished"], "whyEs": "Algo que todavía no había terminado antes de otro momento: hadn't + participio." },
         { "id": "past-perfect-5", "type": "gap", "prompt": "By the time I got to the office, everyone ____ (leave).", "answers": ["had left"], "whyEs": "By the time + pasado: lo anterior va en pasado perfecto." },
         { "id": "past-perfect-6", "type": "order", "words": ["hadn't", "I", "the", "email", "read"], "answer": "I hadn't read the email", "whyEs": "Sujeto + hadn't + participio." },
@@ -612,7 +612,7 @@
         "affirmative": {
           "pattern": "Sujeto + had been + verbo-ing",
           "examples": [
-            { "en": "We had been driving for six hours.", "es": "Llevábamos seis horas conduciendo." }
+            { "en": "We had been driving for six hours.", "es": "Llevábamos seis horas manejando." }
           ]
         },
         "negative": {
@@ -701,7 +701,7 @@
       "commonMistakes": [
         { "wrong": "I will to call you later.", "right": "I'll call you later.", "whyEs": "Después de will el verbo va sin to." },
         { "wrong": "I'll call you when I will arrive.", "right": "I'll call you when I arrive.", "whyEs": "En español decimos «cuando llegue» (subjuntivo); en inglés, presente tras when, if o as soon as." },
-        { "wrong": "The phone is ringing. — I answer it.", "right": "The phone is ringing. — I'll answer it.", "whyEs": "Para una decisión en el momento el inglés usa will; en español basta el presente («ya lo cojo»)." }
+        { "wrong": "The phone is ringing. — I answer it.", "right": "The phone is ringing. — I'll answer it.", "whyEs": "Para una decisión en el momento el inglés usa will; en español basta el presente («yo contesto»)." }
       ],
       "related": ["future-going-to", "present-continuous-for-future", "future-continuous", "first-conditional"],
       "exercises": [
@@ -710,7 +710,7 @@
         { "id": "future-will-3", "type": "choice", "prompt": "I'll text you as soon as I ____ home.", "options": ["get", "will get", "got", "getting"], "answer": 0, "whyEs": "Tras as soon as, el futuro se expresa con presente.", "trapsEs": ["", "Tras as soon as no se usa will.", "Pasado: la acción es futura.", "Falta un verbo conjugado."] },
         { "id": "future-will-4", "type": "gap", "prompt": "I ____ (not / forget) your birthday this year, I promise.", "answers": ["won't forget", "will not forget"], "whyEs": "Promesa negativa: won't + verbo base." },
         { "id": "future-will-5", "type": "gap", "prompt": "If it rains, we ____ (stay) at home.", "answers": ["will stay", "are going to stay"], "whyEs": "Consecuencia futura en un condicional: lo normal es will (going to también es correcto)." },
-        { "id": "future-will-6", "type": "order", "words": ["you", "I'll", "the", "send", "tomorrow", "photos"], "answer": "I'll send you the photos tomorrow", "whyEs": "I'll + verbo + persona + cosa + tiempo." },
+        { "id": "future-will-6", "type": "order", "words": ["you", "I'll", "the", "send", "tomorrow", "photos"], "answer": "I'll send you the photos tomorrow", "alsoAccepted": ["Tomorrow I'll send you the photos"], "whyEs": "I'll + verbo + persona + cosa + tiempo." },
         { "id": "future-will-7", "type": "order", "words": ["won't", "It", "long", "take"], "answer": "It won't take long", "whyEs": "Sujeto + won't + verbo base." }
       ],
       "speaking": [
@@ -743,7 +743,7 @@
         "negative": {
           "pattern": "Sujeto + am not / isn't / aren't going to + verbo base",
           "examples": [
-            { "en": "I'm not going to buy a new car this year.", "es": "Este año no voy a comprarme un coche nuevo." }
+            { "en": "I'm not going to buy a new car this year.", "es": "Este año no voy a comprarme un carro nuevo." }
           ]
         },
         "question": {
@@ -757,13 +757,13 @@
         { "en": "I'm going to start running in the mornings.", "es": "Voy a empezar a correr por las mañanas.", "noteEs": "Intención ya decidida." },
         { "en": "She's going to have a baby in March.", "es": "Va a tener un bebé en marzo." },
         { "en": "Be careful! You're going to drop those plates.", "es": "¡Cuidado! Se te van a caer esos platos.", "noteEs": "Predicción por lo que se ve." },
-        { "en": "We're going to move to a bigger apartment next year.", "es": "El año que viene nos vamos a mudar a un piso más grande." },
+        { "en": "We're going to move to a bigger apartment next year.", "es": "El año que viene nos vamos a mudar a un departamento más grande." },
         { "en": "Are you going to watch the final tonight?", "es": "¿Vas a ver la final esta noche?" }
       ],
       "commonMistakes": [
         { "wrong": "I going to visit my aunt.", "right": "I'm going to visit my aunt.", "whyEs": "Falta el verbo be. En español «voy a» es un solo verbo; en inglés son dos: am + going." },
         { "wrong": "She is going to visits her parents.", "right": "She is going to visit her parents.", "whyEs": "Después de going to el verbo va en forma base, sin -s." },
-        { "wrong": "I've bought the tickets. I will travel to Rome in May.", "right": "I've bought the tickets. I'm going to travel to Rome in May.", "whyEs": "Para un plan ya decidido (tienes los billetes) lo natural es going to o el presente continuo; will suena a decisión del momento." }
+        { "wrong": "I've bought the tickets. I will travel to Rome in May.", "right": "I've bought the tickets. I'm going to travel to Rome in May.", "whyEs": "Para un plan ya decidido (tienes los boletos) lo natural es going to o el presente continuo; will suena a decisión del momento." }
       ],
       "related": ["future-will", "present-continuous-for-future", "present-continuous"],
       "exercises": [
@@ -772,7 +772,7 @@
         { "id": "future-going-to-3", "type": "choice", "prompt": "____ she going to accept the job offer?", "options": ["Is", "Does", "Will", "Has"], "answer": 0, "whyEs": "La pregunta con going to se forma invirtiendo be: Is she going to…?", "trapsEs": ["", "Does no se usa con going to.", "Will no se combina con going to.", "Has no forma este futuro."] },
         { "id": "future-going-to-4", "type": "gap", "prompt": "What ____ you going to ____ (cook) for dinner tonight?", "answers": ["are / cook"], "whyEs": "Wh- + are + sujeto + going to + verbo base." },
         { "id": "future-going-to-5", "type": "gap", "prompt": "They ____ going to sell their car. They still need it for work.", "answers": ["aren't", "are not"], "whyEs": "Negativa: aren't going to. La segunda frase explica por qué no lo venden." },
-        { "id": "future-going-to-6", "type": "order", "words": ["going", "I'm", "to", "Italian", "learn", "next", "year"], "answer": "I'm going to learn Italian next year", "whyEs": "Sujeto + am going to + verbo base + tiempo." },
+        { "id": "future-going-to-6", "type": "order", "words": ["going", "I'm", "to", "Italian", "learn", "next", "year"], "answer": "I'm going to learn Italian next year", "alsoAccepted": ["Next year I'm going to learn Italian"], "whyEs": "Sujeto + am going to + verbo base + tiempo." },
         { "id": "future-going-to-7", "type": "order", "words": ["are", "Where", "going", "you", "to", "stay"], "answer": "Where are you going to stay", "whyEs": "Wh- + are + sujeto + going to + verbo." }
       ],
       "speaking": [
@@ -787,7 +787,7 @@
       "nameEs": "Presente continuo para planes",
       "level": "A2",
       "summaryEs": "Planes ya organizados, con fecha, hora o personas: «I'm meeting Ana tomorrow».",
-      "keywords": ["present continuous for future", "future arrangements", "presente continuo para el futuro", "planes", "citas", "quedar", "he quedado", "tomorrow", "this weekend", "I'm meeting"],
+      "keywords": ["present continuous for future", "future arrangements", "presente continuo para el futuro", "planes", "citas", "verse con", "he quedado", "tomorrow", "this weekend", "I'm meeting"],
       "categories": ["tense"],
       "explanationEs": [
         "Usamos el presente continuo para planes personales ya organizados: hay fecha, hora, reserva o alguien más implicado. «I'm having dinner with my boss on Friday».",
@@ -824,7 +824,7 @@
       ],
       "commonMistakes": [
         { "wrong": "What do you do this weekend?", "right": "What are you doing this weekend?", "whyEs": "Para preguntar por planes se usa el presente continuo. «What do you do?» pregunta por tu trabajo o tus hábitos." },
-        { "wrong": "I meet my friends tomorrow.", "right": "I'm meeting my friends tomorrow.", "whyEs": "En español «mañana quedo con mis amigos» va en presente simple; en inglés, para un plan personal, presente continuo." }
+        { "wrong": "I meet my friends tomorrow.", "right": "I'm meeting my friends tomorrow.", "whyEs": "En español «mañana me veo con mis amigos» va en presente simple; en inglés, para un plan personal, presente continuo." }
       ],
       "related": ["present-continuous", "future-going-to", "future-will", "present-simple"],
       "exercises": [
@@ -833,7 +833,7 @@
         { "id": "present-continuous-for-future-3", "type": "choice", "prompt": "The movie ____ at 8:30, so let's have dinner first.", "options": ["starts", "is start", "starting", "start"], "answer": 0, "whyEs": "Horario oficial (cartelera): presente simple.", "trapsEs": ["", "No existe: is no va con el verbo base.", "La forma -ing sola no es un verbo conjugado.", "Falta la -s: the movie es it."] },
         { "id": "present-continuous-for-future-4", "type": "choice", "prompt": "Are you free on Sunday? — No, sorry. I ____ my grandparents.", "options": ["am visiting", "visit", "visits", "visited"], "answer": 0, "whyEs": "Plan ya organizado para el domingo: presente continuo.", "trapsEs": ["", "Presente simple: sonaría a hábito, no a un plan.", "Visits es para he/she/it.", "Es pasado; hablamos del domingo que viene."] },
         { "id": "present-continuous-for-future-5", "type": "gap", "prompt": "We ____ (have) a barbecue on Saturday. Do you want to come?", "answers": ["are having", "are going to have"], "whyEs": "Plan organizado: presente continuo (going to también es correcto)." },
-        { "id": "present-continuous-for-future-6", "type": "order", "words": ["are", "We", "Friday", "on", "getting", "married"], "answer": "We are getting married on Friday", "whyEs": "Plan fijado: are + -ing + referencia al futuro." },
+        { "id": "present-continuous-for-future-6", "type": "order", "words": ["are", "We", "Friday", "on", "getting", "married"], "answer": "We are getting married on Friday", "alsoAccepted": ["On Friday we are getting married"], "whyEs": "Plan fijado: are + -ing + referencia al futuro." },
         { "id": "present-continuous-for-future-7", "type": "order", "words": ["you", "Are", "anything", "doing", "tonight"], "answer": "Are you doing anything tonight", "whyEs": "Para preguntar por planes: Are you doing…?" }
       ],
       "speaking": [
@@ -876,7 +876,7 @@
         }
       },
       "examples": [
-        { "en": "Don't call me at nine; I'll be driving.", "es": "No me llames a las nueve; estaré conduciendo." },
+        { "en": "Don't call me at nine; I'll be driving.", "es": "No me llames a las nueve; estaré manejando." },
         { "en": "This time next week, we'll be flying to Tokyo.", "es": "La semana que viene a esta hora estaremos volando a Tokio." },
         { "en": "Will you be passing the supermarket on your way home?", "es": "¿Vas a pasar por el súper de camino a casa?", "noteEs": "Pregunta educada: no pide nada directamente." },
         { "en": "I'll be waiting for you at the entrance.", "es": "Te estaré esperando en la entrada." },
@@ -956,7 +956,7 @@
         { "id": "future-perfect-3", "type": "choice", "prompt": "By the end of the year, she ____ for the company for a decade.", "options": ["will have been working", "will be work", "is working", "works"], "answer": 0, "whyEs": "Duración que se completará en un momento futuro: will have been + -ing.", "trapsEs": ["", "No existe: después de will be va -ing.", "Presente continuo: no mide una duración hasta un momento futuro.", "Presente simple: no expresa duración."] },
         { "id": "future-perfect-4", "type": "gap", "prompt": "By the time we get to the stadium, the match ____ (start).", "answers": ["will have started"], "whyEs": "El partido empezará antes de que lleguemos: will have + participio." },
         { "id": "future-perfect-5", "type": "gap", "prompt": "Don't call at eight: I ____ (not / finish) dinner by then.", "answers": ["won't have finished", "will not have finished"], "whyEs": "Negativa con by then: won't have + participio." },
-        { "id": "future-perfect-6", "type": "order", "words": ["have", "They'll", "by", "left", "then"], "answer": "They'll have left by then", "whyEs": "Sujeto + will have + participio + by then." },
+        { "id": "future-perfect-6", "type": "order", "words": ["have", "They'll", "by", "left", "then"], "answer": "They'll have left by then", "alsoAccepted": ["By then they'll have left"], "whyEs": "Sujeto + will have + participio + by then." },
         { "id": "future-perfect-7", "type": "order", "words": ["you", "Will", "have", "by", "the", "finished", "report", "Friday"], "answer": "Will you have finished the report by Friday", "whyEs": "Will + sujeto + have + participio + by + momento." }
       ],
       "speaking": [

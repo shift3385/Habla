@@ -1,0 +1,24 @@
+== G1 (src/components/AudioPicker.tsx) «if (!readyRef.current || !isForeground()) return» → «if (!readyRef.current) return» [restaurado]
+✖ REG-M-03: no sale antes de la bienvenida y la clave, ni durante el test de nivel; no se repite si ya se probó (5.3194ms)
+✖ REV-D1-02: AudioPicker no pregunta ni monta la prueba con la app oculta; SoundTest no habla ni abre el micro (4.3455ms)
+ℹ pass 12
+== G2 (src/lib/audioRoute.ts) «    if (!foreground) return false
+» → «» [restaurado]
+✖ REV-D1-02: con la app en segundo plano, la prueba de sonido no fija la ruta (22.6629ms)
+ℹ pass 13
+ℹ fail 1
+== G2b (src/lib/audioRoute.ts) «if (!foreground) return false» → «if (false) return false» [restaurado]
+✖ REV-D1-02: con la app en segundo plano, la prueba de sonido no fija la ruta (20.6147ms)
+ℹ pass 13
+ℹ fail 1
+== G3 (src/lib/audioRoute.ts) «if (gen !== routeGen || !foreground) {» → «if (false) {» [restaurado]
+✖ REV-D1-02: minimizar mientras la prueba pide la ruta no la deja puesta (setRoute tardío) (88.9964ms)
+ℹ pass 13
+ℹ fail 1
+== G4 (src/components/SoundTest.tsx) «if (!isForeground()) throw new Error('segundo plano')» → «» [restaurado]
+✖ REV-D1-02: AudioPicker no pregunta ni monta la prueba con la app oculta; SoundTest no habla ni abre el micro (4.4222ms)
+ℹ pass 13
+ℹ fail 1
+ℹ tests 39
+ℹ pass 39
+ℹ fail 0
