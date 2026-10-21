@@ -17,7 +17,8 @@ const OUT = process.argv[2] || '.'
 const QUICK = process.argv.includes('rapido')
 const NOGPU = process.argv.includes('--disable-gpu')
 mkdirSync(OUT, { recursive: true })
-const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+// En Windows, Edge; en Linux (Claude Cloud) se pasa el Chromium con PERF_BROWSER (p. ej. /opt/pw-browsers/chromium-*/chrome-linux/chrome).
+const EDGE = process.env.PERF_BROWSER || 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
 const PORT = 9339
 const PROFILE = process.env.PERF_PROFILE || join(tmpdir(), 'habla-perf-edge-' + Date.now()) // perfil desechable, fuera de git
 const URL = 'http://perf.localhost:5173/docs/v5.11/rendimiento/evidencia/perf.html'
@@ -26,6 +27,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const edge = spawn(EDGE, [
   '--headless=new', `--remote-debugging-port=${PORT}`, `--user-data-dir=${PROFILE}`, '--no-first-run', '--no-default-browser-check',
   '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', '--mute-audio', '--window-size=360,780',
+  ...(process.platform === 'linux' ? ['--no-sandbox'] : []),
   '--disable-extensions', '--disable-background-networking', '--disable-sync', '--disable-component-update',
   ...(NOGPU ? ['--disable-gpu'] : []),
 ], { stdio: 'ignore' })

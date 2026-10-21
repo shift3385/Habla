@@ -1,6 +1,6 @@
 # Rendimiento y efectos visuales: evaluación y propuesta de «Modo ligero»
 
-**Fecha:** 2026-10-21 · **Rama:** `v5.11` (sin cambios en `src/`, sin commits) · **Autor:** agente de rendimiento web móvil y diseño de interfaz
+**Fecha:** 2026-10-21 · **Rama:** `v5.11` → terminado e implementado en `claude/peaceful-fermi-ua55yq` (5.11 build 43) · **Autor:** agente de rendimiento web móvil y diseño de interfaz
 **Encargo del dueño:** una opción en Ajustes para no discriminar teléfonos poco modernos (p. ej. el Samsung Galaxy A11
 de su madre): apagar transparencias, animaciones, iluminaciones y otros efectos que cuestan rendimiento, sin que la app
 deje de funcionar perfectamente. Además, decidir si «Apariencia» se está haciendo larga y necesita un submenú.
@@ -106,22 +106,77 @@ un efecto que **cambia en cada fotograma** (o que se mueve al desplazar) cuesta 
 
 ## 3. Propuesta de grupos
 
-<!--GRUPOS-->
+Cinco grupos, cada uno con su interruptor, y un **preajuste «Modo ligero»** que los apaga todos. Se agrupan por lo
+que el usuario ve (no por técnica) y se ordenan de más a menos ahorro según §2:
+
+| Grupo (Ajustes) | Qué apaga (§1) | Qué queda | Funcional, no se toca |
+|---|---|---|---|
+| **Cristal desenfocado** | D1, D2 (`backdrop-filter` en todas partes) | Tarjetas y barra de pestañas de **color liso** del mismo tono (`--gs`: fondo + un toque de la mancha principal + el blanco del cristal) | — |
+| **Mascota en movimiento** | M1–M6 | **Imagen fija** en su pose de reposo (decisión del dueño, 2026-10-21): sin vaivén, sin seguir el dedo (M3), sin moverse al hablar el profe (M4), sin partículas ni reacción animada al tocarla. Se redibuja solo si cambia el ánimo, el tema o el tamaño | **Los consejos y avisos de los globos siguen saliendo igual** (petición del dueño); tocarla sigue pasando al siguiente globo |
+| **Animaciones** | A1–A4, B2, B5 (la transición), S1 | Todo aparece al instante: animaciones y transiciones a 1 ms (no `none`: terminan en su estado final y los avisos de fin siguen llegando). Desplazamiento por código sin suavizar | Anillo de 60 s, medidor de voz (R1–R3), indicadores de «pensando» (se quedan quietos pero visibles) |
+| **Fondo de colores** | F1, F2 | Degradado suave del tema (`--bgt` → `--bg`), sin capas enormes desenfocadas | — |
+| **Brillos y sombras** | B1, B3, B4, B6, B2 (la capa) | Botones y tarjetas sin resplandor (`--glow: transparent`, `--sh: none`) | Sombras interiores de acierto/fallo y celda elegida (no usan esas variables) |
+
+**Vibraciones (V1):** no cuestan rendimiento; no entran en el modo ligero. Si el dueño quiere, irían en otra opción.
+
+**Contraste:** el cristal liso usa el mismo tono medio que el cristal actual, sin la mancha de color detrás: el
+contraste del texto se mantiene o mejora (`evidencia/contraste.mjs`).
+
+**¿Activarlo solo?** No: cambiaría el aspecto sin avisar. Se **recomienda** en teléfonos modestos
+(`navigator.deviceMemory` ≤ 3 GB o ≤ 4 núcleos; el A11 tiene 2–3 GB) con un globo en Apariencia y en Rendimiento.
 
 ---
 
 ## 4. Implementación propuesta
 
-<!--IMPL-->
+Hecho en la 5.11 (build 43), commit `268deca`:
+
+- `src/lib/effects.ts` (nuevo, sin React): tipos, `normalizeEffects` (lo que falte, encendido), `effectsPreset`,
+  `looksModest`, `applyEffects` (clases `fx-no-blur`, `fx-no-bg`, `fx-no-glow`, `fx-no-motion` en `<html>`) y
+  `scrollBehavior()`. Tests en `tests/effects.test.mjs`.
+- `settings.ts`: ajuste `effects` (todo encendido por defecto; la carga lo normaliza, así llega solo a instalaciones
+  antiguas). No viaja en las copias (los ajustes nunca viajan).
+- `index.css`: reglas al final, **fuera de las capas** de Tailwind y con `!important` donde hay que ganar a las
+  variables que `App.tsx` pone en línea en `<html>` (`--g`, `--tab`, `--glow`, `--sh`).
+- `theme.ts` (`cssVars`): `--gs` (cristal liso) y `--bgt` (arranque del degradado) calculados por tema y modo.
+- `Background.tsx`: clases `bg-root`/`bg-blob` para cambiar las manchas por el degradado.
+- `Mascot.tsx`: `setMascotStill(on)`. Quieta = un solo dibujo de la pose de reposo (`fresh()`), `nextAt = Infinity`,
+  sin escuchar `pointermove`; el planificador no programa nada si todas están quietas.
+- `App.tsx`: aplica los efectos y la mascota quieta al cargar y al cambiar el ajuste.
+- Desplazamientos por código (`Conversation`, `GrammarExercises`, `GrammarSpeak`, `SoundExercises`, `WelcomeScreen`):
+  `behavior: scrollBehavior()`.
+
+**Comprobado en el navegador** (360×780, 320×640, 780×360): clases aplicadas, cristal sin desenfoque y con color
+liso, **la mascota del Inicio cambia 1.163 veces en 4 s con todo y 0 en modo ligero**, el globo de consejos sale
+igual en los dos modos, sin desbordamiento horizontal, Atrás de Rendimiento vuelve a Apariencia.
+`npm test`: 361 ✔, 0 ✖, 1 `todo` (SEG-509).
 
 ---
 
 ## 5. Menú «Apariencia»
 
-<!--MENU-->
+Apariencia tenía, seguidos: tamaño de letra con vista previa, 4 temas con su mascota animada, modo, orientación y
+globos (unas 4–5 pantallas en 320×640, con **6 mascotas** animándose a la vez: es la pantalla más cara de la app, §2).
+Con el modo ligero dentro, pasa a **menú con secciones**, cada una con lo elegido a la vista:
+
+| Sección | Contenido | Resumen en el menú |
+|---|---|---|
+| Tema y mascota | 4 temas + modo claro/oscuro | «Gota · Marea · claro» |
+| Tamaño de letra | La tarjeta de la 5.10.1 con vista previa | «Normal» |
+| Rendimiento | Modo ligero + 5 grupos a medida | «Completo» · «Modo ligero» · «A medida: n de 5 apagados» |
+| Pantalla y globos | Orientación + globos de la mascota | «Automática · globos encendidos» |
+
+Atrás (botón y Android) vuelve de la sección al menú y del menú al panel de Ajustes. De paso, las 6 mascotas solo se
+montan al entrar en «Tema y mascota» (y la de la letra, en su sección).
 
 ---
 
 ## 6. Esfuerzo y versión
 
-<!--VERSION-->
+- **Hecho:** estudio, implementación y prueba en el navegador en la **5.11 build 43** (aún sin entregar: la 5.11 no
+  ha salido, así que entra en ella; Novedades actualizadas). Esfuerzo real: una sesión.
+- **Pendiente (con el resto de pruebas en el teléfono, `docs/pruebas/PENDIENTES.md`):** medirlo en el POCO y, si el
+  dueño lo permite, en el A11 (CPU en reposo del Inicio y de Apariencia con `cpu.sh`, fluidez al desplazar), y que la
+  madre del dueño lo use un día.
+- **Ideas para después:** vibraciones como opción aparte; recomendar el modo ligero también con un aviso de la mascota
+  la primera vez en un teléfono modesto.

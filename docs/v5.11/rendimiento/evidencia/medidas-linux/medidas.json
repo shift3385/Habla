@@ -1,0 +1,582 @@
+[
+ {
+  "sc": "inicio",
+  "cfg": "todo",
+  "despierta": {
+   "main": 1.9,
+   "renderer": 4.2,
+   "gpu": 15.2
+  },
+  "descanso": {
+   "main": 0.9,
+   "renderer": 2,
+   "gpu": 6.3
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 36.4,
+     "renderer": 99.4,
+     "gpu": 65
+    },
+    "tabs": {
+     "fps": 46.5,
+     "p95": 50,
+     "largos": 9,
+     "main": 46.7,
+     "renderer": 102.7,
+     "gpu": 31.6
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 39,
+     "renderer": 103.6,
+     "gpu": 49.9
+    },
+    "tabs": {
+     "fps": 41.4,
+     "p95": 66.7,
+     "largos": 10,
+     "main": 58.9,
+     "renderer": 106.1,
+     "gpu": 26.5
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "blur",
+  "despierta": {
+   "main": 2,
+   "renderer": 4.5,
+   "gpu": 2
+  },
+  "descanso": {
+   "main": 1.4,
+   "renderer": 2.5,
+   "gpu": 1.2
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 38.4,
+     "renderer": 92.4,
+     "gpu": 6.4
+    },
+    "tabs": {
+     "fps": 47.9,
+     "p95": 50,
+     "largos": 8,
+     "main": 44.1,
+     "renderer": 100,
+     "gpu": 7.1
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 51.8,
+     "renderer": 110.6,
+     "gpu": 7.6
+    },
+    "tabs": {
+     "fps": 41.3,
+     "p95": 116.6,
+     "largos": 9,
+     "main": 58.6,
+     "renderer": 106.6,
+     "gpu": 5.8
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "fondo",
+  "despierta": {
+   "main": 1.9,
+   "renderer": 4,
+   "gpu": 12.8
+  },
+  "descanso": {
+   "main": 1.1,
+   "renderer": 2.3,
+   "gpu": 6.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 33.8,
+     "renderer": 99.3,
+     "gpu": 56.2
+    },
+    "tabs": {
+     "fps": 44.9,
+     "p95": 83.3,
+     "largos": 11,
+     "main": 49.7,
+     "renderer": 103.2,
+     "gpu": 26.4
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 42.1,
+     "renderer": 103.2,
+     "gpu": 47.3
+    },
+    "tabs": {
+     "fps": 41.1,
+     "p95": 66.6,
+     "largos": 9,
+     "main": 60.8,
+     "renderer": 107.3,
+     "gpu": 26.8
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "sombras",
+  "despierta": {
+   "main": 2.3,
+   "renderer": 5,
+   "gpu": 3.2
+  },
+  "descanso": {
+   "main": 1.2,
+   "renderer": 2.5,
+   "gpu": 2.2
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 34.6,
+     "renderer": 99.7,
+     "gpu": 14.2
+    },
+    "tabs": {
+     "fps": 46.2,
+     "p95": 66.8,
+     "largos": 11,
+     "main": 48.3,
+     "renderer": 100.7,
+     "gpu": 22.1
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 56.7,
+     "renderer": 108.4,
+     "gpu": 11.2
+    },
+    "tabs": {
+     "fps": 45,
+     "p95": 33.3,
+     "largos": 7,
+     "main": 54.2,
+     "renderer": 96.8,
+     "gpu": 21.3
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "anim",
+  "despierta": {
+   "main": 2.1,
+   "renderer": 4.5,
+   "gpu": 12
+  },
+  "descanso": {
+   "main": 1.1,
+   "renderer": 2,
+   "gpu": 4.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 58.8,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 46.1,
+     "renderer": 92.8,
+     "gpu": 47.6
+    },
+    "tabs": {
+     "fps": 48.1,
+     "p95": 50,
+     "largos": 9,
+     "main": 41.7,
+     "renderer": 91.2,
+     "gpu": 5.8
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 57.5,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 62.5,
+     "renderer": 92.4,
+     "gpu": 57.1
+    },
+    "tabs": {
+     "fps": 43.2,
+     "p95": 66.7,
+     "largos": 10,
+     "main": 58,
+     "renderer": 98.7,
+     "gpu": 5.7
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "mascota",
+  "despierta": {
+   "main": 0.7,
+   "renderer": 1.5,
+   "gpu": 0.8
+  },
+  "descanso": {
+   "main": 0.1,
+   "renderer": 0.2,
+   "gpu": 0.7
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 7.6,
+     "renderer": 79.6,
+     "gpu": 4
+    },
+    "tabs": {
+     "fps": 46,
+     "p95": 66.6,
+     "largos": 10,
+     "main": 48.6,
+     "renderer": 93.4,
+     "gpu": 30.8
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 7.2,
+     "renderer": 85.9,
+     "gpu": 5.2
+    },
+    "tabs": {
+     "fps": 42,
+     "p95": 50,
+     "largos": 6,
+     "main": 56.9,
+     "renderer": 102.2,
+     "gpu": 30.4
+    }
+   }
+  }
+ },
+ {
+  "sc": "inicio",
+  "cfg": "ligero",
+  "despierta": {
+   "main": 0.1,
+   "renderer": 0.3,
+   "gpu": 0.7
+  },
+  "descanso": {
+   "main": 0.1,
+   "renderer": 0.5,
+   "gpu": 0.7
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 4.6,
+     "renderer": 85.5,
+     "gpu": 1.4
+    },
+    "tabs": {
+     "fps": 48.5,
+     "p95": 50,
+     "largos": 9,
+     "main": 37.3,
+     "renderer": 93.7,
+     "gpu": 1
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 7.8,
+     "renderer": 94.2,
+     "gpu": 2.7
+    },
+    "tabs": {
+     "fps": 42.7,
+     "p95": 83.3,
+     "largos": 11,
+     "main": 51.9,
+     "renderer": 100.3,
+     "gpu": 1
+    }
+   }
+  }
+ },
+ {
+  "sc": "clase",
+  "cfg": "todo",
+  "despierta": {
+   "main": 2.5,
+   "renderer": 5.3,
+   "gpu": 6
+  },
+  "descanso": {
+   "main": 1.8,
+   "renderer": 3.8,
+   "gpu": 3.3
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 40.3,
+     "renderer": 102.3,
+     "gpu": 24.1
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 63.4,
+     "renderer": 110.3,
+     "gpu": 23.3
+    }
+   }
+  }
+ },
+ {
+  "sc": "clase",
+  "cfg": "blur",
+  "despierta": {
+   "main": 2.2,
+   "renderer": 4.2,
+   "gpu": 2
+  },
+  "descanso": {
+   "main": 1.7,
+   "renderer": 2.8,
+   "gpu": 1.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 57.4,
+     "p95": 16.8,
+     "largos": 1,
+     "main": 63.8,
+     "renderer": 109.3,
+     "gpu": 7.5
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 67.2,
+     "renderer": 108.5,
+     "gpu": 7
+    }
+   }
+  }
+ },
+ {
+  "sc": "clase",
+  "cfg": "fondo",
+  "despierta": {
+   "main": 2.1,
+   "renderer": 4.7,
+   "gpu": 5.2
+  },
+  "descanso": {
+   "main": 1.5,
+   "renderer": 3.2,
+   "gpu": 3.3
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 43.5,
+     "renderer": 103,
+     "gpu": 23.9
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 58.5,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 66,
+     "renderer": 94.9,
+     "gpu": 21.7
+    }
+   }
+  }
+ },
+ {
+  "sc": "clase",
+  "cfg": "sombras",
+  "despierta": {
+   "main": 3,
+   "renderer": 4.7,
+   "gpu": 2.3
+  },
+  "descanso": {
+   "main": 1.5,
+   "renderer": 2.5,
+   "gpu": 1.8
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 57.3,
+     "p95": 16.8,
+     "largos": 1,
+     "main": 57.7,
+     "renderer": 108.1,
+     "gpu": 9.4
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 59.2,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 76.4,
+     "renderer": 107.5,
+     "gpu": 9
+    }
+   }
+  }
+ },
+ {
+  "sc": "clase",
+  "cfg": "anim",
+  "despierta": {
+   "main": 2.4,
+   "renderer": 4.5,
+   "gpu": 5
+  },
+  "descanso": {
+   "main": 1.5,
+   "renderer": 2.7,
+   "gpu": 3
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 46.6,
+     "renderer": 102.9,
+     "gpu": 20.3
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 59.6,
+     "p95": 16.8,
+     "largos": 0,
+     "main": 66.6,
+     "renderer": 111.1,
+     "gpu": 17.5
+    }
+   }
+  }
+ },
+ {
+  "sc": "clase",
+  "cfg": "mascota",
+  "despierta": {
+   "main": 0.2,
+   "renderer": 0.3,
+   "gpu": 0.8
+  },
+  "descanso": {
+   "main": 0.1,
+   "renderer": 0.2,
+   "gpu": 0.5
+  },
+  "lento": {
+   "4": {
+    "scroll": {
+     "fps": 59.6,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 9.4,
+     "renderer": 89.4,
+     "gpu": 1.9
+    }
+   },
+   "6": {
+    "scroll": {
+     "fps": 60,
+     "p95": 16.7,
+     "largos": 0,
+     "main": 8.3,
+     "renderer": 96,
+     "gpu": 2.3
+    }
+   }
+  }
+ }
+]
