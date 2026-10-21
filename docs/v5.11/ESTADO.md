@@ -6,11 +6,7 @@
 > Estados: `pendiente` → `en desarrollo` → `para revisar` → `en revisión` → `NC` (vuelve a dev) / `aprobada`.
 
 ## ⏸ PAUSA (2026-10-21, ~11:30, a petición del dueño por el límite de uso) — estado exacto
-- **Git:** commits locales `c52bb69` y `307ecd7` (rama `v5.10.1-correcciones`) y `d7af553` (rama `v5.11`, actual). **NADA está
-  en GitHub todavía**: el `git push` de las dos ramas falló («the remote end hung up», internet lento, ~20 MB nuevos) y el
-  reintento se detuvo. Para reanudar, desde el PC: `git push -u origin v5.10.1-correcciones` y luego `git push -u origin v5.11`
-  (ya está `http.postBuffer` = 500 MB en la config local; si vuelve a cortarse, reintentar o subir por partes). `main` intacta.
-  Sin ramas en GitHub, una sesión de Claude Cloud **no** verá este trabajo.
+- **Git (actualizado 2026-10-21):** ramas **subidas a GitHub**: `v5.10-gramatica` (cd5803a), `v5.10.1-correcciones` (307ecd7) y `v5.11` (esta). `main` intacta (5.9.1). Una sesión de Claude Cloud ya puede trabajar sobre `v5.11`.
 - **Estudio del modo ligero (aprobado por el dueño):** el agente se detuvo a medias (medidas en marcha). Hay borrador en
   `docs/v5.11/rendimiento/EVALUACION.md` y evidencias en `docs/v5.11/rendimiento/evidencia/` (`medir.mjs`, `medidas.json`,
   `resumen.mjs`). Retomar: completar las medidas y la propuesta (grupos, preajuste «Modo ligero», menú «Apariencia» con
