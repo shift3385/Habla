@@ -12,7 +12,7 @@ La regresión de la 5.10 (`docs/pruebas/regresion-5.10/INFORME.md`) y la correcc
 | Bajo | **REG-N-01:** la prueba de sonido nueva puede salir encima del aviso «Dejamos una clase a medias» y, si el primer intento no oye voz, cambiar sin avisar el modo de los auriculares a «micro del teléfono» (en corrección al cerrar la 5.10.1) | `AudioPicker.tsx`, `SoundTest.tsx`, `App.tsx` |
 | Bajo | **CPU en reposo** con una clase larga abierta: 28–52 % (debug) + renderer; el JS está inactivo, cuesta pintar la mascota. Medir en la release antes de abrir NC | `ui/Mascot.tsx` |
 | Bajo | **Seguridad (backlog):** sin CSP (SEG-503), tema y noticia sin delimitar en el prompt (SEG-509, test `todo`), `file_paths.xml` con `external-path` (se dejó a propósito) | `index.html`, `teacher.ts`, `res/xml` |
-| Bajo | **Regla CSS inválida desde la 5.7:** `html[data-landscape] .shell … > .relative.z-[2]` (corchetes sin escapar) nunca se ha aplicado; corregirla cambiaría el horizontal: hacerlo con pruebas en la 5.11 | `index.css:393` |
+| — | ~~Regla CSS inválida desde la 5.7~~ (`.relative.z-[2]`): **borrada** el 2026-10-21; nunca se aplicaba y el horizontal ya se ve bien | — |
 | Bajo | Con letra «Muy grande», la pestaña Prácticas del Inicio desplaza 3–5 px a 390×844 | `Home.tsx` |
 
 ## 2. Seguridad e incidentes de las claves

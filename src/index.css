@@ -389,11 +389,6 @@ html[data-landscape] .shell:has(.land-tall) {
   height: max(100%, 660px);
   max-width: 640px;
 }
-/* Pantallas de pestañas, test y clase: columna centrada de ancho cómodo. */
-html[data-landscape] .shell:not(:has(.mp-page)) > .relative.z-[2] {
-  margin-inline: auto;
-  max-width: 640px;
-}
 .mp-side,
 .mp-main {
   display: contents;
