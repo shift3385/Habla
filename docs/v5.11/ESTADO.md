@@ -5,6 +5,20 @@
 > Rama: `v5.11`, creada el 2026-10-21 desde la 5.10.1 commiteada (`307ecd7`, rama `v5.10.1-correcciones`) a petición del dueño; la release y la fusión de la 5.10.1 en `main` siguen pendientes. Sin commits ni push hasta que el dueño apruebe.
 > Estados: `pendiente` → `en desarrollo` → `para revisar` → `en revisión` → `NC` (vuelve a dev) / `aprobada`.
 
+## ⏸ PAUSA (2026-10-21, ~11:30, a petición del dueño por el límite de uso) — estado exacto
+- **Git:** commits locales `c52bb69` y `307ecd7` (rama `v5.10.1-correcciones`) y `d7af553` (rama `v5.11`, actual). **NADA está
+  en GitHub todavía**: el `git push` de las dos ramas falló («the remote end hung up», internet lento, ~20 MB nuevos) y el
+  reintento se detuvo. Para reanudar, desde el PC: `git push -u origin v5.10.1-correcciones` y luego `git push -u origin v5.11`
+  (ya está `http.postBuffer` = 500 MB en la config local; si vuelve a cortarse, reintentar o subir por partes). `main` intacta.
+  Sin ramas en GitHub, una sesión de Claude Cloud **no** verá este trabajo.
+- **Estudio del modo ligero (aprobado por el dueño):** el agente se detuvo a medias (medidas en marcha). Hay borrador en
+  `docs/v5.11/rendimiento/EVALUACION.md` y evidencias en `docs/v5.11/rendimiento/evidencia/` (`medir.mjs`, `medidas.json`,
+  `resumen.mjs`). Retomar: completar las medidas y la propuesta (grupos, preajuste «Modo ligero», menú «Apariencia» con
+  submenús) y luego desarrollarlo (5.11.x).
+- **Teléfono:** «Habla debug» tiene la 5.11 de antes de las pausas; el APK debug más reciente (con pausas y retoques) está en
+  `apk/Habla-v5.11-debug.apk`, sin instalar (el teléfono se desconectó). Instalar con `adb -s 60d0718c install -r`.
+- Todos los agentes de desarrollo y el revisor están parados; la 5.11 está aprobada en PC (0 NC).
+
 ## ▶ CÓMO CONTINUAR (2026-10-21, límite de uso de 5 h casi agotado) — para una sesión en Claude Cloud o en el PC
 - **Estado:** desarrollo de la 5.11 **terminado y aprobado en PC** (regresión final GO, 0 NC abiertas; `npm test` 357/358 + 1 `todo`).
   Commit local en la rama `v5.11` (2026-10-21). APK debug 5.11 (build 42) compilado en `apk/` (fuera de git); el teléfono

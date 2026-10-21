@@ -60,7 +60,9 @@ function client(ws) {
   const send = (method, params = {}) =>
     ready.then(() => new Promise((res, rej) => {
       const i = ++id
-      wait.set(i, { res, rej })
+      // Sin respuesta en 45 s (p. ej. la página se recargó a medias): error y se reintenta el escenario.
+      const to = setTimeout(() => wait.has(i) && (wait.delete(i), rej(new Error('CDP sin respuesta: ' + method))), 45000)
+      wait.set(i, { res: (v) => (clearTimeout(to), res(v)), rej: (e) => (clearTimeout(to), rej(e)) })
       sock.send(JSON.stringify({ id: i, method, params }))
     }))
   return { send, on: (k, f) => on.set(k, f), close: () => sock.close() }
@@ -253,7 +255,7 @@ async function tabsFps() {
   return { ...(await fpsStop()), ...diff(a, await metrics()) }
 }
 const domCount = () =>
-  ev(`({ glass: document.querySelectorAll('.glass').length, mascotas: document.querySelectorAll('svg[viewBox="-110 -125 220 220"]').length,
+  ev(`({ bucles: document.getAnimations().filter((a) => a.playState === 'running').map((a) => (a.animationName || a.transitionProperty || 'waapi') + '@' + String(a.effect?.target?.className?.baseVal ?? a.effect?.target?.className ?? a.effect?.target?.tagName).slice(0, 40)), glass: document.querySelectorAll('.glass').length, mascotas: document.querySelectorAll('svg[viewBox="-110 -125 220 220"]').length,
   desenfoque: [...document.querySelectorAll('*')].filter((e) => { const s = getComputedStyle(e); return s.backdropFilter && s.backdropFilter !== 'none' }).length,
   alto: Math.max(...[...document.querySelectorAll('*')].map((e) => e.scrollHeight)) })`)
 
@@ -283,9 +285,15 @@ const results = []
 const THROTTLES = QUICK ? [4] : [4, 6]
 const IDLE = QUICK ? 4000 : 8000
 for (const sc of Object.keys(SCEN)) {
-  await page.send('Emulation.setCPUThrottlingRate', { rate: 1 })
-  await SCEN[sc]()
-  const dom = await domCount()
+  let dom
+  for (let k = 0; k < 3 && !dom; k++) try {
+    await page.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    await SCEN[sc]()
+    await sleep(3000)
+    dom = await domCount()
+  } catch (e) {
+    console.log('fallo al cargar', sc, e.message.slice(0, 120))
+  }
   await setCfg('todo')
   await shot(`${sc}-todo`)
   await setCfg('ligero')
