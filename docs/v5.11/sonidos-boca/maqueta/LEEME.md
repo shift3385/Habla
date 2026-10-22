@@ -6,5 +6,5 @@ sonido: dientes, lengua, labios y, si el sonido es sonoro, las cuerdas vocales. 
 - `build3.py` genera `maqueta2.html` (ficha en el teléfono, /θ/ claro y /ð/ oscuro) y `anat-grande.html`.
   Usa `anat.json` (contornos de los cortes CC0 de Wright y McCloy, sacados con `parse.py` de
   `github.com/drammock/phonetics-teaching-assets`, carpeta `midsaggital_articulations`).
-- `maqueta-boca-3.png`: la última versión.
+- `maqueta-boca-3.png`: solo etiquetas útiles. `maqueta-boca-4.png`: lengua redibujada (plana, unida al suelo de la boca, punta afinada, fibras en abanico).
 - Para verla: `python3 build3.py` y abrir `maqueta2.html` en el navegador.

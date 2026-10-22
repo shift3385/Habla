@@ -1,5 +1,10 @@
 import json
 A=json.load(open('anat.json'))
+TONGUE = ("M153.4 139.4 C151.4 137.9 148 137.2 143.5 136.6 C136 135.6 127.5 135.4 119.5 136.2 C111.5 137.1 105.4 140 102.2 145.4 "
+          "C99.8 149.8 99.4 156.5 100.2 163.2 C101 169 103.6 173.8 108 177.2 L113.5 177.6 C118 175.4 123 173.6 128.5 171.6 "
+          "C135 169.2 141 165.6 145.4 160.4 C148.4 156.6 150.2 151.4 151.4 146.6 C152.2 143.6 153 141.6 153.8 140.4 C154 140 153.8 139.6 153.4 139.4 Z")
+FAN = ''.join(f'<path d="M147 166 Q{126 + i * 3:.1f} {156 - i * 2.2:.1f} {104 + i * 6.4:.1f} {168 - i * 5.2:.1f}"/>' for i in range(7))
+
 def section(k, uid, voiced, tx='#0d2530'):
     a=A[k]
     folds = a['folds']
@@ -10,7 +15,7 @@ def section(k, uid, voiced, tx='#0d2530'):
  <defs>
   <linearGradient id="skin{uid}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d9a487"/><stop offset=".65" stop-color="#f0c4a6"/><stop offset="1" stop-color="#f6d3bb"/></linearGradient>
   <radialGradient id="brain{uid}" cx=".55" cy=".45" r=".7"><stop offset="0" stop-color="#e8b9b0"/><stop offset="1" stop-color="#c98d86"/></radialGradient>
-  <linearGradient id="tongue{uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2717c"/><stop offset=".55" stop-color="#c9505f"/><stop offset="1" stop-color="#a63b4b"/></linearGradient>
+  <radialGradient id="tongue{uid}" cx=".55" cy=".2" r=".9"><stop offset="0" stop-color="#ec8792"/><stop offset=".45" stop-color="#cf5564"/><stop offset="1" stop-color="#9c3445"/></radialGradient>
   <linearGradient id="muc{uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e88f8f"/><stop offset="1" stop-color="#c8616a"/></linearGradient>
   <linearGradient id="bone{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf0d8"/><stop offset="1" stop-color="#e3cfa6"/></linearGradient>
   <linearGradient id="tooth{uid}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e4e0d6"/></linearGradient>
@@ -52,8 +57,13 @@ def section(k, uid, voiced, tx='#0d2530'):
  <path d="M149.6 124 C151 122.6 153.6 122.4 154.4 124 L154.8 135.6 C154.2 137.2 152.4 137.6 151 136.4 C150 133 149.6 128 149.6 124 Z" fill="url(#tooth{uid})" stroke="#9a9384" stroke-width=".4"/>
  <path d="M148.6 156 L151.8 156 L152.6 142.2 C152 140.8 150.6 140.6 149.6 141.8 C149 146 148.6 151 148.6 156 Z" fill="url(#tooth{uid})" stroke="#9a9384" stroke-width=".4"/>
  <!-- lengua (músculo) -->
- <path d="{a['tongue']}" fill="url(#tongue{uid})" stroke="#8f2f3d" stroke-width=".6"/>
- <path d="{a['tongue']}" fill="url(#fib{uid})"/>
+ <!-- Lengua redibujada (forma de maqueta): dorso plano, punta afinada entre los dientes, raíz hacia la garganta -->
+ <clipPath id="tc{uid}"><path d="{TONGUE}"/></clipPath>
+ <path d="{TONGUE}" fill="url(#tongue{uid})" stroke="#8f2f3d" stroke-width=".55" stroke-linejoin="round"/>
+ <g clip-path="url(#tc{uid})" fill="none" stroke="#8a2836" stroke-width=".45" opacity=".35" stroke-linecap="round">
+  {FAN}
+ </g>
+ <path d="M151 138.6 C144 137.4 132 136.6 120.5 137.4 C112 138.2 106 141 103 146" fill="none" stroke="#f3a3ab" stroke-width=".9" opacity=".55" stroke-linecap="round"/>
  <!-- epiglotis y laringe -->
  <path d="{a['epi']}" fill="url(#muc{uid})" stroke="#9b4552" stroke-width=".5"/>
  <path d="{folds}" fill="#f3f0ea" stroke="#2f7fd0" stroke-width="{1.1 if voiced else .7}"/>
