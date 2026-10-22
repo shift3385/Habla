@@ -5,7 +5,25 @@ TONGUE = ("M153.4 139.4 C151.4 137.9 148 137.2 143.5 136.6 C136 135.6 127.5 135.
           "C135 169.2 141 165.6 145.4 160.4 C148.4 156.6 150.2 151.4 151.4 146.6 C152.2 143.6 153 141.6 153.8 140.4 C154 140 153.8 139.6 153.4 139.4 Z")
 FAN = ''.join(f'<path d="M147 166 Q{126 + i * 3:.1f} {156 - i * 2.2:.1f} {104 + i * 6.4:.1f} {168 - i * 5.2:.1f}"/>' for i in range(7))
 
-def section(k, uid, voiced, tx='#0d2530'):
+TONGUE_B = ("M156.2 139.0 C153.4 137.6 149 136.6 143 136.2 C135 135.6 126 135.4 118.5 136.4 C112 137.4 107.4 140 105 144.6 "
+            "C103 149 102.4 155 102.8 161.5 C103.2 166.5 104.6 170.6 107.4 174 L111.8 176.6 C116.5 176.2 121.5 174.6 127 172.4 "
+            "C133 169.8 138.6 166 142.6 161 C145.2 157.6 147 153.6 148.6 149.6 C150 146.4 151.6 143.8 153.4 142 C154.6 140.9 155.6 140.3 156.6 139.9 "
+            "C157 139.6 156.8 139.2 156.2 139.0 Z")
+DORSUM_B = "M156.6 139.3 C153.4 137.8 149 136.8 143 136.4 C135 135.8 126 135.6 118.5 136.6 C112 137.6 107.4 140.2 105 144.8 C103 149.2 102.4 155.2 102.8 161.7"
+FIB_B = ''.join(f'<path d="M{110 + i * 5.2:.1f} {139 - min(i, 6) * 0.25:.1f} Q{112 + i * 5.6:.1f} {155:.1f} {116 + i * 4.2:.1f} {174 - i * 1.6:.1f}"/>' for i in range(8))
+
+def section(k, uid, voiced, tx='#0d2530', variant='A'):
+    if variant == 'B':
+        # La forma de lengua del corte original se pinta como hueco de la boca: así no asoma detrás de la nueva
+        below = DORSUM_B + ' L100 200 L170 200 L170 139 Z'  # todo lo que queda por debajo del dorso: suelo de la boca (carne)
+        tongue_svg = (f'<path d="{A[k]['tongue']}" fill="url(#air{uid})"/>'
+                      f'<clipPath id="bl{uid}"><path d="{below}"/></clipPath>'
+                      f'<path d="{A[k]['tongue']}" fill="url(#skin{uid})" clip-path="url(#bl{uid})"/>' + tongue_b(uid))
+    else:
+        tongue_svg = (f'<clipPath id="tc{uid}"><path d="{TONGUE}"/></clipPath>'
+                      f'<path d="{TONGUE}" fill="url(#tongue{uid})" stroke="#8f2f3d" stroke-width=".55" stroke-linejoin="round"/>'
+                      f'<g clip-path="url(#tc{uid})" fill="none" stroke="#8a2836" stroke-width=".45" opacity=".35" stroke-linecap="round">{FAN}</g>'
+                      '<path d="M151 138.6 C144 137.4 132 136.6 120.5 137.4 C112 138.2 106 141 103 146" fill="none" stroke="#f3a3ab" stroke-width=".9" opacity=".55" stroke-linecap="round"/>')
     a=A[k]
     folds = a['folds']
     vib = ('<g stroke="#2f7fd0" stroke-width=".9" fill="none" stroke-linecap="round">'
@@ -57,13 +75,7 @@ def section(k, uid, voiced, tx='#0d2530'):
  <path d="M149.6 124 C151 122.6 153.6 122.4 154.4 124 L154.8 135.6 C154.2 137.2 152.4 137.6 151 136.4 C150 133 149.6 128 149.6 124 Z" fill="url(#tooth{uid})" stroke="#9a9384" stroke-width=".4"/>
  <path d="M148.6 156 L151.8 156 L152.6 142.2 C152 140.8 150.6 140.6 149.6 141.8 C149 146 148.6 151 148.6 156 Z" fill="url(#tooth{uid})" stroke="#9a9384" stroke-width=".4"/>
  <!-- lengua (músculo) -->
- <!-- Lengua redibujada (forma de maqueta): dorso plano, punta afinada entre los dientes, raíz hacia la garganta -->
- <clipPath id="tc{uid}"><path d="{TONGUE}"/></clipPath>
- <path d="{TONGUE}" fill="url(#tongue{uid})" stroke="#8f2f3d" stroke-width=".55" stroke-linejoin="round"/>
- <g clip-path="url(#tc{uid})" fill="none" stroke="#8a2836" stroke-width=".45" opacity=".35" stroke-linecap="round">
-  {FAN}
- </g>
- <path d="M151 138.6 C144 137.4 132 136.6 120.5 137.4 C112 138.2 106 141 103 146" fill="none" stroke="#f3a3ab" stroke-width=".9" opacity=".55" stroke-linecap="round"/>
+ {tongue_svg}
  <!-- epiglotis y laringe -->
  <path d="{a['epi']}" fill="url(#muc{uid})" stroke="#9b4552" stroke-width=".5"/>
  <path d="{folds}" fill="#f3f0ea" stroke="#2f7fd0" stroke-width="{1.1 if voiced else .7}"/>
@@ -76,6 +88,16 @@ def section(k, uid, voiced, tx='#0d2530'):
  <circle cx="152.5" cy="138.5" r="5.5" fill="none" stroke="#1a7fc0" stroke-width="1" stroke-dasharray="1.8 1.4"/>
  {labels(tx, voiced)}
 </svg>'''
+
+def tongue_b(uid):
+    return (f'<defs><linearGradient id="mb{uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7404f"/><stop offset="1" stop-color="#8e2737"/></linearGradient>'
+            f'<clipPath id="tb{uid}"><path d="{TONGUE_B}"/></clipPath></defs>'
+            f'<path d="{TONGUE_B}" fill="url(#mb{uid})"/>'
+            f'<g clip-path="url(#tb{uid})"><g fill="none" stroke="#6f1d2a" stroke-width=".5" opacity=".45" stroke-linecap="round">{FIB_B}</g>'
+            f'<path d="{DORSUM_B}" fill="none" stroke="#ec9aa3" stroke-width="3.2" stroke-linecap="round"/>'
+            f'<path d="{DORSUM_B}" fill="none" stroke="#f7c2c7" stroke-width=".9" opacity=".8" stroke-linecap="round"/></g>'
+            f'<path d="{TONGUE_B}" fill="none" stroke="#7d2533" stroke-width=".55" stroke-linejoin="round"/>'
+            f'<path d="M148.6 149.6 C147 156 146.2 160 146.6 166" fill="none" stroke="#c96b76" stroke-width="1.1" stroke-linecap="round"/>')
 
 def labels(tx, voiced):
     # (texto, x del texto, y, punto señalado): solo lo que hace falta para el sonido
@@ -170,3 +192,7 @@ css='''*{box-sizing:border-box;margin:0;padding:0}body{background:#d9dee4;font-f
 open('maqueta2.html','w').write(f'<!doctype html><html><head><meta charset="utf-8"><style>{css}</style></head><body>{phone("light","th")}{phone("dark","dh")}</body></html>')
 # Ilustración sola, grande, para revisar
 open('anat-grande.html','w').write(f'<!doctype html><html><body style="margin:0;background:#fff;display:flex;gap:10px"><div style="width:520px">{section("th","a",False)}</div><div style="width:300px">{front("b")}</div></body></html>')
+
+open('comparar-lengua.html','w').write('<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;display:flex;gap:16px;padding:16px;background:#eef3f6;font-family:Outfit,system-ui,sans-serif}div.c{width:360px;background:#f7fbfd;border-radius:18px;padding:8px}h3{margin:4px 8px 8px;color:#0d2530}</style></head><body>'
+  + '<div class="c"><h3>A · actual</h3>' + section('th', 'ca', False, '#0d2530', 'A') + '</div>'
+  + '<div class="c"><h3>B · dos capas, raíz vertical</h3>' + section('th', 'cb', False, '#0d2530', 'B') + '</div></body></html>')

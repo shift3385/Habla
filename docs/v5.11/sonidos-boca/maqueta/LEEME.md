@@ -8,3 +8,4 @@ sonido: dientes, lengua, labios y, si el sonido es sonoro, las cuerdas vocales. 
   `github.com/drammock/phonetics-teaching-assets`, carpeta `midsaggital_articulations`).
 - `maqueta-boca-3.png`: solo etiquetas útiles. `maqueta-boca-4.png`: lengua redibujada (plana, unida al suelo de la boca, punta afinada, fibras en abanico).
 - Para verla: `python3 build3.py` y abrir `maqueta2.html` en el navegador.
+- `comparar-lengua.png`: propuesta A (lengua de maqueta, una capa) frente a B (dos capas: mucosa rosada encima y músculo con fibras; raíz vertical; frenillo). `build3.py` genera las dos (`variant`).
