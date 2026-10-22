@@ -1,10 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import MouthDiagram from '../components/MouthDiagram'
 import SpeakIcon from '../components/SpeakIcon'
 import { useSoundData } from '../components/useSoundData'
 import { STATE_STYLE } from '../lib/soundGame'
 import { stopSoundAudio, toggleSound } from '../lib/soundAudio'
 import { audioUrl, lessonFor, loadAudioCredits, markSoundSeen, stateOf, type Phoneme, type SoundCatalog, type SoundProgress } from '../lib/sounds'
 import type { Settings } from '../lib/settings'
+// 5.11 (boca): los dibujos solo se importan aquí (pantallas de Sonidos, chunk diferido con React.lazy), nunca en el arranque.
+import * as MOUTH from '../sounds/mouth'
 import { stopSpeakingIf, toggleSpeakSpanishUS, toggleSpeakUS, useSpeaking } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
@@ -128,6 +131,9 @@ export default function SoundScreen({
   const st = STATE_STYLE[stateOf(progress)]
   const a = p.articulation ?? {}
   const voice = p.voiced === true ? 'Con voz: la garganta vibra' : p.voiced === false ? 'Sin voz: solo aire' : undefined
+  const lipsText = a.lipsEs ?? (a.lips ? LIPS[a.lips] : '—')
+  const tongueText = a.tongueEs ?? '—'
+  const voiceText = a.voiceEs ?? voice ?? '—'
   const related = (p.related ?? []).map((r) => data.phonemes.find((x) => x.id === r)).filter((x): x is Phoneme => !!x)
   const slowKey = `w:slow:${p.keyword}`
   const soundKey = `sound:${p.id}`
@@ -178,12 +184,24 @@ export default function SoundScreen({
         </div>
       )}
 
-      {(a.lipsEs || a.tongueEs || voice || a.voiceEs) && (
-        <div className="grid grid-cols-3 gap-1.5">
-          <Picto emoji="👄" title="Labios" text={a.lipsEs ?? (a.lips ? LIPS[a.lips] : '—')} />
-          <Picto emoji="👅" title="Lengua" text={a.tongueEs ?? '—'} />
-          <Picto emoji={p.voiced === false ? '🔇' : '🔊'} title="Voz" text={a.voiceEs ?? voice ?? '—'} />
-        </div>
+      {/* 5.11 (boca): con dibujo, el corte de perfil y la vista de frente sustituyen a los pictogramas; los textos de
+          labios, lengua y voz siguen al lado del círculo de frente. Sin dibujo, los pictogramas de siempre. */}
+      {MOUTH.MOUTH_BY_PHONEME[p.id] ? (
+        <MouthDiagram phonemeId={p.id} data={MOUTH} ariaLabel={`Dibujo de la boca para /${p.ipa}/. Labios: ${lipsText}. Lengua: ${tongueText}. Voz: ${voiceText}.`}>
+          <div className="flex flex-col gap-1">
+            <MouthLine emoji="👄" title="Labios" text={lipsText} />
+            <MouthLine emoji="👅" title="Lengua" text={tongueText} />
+            <MouthLine emoji={p.voiced === false ? '🔇' : '🔊'} title="Voz" text={voiceText} />
+          </div>
+        </MouthDiagram>
+      ) : (
+        (a.lipsEs || a.tongueEs || voice || a.voiceEs) && (
+          <div className="grid grid-cols-3 gap-1.5">
+            <Picto emoji="👄" title="Labios" text={lipsText} />
+            <Picto emoji="👅" title="Lengua" text={tongueText} />
+            <Picto emoji={p.voiced === false ? '🔇' : '🔊'} title="Voz" text={voiceText} />
+          </div>
+        )
       )}
 
       {(p.spanishEs || p.mistakeEs) && (
@@ -309,6 +327,15 @@ function Picto({ emoji, title, text }: { emoji: string; title: string; text: str
         {title}
       </div>
       <div className="txt-sub fs-12 leading-snug break-words">{text}</div>
+    </div>
+  )
+}
+
+/** 5.11 (boca): una línea de texto junto al dibujo (labios, lengua o voz). */
+function MouthLine({ emoji, title, text }: { emoji: string; title: string; text: string }) {
+  return (
+    <div className="fs-12.5 leading-snug break-words">
+      <span aria-hidden>{emoji}</span> <b className="font-semibold">{title}:</b> <span className="txt-sub">{text}</span>
     </div>
   )
 }

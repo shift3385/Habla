@@ -259,6 +259,23 @@ export default function AboutScreen({
             </span>
             <Icon name="chevR" size={16} stroke={1.8} color="var(--sub)" />
           </button>
+          {/* 5.11 (boca): los cortes de la ficha de cada sonido salen de unos dibujos de dominio público (CC0). No hace
+              falta citarlos, pero se agradece: el mérito anatómico es suyo. */}
+          <div className="glass flex gap-3 rounded-[31px] px-3 py-2.5">
+            <span className="field txt-acc2 grid h-10 w-10 flex-none place-items-center rounded-full fs-18" aria-hidden>
+              👄
+            </span>
+            <span className="min-w-0 flex-1 fs-12.5 leading-snug">
+              <span className="block fs-15 font-semibold">Dibujos de la boca</span>
+              <span className="txt-sub block">
+                Basados en los cortes anatómicos de Richard Wright y Dan McCloy (Universidad de Washington), de dominio público (CC0).
+              </span>
+              <a href="https://github.com/drammock/phonetics-teaching-assets" className="txt-acc2 mt-0.5 inline-flex items-center gap-1 break-all underline">
+                github.com/drammock/phonetics-teaching-assets
+                <Icon name="arrowUR" size={12} />
+              </a>
+            </span>
+          </div>
           <div className="txt-sub px-4 text-center fs-12 leading-snug">Versión {APP_VERSION} · build {APP_BUILD}</div>
           <div className="txt-sub px-4 text-center fs-13 leading-snug">
             Las noticias de los temas vienen de fuentes públicas y se resumen con IA.
