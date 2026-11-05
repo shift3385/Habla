@@ -46,9 +46,13 @@ export const RELEASES: Release[] = [
       '«Compartir mi semana» (en Progreso): una imagen con tus minutos, tu racha, tu reto y tu último logro para mandarla por WhatsApp. Nada de tu nivel ni de tus errores',
       'Retos en familia, sin cuentas ni servidor: «Retar a alguien» manda tu reto por WhatsApp como un código; la otra persona lo pega en Progreso → «Pegar un código» y es su «Reto con…» de la semana. Con «Mandar mi progreso» os comparáis («Ana: 6 de 8 · Tú: 4 de 8»). Las dos personas necesitan Habla 5.13',
       'Palabras compartidas: en una palabra guardada, «Compartir»; al pegar el código, la palabra entra en tus Palabras y en tu Repaso',
+      '«Mi familia» (en Progreso): cada persona manda su semana con un código y ves cómo va cada una: minutos, racha y reto',
+      'Practicar lo mismo: propón una Situación (en la farmacia, en el hotel…), hacedla los dos y comparad la nota en Mi familia',
+      '«Escribir en inglés» (en Progreso): escribe o dicta un mensaje para quien quieras, tu profe lo corrige y lo mandas por WhatsApp. Si lo escribes en español, te lo paso al inglés. Sirve aunque la otra persona no tenga Habla',
+      'Aviso del reto: si aún no lo has cumplido, el jueves (o el sábado) te recuerdo cuánto te falta. Se apaga en Ajustes → Meta diaria',
     ],
     improved: [
-      'Tus copias de seguridad llevan también tus retos. Las copias antiguas siguen valiendo; una copia con retos necesita Habla 5.13 o posterior',
+      'Tus copias de seguridad llevan también tus retos y Mi familia. Las copias antiguas siguen valiendo; una copia con ellos necesita Habla 5.13 o posterior',
     ],
   },
   {

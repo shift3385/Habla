@@ -54,7 +54,7 @@ async function waitChallenge(page) {
   })
   assert.equal(r.before, 6)
   assert.equal(r.after, 7)
-  assert.deepEqual(r.counts, { sessions: 1, turns: 2, mistakes: 1, profile: 1, lookups: 0, cards: 0, grammar: 1, sounds: 1, milestones: 3, facts: 1, challenges: 0 })
+  assert.deepEqual(r.counts, { sessions: 1, turns: 2, mistakes: 1, profile: 1, lookups: 0, cards: 0, grammar: 1, sounds: 1, milestones: 3, facts: 1, challenges: 0, family: 0 })
   assert.equal(r.fact, 'Su nieta se llama Ana y vive en Londres.')
   assert.equal(r.turnText, 'I go to the beach yesterday.')
   log('migración v6 → v7 con datos: todo intacto y `challenges` vacía', JSON.stringify(r.counts))
@@ -76,14 +76,14 @@ async function waitChallenge(page) {
   assert.doesNotMatch(asks[0].last, /Ana|enfermera/, 'sin datos personales')
   log('reto creado con IA y medido en el teléfono:', `${c.progress} de ${c.target}`)
 
-  const said = await tapMascotUntil(page, /Reto de la semana: 3 de 4 respuestas/)
+  const said = await tapMascotUntil(page, /reto de la semana: 3 de 4 respuestas/i) // 3 redacciones al azar
   assert.match(said, /El pasado, sin fallos/)
   assert.equal(await hScroll(page), false)
   await shot(page, OUT, '01-globo-reto-390x844')
   log('globo de la mascota:', said.replace(/\s+/g, ' ').trim())
 
   // Tocar el globo abre el detalle en Progreso.
-  await page.evaluate(() => [...document.querySelectorAll('.tip-bubble[role=status]')].find((b) => /Reto de la semana/.test(b.textContent))?.click())
+  await page.evaluate(() => [...document.querySelectorAll('.tip-bubble[role=status]')].find((b) => /reto de la semana/i.test(b.textContent))?.click())
   await page.waitForSelector('[data-challenge-view]')
   await waitText(page, /3 de 4 respuestas/)
   assert.match(await bodyText(page), /Di 4 respuestas largas sin fallar el pasado\./)

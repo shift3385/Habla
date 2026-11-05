@@ -51,7 +51,7 @@ D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 - **Exportar:** *Ajustes → Mi perfil y datos → ⬆️ Exportar*. Guarda `habla-backup-AAAA-MM-DD.json` en `Documentos/Habla` (si Android lo permite) y abre "Compartir" para que lo mandes a Drive, a tu correo o al PC.
 - **Importar:** *Ajustes → Mi perfil y datos → ⬇️ Importar* → elige el JSON. Primero se comprueba la copia entera (si está dañada, no se toca nada) y te dice cuántas sesiones y errores trae. **Sustituye** todo el progreso actual por el del archivo, pero antes **guarda sola una copia de lo que tenías** en `Documentos/Habla/habla-antes-de-importar-….json` (desde la 5.9).
 - Desde la 5.12 las copias llevan también **lo que recuerda tu profe**. Una copia con recuerdos solo se abre en Habla 5.12 o posterior (las anteriores dicen «versión más nueva» y no tocan nada); las copias antiguas, sin recuerdos, se siguen importando igual.
-- Desde la 5.13 llevan también **tus retos de la semana**. Una copia con retos solo se abre en Habla 5.13 o posterior; las antiguas se siguen importando igual.
+- Desde la 5.13 llevan también **tus retos de la semana** y **Mi familia**. Una copia con retos solo se abre en Habla 5.13 o posterior; las antiguas se siguen importando igual.
 - Las copias **no incluyen tus claves** (ni la de Gemini ni las de Azure). Tampoco entran en las copias automáticas de Android. Después de reinstalar tendrás que pegarlas de nuevo.
 
 Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o reinstalar.
@@ -159,6 +159,13 @@ Otros controles:
 - **Mandar mi progreso**: manda cuánto llevas. Si la otra persona tiene **el mismo reto**, lo ve junto al suyo: «Ana: 6 de 8 · Tú: 4 de 8». Con un reto compartido, el texto de *Compartir mi semana* lleva también tu código de progreso.
 - **Palabras:** abre una palabra **guardada** en *Palabras* y toca **Compartir**. Al pegarla, entra en sus Palabras («compartida por Ana») y en su Repaso; si ya la tenía, no se duplica.
 - Un código cortado, dañado o de una versión más nueva se explica en español y **no cambia nada**.
+- **Mi familia** (*Progreso → Mi familia*): con **Mandar mi semana** mandas tus minutos, tu racha y tu reto (hace falta tu nombre en *Ajustes → Mi perfil*). Lo que te mandan los demás sale en una fila por persona (lo último que te mandó; una semana anterior, en gris). Se puede **quitar** a alguien.
+- **Practicar lo mismo:** en *Mi familia → Proponer una práctica* eliges una de las 10 Situaciones y la mandas. Quien la pega puede tocar **Practicar ahora**. Después, cada uno manda su nota con **Mandar mi nota** y la ves junto a la tuya: «Luis: 65 (3/3) · Tú: 58 (3/3)». Solo Situaciones de la lista (nunca texto libre).
+- **Aviso del reto:** si el jueves aún no lo cumpliste, tu mascota te avisa a la hora del recordatorio (o el sábado si el jueves ya pasó): «Te faltan 3 respuestas para tu reto». Usa el permiso de notificaciones del recordatorio diario y se apaga en *Ajustes → Meta diaria*.
+
+### ✉️ Escribir en inglés (5.13)
+- En *Progreso → Escribir en inglés* escribes o **dictas** un mensaje para quien quieras (no hace falta que tenga Habla). Tu profe lo **corrige** (con tus palabras), te da una versión **más natural** y hasta 3 notas de lo que cambió. Si lo escribes en **español**, te lo pasa al inglés.
+- Eliges la versión y **Mandar** abre WhatsApp (u otra app). Puedes añadir también lo que escribiste tú. No se guarda nada.
 
 ### 🔤 Corrector fonético (Azure Speech, opcional)
 Gemini corrige **qué** dices; Azure Speech mide **cómo** lo pronuncias. Las dos llamadas salen a la vez y el resultado se une en un solo bloque:
@@ -234,7 +241,7 @@ Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu
   - Lo que hiciste bien y lo que debes mejorar.
   - La **tarea para mañana** (con **Hacerla ahora**, o **✓ Hecha** si ya la hiciste) y una **frase del día**.
   - **Tu profe se acordará de…**: lo que apuntó de esta clase (5.12).
-- **Progreso**: tus minutos de hoy, las barras de la semana (con **Compartir mi semana**), tu **reto de la semana**, **Pegar un código**, tus logros y tres pestañas:
+- **Progreso**: tus minutos de hoy, las barras de la semana (con **Compartir mi semana**), tu **reto de la semana**, **Mi familia**, **Pegar un código**, **Escribir en inglés**, tus logros y tres pestañas:
   - **Errores**: tus correcciones agrupadas, con cuántas veces repetiste cada error. Toca una para ver la explicación.
   - **Palabras**: el vocabulario de tus temas y las frases del día. Toca una para oírla.
   - **Sesiones**: la gráfica de tu nota y el informe de cada clase.
@@ -291,7 +298,8 @@ src/
     memory.ts      lo que recuerda tu profe (5.12)
     challenge.ts   reto de la semana: tipos, cifra, progreso medido en el teléfono (5.13)
     weekCard.ts    qué entra en la tarjeta de la semana; weekCardImage.ts la dibuja y la comparte (5.13)
-    shareCode.ts   códigos HABLA:1:… (reto, progreso, palabra) y su validación; shareApply.ts los aplica (5.13)
+    shareCode.ts   códigos HABLA:1:… (reto, progreso, palabra, semana, práctica, nota) y su validación; shareApply.ts los aplica (5.13)
+    messageReview.ts  «Escribir en inglés»: el profe corrige un mensaje antes de mandarlo (5.13)
     scenarios.ts   los escenarios (prácticas guiadas y clases internas)
     recorder.ts    MediaRecorder (webm/opus)
     wav.ts         webm → WAV 16 kHz mono (para Azure), máx. 60 s
@@ -327,4 +335,4 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **No conformidades v5.7:** batería, clase guardada, todas las correcciones, Ajustes rediseñado, claves con patrón/huella y orientación fija
 - [x] **Corrector fonético con Azure Speech** y límite de 60 s con cuenta atrás (v5.8)
 - [x] **Situaciones** (roleplays con misión), **Hacerla ahora** y **Lo que recuerda tu profe** (v5.12)
-- [x] **Retos en familia:** reto de la semana, tarjeta para WhatsApp y códigos para compartir retos, progreso y palabras (v5.13)
+- [x] **Retos en familia:** reto de la semana, tarjeta para WhatsApp, códigos para compartir retos, progreso y palabras, **Mi familia**, practicar lo mismo, mensajes corregidos y aviso del reto (v5.13)

@@ -14,6 +14,7 @@ for (const vp of [{ width: 390, height: 844 }, { width: 320, height: 640 }]) {
   assert.match(t, /Reto de la semana/)
   assert.match(t, /Compartir mi semana/)
   assert.match(t, /Pegar un código/)
+  assert.match(t, /Mi familia/)
   assert.equal(await hScroll(page), false)
   await shot(page, `${OUT_ROOT}/entrega`, `01-novedades-${vp.width}x${vp.height}`)
   console.log('✔ Novedades de la v5.13', `${vp.width}×${vp.height}`)

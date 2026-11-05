@@ -22,9 +22,11 @@ export const dbEval = (page, fn, arg, mods = []) =>
 
 /** Toca a la mascota del Inicio (pasa al siguiente globo) hasta que el globo diga `re`. */
 export async function tapMascotUntil(page, re, tries = 14) {
+  const seen = new Set()
   for (let i = 0; i < tries; i++) {
     const txt = await page.evaluate(() => [...document.querySelectorAll('.tip-bubble[role=status]')].filter((b) => b.getAttribute('aria-hidden') === 'false').map((b) => b.textContent).join(' '))
     if (re.test(txt)) return txt
+    if (txt) seen.add(txt.slice(0, 50))
     const box = await page.evaluate(() => {
       const svg = [...document.querySelectorAll('svg[viewBox="-110 -125 220 220"]')].find((s) => s.getBoundingClientRect().width > 30)
       const r = svg?.getBoundingClientRect()
@@ -33,5 +35,5 @@ export async function tapMascotUntil(page, re, tries = 14) {
     if (box) await page.mouse.click(box.x, box.y)
     await sleep(700)
   }
-  throw new Error(`la mascota no dice ${re}: ${(await bodyText(page)).slice(0, 200)}`)
+  throw new Error(`la mascota no dice ${re}; dijo: ${[...seen].join(' | ')}`)
 }
