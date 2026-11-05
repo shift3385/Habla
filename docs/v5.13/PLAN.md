@@ -27,6 +27,11 @@ pareja, notas de voz entre dos, P-13, P-15 y P-16.
 | 2 | **P-17 tarjeta de la semana** (imagen para WhatsApp) | ✅ hecha (2026-11-05): `src/lib/weekCard.ts` (puro: decide qué entra — nombre, minutos, racha, días, reto y último logro — y nada de nivel, errores, memoria ni claves; texto que acompaña y nombre del archivo), `src/lib/weekCardImage.ts` (canvas 1080×1350 con la mascota del tema copiada a `public/mascots/`, sin manchas en modo ligero; Compartir como archivo con `@capacitor/share` y limpieza de la caché, `SHARE_CACHE_FILE` ampliado a `habla-semana-*.png`), vista previa `WeekCardSheet` (vertical, 320×640 y horizontal) desde «Compartir mi semana» en Progreso. Test `tests/p17-weekcard.test.mjs`; navegador `evidencia/arnes-p17.mjs` (tamaño de la imagen y todos los textos pintados en el canvas, sin datos sensibles; capturas en `evidencia/P17/`) |
 | 3 | **Códigos para compartir:** reto entre dos y palabras compartidas | ✅ hecha (2026-11-05): `src/lib/shareCode.ts` (puro: `HABLA:1:<base64url(JSON)>`, tipos `challenge`/`progress`/`word`, tope de 2 KB, validación estricta — versión, tipo, solo campos conocidos, `__proto__` sin efecto, textos en una línea sin marcas ni caracteres invisibles, cifras en rango —, mensajes para WhatsApp), `src/lib/shareApply.ts` (vista previa de qué va a pasar y aplicar: reto → «Reto con Ana» de tu semana medido con tus datos; progreso → comparación solo si es el mismo reto y la misma semana; palabra → Palabras «compartida por Ana» + Repaso, sin duplicar), `src/lib/shareText.ts`; «Retar a alguien» y «Mandar mi progreso» en el detalle del reto, «Compartir» en una palabra guardada, hoja «Pegar un código» con la mascota en Progreso; con reto compartido, el texto de la tarjeta de la semana lleva tu código de progreso. Arreglado de paso: `ensureWeekChallenge` devolvía el reto antiguo tras cambiarlo. Test `tests/codes-513.test.mjs`; navegador con dos teléfonos `evidencia/arnes-codes.mjs` (capturas en `evidencia/CODES/`) |
 | 4 | Entrega 5.13 (build 45): `version.json`, Novedades en `changelog.ts`, README/CLAUDE.md, capturas | ✅ hecha (2026-11-05): `version.json` 5.13 / build 45, entrada 5.13 en `RELEASES`, README (reto de la semana, Compartir mi semana, retos en familia y palabras compartidas, copias), CLAUDE.md (versión, esquema v7, estructura y siguiente trabajo), `docs/pruebas/PENDIENTES.md` (WhatsApp de verdad entre dos teléfonos con la 5.13); capturas de Novedades en `evidencia/entrega/` (`arnes-entrega.mjs`) y regresión de los arneses de la 5.13 y la 5.12 con la versión nueva. `npx tsc -b`, lint (0 errores), `npm test` (402, 0 fallos), validadores y `npm run build` en verde. **Sin APK** (se compila en el PC del dueño) |
+| 5 | **Mensaje en inglés revisado por tu profe** (sirve con cualquiera, aunque no tenga Habla) | ✅ hecha (2026-11-05): `src/lib/messageReview.ts` (una llamada al modelo rápido; mensaje delimitado y con tope de 600; corregido con tus palabras, versión más natural solo si es distinta, hasta 3 notas; en español → al inglés), hoja `MessageSheet` con dictado (el micro se suelta al cerrar o en segundo plano) desde «Escribir en inglés» en Progreso; se manda por WhatsApp con lo que escribiste tú si quieres; nada se guarda. Test `tests/message-513.test.mjs`; navegador `evidencia/arnes-mensaje.mjs` (capturas en `evidencia/MENSAJE/`) |
+| 6 | **Aviso del reto a mitad de semana** (notificación local) | pendiente |
+| 7 | **Tablero «Mi familia»** (código `week` con minutos, racha y reto de cada uno) | pendiente |
+| 8 | **Practicar lo mismo** (una Situación compartida y comparar la nota) | pendiente |
+| 9 | Entrega ampliada: Novedades, README, CLAUDE.md, pendientes del teléfono | pendiente |
 
 ### Fase 1 · P-14 Reto semanal
 - **Qué ve el alumno:** cada semana (lunes–domingo, `weekKey` de `src/lib/stats.ts`) un reto con título y meta en español
@@ -81,6 +86,21 @@ pareja, notas de voz entre dos, P-13, P-15 y P-16.
 - `version.json`, entrada 5.13 en `RELEASES` (`changelog.ts`), README (manual: reto, tarjeta, códigos), CLAUDE.md (versión y
   siguiente trabajo), `docs/pruebas/PENDIENTES.md` (lo que falta en el teléfono: compartir por WhatsApp de verdad entre dos
   teléfonos) y capturas de lo nuevo.
+
+
+## Ampliación de la 5.13 (2026-11-05, decisión del dueño: «las 4 y mantenlo dentro de la 5.13»)
+Presupuesto que quedaba: unos 42 USD. Sigue siendo la 5.13 / build 45 (aún sin APK). Todo sin servidor; mismas reglas.
+- **Fase 5 · Mensaje revisado:** en Progreso, «Escribir en inglés»: escribes o dictas un mensaje (si lo escribes en español,
+  te lo paso al inglés); el profe lo corrige con una llamada al modelo rápido (corregido con tus palabras, una versión más
+  natural y hasta 3 notas en español) y lo mandas por WhatsApp, con lo que escribiste tú si quieres. Nada se guarda.
+- **Fase 6 · Aviso del reto:** si el reto no está cumplido, una notificación el jueves (o el sábado si ya pasó) a la hora del
+  recordatorio: «Te faltan 3 para tu reto». Interruptor en Ajustes → Meta diaria, activado por defecto; no pide permisos.
+- **Fase 7 · Mi familia:** código `week` (nombre, semana, minutos, racha, días y reto). En Progreso, «Mi familia»: tu fila y
+  la de cada persona con lo último que te mandó; «Mandar mi semana»; borrar a alguien. Tabla `family` dentro de la v7 (la
+  5.13 aún no se ha publicado). Sin nombre en el código no se guarda.
+- **Fase 8 · Practicar lo mismo:** código `practice` (una Situación de la lista, nunca texto libre: no entra nada ajeno en un
+  prompt) y código `score` (tu nota y objetivos en esa Situación). «Proponer una práctica» en Mi familia; al pegarla,
+  «Practicar ahora»; en la fila de esa persona, su nota frente a la tuya y «Mandar mi nota».
 
 ## Reglas para la sesión nueva
 - Todo lo de `CLAUDE.md` (español, estilo, claves solo en Preferences, nunca keystore, no reactivar logs de Capacitor).

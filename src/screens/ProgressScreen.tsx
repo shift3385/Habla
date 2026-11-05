@@ -4,6 +4,7 @@ import { useWeekChallenge } from '../components/useWeekChallenge'
 import InfiniteList from '../components/InfiniteList'
 import WeekCardSheet from '../components/WeekCardSheet'
 import PasteCodeSheet from '../components/PasteCodeSheet'
+import MessageSheet from '../components/MessageSheet'
 import { unitOf, weekLabel } from '../lib/challenge'
 import { progressMessage, progressToCode } from '../lib/shareCode'
 import { getProfile } from '../lib/profile'
@@ -76,6 +77,8 @@ export default function ProgressScreen({
   const [cardOpen, setCardOpen] = useState(false)
   // 5.13 (Fase 3): «Pegar un código».
   const [pasteOpen, setPasteOpen] = useState(false)
+  // 5.13 (Fase 5): «Escribir en inglés» (mensaje revisado por el profe).
+  const [msgOpen, setMsgOpen] = useState(false)
   const [thisWeek] = useState(() => weekLabel(weekKey(new Date())))
   const [name, setName] = useState('')
   useEffect(() => {
@@ -101,10 +104,10 @@ export default function ProgressScreen({
   // Atrás (Android) desde el detalle de una sesión vuelve a la lista.
   useEffect(() => {
     registerBack(
-      pasteOpen ? () => setPasteOpen(false) : cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null,
+      msgOpen ? () => setMsgOpen(false) : pasteOpen ? () => setPasteOpen(false) : cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null,
     )
     return () => registerBack(null)
-  }, [pasteOpen, cardOpen, open, logrosOpen, chalOpen, registerBack])
+  }, [msgOpen, pasteOpen, cardOpen, open, logrosOpen, chalOpen, registerBack])
 
   const openSession = async (s: Session) => {
     const turns = await db.turns.where('sessionId').equals(s.id!).toArray()
@@ -249,6 +252,20 @@ export default function ProgressScreen({
         </span>
       </button>
       {pasteSheet}
+      {/* 5.13 (Fase 5): un mensaje para quien quieras, corregido por tu profe antes de mandarlo. */}
+      <button onClick={() => setMsgOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-message-open>
+        <span aria-hidden className="text-2xl">
+          ✉️
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block fs-15 font-semibold">Escribir en inglés</span>
+          <span className="txt-sub block fs-12.5">Un mensaje para quien quieras, corregido antes de mandarlo</span>
+        </span>
+        <span className="txt-sub">
+          <Icon name="chevR" size={16} stroke={1.8} />
+        </span>
+      </button>
+      {msgOpen && <MessageSheet settings={settings} onClose={() => setMsgOpen(false)} />}
 
       {logros && logros.length > 0 && (
         <button onClick={() => setLogrosOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-logros>
