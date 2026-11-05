@@ -5,6 +5,7 @@ import InfiniteList from '../components/InfiniteList'
 import WeekCardSheet from '../components/WeekCardSheet'
 import PasteCodeSheet from '../components/PasteCodeSheet'
 import MessageSheet from '../components/MessageSheet'
+import FamilyView from '../components/FamilyView'
 import { unitOf, weekLabel } from '../lib/challenge'
 import { progressMessage, progressToCode } from '../lib/shareCode'
 import { getProfile } from '../lib/profile'
@@ -79,6 +80,16 @@ export default function ProgressScreen({
   const [pasteOpen, setPasteOpen] = useState(false)
   // 5.13 (Fase 5): «Escribir en inglés» (mensaje revisado por el profe).
   const [msgOpen, setMsgOpen] = useState(false)
+  // 5.13 (Fase 7): «Mi familia» (lo último que te mandó cada persona) y cuántas hay.
+  const [familyOpen, setFamilyOpen] = useState(false)
+  const [familyN, setFamilyN] = useState(0)
+  const [familyKey, setFamilyKey] = useState(0)
+  useEffect(() => {
+    db.family
+      .count()
+      .then(setFamilyN)
+      .catch(() => {})
+  }, [familyKey])
   const [thisWeek] = useState(() => weekLabel(weekKey(new Date())))
   const [name, setName] = useState('')
   useEffect(() => {
@@ -104,10 +115,10 @@ export default function ProgressScreen({
   // Atrás (Android) desde el detalle de una sesión vuelve a la lista.
   useEffect(() => {
     registerBack(
-      msgOpen ? () => setMsgOpen(false) : pasteOpen ? () => setPasteOpen(false) : cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null,
+      msgOpen ? () => setMsgOpen(false) : pasteOpen ? () => setPasteOpen(false) : cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : familyOpen ? () => setFamilyOpen(false) : null,
     )
     return () => registerBack(null)
-  }, [msgOpen, pasteOpen, cardOpen, open, logrosOpen, chalOpen, registerBack])
+  }, [msgOpen, pasteOpen, cardOpen, open, logrosOpen, chalOpen, familyOpen, registerBack])
 
   const openSession = async (s: Session) => {
     const turns = await db.turns.where('sessionId').equals(s.id!).toArray()
@@ -151,9 +162,31 @@ export default function ProgressScreen({
       onApplied={() => {
         chal.reload()
         wordsCollected().then(setWords)
+        setFamilyKey((k) => k + 1)
       }}
     />
   )
+  if (familyOpen)
+    return (
+      <>
+        <FamilyView
+          settings={settings}
+          me={{
+            name,
+            minutes: Math.round(week.reduce((a, b) => a + b, 0)),
+            streak: dash?.streak ?? 0,
+            days: week.filter((m) => m > 0).length,
+            challenge: chal.status
+              ? { title: chal.status.challenge.titleEs, progress: chal.status.progress, target: chal.status.challenge.target, done: chal.status.done }
+              : null,
+          }}
+          onBack={() => setFamilyOpen(false)}
+          onPaste={() => setPasteOpen(true)}
+          extra={{ reloadKey: familyKey }}
+        />
+        {pasteSheet}
+      </>
+    )
   if (chalOpen && chal.status)
     return (
       <>
@@ -238,6 +271,21 @@ export default function ProgressScreen({
       )}
 
       {chal.status && <ChallengeCard status={chal.status} onOpen={() => setChalOpen(true)} />}
+      {/* 5.13 (Fase 7): el tablero de la familia (lo que te mandan con códigos). */}
+      <button onClick={() => setFamilyOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-family-open>
+        <span aria-hidden className="text-2xl">
+          👨‍👩‍👧
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block fs-15 font-semibold">Mi familia</span>
+          <span className="txt-sub block fs-12.5">
+            {familyN === 0 ? 'Mandaos vuestra semana y comparad' : `${familyN} ${familyN === 1 ? 'persona' : 'personas'} · mándales tu semana`}
+          </span>
+        </span>
+        <span className="txt-sub">
+          <Icon name="chevR" size={16} stroke={1.8} />
+        </span>
+      </button>
       {/* 5.13 (Fase 3): un solo sitio para pegar los códigos que te mandan (reto, progreso o palabra). */}
       <button onClick={() => setPasteOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-paste-open>
         <span aria-hidden className="text-2xl">

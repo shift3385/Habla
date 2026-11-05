@@ -215,13 +215,13 @@ test('P-14: el globo de la mascota — «Reto de la semana: 4 de 8» y, cumplido
   }
 })
 
-test('P-14: Dexie v7 solo añade `challenges`; las copias la llevan si hay retos (versión 5) y valen sin ella', async () => {
+test('P-14: Dexie v7 solo añade `challenges` (y `family`, Fase 7); las copias la llevan si hay retos (versión 5) y valen sin ella', async () => {
   const { db, TABLES } = await loadFresh('/src/lib/db.ts')
   const versions = db._versions.map((v) => [v._cfg.version, v._cfg.storesSource])
-  assert.deepEqual(versions.at(-1), [7, { challenges: 'id, createdAt' }])
+  assert.deepEqual(versions.at(-1), [7, { challenges: 'id, createdAt', family: 'id, at' }])
   assert.equal(db.verno, 7)
   for (const [n, stores] of versions) for (const [t, def] of Object.entries(stores)) assert.notEqual(def, null, `la versión ${n} no borra ${t}`)
-  assert.equal(TABLES.at(-1), 'challenges')
+  assert.deepEqual(TABLES.slice(-2), ['challenges', 'family'])
 
   const { checkBackup, backupVersionFor, exportTables, BACKUP_TABLES, BACKUP_MAX_VERSION } = await loadFresh('/src/lib/backupCheck.ts')
   assert.equal(BACKUP_MAX_VERSION, 5)
@@ -229,8 +229,8 @@ test('P-14: Dexie v7 solo añade `challenges`; las copias la llevan si hay retos
   const profile = { id: 'me', levels: { overall: 'B1', grammar: 'B1', reading: 'B1', listening: 'B1', speaking: 'A2' }, startedAt: MON, name: 'Ana' }
   const base = { sessions: [], turns: [], mistakes: [], profile: [profile], lookups: [], cards: [], grammar: [], sounds: [], milestones: [], facts: [] }
   // Sin retos: la tabla no se escribe (la 5.12 rechaza tablas que no conoce) y la versión es la de antes.
-  const empty = exportTables({ ...base, challenges: [] })
-  assert.ok(!('challenges' in empty))
+  const empty = exportTables({ ...base, challenges: [], family: [] })
+  assert.ok(!('challenges' in empty) && !('family' in empty))
   assert.equal(backupVersionFor(empty), 1)
   // Con retos: versión 5, y se vuelve a leer entera.
   const challenges = [

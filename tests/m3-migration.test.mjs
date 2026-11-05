@@ -36,7 +36,7 @@ test('S-01: Dexie v5 solo añade `sounds` y `milestones`; las versiones 1–4 qu
   }
   assert.deepEqual(versions.find(([n]) => n === 5)[1], { sounds: 'id, lastAt', milestones: 'id, at' })
   assert.equal(db.verno, 7)
-  assert.deepEqual([...TABLES], ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts', 'challenges'])
+  assert.deepEqual([...TABLES], ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts', 'challenges', 'family'])
   // Las copias exportan y comprueban exactamente las mismas tablas que hay en la base.
   const { BACKUP_TABLES } = await loadFresh('/src/lib/backupCheck.ts')
   assert.deepEqual([...BACKUP_TABLES], [...TABLES])

@@ -96,7 +96,10 @@ export default function PasteCodeSheet({ settings, onClose, onApplied }: { setti
                   📊 <b>su progreso</b> en vuestro reto, para compararos;
                 </span>
                 <span className="block">
-                  📖 <b>una palabra</b>: va a tus Palabras y a tu Repaso.
+                  📖 <b>una palabra</b>: va a tus Palabras y a tu Repaso;
+                </span>
+                <span className="block">
+                  👨‍👩‍👧 <b>su semana</b>: sale en Mi familia.
                 </span>
                 <span className="mt-1.5 block">Pegar un código no gasta tu clave.</span>
               </>

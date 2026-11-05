@@ -338,6 +338,19 @@ export interface WeeklyChallenge {
   rival?: { name: string; progress: number; target: number; at: number }
 }
 
+/**
+ * 5.13 (Fase 7): una persona del tablero «Mi familia» (tabla `family`, clave = nombre en minúsculas). Solo guarda lo
+ * último que te mandó con un código: su semana y (Fase 8) su nota en una práctica compartida.
+ */
+export interface FamilyMember {
+  id: string // nombre en minúsculas
+  name: string
+  at: number // cuándo pegaste su último código
+  week?: { id: string; minutes: number; streak: number; days: number; challenge?: { title: string; progress: number; target: number; done: boolean } }
+  /** Fase 8: la práctica compartida (una Situación de la lista) y su nota, si te la mandó. */
+  practice?: { situationId: string; at: number; score?: number; goals?: number; total?: number }
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
@@ -350,6 +363,7 @@ export const db = new Dexie('habla') as Dexie & {
   milestones: EntityTable<Milestone, 'id'>
   facts: EntityTable<StudentFact, 'id'>
   challenges: EntityTable<WeeklyChallenge, 'id'>
+  family: EntityTable<FamilyMember, 'id'>
 }
 
 db.version(1).stores({
@@ -385,9 +399,11 @@ db.version(6).stores({
   facts: '++id, createdAt',
 })
 
-// 5.13 (P-14): retos semanales. Igual que la v4–v6, solo añade una tabla: nada de lo anterior cambia.
+// 5.13 (P-14): retos semanales y (Fase 7) el tablero «Mi familia». Igual que la v4–v6, solo añade tablas: nada de lo
+// anterior cambia. `family` va en la misma v7 porque la 5.13 aún no se había publicado.
 db.version(7).stores({
   challenges: 'id, createdAt',
+  family: 'id, at',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts', 'challenges'] as const
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts', 'challenges', 'family'] as const

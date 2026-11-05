@@ -14,8 +14,8 @@ export const CODE_PREFIX = 'HABLA'
 export const CODE_VERSION = 1
 /** Tope del código entero (unos 2 KB): uno normal ocupa 300–700 caracteres. */
 export const MAX_CODE_CHARS = 2048
-export type CodeType = 'challenge' | 'progress' | 'word'
-const TYPES: readonly CodeType[] = ['challenge', 'progress', 'word']
+export type CodeType = 'challenge' | 'progress' | 'word' | 'week'
+const TYPES: readonly CodeType[] = ['challenge', 'progress', 'word', 'week']
 const KINDS: readonly ChallengeKind[] = ['minutes', 'classes', 'clean', 'review']
 
 export interface ChallengeCode {
@@ -53,7 +53,18 @@ export interface WordCode {
   partOfSpeech: string
 }
 
-export type ShareCode = ChallengeCode | ProgressCode | WordCode
+/** 5.13 (Fase 7): tu semana para el tablero «Mi familia» de otra persona. Necesita nombre. */
+export interface WeekCode {
+  type: 'week'
+  from: string
+  week: string
+  minutes: number
+  streak: number
+  days: number
+  challenge?: { title: string; progress: number; target: number; done: boolean }
+}
+
+export type ShareCode = ChallengeCode | ProgressCode | WordCode | WeekCode
 
 // ---------------------------------------------------------------------------
 // Texto seguro
@@ -177,6 +188,23 @@ export function parsePayload(data: unknown): CodeCheck {
       },
     }
   }
+  if (d.t === 'week') {
+    // Sin nombre no se sabe de quién es la fila del tablero.
+    const minutes = intIn(d.minutes, 0, 7 * 24 * 60)
+    const streak = intIn(d.streak, 0, 100000)
+    const days = intIn(d.days, 0, 7)
+    if (!from || minutes === null || streak === null || days === null || typeof d.week !== 'string' || !WEEK_RE.test(d.week)) return { ok: false, error: DAMAGED }
+    let challenge: WeekCode['challenge']
+    if (d.challenge !== undefined && d.challenge !== null) {
+      const c = d.challenge as Record<string, unknown>
+      const target = typeof c === 'object' ? intIn(c.target, 1, 100000) : null
+      const progress = typeof c === 'object' ? intIn(c.progress, 0, 100000) : null
+      const title = typeof c === 'object' ? safeText(c.title, 48) : ''
+      if (target === null || progress === null || !title || typeof c.done !== 'boolean') return { ok: false, error: DAMAGED }
+      challenge = { title, progress: Math.min(progress, target), target, done: c.done }
+    }
+    return { ok: true, code: { type: 'week', from, week: d.week, minutes, streak, days, ...(challenge ? { challenge } : {}) } }
+  }
   // Reto o progreso: tipo, cifra (en su rango, sin recortar: fuera de rango es un código manipulado), categoría y práctica.
   if (typeof d.kind !== 'string' || !(KINDS as readonly string[]).includes(d.kind)) return { ok: false, error: DAMAGED }
   const kind = d.kind as ChallengeKind
@@ -274,6 +302,19 @@ export const sharedContext = (from: string) => (from ? `compartida por ${from}` 
 /** Quien lo manda, para los textos («Ana», o «alguien» sin nombre). */
 export const whoOf = (from: string) => from || 'Alguien'
 
+/** 5.13 (Fase 7): tu semana como código (minutos enteros). */
+export function weekToCode(w: { from: string; week: string; minutes: number; streak: number; days: number; challenge?: WeekCode['challenge'] | null }): WeekCode {
+  return {
+    type: 'week',
+    from: safeText(w.from, 24),
+    week: w.week,
+    minutes: Math.max(0, Math.round(w.minutes)),
+    streak: Math.max(0, Math.floor(w.streak)),
+    days: Math.min(7, Math.max(0, Math.floor(w.days))),
+    ...(w.challenge ? { challenge: { ...w.challenge, progress: Math.min(Math.max(0, Math.floor(w.challenge.progress)), w.challenge.target) } } : {}),
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Mensajes para WhatsApp (el código va al final, en su propia línea)
 
@@ -285,6 +326,11 @@ export function challengeMessage(c: ChallengeCode): string {
 
 export function progressMessage(c: ProgressCode): string {
   return `Llevo ${c.progress} de ${c.target} en nuestro reto de Habla «${c.title}».\n${HOW}\n${encodeCode(c)}`
+}
+
+export function weekMessage(c: WeekCode): string {
+  const reto = c.challenge ? (c.challenge.done ? ` y cumplí mi reto «${c.challenge.title}»` : `; reto «${c.challenge.title}»: ${c.challenge.progress} de ${c.challenge.target}`) : ''
+  return `Mi semana en Habla: ${c.minutes} min hablando inglés, racha de ${c.streak} ${c.streak === 1 ? 'día' : 'días'}${reto}.\n${HOW}\n${encodeCode(c)}`
 }
 
 export function wordMessage(c: WordCode): string {
