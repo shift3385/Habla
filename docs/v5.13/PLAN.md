@@ -6,6 +6,10 @@ Fuentes: `docs/v5.12/BACKLOG-resumen.md` §1 (P-14, P-17) y §2 («Juntos», for
 (`docs/pruebas/PENDIENTES.md`), «Juntos» con servidor o en tiempo real (6.0), teléfonos cerca por Wi-Fi/Bluetooth, roleplay en
 pareja, notas de voz entre dos, P-13, P-15 y P-16.
 
+> **Estado (2026-11-05, fin de la sesión):** fases 1–12 hechas y subidas a `claude/inspiring-cori-7c7iax`. Falta el APK (PC del
+> dueño) y las pruebas del teléfono (`docs/pruebas/PENDIENTES.md`). Para seguir: el dueño elige de la propuesta de
+> `docs/v5.12/BACKLOG-resumen.md` §5 (quedan ~25 USD); no se empieza nada sin su elección.
+>
 > **Para empezar en la sesión nueva:** «Lee `docs/v5.13/PLAN.md` y `CLAUDE.md` y desarrolla la 5.13 por fases; apunta el avance
 > en la tabla de este archivo y haz commit y push al terminar cada fase.»
 > Base de código: la rama `claude/eloquent-newton-2cniyr` (5.12 build 44, lo más reciente; `main` sigue en la 5.9.1).

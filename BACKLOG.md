@@ -105,11 +105,16 @@ Idea del dueño: una sección con **todos los fonemas del inglés** (sonido, sí
 - **5.10.1:** correcciones de la regresión de la 5.10 (`docs/pruebas/regresion-5.10/INFORME.md` y `CORRECCION.md`), prueba de sonido en un paso y tamaño de letra.
 - **5.11 «Motivación» + «Sonidos»:** las 10 propuestas rápidas de `docs/pruebas/regresion-5.10/A5-usabilidad.md` (comodín de racha, hitos, informe frente a ti mismo, variedad del profe…) y la nueva pestaña «Sonidos del inglés» (diseño en `docs/fonemas/DISENO-fonemas.md`; decisiones del dueño en su §10.3).
 - **5.12 «Juntos»:** colaboración entre personas que usan Habla (ver 5.1).
+- **Hecho (2026-11-05):** la 5.12 hizo Situaciones, «Hacerla ahora» y la memoria del profe; la 5.13 «Retos en familia» hizo el reto
+  de la semana, la tarjeta para WhatsApp y «Juntos» sin servidor (forma 1 de §5.1: códigos para retos, progreso, palabras, «Mi
+  familia» y practicar lo mismo) y más. Estado y lo que se propone después: `docs/v5.12/BACKLOG-resumen.md`.
 
 ### 5.0 Animación de la boca en Sonidos (petición del dueño, 2026-10-21; para una versión posterior, no la 5.11) 🟢
 En cada ficha de Sonidos, además del texto actual (labios, lengua, voz), **ver de forma visual y animada** cómo se colocan la lengua y los labios y por dónde sale la voz: un corte lateral de la boca (SVG) que pasa de la posición de reposo a la del sonido, con el aire o la vibración de la voz, y una vista de frente de los labios para las vocales. Base: `docs/fonemas/DISENO-fonemas.md` §7.4 (8 perfiles por lugar de articulación + vista de frente). Debe respetar el futuro «modo ligero» (animación desactivable) y verse bien en 320×640 y en horizontal.
 
 ### 5.1 Colaboración entre usuarios de Habla (idea del dueño, para la 5.12) 🟡
+> **Forma 1 (sin servidor) hecha en la 5.13** (`docs/v5.13/PLAN.md`). Siguen aparcadas las formas 2 y 3, las notas de voz entre dos y
+> el roleplay en pareja.
 Que la app permita practicar **con otras personas que también usan Habla** (familia, amistades), no solo con el profe de IA. Ideas a valorar:
 - **Palabras compartidas:** enviar a otra persona una palabra o frase guardada (con su significado y audio) para que la añada a su Repaso.
 - **Chat o audios entre ambos**, en inglés: notas de voz cortas que el otro escucha y responde; el profe puede corregir tu audio antes de enviarlo.

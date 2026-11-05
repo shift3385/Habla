@@ -1,4 +1,16 @@
-# Estado actual (2026-10-21, v5.10.1 build 41)
+# Estado actual (2026-11-05, v5.13 build 45)
+
+> **v5.13 «Retos en familia»** (build 45, rama `claude/inspiring-cori-7c7iax`, hecha en la nube sobre la 5.12): reto de la semana,
+> tarjeta de la semana para WhatsApp, códigos para compartir (retos, progreso, palabras), «Escribir en inglés», aviso del reto,
+> «Mi familia», practicar la misma Situación, línea de la semana en el Inicio, «Misión cumplida» en las lecciones del plan y
+> «Avanzado» de Azure. Probada en el navegador con IA falsa (`docs/v5.13/evidencia/`, 9 arneses + los 3 de la 5.12) y con
+> `npm test` (411, 0 fallos). **Sin APK y sin probar en el teléfono** (`docs/pruebas/PENDIENTES.md`). Plan y avance en
+> `docs/v5.13/PLAN.md`; lo propuesto para la próxima sesión, en `docs/v5.12/BACKLOG-resumen.md` §5.
+>
+> **v5.12** (build 44, rama `claude/eloquent-newton-2cniyr`): Situaciones con misión, «Hacerla ahora» y «Lo que recuerda tu profe»
+> (`docs/v5.12/PLAN.md`). Sin APK. La 5.11 «Motivación» + «Sonidos» está en `docs/v5.11/`. `main` sigue en la 5.9.1.
+>
+> Lo que sigue es el estado anterior (2026-10-21, v5.10.1), que se mantiene como historia.
 
 > **v5.10.1 «Actualización de parches de seguridad y corrección de la v5.10»** (build 41, rama `v5.10.1-correcciones`): corrige la regresión de la 5.10 (micro con auriculares en ~0,9 s con la ruta preparada al acabar el profe, grabaciones que se perdían sin aviso, explicaciones que seguían sonando, «May fifth», 94 ejercicios con la pista pegada y tarjetas corregidas, español neutro, prompts y fonética en español, avisos con la mascota) y añade la prueba de sonido en un paso y el tamaño de letra (Ajustes → Apariencia). Probada en navegador y, en buena parte, en el POCO (`docs/pruebas/regresion-5.10/MOVIL.md`). Siguiente: **5.11 «Motivación» + «Sonidos»** (`docs/v5.11/PLAN.md`).
 
