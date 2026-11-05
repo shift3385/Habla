@@ -741,6 +741,9 @@ export default function Conversation({
       // 5.12 (P-11): con la memoria activada (y fuera de los roleplays), el informe apunta 0–3 datos personales.
       const remember = settingsRef.current.teacherMemory && !s.mission
       const known = remember ? (await listFacts().catch(() => [])).map((f) => f.text) : []
+      // 5.13 (Fase 11): en una lección del plan, el informe dice si cumpliste su misión.
+      const plan = s.planLesson ? (await getProfile().catch(() => null))?.plan : undefined
+      const lessonMission = plan && s.planLesson ? findLesson(plan, s.planLesson)?.lesson.missionEs : undefined
       const { factsEs, ...report } = await generateReport(
         settingsRef.current.geminiKey,
         { ...quick(), signal: undefined },
@@ -748,7 +751,7 @@ export default function Conversation({
         s.metrics!,
         s.topic,
         undefined,
-        { facts: remember, known },
+        { facts: remember, known, mission: lessonMission },
       )
       await db.sessions.update(s.id!, { report })
       setSession({ ...s, report })

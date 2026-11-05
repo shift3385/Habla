@@ -64,7 +64,13 @@ export interface SessionReport {
   improveEs: string[]
   homeworkEs: string
   phrase: VocabItem
+  /** 5.13 (Fase 11): lección del plan: su misión y si la cumpliste (lo juzga el informe). Las demás clases no lo llevan. */
+  missionEs?: string
+  missionMet?: MissionMet
+  missionNoteEs?: string
 }
+
+export type MissionMet = 'yes' | 'almost' | 'no'
 
 export interface Session {
   id?: number

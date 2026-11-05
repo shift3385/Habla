@@ -1,4 +1,4 @@
-import { turnCorrections, type SessionMetrics, type SessionReport, type Topic, type Turn } from './db'
+import { turnCorrections, type MissionMet, type SessionMetrics, type SessionReport, type Topic, type Turn } from './db'
 import { askGemini, withRetry, type JsonSchema, type Models, type RetryInfo } from './gemini'
 import { NEW_FACTS_PER_CLASS, newFacts } from './memory'
 import { getProfile } from './profile'
@@ -124,17 +124,37 @@ export const REPORT_SCHEMA: JsonSchema = {
 }
 
 /** 5.12 (P-11): el esquema del informe, con `facts_es` solo si el profe recuerda. */
-export const reportSchema = (facts: boolean): JsonSchema =>
-  facts
-    ? {
-        ...REPORT_SCHEMA,
-        required: [...REPORT_SCHEMA.required!, FACTS_FIELD],
-        properties: { ...REPORT_SCHEMA.properties, [FACTS_FIELD]: { type: 'array', items: { type: 'string' } } },
-      }
-    : REPORT_SCHEMA
+export const reportSchema = (facts: boolean, mission = false): JsonSchema => {
+  if (!facts && !mission) return REPORT_SCHEMA
+  const required = [...REPORT_SCHEMA.required!]
+  const properties = { ...REPORT_SCHEMA.properties }
+  if (facts) {
+    required.push(FACTS_FIELD)
+    properties[FACTS_FIELD] = { type: 'array', items: { type: 'string' } }
+  }
+  // 5.13 (Fase 11): solo en las lecciones del plan: ¿cumpliste la misión de la lección?
+  if (mission) {
+    required.push('mission_met', 'mission_note_es')
+    properties.mission_met = { type: 'string', enum: ['yes', 'almost', 'no'] }
+    properties.mission_note_es = { type: 'string' }
+  }
+  return { ...REPORT_SCHEMA, required, properties }
+}
+
+function missionVerdict(raw: RawReport): { missionMet?: MissionMet; missionNoteEs?: string } {
+  const met = missionMetOf(raw.mission_met)
+  if (!met) return {}
+  const note = typeof raw.mission_note_es === 'string' ? raw.mission_note_es.replace(/\s+/g, ' ').trim().slice(0, 200) : ''
+  return { missionMet: met, ...(note ? { missionNoteEs: note } : {}) }
+}
+
+/** 5.13 (Fase 11): solo un valor conocido; lo demás, sin veredicto. */
+export const missionMetOf = (v: unknown): MissionMet | undefined => (v === 'yes' || v === 'almost' || v === 'no' ? v : undefined)
 
 interface RawReport {
   facts_es?: unknown // 5.12 (P-11)
+  mission_met?: unknown // 5.13 (Fase 11)
+  mission_note_es?: unknown
   summary_es: string
   strengths_es: string[]
   improve_es: string[]
@@ -155,7 +175,7 @@ export async function generateReport(
    * `known` = los que ya se recuerdan (para no repetirlos). `levels`: los niveles del alumno, si ya los tienes (sin
    * ellos se leen del perfil; los tests los pasan porque Node no tiene IndexedDB).
    */
-  memory: { facts: boolean; known?: readonly string[]; levels?: { overall: string; speaking: string } } = { facts: false },
+  memory: { facts: boolean; known?: readonly string[]; levels?: { overall: string; speaking: string }; mission?: string } = { facts: false },
 ): Promise<SessionReport & { factsEs: string[] }> {
   const transcript = turns
     .map((t) => {
@@ -168,6 +188,8 @@ export async function generateReport(
     .join('\n')
 
   const lv = memory.levels ?? (await getProfile()).levels
+  // 5.13 (Fase 11): misión de la lección del plan (texto del propio plan; una línea y con tope).
+  const mission = (memory.mission ?? '').replace(/[«»\r\n]+/g, ' ').trim().slice(0, 200)
   const task = `Write a short end-of-session report for a Spanish-speaking English learner (${lv.overall}, speaking ${lv.speaking}, goal: speak fluently).
 ${topic ? `Topic: ${topic.title}\n` : ''}Metrics: ${metrics.turns} answers (${metrics.spokenTurns ?? metrics.turns} spoken, the rest typed), ${metrics.words} words, ${metrics.wpm} words/min when speaking, ${metrics.pauses} pauses over 1 s, average ${metrics.avgWords} words per answer, longest ${metrics.longestWords} words, ${metrics.corrections} corrections. Fluency score ${metrics.score}/100.
 
@@ -186,6 +208,12 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
           memory.known?.length ? ` (${memory.known.map((k) => `«${k.replace(/[«»\r\n]/g, ' ')}»`).join(', ')})` : ''
         }. Use [] if there is nothing worth remembering.`
       : ''
+  }${
+    mission
+      ? `
+- mission_met: this was a lesson of their study plan with this mission (shown to the student): «${mission}». Did they achieve it in THIS conversation? "yes", "almost" (they tried and got close) or "no".
+- mission_note_es: one short sentence in Spanish, "tú", saying why (e.g. "Contaste 3 experiencias con «I've never…»").`
+      : ''
   }`
 
   const raw = await withRetry(
@@ -194,7 +222,7 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
       askGemini<RawReport>(apiKey, model, {
         system: 'You are an expert, encouraging English speaking coach.',
         contents: [{ role: 'user', parts: [{ text: task }] }],
-        schema: reportSchema(memory.facts),
+        schema: reportSchema(memory.facts, !!mission),
       }),
     onRetry,
   )
@@ -206,6 +234,8 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
     phrase: { en: raw.phrase_en ?? '', es: raw.phrase_es ?? '' },
     // 5.12 (P-11): limpios, sin nada sensible, sin repetir y como mucho 3 (memory.ts).
     factsEs: memory.facts ? newFacts(raw.facts_es, memory.known ?? []) : [],
+    // 5.13 (Fase 11): la misión de la lección y el veredicto (si no llega uno válido, solo la misión).
+    ...(mission ? { missionEs: mission, ...missionVerdict(raw) } : {}),
   }
 }
 

@@ -123,6 +123,29 @@ export default function ReportView(p: Props) {
 
       {p.report && (
         <>
+          {/* 5.13 (Fase 11): en una lección del plan, si cumpliste su misión (antes solo se veía al empezar). */}
+          {p.report.missionEs && (
+            <div className="glass rounded-[24px] p-4" data-lesson-mission={p.report.missionMet ?? 'none'}>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className={`grid h-9 w-9 flex-none place-items-center rounded-full ${p.report.missionMet === 'yes' ? 'btn-acc' : 'field txt-acc2'}`}
+                >
+                  <Icon name={p.report.missionMet === 'yes' ? 'check' : 'target'} size={17} stroke={2} />
+                </span>
+                <span className="min-w-0 flex-1 font-semibold">
+                  {p.report.missionMet === 'yes'
+                    ? 'Misión cumplida ✓'
+                    : p.report.missionMet === 'almost'
+                      ? 'Misión: ¡casi!'
+                      : p.report.missionMet === 'no'
+                        ? 'Misión: la próxima vez'
+                        : 'La misión de la lección'}
+                </span>
+              </div>
+              <p className="txt-sub mt-1.5 fs-13.5 leading-snug">{p.report.missionEs}</p>
+              {p.report.missionNoteEs && <p className="mt-1 fs-14 leading-snug">{p.report.missionNoteEs}</p>}
+            </div>
+          )}
           <Card title="Cómo te fue" icon="spark">
             <p>{p.report.summaryEs}</p>
           </Card>

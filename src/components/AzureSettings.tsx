@@ -88,6 +88,9 @@ export default function AzureSettings({ settings, update }: { settings: Settings
   const [usage, setUsage] = useState<Usage | null>(null)
   const [usageStatus, setUsageStatus] = useState<Status>(null)
   const [monOpen, setMonOpen] = useState(false)
+  // 5.13 (Fase 11, H2 de A5): el consumo del mes y el acceso a Azure Monitor (service principal) son cosas técnicas: van
+  // juntos en «Avanzado», plegado salvo que ya hayas configurado Azure Monitor (entonces el consumo te interesa a la vista).
+  const [advOpen, setAdvOpen] = useState(() => hasMonitor(monitorCreds(settings)))
   const [mon, setMon] = useState({ tenantId: settings.azureTenantId, clientId: settings.azureClientId, clientSecret: '', resourceId: settings.azureResourceId })
   const [monStatus, setMonStatus] = useState<Status>(null)
 
@@ -242,61 +245,79 @@ export default function AzureSettings({ settings, update }: { settings: Settings
         Marca el plan que tiene tu recurso. La app no lo cambia: pasar a S0 se hace en el portal de Azure. Al agotarse el F0, Azure no cobra ni cambia de plan; deja de procesar hasta el mes siguiente.
       </div>
 
-      {/* Consumo del mes */}
-      <div className="mt-4 rounded-[18px] px-3.5 py-3" style={{ background: 'var(--field)' }}>
-        <div className="flex items-center justify-between gap-2">
-          <span className="fs-14 font-semibold">Consumo de este mes</span>
-          {monitorReady && (
-            <button onClick={() => loadUsage(true)} className="txt-acc2 fs-12.5">
-              Actualizar
-            </button>
-          )}
-        </div>
-        {usage ? (
-          <>
-            <div className="mt-1 fs-14">
-              ≈ <b>{fmtHours(usage.usedSeconds)}</b> de 5 h usadas
-              {settings.azurePlan === 'F0' && <> · quedan <b>{fmtHours(usage.remainingSeconds)}</b></>}
-            </div>
-            <div className="mt-1.5 h-2 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
-              <div className="h-full rounded" style={{ width: `${Math.min(100, (usage.usedSeconds / F0_SECONDS) * 100)}%`, background: usage.remainingSeconds ? 'var(--acc)' : '#f59e0b' }} />
-            </div>
-            <div className="txt-sub mt-1 fs-11.5">
-              Dato aproximado de Azure Monitor (puede ir unos minutos por detrás) · {new Date(usage.at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
-            </div>
-          </>
-        ) : (
-          <div className="txt-sub mt-1 fs-12.5 leading-snug">
-            {monitorReady ? 'Sin dato todavía.' : 'Para ver las horas usadas (de todas las apps o personas que usan esta clave), añade el acceso a Azure Monitor aquí abajo.'}
-          </div>
-        )}
-        <Line s={usageStatus} />
-      </div>
-
-      {/* Acceso a Azure Monitor (service principal) */}
-      <button onClick={() => setMonOpen((o) => !o)} className="mt-3 flex w-full items-center justify-between text-left fs-14 font-semibold">
-        Acceso a Azure Monitor (opcional)
-        <span className="transition-transform" style={{ transform: monOpen ? 'rotate(180deg)' : 'none' }}>
+      <button
+        onClick={() => setAdvOpen((o) => !o)}
+        className="mt-4 flex w-full items-center justify-between text-left fs-14 font-semibold"
+        aria-expanded={advOpen}
+        data-azure-advanced
+      >
+        <span>
+          Avanzado
+          <span className="txt-sub block fs-12 font-normal">Consumo del mes con Azure Monitor (opcional)</span>
+        </span>
+        <span className="transition-transform" style={{ transform: advOpen ? 'rotate(180deg)' : 'none' }}>
           <Icon name="chevD" size={15} stroke={2} />
         </span>
       </button>
-      {monOpen && (
-        <div className="anim-up">
-          <div className="txt-sub mt-1 fs-12 leading-snug">
-            La clave de Speech no sirve para leer el consumo. Crea un registro de aplicación (service principal) en Microsoft Entra ID y dale el rol <b>Monitoring Reader</b> sobre el recurso de Speech.
+      {advOpen && (
+        <>
+          {/* Consumo del mes */}
+          <div className="mt-3 rounded-[18px] px-3.5 py-3" style={{ background: 'var(--field)' }}>
+            <div className="flex items-center justify-between gap-2">
+              <span className="fs-14 font-semibold">Consumo de este mes</span>
+              {monitorReady && (
+                <button onClick={() => loadUsage(true)} className="txt-acc2 fs-12.5">
+                  Actualizar
+                </button>
+              )}
+            </div>
+            {usage ? (
+              <>
+                <div className="mt-1 fs-14">
+                  ≈ <b>{fmtHours(usage.usedSeconds)}</b> de 5 h usadas
+                  {settings.azurePlan === 'F0' && <> · quedan <b>{fmtHours(usage.remainingSeconds)}</b></>}
+                </div>
+                <div className="mt-1.5 h-2 overflow-hidden rounded" style={{ background: 'var(--gb)' }}>
+                  <div className="h-full rounded" style={{ width: `${Math.min(100, (usage.usedSeconds / F0_SECONDS) * 100)}%`, background: usage.remainingSeconds ? 'var(--acc)' : '#f59e0b' }} />
+                </div>
+                <div className="txt-sub mt-1 fs-11.5">
+                  Dato aproximado de Azure Monitor (puede ir unos minutos por detrás) · {new Date(usage.at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </>
+            ) : (
+              <div className="txt-sub mt-1 fs-12.5 leading-snug">
+                {monitorReady ? 'Sin dato todavía.' : 'Para ver las horas usadas (de todas las apps o personas que usan esta clave), añade el acceso a Azure Monitor aquí abajo.'}
+              </div>
+            )}
+            <Line s={usageStatus} />
           </div>
-          <Plain label="TENANT ID" value={mon.tenantId} onChange={(v) => setMon((m) => ({ ...m, tenantId: v }))} placeholder="00000000-0000-…" />
-          <Plain label="CLIENT ID" value={mon.clientId} onChange={(v) => setMon((m) => ({ ...m, clientId: v }))} placeholder="00000000-0000-…" />
-          <Secret label="CLIENT SECRET" saved={settings.azureClientSecret} value={mon.clientSecret} onChange={(v) => setMon((m) => ({ ...m, clientSecret: v }))} what="el secreto de Azure" scope="monitor" />
-          <Plain label="RESOURCE ID DEL RECURSO DE SPEECH" value={mon.resourceId} onChange={(v) => setMon((m) => ({ ...m, resourceId: v }))} placeholder="/subscriptions/…/providers/Microsoft.CognitiveServices/accounts/…" />
-          <button onClick={saveMonitor} className="glass mt-2.5 h-[44px] w-full rounded-[22px] fs-14">
-            Guardar acceso
+
+          {/* Acceso a Azure Monitor (service principal) */}
+          <button onClick={() => setMonOpen((o) => !o)} className="mt-3 flex w-full items-center justify-between text-left fs-14 font-semibold">
+            Acceso a Azure Monitor (opcional)
+            <span className="transition-transform" style={{ transform: monOpen ? 'rotate(180deg)' : 'none' }}>
+              <Icon name="chevD" size={15} stroke={2} />
+            </span>
           </button>
-          <Line s={monStatus} />
-          <div className="txt-sub mt-2 fs-11.5 leading-snug">
-            ¿Compartes la clave con otras personas? Mejor un pequeño servidor intermedio que guarde la clave y el service principal: las demás apps lo llaman y nadie ve la clave real.
-          </div>
-        </div>
+          {monOpen && (
+            <div className="anim-up">
+              <div className="txt-sub mt-1 fs-12 leading-snug">
+                La clave de Speech no sirve para leer el consumo. Crea un registro de aplicación (service principal) en Microsoft Entra ID y dale el rol <b>Monitoring Reader</b> sobre el recurso de Speech.
+              </div>
+              <Plain label="TENANT ID" value={mon.tenantId} onChange={(v) => setMon((m) => ({ ...m, tenantId: v }))} placeholder="00000000-0000-…" />
+              <Plain label="CLIENT ID" value={mon.clientId} onChange={(v) => setMon((m) => ({ ...m, clientId: v }))} placeholder="00000000-0000-…" />
+              <Secret label="CLIENT SECRET" saved={settings.azureClientSecret} value={mon.clientSecret} onChange={(v) => setMon((m) => ({ ...m, clientSecret: v }))} what="el secreto de Azure" scope="monitor" />
+              <Plain label="RESOURCE ID DEL RECURSO DE SPEECH" value={mon.resourceId} onChange={(v) => setMon((m) => ({ ...m, resourceId: v }))} placeholder="/subscriptions/…/providers/Microsoft.CognitiveServices/accounts/…" />
+              <button onClick={saveMonitor} className="glass mt-2.5 h-[44px] w-full rounded-[22px] fs-14">
+                Guardar acceso
+              </button>
+              <Line s={monStatus} />
+              <div className="txt-sub mt-2 fs-11.5 leading-snug">
+                ¿Compartes la clave con otras personas? Mejor un pequeño servidor intermedio que guarde la clave y el service principal: las demás apps lo llaman y nadie ve la clave real.
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
