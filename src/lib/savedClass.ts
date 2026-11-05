@@ -14,6 +14,7 @@ export interface SavedClass {
   customTopic?: string
   planLesson?: string
   grammarTopic?: string // v5.10: clase de «Practicar en una clase» (id del tema)
+  homeworkFrom?: number // 5.12 (P-05): clase de «Hacerla ahora» (id de la clase que dejó la tarea)
   topic?: Topic
   system: string
   history: ChatMessage[]

@@ -1,10 +1,12 @@
 import { db, type Session } from './db'
+import { latestHomework, type Homework } from './homework'
 
 export interface Dashboard {
   streak: number
   practicedToday: boolean
   minutesToday: number // minutos hablando (tu voz), no de sesión
-  lastHomework: { text: string; date: number } | null
+  /** 5.12 (P-05): con la clase que la dejó y si ya está hecha («Hacerla ahora»). */
+  lastHomework: Homework | null
   history: Session[] // sesiones con métricas, de más antigua a más reciente (máx. 20)
   totalSessions: number
   /** 5.11 (M-04): día de descanso (comodín) usado esta semana dentro de la racha, como `dayKey`. */
@@ -140,12 +142,11 @@ export async function loadDashboard(): Promise<Dashboard> {
   const { streak, restDays } = computeStreak(days, today)
   const { restDay, restedYesterday } = restInfo(restDays, today)
 
-  const withHomework = [...done].reverse().find((s) => s.report?.homeworkEs)
   return {
     streak,
     practicedToday,
     minutesToday: Math.round((secondsToday / 60) * 10) / 10,
-    lastHomework: withHomework ? { text: withHomework.report!.homeworkEs, date: withHomework.startedAt } : null,
+    lastHomework: latestHomework(done),
     history: done.slice(-20),
     totalSessions: done.length,
     restDay,

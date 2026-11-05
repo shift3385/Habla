@@ -75,6 +75,10 @@ export interface Session {
   report?: SessionReport
   planLesson?: string // id de la lección del plan (w3l2), si la clase era una lección del plan
   grammarTopic?: string // v5.10: id del tema de Gramática si fue «Practicar en una clase»
+  /** 5.12 (P-05): clase corta de «Hacerla ahora»: id de la clase cuyo informe dejó la tarea. */
+  homeworkFor?: number
+  /** 5.12 (P-05): en la clase que dejó la tarea, cuándo la hiciste (✓ hecha: ya no se vuelve a proponer). */
+  homeworkDoneAt?: number
 }
 
 export interface Turn {

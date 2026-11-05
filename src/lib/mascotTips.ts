@@ -3,7 +3,7 @@
 //  - Avisos: lo de hoy (clase a medias, lección, meta, repaso, racha, test). Lo que pide acción va primero.
 //  - Consejos: cómo sacarle partido a la app y qué significa cada nota. Siguen por donde se quedaron la vez anterior.
 
-export type TipAction = 'resume' | 'lesson' | 'review' | 'notif'
+export type TipAction = 'resume' | 'lesson' | 'review' | 'notif' | 'homework'
 
 export interface Tip {
   id: string
@@ -31,6 +31,8 @@ export interface TipInput {
   remindersBlocked?: boolean
   /** 5.11 (M-04): ayer fue tu día de descanso (comodín de la racha): la mascota te lo cuenta. Opcional. */
   restedYesterday?: boolean
+  /** 5.12 (P-05): la tarea de tu última clase, si está pendiente (homework.ts › homeworkPending). Opcional. */
+  homework?: string
 }
 
 const short = (s: string, max = 40) => (s.length > max ? s.slice(0, max - 2).trimEnd() + '…' : s)
@@ -143,6 +145,8 @@ export function buildTips(i: TipInput): Tip[] {
   }
   if (i.savedTitle) tips.push({ id: 'saved', text: `Tienes una clase a medias: «${short(i.savedTitle)}».`, action: 'resume', cta: 'Seguir la clase' })
   if (i.lessonTitle && !i.lessonDone) tips.push({ id: 'lesson', text: `Hoy te espera la lección «${short(i.lessonTitle)}».`, action: 'lesson', cta: 'Empezar la lección' })
+  // 5.12 (P-05): la tarea del informe, con «Hacerla ahora» (una clase corta). Hecha, ya no sale.
+  if (i.homework) tips.push({ id: 'homework', text: `Tienes una tarea de tu última clase: «${short(i.homework, 70)}».`, action: 'homework', cta: 'Hacerla ahora' })
 
   const mins = Math.floor(i.minutesToday)
   if (mins <= 0) tips.push({ id: 'goal', ...variant('goalNone', i.goal) })

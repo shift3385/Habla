@@ -12,6 +12,7 @@ import { expireRetestLeftovers } from './lib/testDraft'
 import { db } from './lib/db'
 import { getScenario } from './lib/scenarios'
 import { loadDashboard } from './lib/stats'
+import type { Homework } from './lib/homework'
 import ProfileSetup from './screens/ProfileSetup'
 import WelcomeScreen, { type ReturningInfo } from './screens/WelcomeScreen'
 import ProgressScreen from './screens/ProgressScreen'
@@ -61,6 +62,7 @@ interface Lesson {
   customTopic?: string // tema escrito por el alumno
   planLesson?: string // lección del plan de 12 semanas
   grammarTopic?: string // v5.10: «Practicar en una clase» desde un tema de Gramática
+  homeworkFrom?: number // 5.12 (P-05): «Hacerla ahora»: id de la clase cuyo informe dejó la tarea
   resume?: SavedClass // clase guardada que se retoma (NC-16)
   finishNow?: boolean // v5.9: «Terminar» desde el Inicio: se abre la clase guardada y se cierra con su informe
 }
@@ -142,7 +144,7 @@ export default function App() {
   const [phonAlert, setPhonAlert] = useState(false)
   useEffect(() => onPhoneticsQuota(() => setPhonAlert(true)), [])
   const [streak, setStreak] = useState(0)
-  const [homework, setHomework] = useState<{ text: string; date: number } | null>(null)
+  const [homework, setHomework] = useState<Homework | null>(null)
   const settingsRef = useRef<Settings | null>(null)
   const retestReadyRef = useRef(false)
   const [returning, setReturning] = useState<ReturningInfo | null>(null)
@@ -209,6 +211,7 @@ export default function App() {
             recalibrate: needsRecalibration(p),
             streak,
             homeworkDate: homework?.date,
+            homeworkDone: !!homework?.doneAt,
           }),
         )
       }
@@ -490,6 +493,10 @@ export default function App() {
             setGate([])
             resumeClass()
           }}
+          onDoHomework={(id) => {
+            setGate([])
+            startHomework(id)
+          }}
           update={update}
           onDone={() => setGate([])}
           onRetest={() => {
@@ -533,6 +540,7 @@ export default function App() {
           customTopic={lesson.customTopic}
           planLesson={lesson.planLesson}
           grammarTopic={lesson.grammarTopic}
+          homeworkFrom={lesson.homeworkFrom}
           resume={lesson.resume}
           finishNow={lesson.finishNow}
           settings={settings}
@@ -544,6 +552,11 @@ export default function App() {
             setTab('home')
             refreshProfile() // lección del plan hecha, nivel por la práctica…
             loadSaved() // ¿quedó guardada para continuar?
+          }}
+          onStartHomework={(id) => {
+            // 5.12 (P-05): «Hacerla ahora» desde el informe: la clase ya terminó, se abre la de la tarea.
+            backHandler.current = null
+            setLesson({ key: Date.now(), scenarioId: 'homework', homeworkFrom: id })
           }}
           registerBack={registerBack}
         />
@@ -561,6 +574,18 @@ export default function App() {
   // v5.10 (D3): «Practicar en una clase» desde un tema de Gramática (cuenta como cualquier otra clase).
   const startGrammar = (topicId: string) =>
     guardNew(() => setLesson({ key: Date.now(), scenarioId: 'grammar', grammarTopic: topicId }))
+  // 5.12 (P-05): «Hacerla ahora»: clase corta con la tarea del informe de la clase `fromId`.
+  // Declaración de función (no `guardNew`, que es una const de más abajo): también la llama el aviso de NoticeGate,
+  // que se pinta antes de llegar a esas líneas.
+  function startHomework(fromId: number) {
+    const go = () => {
+      backHandler.current = null
+      setPlanOpen(false)
+      setLesson({ key: Date.now(), scenarioId: 'homework', homeworkFrom: fromId })
+    }
+    if (savedRef.current) setAskNew(() => go)
+    else go()
+  }
   const startPlanLesson = (id: string) =>
     guardNew(() => {
       backHandler.current = null
@@ -579,6 +604,7 @@ export default function App() {
       customTopic: s.customTopic,
       planLesson: s.planLesson,
       grammarTopic: s.grammarTopic,
+      homeworkFrom: s.homeworkFrom,
       resume: s,
     })
   }
@@ -601,6 +627,7 @@ export default function App() {
       customTopic: s.customTopic,
       planLesson: s.planLesson,
       grammarTopic: s.grammarTopic,
+      homeworkFrom: s.homeworkFrom,
       resume: s,
       finishNow: true,
     })
@@ -724,10 +751,18 @@ export default function App() {
                 savedClass={savedClass}
                 onResumeClass={resumeClass}
                 onFinishClass={finishSavedClass}
+                onStartHomework={(id) => (settings.geminiKey.trim() ? startHomework(id) : setTab('settings'))}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
-            {tab === 'progress' && <ProgressScreen settings={settings} registerBack={registerBack} onReview={() => setReview(true)} />}
+            {tab === 'progress' && (
+              <ProgressScreen
+                settings={settings}
+                registerBack={registerBack}
+                onReview={() => setReview(true)}
+                onStartHomework={(id) => (settings.geminiKey.trim() ? startHomework(id) : setTab('settings'))}
+              />
+            )}
             {tab === 'settings' && (
               <SettingsScreen
                 settings={settings}

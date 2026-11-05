@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Habla · arnés 5.12</title>
+    <!--
+      Arnés de prueba de la 5.12 (docs/v5.12). NO es parte de la app ni del APK. Carga la app de src/ como index.html,
+      pero ANTES instala una IA falsa: ninguna petición a Gemini ni a Azure sale a internet. Cada respuesta se construye
+      con el ESQUEMA que pide la llamada (campos `required`), con valores de FIX y, si existe, `localStorage['arnes.fix']`
+      (JSON que el script de Playwright pone para cada caso). Las peticiones quedan en `window.__AI.calls` (prompt de
+      sistema y último mensaje) para comprobar qué recibe el profe. La voz del sistema termina al instante.
+      Solo en http://arnes.localhost:<puerto>.
+    -->
+    <script>
+      ;(() => {
+        if (location.hostname !== 'arnes.localhost') throw new Error('arnes.html: usa http://arnes.localhost:5173')
+        const isAI = (u) => /generativelanguage|googleapis|microsoft\.com|cognitive|azure/.test(String(u))
+        const AI = (window.__AI = { calls: [] })
+        const FIX = {
+          heard_speech: true,
+          transcript: '',
+          corrections: [],
+          reply: 'Great! Tell me more: what happened next?',
+          reply_es: '¡Genial! Cuéntame más: ¿qué pasó después?',
+          summary_es: 'Buena clase: hablaste con frases completas y te atreviste con el pasado.',
+          strengths_es: ['Respondiste con frases largas.', 'Usaste bien el pasado de «go».'],
+          improve_es: ['Cuida el pasado de los verbos regulares (-ed).', 'Haz menos pausas antes del verbo.'],
+          homework_es: 'Graba 1 minuto contando tu fin de semana usando 3 veces el pasado simple (went, ate, saw).',
+          phrase_en: 'It was a lot of fun.',
+          phrase_es: 'Fue muy divertido.',
+          title: 'Weekend plans',
+          title_es: 'Planes de fin de semana',
+          summary: 'Plans for the weekend.',
+          question: 'What are you doing this weekend?',
+          vocab: [{ en: 'plans', es: 'planes' }],
+          ideas: [],
+        }
+        const read = () => {
+          try {
+            return JSON.parse(localStorage.getItem('arnes.fix') || '{}')
+          } catch {
+            return {}
+          }
+        }
+        const fake = (schema, key) => {
+          const fix = { ...FIX, ...read() }
+          if (key && key in fix) return fix[key]
+          if (!schema) return ''
+          const t = Array.isArray(schema.type) ? schema.type[0] : String(schema.type || '').toLowerCase()
+          if (t === 'object') return Object.fromEntries((schema.required || Object.keys(schema.properties || {})).map((k) => [k, fake(schema.properties?.[k], k)]))
+          if (t === 'array') return []
+          if (t === 'boolean') return false
+          if (t === 'number' || t === 'integer') return 0
+          return schema.enum ? schema.enum[0] : 'x'
+        }
+        const of = window.fetch.bind(window)
+        window.fetch = async (u, o) => {
+          const url = typeof u === 'string' ? u : u && u.url
+          if (!isAI(url)) return of(u, o)
+          await new Promise((r) => setTimeout(r, 120))
+          if (/generativelanguage/.test(url) && /generateContent/.test(url)) {
+            let body = {}
+            try {
+              body = JSON.parse(o && o.body ? o.body : '{}')
+            } catch {}
+            const schema = body.generationConfig?.responseJsonSchema || body.generationConfig?.responseSchema
+            const last = body.contents?.at(-1)?.parts?.map((p) => p.text || '[audio]').join(' ') ?? ''
+            AI.calls.push({ system: body.systemInstruction?.parts?.[0]?.text ?? '', last, keys: schema?.required ?? [] })
+            const text = JSON.stringify(fake(schema))
+            return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text }] }, finishReason: 'STOP' }], usageMetadata: { promptTokenCount: 1, candidatesTokenCount: 1 } }), { status: 200, headers: { 'content-type': 'application/json' } })
+          }
+          return new Response(JSON.stringify({ error: { code: 503, message: 'arnés: simulado' } }), { status: 503, headers: { 'content-type': 'application/json' } })
+        }
+        const xo = XMLHttpRequest.prototype.open
+        XMLHttpRequest.prototype.open = function (m, u, ...r) {
+          if (isAI(u)) u = 'about:blank'
+          return xo.call(this, m, u, ...r)
+        }
+        if (window.speechSynthesis) {
+          window.speechSynthesis.speak = (u) => setTimeout(() => u.onend && u.onend(), 60)
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

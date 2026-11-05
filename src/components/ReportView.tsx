@@ -24,6 +24,12 @@ interface Props {
   session?: { id?: number; startedAt: number }
   ttsRate: number
   voiceIndex: number | null
+  /** 5.12 (P-05): «Hacerla ahora» bajo la tarea (abre una clase corta con ella). Sin él, solo el texto. */
+  onDoHomework?: () => void
+  /** 5.12 (P-05): la tarea de esta clase ya está hecha: «✓ Hecha» en vez del botón. */
+  homeworkDone?: boolean
+  /** 5.12 (P-05): informe de la propia clase de tarea: no se propone otra tarea encima. */
+  hideHomework?: boolean
 }
 
 function formatSeconds(s: number) {
@@ -132,13 +138,27 @@ export default function ReportView(p: Props) {
               ))}
             </ul>
           </Card>
-          <div className="rounded-[24px] p-4" style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 10px 30px var(--glow)' }}>
-            <div className="mb-1 flex items-center gap-2 font-semibold">
-              <Icon name="flag" size={17} />
-              Tarea para mañana
+          {!p.hideHomework && (
+            <div className="rounded-[24px] p-4" style={{ background: 'var(--acc)', color: 'var(--ink)', boxShadow: '0 10px 30px var(--glow)' }}>
+              <div className="mb-1 flex items-center gap-2 font-semibold">
+                <Icon name={p.homeworkDone ? 'check' : 'flag'} size={17} />
+                <span className="flex-1">Tarea para mañana</span>
+                {p.homeworkDone && <span className="rounded-full px-2.5 py-0.5 fs-12" style={{ background: 'var(--ink)', color: 'var(--acc)' }}>✓ Hecha</span>}
+              </div>
+              <p className="leading-snug">{p.report.homeworkEs}</p>
+              {/* 5.12 (P-05): la tarea se puede hacer ya, en una clase corta; al terminarla queda «✓ Hecha». */}
+              {p.onDoHomework && !p.homeworkDone && p.report.homeworkEs.trim() && (
+                <button
+                  onClick={p.onDoHomework}
+                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-full fs-15 font-semibold"
+                  style={{ background: 'var(--ink)', color: 'var(--acc)' }}
+                >
+                  <Icon name="mic" size={16} />
+                  Hacerla ahora
+                </button>
+              )}
             </div>
-            <p className="leading-snug">{p.report.homeworkEs}</p>
-          </div>
+          )}
           {p.report.phrase.en && (
             <button onClick={() => toggleSpeak(p.report!.phrase.en, p.ttsRate, p.voiceIndex)} className="glass rounded-[24px] p-4 text-left">
               <span className="txt-sub mb-1 flex items-center gap-1.5 text-xs">

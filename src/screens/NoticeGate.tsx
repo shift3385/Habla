@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import MascotPage from '../components/MascotPage'
 import { APP_VERSION, findRelease, RELEASES } from '../lib/changelog'
 import type { Notice } from '../lib/notices'
+import type { Homework } from '../lib/homework'
 import type { SavedClass } from '../lib/savedClass'
 import type { Skill } from '../lib/db'
 import SkillProgressCard from '../components/SkillProgressCard'
@@ -15,7 +16,9 @@ import { THEME_INFO, THEME_KEYS } from '../ui/theme'
 interface Props {
   settings: Settings
   notices: Notice[]
-  homework?: { text: string; date: number } | null
+  homework?: Homework | null
+  /** 5.12 (P-05): «Hacerla ahora»: abre la clase corta de la tarea (id de la clase que la dejó). */
+  onDoHomework?: (sessionId: number) => void
   update: (p: Partial<Settings>) => void
   onRetest: () => void
   onOpenThemes: () => void
@@ -30,7 +33,7 @@ interface Props {
  * Antes del Inicio, la mascota cuenta lo que hay que saber, de uno en uno y a pantalla completa (como la
  * bienvenida): novedades de la versión, re-test disponible y otros compañeros. Así el Inicio no se llena de avisos.
  */
-export default function NoticeGate({ settings, notices, homework, update, onRetest, onOpenThemes, onDone, savedClass, onResumeClass, levels }: Props) {
+export default function NoticeGate({ settings, notices, homework, onDoHomework, update, onRetest, onOpenThemes, onDone, savedClass, onResumeClass, levels }: Props) {
   const [i, setI] = useState(0)
   // v5.9: re-test pospuesto («Posponer»): la mascota lo dice y ofrece seguirlo.
   const [testPaused, setTestPaused] = useState(false)
@@ -140,14 +143,40 @@ export default function NoticeGate({ settings, notices, homework, update, onRete
         mood="happy"
         step={step}
         title="Tu tarea de hoy"
-        subtitle="La dejó tu profe al final de tu última clase. Son 5–10 minutos."
-        primary={{
-          label: last ? 'Entrar' : 'Siguiente',
-          onClick: () => {
-            update({ homeworkSeen: homework.date })
-            next()
-          },
-        }}
+        subtitle={
+          onDoHomework
+            ? 'La dejó tu profe al final de tu última clase. Son 5–10 minutos: si quieres, la hacemos ahora en una clase corta.'
+            : 'La dejó tu profe al final de tu última clase. Son 5–10 minutos.'
+        }
+        // 5.12 (P-05): «Hacerla ahora» abre la clase corta de la tarea; «Luego» sigue como antes (no la vuelve a enseñar).
+        primary={
+          onDoHomework
+            ? {
+                label: 'Hacerla ahora',
+                onClick: () => {
+                  update({ homeworkSeen: homework.date })
+                  onDoHomework(homework.sessionId)
+                },
+              }
+            : {
+                label: last ? 'Entrar' : 'Siguiente',
+                onClick: () => {
+                  update({ homeworkSeen: homework.date })
+                  next()
+                },
+              }
+        }
+        secondary={
+          onDoHomework
+            ? {
+                label: 'Luego',
+                onClick: () => {
+                  update({ homeworkSeen: homework.date })
+                  next()
+                },
+              }
+            : undefined
+        }
       >
         <div className="glass flex items-start gap-3 rounded-[26px] px-4 py-4">
           <span className="txt-acc2 mt-0.5 flex-none">

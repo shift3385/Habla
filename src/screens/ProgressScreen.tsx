@@ -31,10 +31,13 @@ export default function ProgressScreen({
   settings,
   registerBack,
   onReview,
+  onStartHomework,
 }: {
   settings: Settings
   registerBack: (h: (() => void) | null) => void
   onReview: () => void
+  /** 5.12 (P-05): «Hacerla ahora» desde el informe de una clase pasada. */
+  onStartHomework?: (sessionId: number) => void
 }) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [week, setWeek] = useState<number[]>([0, 0, 0, 0, 0, 0, 0])
@@ -97,6 +100,10 @@ export default function ProgressScreen({
           session={open.s}
           ttsRate={settings.ttsRate}
           voiceIndex={settings.voiceIndex}
+          // 5.12 (P-05): las clases de tarea no proponen otra; las demás, «Hacerla ahora» o «✓ Hecha».
+          hideHomework={!!open.s.homeworkFor}
+          homeworkDone={!!open.s.homeworkDoneAt}
+          onDoHomework={onStartHomework && open.s.id ? () => onStartHomework(open.s.id!) : undefined}
         />
       </div>
     )

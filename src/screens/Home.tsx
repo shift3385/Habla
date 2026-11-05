@@ -11,6 +11,7 @@ import MascotBubble from '../components/MascotBubble'
 import type { Settings } from '../lib/settings'
 import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
+import { homeworkPending } from '../lib/homework'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
 import { speakingGoal } from '../lib/fluency'
@@ -48,6 +49,8 @@ interface Props {
   onResumeClass?: () => void
   /** v5.9: terminar la clase guardada (con su evaluación) sin seguirla. */
   onFinishClass?: () => void
+  /** 5.12 (P-05): «Hacerla ahora»: clase corta con la tarea que dejó el informe de la clase `sessionId`. */
+  onStartHomework?: (sessionId: number) => void
 }
 
 // 5.11 (Sonidos): las pantallas de Sonidos se cargan al abrir la pestaña (React.lazy): no pesan en el arranque.
@@ -82,6 +85,7 @@ export default function Home({
   savedClass,
   onResumeClass,
   onFinishClass,
+  onStartHomework,
 }: Props) {
   // 5.11 (M-09, REV-11-D1-05): cada vez que se monta el Inicio (al volver de una clase, del Repaso, de otra pestaña…)
   // empieza otra ronda de redacciones de los globos. En el inicializador: antes de calcular los avisos de esta visita.
@@ -224,16 +228,21 @@ export default function Home({
           retestDays: retestAt === null ? null : (retestAt - Date.now()) / 86400000,
           remindersBlocked,
           restedYesterday: dash?.restedYesterday, // 5.11 (M-04, I-4): «Ayer descansaste; tu racha sigue a salvo»
+          homework: homeworkPending(dash?.lastHomework) && onStartHomework ? dash!.lastHomework!.text : undefined, // 5.12 (P-05)
         })
       : []
     const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn, wpmGoal: speakLevel ? speakingGoal(speakLevel) : undefined }), adviceCursor) : []
     return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mins, goal, dash?.streak, dash?.restedYesterday, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel])
+  }, [mins, goal, dash?.streak, dash?.restedYesterday, dash?.lastHomework, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel])
   const onTip = (tip: Tip) => {
     if (tip.action === 'notif') onOpenGoal?.()
     else if (tip.action === 'resume') onResumeClass?.()
     else if (tip.action === 'review') onReview()
+    else if (tip.action === 'homework' && dash?.lastHomework) {
+      if (keysReady) onStartHomework?.(dash.lastHomework.sessionId)
+      else onGoSettings()
+    }
     else if (tip.action === 'lesson' && today?.lesson) {
       if (keysReady) onStartLesson(today.lesson.id)
       else onGoSettings()

@@ -19,6 +19,7 @@ import { isAborted, type ApiError, type ChatMessage, type Models } from '../lib/
 import { getProfile } from '../lib/profile'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
+import { cleanHomework, homeworkBrief, homeworkCounts, HOMEWORK_MIN_TURNS, markHomeworkDone } from '../lib/homework'
 import { findTopic, grammarBrief } from '../lib/grammar'
 import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
 import { fastModels, mainModels, type Settings } from '../lib/settings'
@@ -61,6 +62,8 @@ interface Props {
   planLesson?: string // id de la lección del plan de 12 semanas
   /** v5.10 (D3): clase centrada en un tema de Gramática («Practicar en una clase»). */
   grammarTopic?: string
+  /** 5.12 (P-05): clase corta de «Hacerla ahora»: id de la clase cuyo informe dejó la tarea. */
+  homeworkFrom?: number
   /** Clase guardada que se retoma en el punto en que quedó (NC-16). */
   resume?: SavedClass
   /** v5.9: con `resume`, la clase no se sigue: se cierra en cuanto carga, con su informe («Terminar» del Inicio). */
@@ -69,6 +72,8 @@ interface Props {
   t: ThemeVars
   update: (patch: Partial<Settings>) => void
   onExit: () => void
+  /** 5.12 (P-05): «Hacerla ahora» desde el informe de esta clase (la abre App, con la clase ya terminada). */
+  onStartHomework?: (sessionId: number) => void
   registerBack: (handler: (() => void) | null) => void
 }
 
@@ -82,16 +87,22 @@ export default function Conversation({
   customTopic,
   planLesson,
   grammarTopic,
+  homeworkFrom,
   resume,
   finishNow,
   settings,
   update,
   onExit,
+  onStartHomework,
   registerBack,
 }: Props) {
   const scenario = getScenario(scenarioId)
   // v5.10: tema de Gramática de la clase (también al retomarla).
   const gramTopic = findTopic(grammarTopic ?? resume?.grammarTopic)
+  // 5.12 (P-05): clase de la tarea (también al retomarla): la clase que la dejó, su texto y si ya cuenta como hecha.
+  const hwFrom = homeworkFrom ?? resume?.homeworkFrom
+  const [hwTask, setHwTask] = useState('')
+  const [hwDone, setHwDone] = useState(false)
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
@@ -388,6 +399,7 @@ export default function Conversation({
         setLevel(profile.levels.overall)
         const found = resume.planLesson && profile.plan ? findLesson(profile.plan, resume.planLesson) : null
         if (found) setPlanInfo(found)
+        if (hwFrom) setHwTask(cleanHomework((await db.sessions.get(hwFrom))?.report?.homeworkEs))
         if (resume.topic) {
           setTopic(resume.topic)
           topicRef.current = resume.topic
@@ -430,13 +442,18 @@ export default function Conversation({
       // Lección del plan: el profe recibe la situación, el objetivo y las frases de esa lección.
       const found = planLesson && profile.plan ? findLesson(profile.plan, planLesson) : null
       if (found) setPlanInfo(found)
-      titleRef.current = found ? found.lesson.titleEs : gramTopic ? gramTopic.name : tp?.title ?? scenario.title
+      // 5.12 (P-05): «Hacerla ahora»: el brief es la tarea que dejó el informe de esa clase.
+      const task = hwFrom ? cleanHomework((await db.sessions.get(hwFrom))?.report?.homeworkEs) : ''
+      if (task) setHwTask(task)
+      titleRef.current = found ? found.lesson.titleEs : gramTopic ? gramTopic.name : task ? 'Tu tarea' : tp?.title ?? scenario.title
       // v5.10 (D3): en «Practicar en una clase» el profe recibe el foco, las fórmulas y el nombre del tema.
       const brief = found
         ? { ...scenario, brief: lessonBrief(found.week, found.lesson) }
         : gramTopic
           ? { ...scenario, brief: grammarBrief(gramTopic) }
-          : scenario
+          : task
+            ? { ...scenario, brief: homeworkBrief(task) }
+            : scenario
       system.current = buildSystemPrompt(profile, brief, recent, tp, teacherPersona(settingsRef.current.theme, settingsRef.current.teacher))
       sessionId.current =
         (await db.sessions.add({
@@ -445,6 +462,7 @@ export default function Conversation({
           topic: tp,
           ...(found ? { planLesson } : {}),
           ...(gramTopic ? { grammarTopic: gramTopic.id } : {}),
+          ...(task && hwFrom ? { homeworkFor: hwFrom } : {}),
         })) ?? null
       history.current = [{ role: 'user', content: START_MESSAGE }]
       await askTeacher()
@@ -472,6 +490,7 @@ export default function Conversation({
       customTopic,
       planLesson,
       ...(gramTopic ? { grammarTopic: gramTopic.id } : {}),
+      ...(hwFrom ? { homeworkFrom: hwFrom } : {}),
       topic: topicRef.current,
       system: system.current,
       history: history.current,
@@ -480,7 +499,7 @@ export default function Conversation({
       turns: answers,
       savedAt: Date.now(),
     }).catch(() => {})
-  }, [scenarioId, categoryId, customTopic, planLesson, gramTopic])
+  }, [scenarioId, categoryId, customTopic, planLesson, gramTopic, hwFrom])
 
   // Al minimizar o cerrar la app con la clase abierta, también se guarda (el micrófono y la voz los cierra lifecycle).
   useEffect(() => whenBackground(persist), [persist])
@@ -701,6 +720,11 @@ export default function Conversation({
       await markLessonDone(planLesson, sid)
       setLessonDone(true)
     }
+    // 5.12 (P-05): con al menos 2 respuestas, la tarea queda «✓ hecha» y ya no se vuelve a proponer.
+    if (s.homeworkFor && homeworkCounts(metrics.turns)) {
+      await markHomeworkDone(s.homeworkFor)
+      setHwDone(true)
+    }
     setSession(s)
     setView('report')
     buildReport(s, allTurns)
@@ -758,6 +782,8 @@ export default function Conversation({
       }
     : gramTopic
       ? { icon: 'book', label: `Gramática · ${gramTopic.level}`, title: gramTopic.name, sub: `${gramTopic.nameEs}: ${gramTopic.summaryEs}` }
+      : hwTask
+      ? { icon: 'flag', label: 'Tarea · clase corta', title: 'Tu tarea de hoy', sub: hwTask }
       : scenario.id === 'open'
       ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherName(settings.theme)} sigue tu conversación` }
       : scenario.topic
@@ -826,6 +852,22 @@ export default function Conversation({
               </span>
             </div>
           )}
+          {session.homeworkFor && (
+            // 5.12 (P-05): la clase de la tarea, como la lección del plan: hecha o qué falta para que cuente.
+            <div className="glass anim-up mb-3 flex items-center gap-3 rounded-[24px] p-3.5">
+              <span className={`grid h-10 w-10 flex-none place-items-center rounded-full ${hwDone ? 'btn-acc' : 'field txt-sub'}`}>
+                <Icon name={hwDone ? 'check' : 'flag'} size={18} stroke={2} />
+              </span>
+              <span className="min-w-0 flex-1 text-sm leading-snug">
+                <b className="block font-semibold">{hwDone ? '¡Tarea hecha!' : 'Tarea sin completar'}</b>
+                <span className="txt-sub">
+                  {hwDone
+                    ? 'Ya no te la vuelvo a proponer. ¡Bien hecho!'
+                    : `Para que cuente, responde al menos ${HOMEWORK_MIN_TURNS} veces. Puedes hacerla otra vez desde el informe de tu clase.`}
+                </span>
+              </span>
+            </div>
+          )}
           {levelChange && (
             <div
               className="anim-up mb-3 rounded-[24px] p-4 text-center"
@@ -855,6 +897,8 @@ export default function Conversation({
             session={session}
             ttsRate={settings.ttsRate}
             voiceIndex={settings.voiceIndex}
+            hideHomework={!!session.homeworkFor}
+            onDoHomework={onStartHomework && session.id ? () => onStartHomework(session.id!) : undefined}
           />
           <button onClick={onExit} className="btn-acc mt-4 h-[54px] w-full rounded-full fs-16">
             Volver al inicio
@@ -943,7 +987,7 @@ export default function Conversation({
               <span className="txt-acc2 block fs-10.5 tracking-[1.2px] uppercase">{card.label}</span>
               <span className="fs-clamp block truncate text-base font-semibold">{card.title}</span>
               {!cardSeen && !cardOpen && (card.sub || chips.length) ? (
-                <span className="cv-card-hint txt-sub block fs-11.5">{planInfo ? 'Toca para ver el objetivo de esta clase' : 'Toca para ver el objetivo de esta conversación'}</span>
+                <span className="cv-card-hint txt-sub block fs-11.5">{planInfo ? 'Toca para ver el objetivo de esta clase' : hwTask ? 'Toca para ver tu tarea' : 'Toca para ver el objetivo de esta conversación'}</span>
               ) : null}
             </span>
             <span

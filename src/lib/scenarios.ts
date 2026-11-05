@@ -34,6 +34,16 @@ export const SCENARIOS: Scenario[] = [
     brief: 'Grammar-focused speaking lesson: create natural situations that make the student use the target structure.',
   },
   {
+    // 5.12 (P-05): «Hacerla ahora», la tarea del informe en una clase corta. El brief real es homeworkBrief(tarea).
+    id: 'homework',
+    title: 'Tu tarea',
+    subtitle: 'La tarea de tu última clase, hecha ahora',
+    emoji: '✅',
+    icon: 'flag',
+    hidden: true,
+    brief: 'Short homework practice: help the student do the speaking task their coach set at the end of the last lesson.',
+  },
+  {
     id: 'free',
     title: 'Charla libre',
     subtitle: 'Conversación relajada sobre lo que sea',

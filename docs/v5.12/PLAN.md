@@ -19,7 +19,7 @@ teléfono (`docs/pruebas/PENDIENTES.md`), tareas abiertas de la 5.11, dibujo de 
 ## Fases (en este orden; una fase = un commit con su test)
 | Fase | Qué | Estado |
 |---|---|---|
-| 1 | **P-05 «Hacerla ahora»** | pendiente |
+| 1 | **P-05 «Hacerla ahora»** | ✅ hecha (2026-11-05): `src/lib/homework.ts`, escenario oculto `homework`, botón en el informe (clase y Progreso), en el aviso a pantalla completa y en el globo de la mascota; con 2+ respuestas la tarea queda «✓ Hecha». Test `tests/p05-homework.test.mjs`; navegador `docs/v5.12/evidencia/arnes-p05.mjs` (capturas en `evidencia/P05/`) |
 | 2 | **P-12 roleplays con misión** | pendiente |
 | 3 | **P-11 memoria del alumno** | pendiente |
 | 4 | Entrega 5.12 (build 44): `version.json`, Novedades en `changelog.ts`, README/CLAUDE.md, capturas | pendiente |

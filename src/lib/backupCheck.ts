@@ -104,6 +104,8 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     report: opt(shape({ summaryEs: opt(str), strengthsEs: opt(strArr), improveEs: opt(strArr), homeworkEs: opt(str) })),
     planLesson: opt(str),
     grammarTopic: opt(str), // v5.10
+    homeworkFor: opt(num), // 5.12 (P-05)
+    homeworkDoneAt: opt(num), // 5.12 (P-05)
   },
   turns: {
     id,
