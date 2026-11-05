@@ -50,11 +50,11 @@ const { browser, page } = await open({ width: 390, height: 844 })
     return { before, after: db.verno, counts, turnText: (await db.turns.toArray())[1].text, sessionScore: s.metrics.score }
   })
   assert.equal(r.before, 5)
-  assert.equal(r.after, 6)
-  assert.deepEqual(r.counts, { sessions: 1, turns: 2, mistakes: 1, profile: 1, lookups: 0, cards: 0, grammar: 1, sounds: 1, milestones: 3, facts: 0 })
+  assert.equal(r.after, 7) // 5.13: la v7 añade `challenges` (docs/v5.13/evidencia/arnes-p14.mjs prueba v6 → v7)
+  assert.deepEqual(r.counts, { sessions: 1, turns: 2, mistakes: 1, profile: 1, lookups: 0, cards: 0, grammar: 1, sounds: 1, milestones: 3, facts: 0, challenges: 0 })
   assert.equal(r.turnText, 'I go to the beach yesterday.')
   assert.equal(r.sessionScore, 50)
-  log('migración v5 → v6 con datos: todo intacto y `facts` vacía', JSON.stringify(r.counts))
+  log('migración v5 → v7 con datos: todo intacto y `facts` vacía', JSON.stringify(r.counts))
 }
 
 // 2) Clase → el informe apunta 2 datos (el de salud no) y los enseña; la siguiente clase los recibe en el prompt.
@@ -160,8 +160,9 @@ const bk = await page.evaluate(async () => {
   const b = await buildBackup()
   return { version: b.version, facts: b.tables.facts?.length, keys: JSON.stringify(b).includes('AIzaARNES') }
 })
-assert.deepEqual(bk, { version: 4, facts: 20, keys: false })
-log('límite de 20 y copia versión 4 con la tabla (sin claves)', JSON.stringify(bk))
+// 5.13: el Inicio ya creó el reto de la semana, que también viaja en la copia: versión 5 (sin retos sería 4, p14-challenge.test).
+assert.deepEqual(bk, { version: 5, facts: 20, keys: false })
+log('límite de 20 y copia con la tabla (sin claves)', JSON.stringify(bk))
 await browser.close()
 
 // 5) 320×640 y horizontal: la página de Ajustes cabe sin desplazar en horizontal la página.

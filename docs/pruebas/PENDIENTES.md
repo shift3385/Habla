@@ -8,6 +8,18 @@
 Casi todas necesitan el **POCO X6 del dueño** (y algunas sus auriculares soundcore Liberty 4 Pro, su voz o su clave real).
 Desde una sesión en la nube solo se puede revisar código y documentación.
 
+## 5.13 «Retos en familia» (rama `claude/inspiring-cori-7c7iax`, build 45) — hecha en la nube, sin APK
+Plan y avance: `docs/v5.13/PLAN.md`. Probado en el navegador con IA falsa y dos teléfonos simulados (`docs/v5.13/evidencia/`).
+
+| Prueba | Qué falta | Necesita |
+|---|---|---|
+| APK | Compilar debug y release de la 5.13 (`npm run apk:debug`, `npm run apk`) e instalar con `adb -s <serie> install -r` | PC + POCO |
+| WhatsApp de verdad | Entre **dos teléfonos con la 5.13**: «Retar a alguien», «Mandar mi progreso» y «Compartir» una palabra por WhatsApp; copiar el mensaje y pegarlo en *Progreso → Pegar un código* (también con el botón «Pegar», que lee el portapapeles) | POCO + otro teléfono con la 5.13 |
+| Tarjeta de la semana | «Compartir mi semana» manda la imagen PNG por WhatsApp (con texto) y la caché se limpia (`habla-semana-*.png`) | POCO |
+| Reto con IA real | Que el modelo rápido elija retos razonables con errores reales (la app recorta la cifra) y que la barra avance con voz real | Clave real + varias clases |
+| Migración | Abrir la 5.13 sobre los datos reales de la 5.12 (Dexie v6 → v7), con copia antes | POCO del dueño |
+| Galaxy A11 | Vista previa de la tarjeta y «Pegar un código» en horizontal forzado y con el modo ligero | Teléfono de la madre (con permiso del dueño) |
+
 ## 5.12 «Situaciones», «Hacerla ahora» y «Lo que recuerda tu profe» (rama `claude/eloquent-newton-2cniyr`, build 44) — hecha en la nube, sin APK
 Lista completa: `docs/v5.12/PLAN.md` § «Pendiente en el teléfono». Probado en el navegador con IA falsa (`docs/v5.12/evidencia/`).
 

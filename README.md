@@ -51,6 +51,7 @@ D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 - **Exportar:** *Ajustes → Mi perfil y datos → ⬆️ Exportar*. Guarda `habla-backup-AAAA-MM-DD.json` en `Documentos/Habla` (si Android lo permite) y abre "Compartir" para que lo mandes a Drive, a tu correo o al PC.
 - **Importar:** *Ajustes → Mi perfil y datos → ⬇️ Importar* → elige el JSON. Primero se comprueba la copia entera (si está dañada, no se toca nada) y te dice cuántas sesiones y errores trae. **Sustituye** todo el progreso actual por el del archivo, pero antes **guarda sola una copia de lo que tenías** en `Documentos/Habla/habla-antes-de-importar-….json` (desde la 5.9).
 - Desde la 5.12 las copias llevan también **lo que recuerda tu profe**. Una copia con recuerdos solo se abre en Habla 5.12 o posterior (las anteriores dicen «versión más nueva» y no tocan nada); las copias antiguas, sin recuerdos, se siguen importando igual.
+- Desde la 5.13 llevan también **tus retos de la semana**. Una copia con retos solo se abre en Habla 5.13 o posterior; las antiguas se siguen importando igual.
 - Las copias **no incluyen tus claves** (ni la de Gemini ni las de Azure). Tampoco entran en las copias automáticas de Android. Después de reinstalar tendrás que pegarlas de nuevo.
 
 Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o reinstalar.
@@ -98,7 +99,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 ### Inicio
 - **Racha** (icono de llama): días seguidos practicando.
 - **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember, junto a la mascota; en Lumi, la tarjeta "Charla libre"; en Marea y Nimbo, una barra junto a la mascota.
-- **Tu mascota te habla:** de vez en cuando sale un globo junto a ella con algo útil: tu clase a medias, la lección de hoy, tu tarea pendiente («Hacerla ahora», 5.12), cuánto te falta para la meta, las frases del repaso, tu racha, cuándo puedes repetir el test y que los temas con puntito traen noticias reales. Si el globo lleva una flecha, tócalo y lo hace (sigue la clase, abre el repaso o empieza la lección). Toca a la mascota para que te cuente lo siguiente.
+- **Tu mascota te habla:** de vez en cuando sale un globo junto a ella con algo útil: tu clase a medias, la lección de hoy, tu tarea pendiente («Hacerla ahora», 5.12), cuánto te falta para la meta, las frases del repaso, cómo vas en tu **reto de la semana** («Reto de la semana: 4 de 8», 5.13), tu racha, cuándo puedes repetir el test y que los temas con puntito traen noticias reales. Si el globo lleva una flecha, tócalo y lo hace (sigue la clase, abre el repaso o empieza la lección). Toca a la mascota para que te cuente lo siguiente.
   - También da **consejos de uso**: qué significa cada nota (fluidez, ppm, pausas, las de Azure), dónde cambiar tus temas o decir para qué quieres el inglés, y trucos de la clase. Siguen por donde se quedaron la vez anterior.
   - **Ritmo:** el primer globo sale a los 5–9 s de abrir el Inicio; cada uno se queda lo que se tarda en leerlo (de 9 a 20 s) y entre uno y otro pasan de 40 a 75 s.
   - Avisos y consejos se activan o desactivan por separado en *Ajustes → Tema y mascota → Globos de tu mascota en el Inicio*.
@@ -142,6 +143,22 @@ Otros controles:
 - Al terminar cada clase, el profe apunta **hasta 3 cosas de tu vida** que le contaste («El viernes tiene una entrevista de trabajo», «Su nieta se llama Ana»). **Nunca** apunta nada de salud, dinero, política ni religión. Las ves en el informe, en *Tu profe se acordará de…*.
 - En la clase siguiente recibe **las 5 más recientes** y **puede** preguntarte por una al empezar. En las Situaciones no las usa (allí hace un papel).
 - *Ajustes → Lo que recuerda tu profe*: la lista (como mucho 20; las más antiguas salen solas), **cambiar** o **borrar** cada una, **Borrar todo** e interruptor para **apagarlo** (activado por defecto). Todo se queda en tu teléfono y viaja en tus copias.
+
+### 🎯 Reto de la semana (5.13)
+- Cada **lunes** te propongo un reto sacado de tus errores, por ejemplo «Di 8 respuestas largas sin fallar el pasado». Hay cuatro tipos: **minutos** hablando, **clases** terminadas (de al menos 3 respuestas), **respuestas largas** (10 palabras o más, habladas) **sin fallar** un punto concreto, y **frases repasadas** en el Repaso.
+- Lo prepara el modelo rápido una vez a la semana (la primera vez que abres el Inicio); sin clave o si falla, uno de respaldo (tu error más frecuente, o tu meta diaria × 5 en minutos). **El progreso lo mide el teléfono**, sin gastar tu clave.
+- Tu mascota te cuenta cómo vas en un globo; tócalo y se abre el detalle. Al cumplirlo, **«¡Reto cumplido!»** con tu mascota (una vez). En *Progreso* está la tarjeta con la barra y, dentro, tus **semanas anteriores** (cumplidos o hasta dónde llegaste). El reto **no cambia tu nivel**.
+
+### 📸 Compartir mi semana (5.13)
+- En *Progreso → Compartir mi semana* ves una **imagen** con tu nombre, los minutos de la semana día a día, tu racha, tu reto con su barra y tu último logro, con la mascota de tu tema. **Compartir** la manda por WhatsApp (o donde quieras).
+- **Nada sensible:** ni tu nivel, ni tus errores, ni lo que recuerda tu profe, ni tus claves. Con el modo ligero se dibuja sin el fondo de colores.
+
+### 🤝 Retos en familia y palabras compartidas (5.13)
+- **Sin cuentas ni servidor:** lo que se comparte es un **código** (`HABLA:1:…`) dentro de un mensaje de WhatsApp. Se pega en *Progreso → Pegar un código*. Pegar un código **no gasta tu clave**. Para retarse, **las dos personas necesitan Habla 5.13**.
+- **Retar a alguien** (en el detalle del reto): manda tu reto. Quien lo pega lo acepta y pasa a ser su **«Reto con Ana»** de esa semana, medido en su teléfono con lo que habla ella. Si ya cumplió su reto de la semana, se le dice que lo pegue el lunes.
+- **Mandar mi progreso**: manda cuánto llevas. Si la otra persona tiene **el mismo reto**, lo ve junto al suyo: «Ana: 6 de 8 · Tú: 4 de 8». Con un reto compartido, el texto de *Compartir mi semana* lleva también tu código de progreso.
+- **Palabras:** abre una palabra **guardada** en *Palabras* y toca **Compartir**. Al pegarla, entra en sus Palabras («compartida por Ana») y en su Repaso; si ya la tenía, no se duplica.
+- Un código cortado, dañado o de una versión más nueva se explica en español y **no cambia nada**.
 
 ### 🔤 Corrector fonético (Azure Speech, opcional)
 Gemini corrige **qué** dices; Azure Speech mide **cómo** lo pronuncias. Las dos llamadas salen a la vez y el resultado se une en un solo bloque:
@@ -217,7 +234,7 @@ Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu
   - Lo que hiciste bien y lo que debes mejorar.
   - La **tarea para mañana** (con **Hacerla ahora**, o **✓ Hecha** si ya la hiciste) y una **frase del día**.
   - **Tu profe se acordará de…**: lo que apuntó de esta clase (5.12).
-- **Progreso**: tus minutos de hoy, las barras de la semana y tres pestañas:
+- **Progreso**: tus minutos de hoy, las barras de la semana (con **Compartir mi semana**), tu **reto de la semana**, **Pegar un código**, tus logros y tres pestañas:
   - **Errores**: tus correcciones agrupadas, con cuántas veces repetiste cada error. Toca una para ver la explicación.
   - **Palabras**: el vocabulario de tus temas y las frases del día. Toca una para oírla.
   - **Sesiones**: la gráfica de tu nota y el informe de cada clase.
@@ -272,6 +289,9 @@ src/
     homework.ts    «Hacerla ahora»: clase corta con la tarea del informe (5.12)
     missions.ts    Situaciones: misiones con 3 objetivos (5.12)
     memory.ts      lo que recuerda tu profe (5.12)
+    challenge.ts   reto de la semana: tipos, cifra, progreso medido en el teléfono (5.13)
+    weekCard.ts    qué entra en la tarjeta de la semana; weekCardImage.ts la dibuja y la comparte (5.13)
+    shareCode.ts   códigos HABLA:1:… (reto, progreso, palabra) y su validación; shareApply.ts los aplica (5.13)
     scenarios.ts   los escenarios (prácticas guiadas y clases internas)
     recorder.ts    MediaRecorder (webm/opus)
     wav.ts         webm → WAV 16 kHz mono (para Azure), máx. 60 s
@@ -281,7 +301,7 @@ src/
     placement.ts   test de nivel con el banco de 450 ítems
     deviceAuth.ts  patrón / PIN / huella para ver o cambiar claves
     tts.ts         voz nativa de Android
-    db.ts          IndexedDB (Dexie): sesiones, turnos, errores, perfil… y lo que recuerda tu profe (v6)
+    db.ts          IndexedDB (Dexie): sesiones, turnos, errores, perfil…, lo que recuerda tu profe (v6) y los retos (v7)
     backup.ts      exportar / importar JSON
     settings.ts    clave, modelo y preferencias (@capacitor/preferences)
   screens/         Home, Conversation, ProgressScreen, SettingsScreen
@@ -307,3 +327,4 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **No conformidades v5.7:** batería, clase guardada, todas las correcciones, Ajustes rediseñado, claves con patrón/huella y orientación fija
 - [x] **Corrector fonético con Azure Speech** y límite de 60 s con cuenta atrás (v5.8)
 - [x] **Situaciones** (roleplays con misión), **Hacerla ahora** y **Lo que recuerda tu profe** (v5.12)
+- [x] **Retos en familia:** reto de la semana, tarjeta para WhatsApp y códigos para compartir retos, progreso y palabras (v5.13)

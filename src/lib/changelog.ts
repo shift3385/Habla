@@ -38,6 +38,20 @@ export function latestEntry(): Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.13',
+    date: '2026-11-05',
+    title: 'Retos en familia: tu reto de la semana, tu tarjeta para WhatsApp y códigos para compartir',
+    added: [
+      'Reto de la semana: cada lunes te propongo un reto sacado de tus errores («8 respuestas largas sin fallar el pasado») con su barra «4 de 8». Lo mido yo en tu teléfono, sin gastar tu clave; tu mascota te cuenta cómo vas y lo celebra cuando lo cumples. Lo ves en Progreso, con tus retos anteriores',
+      '«Compartir mi semana» (en Progreso): una imagen con tus minutos, tu racha, tu reto y tu último logro para mandarla por WhatsApp. Nada de tu nivel ni de tus errores',
+      'Retos en familia, sin cuentas ni servidor: «Retar a alguien» manda tu reto por WhatsApp como un código; la otra persona lo pega en Progreso → «Pegar un código» y es su «Reto con…» de la semana. Con «Mandar mi progreso» os comparáis («Ana: 6 de 8 · Tú: 4 de 8»). Las dos personas necesitan Habla 5.13',
+      'Palabras compartidas: en una palabra guardada, «Compartir»; al pegar el código, la palabra entra en tus Palabras y en tu Repaso',
+    ],
+    improved: [
+      'Tus copias de seguridad llevan también tus retos. Las copias antiguas siguen valiendo; una copia con retos necesita Habla 5.13 o posterior',
+    ],
+  },
+  {
     v: '5.12',
     date: '2026-11-05',
     title: 'Situaciones con misión, tareas al momento y un profe que se acuerda de ti',
