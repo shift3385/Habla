@@ -9,6 +9,8 @@ import { fastModels, type Settings } from '../lib/settings'
 import { Icon } from '../ui/icons'
 import Segmented from '../ui/Segmented'
 import InfiniteList from '../components/InfiniteList'
+import { encodeCode, wordMessage, wordToCode } from '../lib/shareCode'
+import { shareMessage } from '../lib/shareText'
 
 interface Props {
   settings: Settings
@@ -30,6 +32,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   // v5.9: frases del repaso marcadas «Ya me la sé» (se pueden volver a repasar).
   const [known, setKnown] = useState<SrsCard[]>([])
   const [level, setLevel] = useState('B1')
+  const [name, setName] = useState('') // 5.13 (Fase 3): para las palabras que compartes
 
   const reload = useCallback(() => {
     db.lookups.orderBy('createdAt').reverse().limit(60).toArray().then(setHistory)
@@ -38,7 +41,10 @@ export default function WordsScreen({ settings, registerBack }: Props) {
 
   useEffect(() => {
     reload()
-    getProfile().then((p) => setLevel(p.levels.overall))
+    getProfile().then((p) => {
+      setLevel(p.levels.overall)
+      setName(p.name ?? '')
+    })
   }, [reload])
 
   // Vuelve a la lista (y la recarga: los sinónimos/antónimos consultados entran en el Historial).
@@ -68,7 +74,7 @@ export default function WordsScreen({ settings, registerBack }: Props) {
   }
 
   if (current) {
-    return <WordView key={current.id} root={current} settings={settings} level={level} registerBack={registerBack} onClose={close} />
+    return <WordView key={current.id} root={current} settings={settings} level={level} name={name} registerBack={registerBack} onClose={close} />
   }
 
   const list = seg === 'saved' ? history.filter((h) => h.saved) : history
@@ -220,17 +226,28 @@ function WordView({
   root,
   settings,
   level,
+  name,
   registerBack,
   onClose,
 }: {
   root: Lookup
   settings: Settings
   level: string
+  name: string
   registerBack: (h: (() => void) | null) => void
   onClose: () => void
 }) {
   const s = useLookupStack(root, { apiKey: settings.geminiKey, models: fastModels(settings), level })
   const { canPop, pop } = s
+  const [note, setNote] = useState<string | null>(null)
+  // Solo una palabra guardada que se pueda poner en un código (p. ej. no una frase enorme).
+  const shareable = root.saved && canEncode(root)
+  const share = async () => {
+    setNote(null)
+    const r = await shareMessage(wordMessage(wordToCode(root.result, name)), 'Compartir una palabra')
+    if (r === 'copied') setNote('Mensaje copiado: pégalo en WhatsApp.')
+    else if (r === 'failed') setNote('No he podido abrir Compartir.')
+  }
 
   useEffect(() => {
     registerBack(canPop ? pop : onClose)
@@ -243,9 +260,27 @@ function WordView({
         <button onClick={onClose} className="glass grid h-11 w-11 flex-none place-items-center rounded-full" aria-label="Atrás">
           <Icon name="back" size={20} stroke={1.8} />
         </button>
-        <div className="text-2xl font-semibold tracking-[-.4px]">Palabras</div>
+        <div className="min-w-0 flex-1 text-2xl font-semibold tracking-[-.4px]">Palabras</div>
+        {/* 5.13 (Fase 3): una palabra guardada se comparte con un código (la otra persona lo pega en Progreso). */}
+        {shareable && (
+          <button onClick={share} className="glass flex h-11 flex-none items-center gap-1.5 rounded-full px-4 fs-14 font-semibold" data-share-word>
+            <Icon name="upload" size={16} />
+            Compartir
+          </button>
+        )}
       </div>
+      {note && <div className="txt-sub -mt-1 px-1 fs-13">{note}</div>}
       <LookupStack s={s} ttsRate={settings.ttsRate} voiceIndex={settings.voiceIndex} />
     </div>
   )
+}
+
+/** ¿La palabra cabe en un código válido? (encodeCode la comprueba como lo hará quien la reciba). */
+function canEncode(l: Lookup): boolean {
+  try {
+    encodeCode(wordToCode(l.result, ''))
+    return true
+  } catch {
+    return false
+  }
 }

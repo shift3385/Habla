@@ -12,7 +12,20 @@ import { THEME_INFO, type ThemeVars } from '../ui/theme'
  * imagen se pinta una vez al abrir (weekCardImage.ts); «Compartir» abre el menú del teléfono (WhatsApp…). En horizontal,
  * la imagen a la izquierda y los botones a la derecha.
  */
-export default function WeekCardSheet({ settings, t, input, onClose }: { settings: Settings; t: ThemeVars; input: WeekCardInput; onClose: () => void }) {
+export default function WeekCardSheet({
+  settings,
+  t,
+  input,
+  extraText,
+  onClose,
+}: {
+  settings: Settings
+  t: ThemeVars
+  input: WeekCardInput
+  /** 5.13 (Fase 3): con un reto compartido, el mensaje con tu código de progreso va debajo del texto de la tarjeta. */
+  extraText?: string
+  onClose: () => void
+}) {
   const info = THEME_INFO[settings.theme] ?? THEME_INFO.marea
   const [url, setUrl] = useState<string | null>(null)
   const [failed, setFailed] = useState(false)
@@ -40,7 +53,8 @@ export default function WeekCardSheet({ settings, t, input, onClose }: { setting
     if (!canvas.current || busy) return
     setBusy(true)
     try {
-      await shareWeekCard(canvas.current, weekCardText(data.current), weekCardFileName())
+      const text = weekCardText(data.current)
+      await shareWeekCard(canvas.current, extraText ? `${text}\n\n${extraText}` : text, weekCardFileName())
     } catch {
       setFailed(true)
     } finally {

@@ -9,6 +9,8 @@ import { fastModels, type Settings } from '../lib/settings'
 export function useWeekChallenge(settings: Settings) {
   const [status, setStatus] = useState<ChallengeStatus | null>(null)
   const [history, setHistory] = useState<WeeklyChallenge[]>([])
+  // 5.13 (Fase 3): al pegar un código (reto o progreso) se vuelve a leer.
+  const [n, setN] = useState(0)
   useEffect(() => {
     let alive = true
     getProfile()
@@ -33,6 +35,6 @@ export function useWeekChallenge(settings: Settings) {
       alive = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  return { status, history }
+  }, [n])
+  return { status, history, reload: () => setN((x) => x + 1) }
 }

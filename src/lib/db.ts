@@ -332,6 +332,10 @@ export interface WeeklyChallenge {
   final?: boolean
   doneAt?: number // cuándo se cumplió
   celebratedAt?: number // cuándo lo celebró la mascota
+  /** 5.13 (Fase 3): reto que te mandó otra persona con un código («Reto con Ana»). */
+  fromName?: string
+  /** 5.13 (Fase 3): lo último que te mandó la otra persona de ESTE reto (código de progreso), para compararos. */
+  rival?: { name: string; progress: number; target: number; at: number }
 }
 
 export const db = new Dexie('habla') as Dexie & {

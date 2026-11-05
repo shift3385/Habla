@@ -342,9 +342,10 @@ export function ensureWeekChallenge(src: ChallengeSource, now = new Date()): Pro
     return db.transaction('rw', db.challenges, async () => (await db.challenges.get(id)) ?? (await db.challenges.put(ch), ch))
   })()
   pending = { id, p }
-  p.catch(() => {
+  // Solo se comparte mientras se genera: después se vuelve a leer de la base (p. ej. tras aceptar un reto con un código).
+  p.finally(() => {
     if (pending?.p === p) pending = null
-  })
+  }).catch(() => {})
   return p
 }
 

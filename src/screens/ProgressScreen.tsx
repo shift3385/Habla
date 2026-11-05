@@ -3,7 +3,9 @@ import { ChallengeCard, ChallengeView } from '../components/ChallengeCard'
 import { useWeekChallenge } from '../components/useWeekChallenge'
 import InfiniteList from '../components/InfiniteList'
 import WeekCardSheet from '../components/WeekCardSheet'
+import PasteCodeSheet from '../components/PasteCodeSheet'
 import { unitOf, weekLabel } from '../lib/challenge'
+import { progressMessage, progressToCode } from '../lib/shareCode'
 import { getProfile } from '../lib/profile'
 import type { ThemeVars } from '../ui/theme'
 import ReportView from '../components/ReportView'
@@ -72,6 +74,8 @@ export default function ProgressScreen({
   const [chalOpen, setChalOpen] = useState(initialPage === 'challenge')
   // 5.13 (P-17): «Compartir mi semana» (vista previa de la imagen) y tu nombre para ella.
   const [cardOpen, setCardOpen] = useState(false)
+  // 5.13 (Fase 3): «Pegar un código».
+  const [pasteOpen, setPasteOpen] = useState(false)
   const [thisWeek] = useState(() => weekLabel(weekKey(new Date())))
   const [name, setName] = useState('')
   useEffect(() => {
@@ -97,10 +101,10 @@ export default function ProgressScreen({
   // Atrás (Android) desde el detalle de una sesión vuelve a la lista.
   useEffect(() => {
     registerBack(
-      cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null,
+      pasteOpen ? () => setPasteOpen(false) : cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null,
     )
     return () => registerBack(null)
-  }, [cardOpen, open, logrosOpen, chalOpen, registerBack])
+  }, [pasteOpen, cardOpen, open, logrosOpen, chalOpen, registerBack])
 
   const openSession = async (s: Session) => {
     const turns = await db.turns.where('sessionId').equals(s.id!).toArray()
@@ -137,7 +141,23 @@ export default function ProgressScreen({
   }
 
   if (logrosOpen && logros) return <Logros rows={logros} onBack={() => setLogrosOpen(false)} />
-  if (chalOpen && chal.status) return <ChallengeView settings={settings} status={chal.status} history={chal.history} onBack={() => setChalOpen(false)} />
+  const pasteSheet = pasteOpen && (
+    <PasteCodeSheet
+      settings={settings}
+      onClose={() => setPasteOpen(false)}
+      onApplied={() => {
+        chal.reload()
+        wordsCollected().then(setWords)
+      }}
+    />
+  )
+  if (chalOpen && chal.status)
+    return (
+      <>
+        <ChallengeView settings={settings} status={chal.status} history={chal.history} name={name} onBack={() => setChalOpen(false)} onPaste={() => setPasteOpen(true)} />
+        {pasteSheet}
+      </>
+    )
 
   const got = logros?.filter((r) => r.at).length ?? 0
   const goal = settings.dailyGoalMinutes
@@ -205,11 +225,30 @@ export default function ProgressScreen({
               : null,
             milestone: lastLogro ? { emoji: lastLogro.def.emoji, title: lastLogro.def.title } : null,
           }}
+          extraText={
+            chal.status && (chal.status.challenge.source === 'shared' || chal.status.challenge.rival)
+              ? progressMessage(progressToCode(chal.status.challenge, chal.status.done ? Math.max(chal.status.progress, chal.status.challenge.target) : chal.status.progress, name))
+              : undefined
+          }
           onClose={() => setCardOpen(false)}
         />
       )}
 
       {chal.status && <ChallengeCard status={chal.status} onOpen={() => setChalOpen(true)} />}
+      {/* 5.13 (Fase 3): un solo sitio para pegar los códigos que te mandan (reto, progreso o palabra). */}
+      <button onClick={() => setPasteOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-paste-open>
+        <span aria-hidden className="text-2xl">
+          📩
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block fs-15 font-semibold">Pegar un código</span>
+          <span className="txt-sub block fs-12.5">Un reto, un progreso o una palabra que te mandaron</span>
+        </span>
+        <span className="txt-sub">
+          <Icon name="chevR" size={16} stroke={1.8} />
+        </span>
+      </button>
+      {pasteSheet}
 
       {logros && logros.length > 0 && (
         <button onClick={() => setLogrosOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-logros>

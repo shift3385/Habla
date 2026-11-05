@@ -260,6 +260,8 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     final: opt(bool),
     doneAt: opt(num),
     celebratedAt: opt(num),
+    fromName: opt(str), // 5.13 (Fase 3): reto recibido con un código
+    rival: opt(shape({ name: str, progress: num, target: num, at: num })),
   },
 }
 
