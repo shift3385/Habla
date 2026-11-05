@@ -79,8 +79,11 @@ export async function exportBackup(): Promise<ExportResult> {
   return { savedPath }
 }
 
-/** 5.10.1 (REG-A2-04, FUG-403): archivos que Habla deja en la caché solo para Compartir (copia y resumen del test). */
-export const SHARE_CACHE_FILE = /^habla-(backup|test)-[\w.-]*\.(json|txt)$/
+/**
+ * 5.10.1 (REG-A2-04, FUG-403): archivos que Habla deja en la caché solo para Compartir (copia y resumen del test).
+ * 5.13 (P-17): también la imagen de la tarjeta de la semana (`habla-semana-AAAA-MM-DD.png`).
+ */
+export const SHARE_CACHE_FILE = /^habla-(backup|test|semana)-[\w.-]*\.(json|txt|png)$/
 
 /** Margen antes de borrar: si la app destino (Drive, WhatsApp…) aún lee el archivo, ya tiene su permiso de URI. */
 const SHARE_GRACE_MS = 60_000

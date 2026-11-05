@@ -766,6 +766,7 @@ export default function App() {
             {tab === 'progress' && (
               <ProgressScreen
                 settings={settings}
+                t={t}
                 registerBack={registerBack}
                 onReview={() => setReview(true)}
                 onStartHomework={(id) => (settings.geminiKey.trim() ? startHomework(id) : setTab('settings'))}

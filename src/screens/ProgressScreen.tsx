@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { ChallengeCard, ChallengeView } from '../components/ChallengeCard'
 import { useWeekChallenge } from '../components/useWeekChallenge'
 import InfiniteList from '../components/InfiniteList'
+import WeekCardSheet from '../components/WeekCardSheet'
+import { unitOf, weekLabel } from '../lib/challenge'
+import { getProfile } from '../lib/profile'
+import type { ThemeVars } from '../ui/theme'
 import ReportView from '../components/ReportView'
 import SpeakIcon from '../components/SpeakIcon'
 import TrendChart from '../components/TrendChart'
@@ -9,7 +13,7 @@ import { db, turnCorrections, type Correction, type Session } from '../lib/db'
 import { loadMilestones, type MilestoneRow } from '../lib/milestones'
 import { getScenario } from '../lib/scenarios'
 import type { Settings } from '../lib/settings'
-import { errorSummary, loadDashboard, weekMinutes, wordsCollected, type Dashboard, type ErrorSummary } from '../lib/stats'
+import { errorSummary, loadDashboard, weekKey, weekMinutes, wordsCollected, type Dashboard, type ErrorSummary } from '../lib/stats'
 import { toggleSpeak } from '../lib/tts'
 import { Icon } from '../ui/icons'
 import Segmented from '../ui/Segmented'
@@ -32,12 +36,15 @@ function sessionTitle(s: Session) {
 
 export default function ProgressScreen({
   settings,
+  t,
   registerBack,
   onReview,
   onStartHomework,
   initialPage,
 }: {
   settings: Settings
+  /** 5.13 (P-17): colores del tema para la tarjeta de la semana. */
+  t: ThemeVars
   registerBack: (h: (() => void) | null) => void
   onReview: () => void
   /** 5.12 (P-05): «Hacerla ahora» desde el informe de una clase pasada. */
@@ -63,6 +70,15 @@ export default function ProgressScreen({
   // 5.13 (P-14): el reto de la semana (lo crea si aún no existe) y su detalle.
   const chal = useWeekChallenge(settings)
   const [chalOpen, setChalOpen] = useState(initialPage === 'challenge')
+  // 5.13 (P-17): «Compartir mi semana» (vista previa de la imagen) y tu nombre para ella.
+  const [cardOpen, setCardOpen] = useState(false)
+  const [thisWeek] = useState(() => weekLabel(weekKey(new Date())))
+  const [name, setName] = useState('')
+  useEffect(() => {
+    getProfile()
+      .then((p) => setName(p.name ?? ''))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     loadDashboard().then(setDash)
@@ -80,9 +96,11 @@ export default function ProgressScreen({
 
   // Atrás (Android) desde el detalle de una sesión vuelve a la lista.
   useEffect(() => {
-    registerBack(open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null)
+    registerBack(
+      cardOpen ? () => setCardOpen(false) : open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null,
+    )
     return () => registerBack(null)
-  }, [open, logrosOpen, chalOpen, registerBack])
+  }, [cardOpen, open, logrosOpen, chalOpen, registerBack])
 
   const openSession = async (s: Session) => {
     const turns = await db.turns.where('sessionId').equals(s.id!).toArray()
@@ -126,6 +144,7 @@ export default function ProgressScreen({
   const mins = dash?.minutesToday ?? 0
   const weekTotal = Math.round(week.reduce((a, b) => a + b, 0) * 10) / 10
   const maxW = Math.max(goal, ...week, 1)
+  const lastLogro = [...(logros ?? [])].filter((r) => r.at).sort((a, b) => b.at! - a.at!)[0]
 
   return (
     <div className="anim-up flex flex-col gap-3">
@@ -166,7 +185,29 @@ export default function ProgressScreen({
             </div>
           ))}
         </div>
+        {/* 5.13 (P-17): la tarjeta de la semana para WhatsApp. */}
+        <button onClick={() => setCardOpen(true)} className="field txt-acc2 mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-full fs-14.5 font-semibold" data-share-week>
+          <Icon name="upload" size={17} stroke={1.8} />
+          Compartir mi semana
+        </button>
       </div>
+      {cardOpen && (
+        <WeekCardSheet
+          settings={settings}
+          t={t}
+          input={{
+            name,
+            streak: dash?.streak ?? 0,
+            week,
+            weekLabel: thisWeek,
+            challenge: chal.status
+              ? { titleEs: chal.status.challenge.titleEs, progress: chal.status.progress, target: chal.status.challenge.target, unit: unitOf(chal.status.challenge), done: chal.status.done }
+              : null,
+            milestone: lastLogro ? { emoji: lastLogro.def.emoji, title: lastLogro.def.title } : null,
+          }}
+          onClose={() => setCardOpen(false)}
+        />
+      )}
 
       {chal.status && <ChallengeCard status={chal.status} onOpen={() => setChalOpen(true)} />}
 
