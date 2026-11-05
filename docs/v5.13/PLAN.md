@@ -32,6 +32,9 @@ pareja, notas de voz entre dos, P-13, P-15 y P-16.
 | 7 | **Tablero «Mi familia»** (código `week` con minutos, racha y reto de cada uno) | ✅ hecha (2026-11-05): código `week` en `shareCode.ts` (necesita nombre; cifras en rango; reto bien formado), `shareApply.ts` (guarda o actualiza a la persona; un código de una semana anterior no pisa el más reciente), tabla `family` dentro de la v7 y en las copias (versión 5), `FamilyView` (tu fila, «Mandar mi semana», la fila de cada persona con lo último que mandó, semana anterior en gris, borrar) desde «Mi familia» en Progreso; «Pegar un código» explica el tipo nuevo. Test `tests/family-513.test.mjs`; navegador con dos teléfonos `evidencia/arnes-familia.mjs 7` (capturas en `evidencia/FAMILIA/`) |
 | 8 | **Practicar lo mismo** (una Situación compartida y comparar la nota) | ✅ hecha (2026-11-05): códigos `practice` (solo una Situación de la lista, nunca texto libre) y `score` (nota 0–100 y objetivos, con nombre) en `shareCode.ts`; `shareApply.ts` los guarda en la fila de esa persona y `myPracticeScore` lee tu última clase de esa Situación; en «Mi familia», «Proponer una práctica» (las 10 Situaciones) y, en cada fila, su nota frente a la tuya, «Practicar»/«Otra vez» y «Mandar mi nota»; al pegar una práctica, «Practicar ahora». La lista de la familia ya no usa `InfiniteList` (es corta y dejaba un hueco). Test `tests/practice-513.test.mjs`; navegador `evidencia/arnes-familia.mjs` + `arnes-practica.mjs` (capturas en `evidencia/FAMILIA/`) |
 | 9 | Entrega ampliada: Novedades, README, CLAUDE.md, pendientes del teléfono | ✅ hecha (2026-11-05): sigue siendo 5.13 / build 45 (sin APK aún); entrada 5.13 de `RELEASES` con Mi familia, practicar lo mismo, Escribir en inglés y el aviso del reto; README (secciones nuevas y copias), CLAUDE.md (tablas `challenges` y `family`, módulos nuevos, fases 1–9), `docs/pruebas/PENDIENTES.md` (Mi familia y practicar lo mismo entre dos teléfonos con voz, mensaje con Gemini real, que el aviso llegue); capturas de Novedades al día. Regresión en el navegador: los 6 arneses de la 5.13 y los 3 de la 5.12 en verde (arreglados en los arneses: `family` en las migraciones y las 3 redacciones del globo del reto). `npx tsc -b`, lint (0 errores), `npm test` (409, 0 fallos), validadores y `npm run build` en verde |
+| 10 | **Línea de la semana en el Inicio** (UX-11): 7 puntos y el próximo logro, en el hueco de abajo y sin desplazar | ✅ hecha (2026-11-05): `WeekStrip` (puntos con el color del tema los días que hablaste, hoy con aro, y «3 días para tu racha de 7»), `milestones.ts` › `nextMilestone`/`nextMilestoneText`; en Temas y Prácticas, y **solo si cabe**: mide la pestaña y, si haría desplazar (o ya desplaza, como en horizontal), no sale. Test `tests/weekstrip-513.test.mjs`; navegador `evidencia/arnes-semana.mjs` (390×844, 320×640, horizontal y letra muy grande; capturas en `evidencia/SEMANA/`) |
+| 11 | **Retoques:** Azure Monitor bajo «Avanzado» plegado y «Misión cumplida ✓ / casi» al terminar una lección del plan | pendiente |
+| 12 | Entrega: Novedades, README, CLAUDE.md, pendientes | pendiente |
 
 ### Fase 1 · P-14 Reto semanal
 - **Qué ve el alumno:** cada semana (lunes–domingo, `weekKey` de `src/lib/stats.ts`) un reto con título y meta en español
@@ -101,6 +104,11 @@ Presupuesto que quedaba: unos 42 USD. Sigue siendo la 5.13 / build 45 (aún sin 
 - **Fase 8 · Practicar lo mismo:** código `practice` (una Situación de la lista, nunca texto libre: no entra nada ajeno en un
   prompt) y código `score` (tu nota y objetivos en esa Situación). «Proponer una práctica» en Mi familia; al pegarla,
   «Practicar ahora»; en la fila de esa persona, su nota frente a la tuya y «Mandar mi nota».
+
+## Segunda ampliación (2026-11-05, decisión del dueño)
+Quedaban unos 32 USD. El dueño aprobó solo dos puntos de las propuestas de usabilidad (`docs/pruebas/regresion-5.10/A5-usabilidad.md`,
+«Mejoras de interfaz concretas» 1, 4 y 5) y **rechazó P-15** (charla antes del test: el test sigue siendo lo primero).
+Siguen en la 5.13 / build 45.
 
 ## Reglas para la sesión nueva
 - Todo lo de `CLAUDE.md` (español, estilo, claves solo en Preferences, nunca keystore, no reactivar logs de Capacitor).

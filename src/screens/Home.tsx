@@ -11,7 +11,10 @@ import { hasAzure } from '../lib/phonetics'
 import MascotBubble from '../components/MascotBubble'
 import { fastModels, type Settings } from '../lib/settings'
 import type { SavedClass } from '../lib/savedClass'
-import { loadDashboard, type Dashboard } from '../lib/stats'
+import { loadDashboard, weekMinutes, type Dashboard } from '../lib/stats'
+import { loadMilestoneState, nextMilestone, nextMilestoneText } from '../lib/milestones'
+import { db } from '../lib/db'
+import WeekStrip from '../components/WeekStrip'
 import { homeworkPending } from '../lib/homework'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
@@ -168,6 +171,28 @@ export default function Home({
   )
 
   const [due, setDue] = useState<DueSummary | null>(null)
+  // 5.13 (Fase 10, UX-11): la línea de la semana (7 puntos) y el próximo logro, en el hueco de abajo del Inicio.
+  const [week, setWeek] = useState<number[] | null>(null)
+  const [nextGoal, setNextGoal] = useState<string | null>(null)
+  const [todayIdx] = useState(() => (new Date().getDay() + 6) % 7)
+  useEffect(() => {
+    let alive = true
+    weekMinutes()
+      .then((w) => alive && setWeek(w))
+      .catch(() => {})
+    Promise.all([loadMilestoneState(), db.milestones.toArray()])
+      .then(([{ state }, saved]) => {
+        const n = nextMilestone(
+          state,
+          saved.map((m) => m.id),
+        )
+        if (alive) setNextGoal(n ? nextMilestoneText(n) : null)
+      })
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [])
   // 5.13 (P-14): el reto de la semana. La primera vez que se abre el Inicio en la semana se crea (modelo rápido, o el de
   // respaldo sin clave); después solo se mide con tus datos, sin IA.
   const [chal, setChal] = useState<ChallengeStatus | null>(null)
@@ -585,6 +610,8 @@ export default function Home({
           })}
         </div>
       )}
+      {/* 5.13 (Fase 10): solo en Temas y Prácticas, y solo si cabe sin desplazar (WeekStrip lo mide). */}
+      {week && (seg === 'topics' || seg === 'practices') && !gramOpen && !sndOpen && <WeekStrip week={week} todayIdx={todayIdx} next={nextGoal} />}
     </div>
   )
 }

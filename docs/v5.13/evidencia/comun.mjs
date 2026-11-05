@@ -4,7 +4,7 @@
 // ARNES_OUT (por defecto, el scratchpad o /tmp) y se copian al repo al final: Vite vigila la carpeta y recargaría la página.
 import { tmpdir } from 'node:os'
 export * from '../../v5.12/evidencia/comun.mjs'
-import { sleep, bodyText } from '../../v5.12/evidencia/comun.mjs'
+import { sleep } from '../../v5.12/evidencia/comun.mjs'
 
 export const OUT_ROOT = process.env.ARNES_OUT || `${tmpdir()}/habla-arnes-513`
 

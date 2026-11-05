@@ -17,7 +17,7 @@ convence: `docs/v5.11/sonidos-boca/`) y preguntas de `docs/v5.11/PLAN.md` §10.
 | P-13 | El plan de 12 semanas como viaje (mapa con paradas; la mascota gana cosas) | Alto | Medio-alto | Cuidar el rendimiento (modo ligero) |
 | P-16 | Shadowing y fonemas con la voz modelo y la nota de Azure | Alto | Alto | Gasta minutos de Azure; se cruza con Sonidos (aparcado) |
 | P-17 | Tarjeta de la semana para WhatsApp y reto entre dos por código, sin servidor | Medio | Medio | **En el plan 5.13** (con «Juntos» sin servidor) |
-| P-15 | Primera charla de 2 min antes del test para la gente nueva | Medio | Medio | Toca la regla «el test va primero»: decide el dueño |
+| P-15 | Primera charla de 2 min antes del test para la gente nueva | Medio | Medio | 🔴 **Rechazada por el dueño (2026-11-05):** el test sigue siendo lo primero |
 
 ## 2. «Juntos»: practicar con otras personas que usan Habla (BACKLOG §5.1)
 Ideas: compartir palabras; notas de voz en inglés entre dos (el profe corrige antes de enviar); retos y racha en familia;

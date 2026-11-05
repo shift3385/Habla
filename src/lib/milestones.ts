@@ -143,6 +143,28 @@ export function milestoneRows(s: MilestoneState, saved: readonly Milestone[]): M
   })
 }
 
+/**
+ * 5.13 (Fase 10, UX-11): el próximo logro para la línea de la semana del Inicio: el que menos te falta de los que aún no
+ * tienes (a igualdad, el primero de la lista: las rachas van antes). null si ya los tienes todos.
+ */
+export function nextMilestone(s: MilestoneState, saved: Iterable<string>): { def: MilestoneDef; left: number } | null {
+  const have = new Set(saved)
+  let best: { def: MilestoneDef; left: number } | null = null
+  for (const def of MILESTONES) {
+    if (have.has(def.id)) continue
+    const left = def.need - Math.max(0, def.have(s))
+    if (left <= 0) continue // cumplido y aún sin guardar: lo celebrará la mascota
+    if (!best || left < best.left) best = { def, left }
+  }
+  return best
+}
+
+/** «3 días para tu racha de 7» o, para los demás logros, «Te faltan 4 repasos para un logro». */
+export function nextMilestoneText(n: { def: MilestoneDef; left: number }): string {
+  if (n.def.id.startsWith('streak-')) return `${n.left} ${n.left === 1 ? 'día' : 'días'} para tu racha de ${n.def.need}`
+  return `${n.def.left(n.left)} para un logro`
+}
+
 /** El siguiente hito por celebrar (el más antiguo sin `celebratedAt`), uno por vez. */
 export function nextToCelebrate(saved: readonly Milestone[]): Milestone | undefined {
   return saved
