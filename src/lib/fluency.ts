@@ -1,5 +1,6 @@
 import { turnCorrections, type SessionMetrics, type SessionReport, type Topic, type Turn } from './db'
 import { askGemini, withRetry, type JsonSchema, type Models, type RetryInfo } from './gemini'
+import { NEW_FACTS_PER_CLASS, newFacts } from './memory'
 import { getProfile } from './profile'
 
 const FILLERS = new Set(['uh', 'um', 'umm', 'uhm', 'er', 'erm', 'eh', 'ah', 'hmm', 'mm'])
@@ -105,7 +106,10 @@ export function scoreLevel(score: number): string {
   return 'B2+'
 }
 
-const REPORT_SCHEMA: JsonSchema = {
+/** 5.12 (P-11): con la memoria activada, el informe además devuelve 0–3 datos personales (`facts_es`). */
+export const FACTS_FIELD = 'facts_es'
+
+export const REPORT_SCHEMA: JsonSchema = {
   type: 'object',
   additionalProperties: false,
   required: ['summary_es', 'strengths_es', 'improve_es', 'homework_es', 'phrase_en', 'phrase_es'],
@@ -119,7 +123,18 @@ const REPORT_SCHEMA: JsonSchema = {
   },
 }
 
+/** 5.12 (P-11): el esquema del informe, con `facts_es` solo si el profe recuerda. */
+export const reportSchema = (facts: boolean): JsonSchema =>
+  facts
+    ? {
+        ...REPORT_SCHEMA,
+        required: [...REPORT_SCHEMA.required!, FACTS_FIELD],
+        properties: { ...REPORT_SCHEMA.properties, [FACTS_FIELD]: { type: 'array', items: { type: 'string' } } },
+      }
+    : REPORT_SCHEMA
+
 interface RawReport {
+  facts_es?: unknown // 5.12 (P-11)
   summary_es: string
   strengths_es: string[]
   improve_es: string[]
@@ -135,7 +150,13 @@ export async function generateReport(
   metrics: SessionMetrics,
   topic: Topic | undefined,
   onRetry?: (info: RetryInfo) => void,
-): Promise<SessionReport> {
+  /**
+   * 5.12 (P-11): `facts` = pedir los datos personales (la memoria del profe está activada y la clase no es un roleplay);
+   * `known` = los que ya se recuerdan (para no repetirlos). `levels`: los niveles del alumno, si ya los tienes (sin
+   * ellos se leen del perfil; los tests los pasan porque Node no tiene IndexedDB).
+   */
+  memory: { facts: boolean; known?: readonly string[]; levels?: { overall: string; speaking: string } } = { facts: false },
+): Promise<SessionReport & { factsEs: string[] }> {
   const transcript = turns
     .map((t) => {
       const line = `${t.role === 'user' ? (t.typed ? 'STUDENT (typed)' : 'STUDENT') : 'COACH'}: ${t.text}`
@@ -146,7 +167,7 @@ export async function generateReport(
     })
     .join('\n')
 
-  const lv = (await getProfile()).levels
+  const lv = memory.levels ?? (await getProfile()).levels
   const task = `Write a short end-of-session report for a Spanish-speaking English learner (${lv.overall}, speaking ${lv.speaking}, goal: speak fluently).
 ${topic ? `Topic: ${topic.title}\n` : ''}Metrics: ${metrics.turns} answers (${metrics.spokenTurns ?? metrics.turns} spoken, the rest typed), ${metrics.words} words, ${metrics.wpm} words/min when speaking, ${metrics.pauses} pauses over 1 s, average ${metrics.avgWords} words per answer, longest ${metrics.longestWords} words, ${metrics.corrections} corrections. Fluency score ${metrics.score}/100.
 
@@ -158,7 +179,14 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
 - strengths_es: 2 concrete strengths seen in THIS conversation.
 - improve_es: 2 concrete things to improve, quoting a real example from the conversation when possible.
 - homework_es: ONE concrete task for tomorrow, doable in 5-10 minutes, focused on speaking (e.g. "Graba 1 minuto contando… usando 3 veces…").
-- phrase_en / phrase_es: one natural, useful English phrase related to the conversation that would have helped, with its Spanish translation.`
+- phrase_en / phrase_es: one natural, useful English phrase related to the conversation that would have helped, with its Spanish translation.${
+    memory.facts
+      ? `
+- facts_es: 0 to ${NEW_FACTS_PER_CLASS} short personal facts about the student that they themselves said in THIS conversation and that a friendly teacher would remember to ask about next time (plans, events, family, hobbies, places, pets), in Spanish, third person, one short sentence each, with the day if they gave one (e.g. "El viernes tiene una entrevista de trabajo", "Su nieta se llama Ana"). NEVER anything about health, money, politics, religion or sex, and nothing invented or guessed. Do not repeat what is already remembered${
+          memory.known?.length ? ` (${memory.known.map((k) => `«${k.replace(/[«»\r\n]/g, ' ')}»`).join(', ')})` : ''
+        }. Use [] if there is nothing worth remembering.`
+      : ''
+  }`
 
   const raw = await withRetry(
     models,
@@ -166,7 +194,7 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
       askGemini<RawReport>(apiKey, model, {
         system: 'You are an expert, encouraging English speaking coach.',
         contents: [{ role: 'user', parts: [{ text: task }] }],
-        schema: REPORT_SCHEMA,
+        schema: reportSchema(memory.facts),
       }),
     onRetry,
   )
@@ -176,6 +204,8 @@ Return JSON, all in Spanish except phrase_en, friendly and motivating but honest
     improveEs: (raw.improve_es ?? []).slice(0, 3),
     homeworkEs: raw.homework_es ?? '',
     phrase: { en: raw.phrase_en ?? '', es: raw.phrase_es ?? '' },
+    // 5.12 (P-11): limpios, sin nada sensible, sin repetir y como mucho 3 (memory.ts).
+    factsEs: memory.facts ? newFacts(raw.facts_es, memory.known ?? []) : [],
   }
 }
 

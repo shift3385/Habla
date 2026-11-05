@@ -13,19 +13,24 @@ export const BACKUP_VERSION = 1
  * 5.11 (S-01): sube a 3. Con progreso de Sonidos o con logros (tablas `sounds` y `milestones`) la copia es 3, y la
  * 5.10.1 (máx. 2) dice «versión más nueva». Sin ellas sigue siendo 1 o 2, legible por las apps anteriores
  * (`exportTables` no escribe esas tablas si están vacías, para que no las tomen por «tabla desconocida»).
+ * 5.12 (P-11): sube a 4. Con datos de «Lo que recuerda tu profe» (tabla `facts`) la copia es 4 y la 5.11 (máx. 3) dice
+ * «versión más nueva»; sin ellos sigue como antes.
  */
-export const BACKUP_MAX_VERSION = 3
+export const BACKUP_MAX_VERSION = 4
 /** Tamaño máximo del archivo: una copia real de un año de uso ocupa unos pocos MB. */
 export const MAX_BACKUP_BYTES = 20 * 1024 * 1024
 
-export const BACKUP_TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones'] as const
+export const BACKUP_TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts'] as const
 export type BackupTable = (typeof BACKUP_TABLES)[number]
 // REV-U3-1: tablas que no existían en copias antiguas y son legítimas sin ellas (si faltan, se importan vacías):
 // `lookups` llegó en la v4.2 y `cards` en la v4.7; hasta la v4.1 las copias tenían 4 tablas. `grammar` (progreso de
 // Gramática) llegó en la v5.10: las copias anteriores no la traen y se aceptan. 5.11 (S-01): `sounds` y `milestones`, igual.
-const OPTIONAL_TABLES: readonly BackupTable[] = ['lookups', 'cards', 'grammar', 'sounds', 'milestones']
+// 5.12 (P-11): `facts` también (las copias anteriores no la traen).
+const OPTIONAL_TABLES: readonly BackupTable[] = ['lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts']
 /** 5.11 (S-01): tablas posteriores a la 5.10.1 (que no las conoce). Vacías, no se escriben en la copia (`exportTables`). */
 export const NEW_IN_511: readonly BackupTable[] = ['sounds', 'milestones']
+/** 5.12 (P-11): tabla posterior a la 5.11. Vacía, tampoco se escribe en la copia. */
+export const NEW_IN_512: readonly BackupTable[] = ['facts']
 
 export interface CheckedBackup {
   format: typeof BACKUP_FORMAT
@@ -44,6 +49,7 @@ const NAMES: Record<BackupTable, string> = {
   grammar: 'progreso de Gramática',
   sounds: 'progreso de Sonidos',
   milestones: 'logros',
+  facts: 'lo que recuerda tu profe',
 }
 
 type Row = Record<string, unknown>
@@ -225,6 +231,14 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     at: num,
     celebratedAt: opt(num),
   },
+  // 5.12 (P-11): lo que recuerda el profe (db.ts, `StudentFact`).
+  facts: {
+    id,
+    text: str,
+    createdAt: num,
+    updatedAt: opt(num),
+    sessionId: opt(num),
+  },
 }
 
 const NEWER = 'La copia es de una versión más nueva de Habla. Actualiza la app primero; no se cambió nada.'
@@ -278,6 +292,8 @@ export function checkBackup(data: unknown): BackupCheck {
 export function backupVersionFor(tables: Partial<Record<BackupTable, readonly Record<string, unknown>[]>>): number {
   // 5.11 (S-01): con progreso de Sonidos o con logros, 3 (la 5.10.1 no conoce esas tablas).
   // REV-11-D2-06: la marca `_since` de los logros no cuenta como contenido.
+  // 5.12 (P-11): con lo que recuerda el profe, 4 (la 5.11 no conoce la tabla `facts`).
+  if (NEW_IN_512.some((t) => (tables[t] ?? []).length > 0)) return 4
   if (NEW_IN_511.some((t) => contentRows(t, tables[t] ?? []).length > 0)) return 3
   const grammarCards = (tables.cards ?? []).some((c) => c?.source === 'grammar')
   return grammarCards || (tables.grammar ?? []).length > 0 ? 2 : BACKUP_VERSION
@@ -294,7 +310,7 @@ export function exportTables<T>(tables: Record<string, T[]>): Record<string, T[]
     // sigue sin la tabla `milestones` y la lee la 5.10.1. Al restaurarla, la tabla queda vacía y milestones.ts guarda en
     // silencio lo ya conseguido (como con una copia antigua) y pone una marca nueva.
     const rows = contentRows(k, all)
-    if (rows.length > 0 || !(NEW_IN_511 as readonly string[]).includes(k)) out[k] = rows
+    if (rows.length > 0 || ![...NEW_IN_511, ...NEW_IN_512].includes(k as BackupTable)) out[k] = rows
   }
   return out
 }

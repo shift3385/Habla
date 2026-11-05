@@ -10,6 +10,8 @@ import ProfileForm from '../components/ProfileForm'
 import { ORIENTATIONS } from '../lib/orientation'
 import SkillProgressCard from '../components/SkillProgressCard'
 import AzureSettings from '../components/AzureSettings'
+import MemorySettings from '../components/MemorySettings'
+import { listFacts } from '../lib/memory'
 import { azureModelName, phoneticsState } from '../lib/phonetics'
 import { Capacitor } from '@capacitor/core'
 import { confirmIdentity, INSECURE_HINT } from '../lib/deviceAuth'
@@ -28,7 +30,7 @@ import { FONT_SCALES, fontScaleCapped, normalizeFontScale, systemFontScale } fro
 import { ALL_EFFECTS, EFFECT_INFO, EFFECT_KEYS, effectsPreset, LIGHT_EFFECTS, looksModest, normalizeEffects, type EffectKey } from '../lib/effects'
 import MascotPage from '../components/MascotPage'
 
-export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag' | LookSub
+export type SettingsPage = 'voice' | 'look' | 'goal' | 'profile' | 'level' | 'gemini' | 'data' | 'diag' | 'memory' | LookSub
 // 5.11.x: Apariencia crecía con cada versión (letra, temas, modo, orientación, globos y ahora el modo ligero): es un
 // menú con secciones (EVALUACION.md §5).
 type LookSub = 'lookTheme' | 'lookFont' | 'lookFx' | 'lookScreen'
@@ -43,6 +45,7 @@ const PAGES: Record<Page, { title: string; icon: IconName }> = {
   gemini: { title: 'Modelos', icon: 'key' },
   data: { title: 'Mis datos', icon: 'data' },
   diag: { title: 'Diagnóstico', icon: 'chart' },
+  memory: { title: 'Lo que recuerda tu profe', icon: 'bulb' }, // 5.12 (P-11)
   lookTheme: { title: 'Tema y mascota', icon: 'palette' },
   lookFont: { title: 'Tamaño de letra', icon: 'book' },
   lookFx: { title: 'Rendimiento', icon: 'bolt' },
@@ -74,10 +77,18 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
     dialogBack.current = h
   }, [])
   const [profile, setProfile] = useState<Profile | null>(null)
+  // 5.12 (P-11): cuántas cosas recuerda el profe (para la tarjeta del panel).
+  const [factCount, setFactCount] = useState<number | null>(null)
 
   useEffect(() => {
     getProfile().then(setProfile)
   }, [])
+  useEffect(() => {
+    if (page) return
+    listFacts()
+      .then((f) => setFactCount(f.length))
+      .catch(() => setFactCount(null))
+  }, [page])
 
   // Atrás (Android) desde una sección vuelve al panel.
   useEffect(() => {
@@ -141,6 +152,7 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
           </>
         )}
         {page === 'diag' && <DiagPage />}
+        {page === 'memory' && <MemorySettings settings={settings} update={update} />}
         {page === 'data' && <DataPage
               t={t}
               mascot={THEME_INFO[settings.theme].mascot}
@@ -168,6 +180,14 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
     },
     { key: 'goal', icon: 'target', value: `${settings.dailyGoalMinutes} min al día`, label: 'Meta diaria', onClick: () => setPage('goal') },
     { key: 'profile', icon: 'pencil', value: profile?.name || 'Tu perfil', label: 'Mi perfil y datos', onClick: () => setPage('profile') },
+    // 5.12 (P-11): lo que recuerda el profe de ti (se ve, se cambia y se borra ahí).
+    {
+      key: 'memory',
+      icon: 'bulb',
+      value: !settings.teacherMemory ? 'Apagado' : factCount ? `${factCount} ${factCount === 1 ? 'recuerdo' : 'recuerdos'}` : 'Nada todavía',
+      label: 'Lo que recuerda tu profe',
+      onClick: () => setPage('memory'),
+    },
     {
       key: 'gemini',
       icon: 'key',
@@ -232,8 +252,13 @@ export default function SettingsScreen({ settings, t, update, registerBack, onRe
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2.5">
-        {tiles.map((x) => (
-          <button key={x.key} onClick={x.onClick} className="glass flex min-h-[86px] flex-col justify-between gap-1.5 rounded-[24px] px-3.5 py-3 text-left">
+        {tiles.map((x, i) => (
+          <button
+            key={x.key}
+            onClick={x.onClick}
+            // 5.12 (P-11): con un número impar de tarjetas, la última ocupa la fila entera.
+            className={`glass flex min-h-[86px] flex-col justify-between gap-1.5 rounded-[24px] px-3.5 py-3 text-left ${tiles.length % 2 && i === tiles.length - 1 ? 'col-span-2' : ''}`}
+          >
             <span className="flex w-full items-center justify-between">
               <span className="field txt-acc2 grid h-[32px] w-[32px] place-items-center rounded-full">
                 <Icon name={x.icon} size={16} stroke={1.6} />

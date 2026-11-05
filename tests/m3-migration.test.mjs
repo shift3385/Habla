@@ -24,17 +24,18 @@ const OLD_STORES = {
 test('S-01: Dexie v5 solo añade `sounds` y `milestones`; las versiones 1–4 quedan idénticas y ninguna borra tablas', async () => {
   const { db, TABLES } = await loadFresh('/src/lib/db.ts')
   const versions = db._versions.map((v) => [v._cfg.version, v._cfg.storesSource])
+  // 5.12 (P-11): la v6 añade `facts` (tests/p11-memory.test.mjs); aquí se sigue comprobando que la v5 no cambió.
   assert.deepEqual(
     versions.map(([n]) => n),
-    [1, 2, 3, 4, 5],
+    [1, 2, 3, 4, 5, 6],
   )
   for (const [n, stores] of versions) {
     if (n <= 4) assert.deepEqual(stores, OLD_STORES[n], `versión ${n} sin cambios`)
     for (const [t, def] of Object.entries(stores)) assert.notEqual(def, null, `la versión ${n} no borra la tabla ${t}`)
   }
-  assert.deepEqual(versions.at(-1)[1], { sounds: 'id, lastAt', milestones: 'id, at' })
-  assert.equal(db.verno, 5)
-  assert.deepEqual([...TABLES], ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones'])
+  assert.deepEqual(versions.find(([n]) => n === 5)[1], { sounds: 'id, lastAt', milestones: 'id, at' })
+  assert.equal(db.verno, 6)
+  assert.deepEqual([...TABLES], ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts'])
   // Las copias exportan y comprueban exactamente las mismas tablas que hay en la base.
   const { BACKUP_TABLES } = await loadFresh('/src/lib/backupCheck.ts')
   assert.deepEqual([...BACKUP_TABLES], [...TABLES])
@@ -71,7 +72,7 @@ const sound = (extra = {}) => ({
 
 test('S-01: una copia de la 5.10.1 (v2, sin Sonidos ni logros) se importa con esas tablas vacías', async () => {
   const { checkBackup, BACKUP_MAX_VERSION } = await loadFresh('/src/lib/backupCheck.ts')
-  assert.equal(BACKUP_MAX_VERSION, 3)
+  assert.equal(BACKUP_MAX_VERSION, 4) // 5.12 (P-11): 4 con lo que recuerda el profe
   const r = checkBackup(copy5101())
   assert.equal(r.ok, true, r.error)
   assert.deepEqual(r.backup.tables.sounds, [])
@@ -88,14 +89,14 @@ test('S-01: copia nueva — sin Sonidos ni logros no cambia (la lee la 5.10.1); 
   const { checkBackup, backupVersionFor, exportTables } = await loadFresh('/src/lib/backupCheck.ts')
   const known5101 = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar']
   // Base sin nada de la 5.11: las tablas nuevas vacías NO se escriben (la 5.10.1 rechaza cualquier tabla que no conoce).
-  const plain = exportTables({ ...copy5101().tables, sounds: [], milestones: [] })
+  const plain = exportTables({ ...copy5101().tables, sounds: [], milestones: [], facts: [] })
   assert.deepEqual(Object.keys(plain), known5101)
   assert.equal(backupVersionFor(plain), 2, 'con Gramática, 2 como en la 5.10.1')
-  const noGrammar = exportTables({ ...copy5101().tables, cards: [], grammar: [], sounds: [], milestones: [] })
+  const noGrammar = exportTables({ ...copy5101().tables, cards: [], grammar: [], sounds: [], milestones: [], facts: [] })
   assert.equal(backupVersionFor(noGrammar), 1, 'sin nada nuevo, 1: la lee hasta la 5.8')
   // Con progreso de Sonidos o con un logro: versión 3 (la 5.10.1, máx. 2, dice «versión más nueva»).
   for (const extra of [{ sounds: [sound()], milestones: [] }, { sounds: [], milestones: [{ id: 'streak-3', at: now }] }]) {
-    const tables = exportTables({ ...copy5101().tables, ...extra })
+    const tables = exportTables({ ...copy5101().tables, ...extra, facts: [] })
     const version = backupVersionFor(tables)
     assert.equal(version, 3)
     const back = checkBackup(JSON.parse(JSON.stringify({ format: 'habla-backup', version, exportedAt: new Date(now).toISOString(), tables })))

@@ -20,6 +20,7 @@ import { getProfile } from '../lib/profile'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
 import { cleanHomework, homeworkBrief, homeworkCounts, HOMEWORK_MIN_TURNS, markHomeworkDone } from '../lib/homework'
+import { factsForPrompt, listFacts, rememberFacts } from '../lib/memory'
 import { mergeGoals, missionBrief, missionComplete, MISSION_GOALS, prepareMission, type Mission } from '../lib/missions'
 import { findTopic, grammarBrief } from '../lib/grammar'
 import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
@@ -113,6 +114,8 @@ export default function Conversation({
     setMissionState(m)
   }
   const [missionWon, setMissionWon] = useState(false)
+  // 5.12 (P-11): lo que el profe apuntó de esta clase (se enseña en el informe).
+  const [newFacts, setNewFacts] = useState<string[]>([])
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
@@ -496,7 +499,9 @@ export default function Conversation({
             : ms
               ? { ...scenario, brief: missionBrief(ms) }
               : scenario
-      system.current = buildSystemPrompt(profile, brief, recent, tp, teacherPersona(settingsRef.current.theme, settingsRef.current.teacher))
+      // 5.12 (P-11): lo que recuerda el profe (los 5 más recientes). En una misión no: el profe hace un papel.
+      const facts = settingsRef.current.teacherMemory && !ms ? await factsForPrompt().catch(() => []) : []
+      system.current = buildSystemPrompt(profile, brief, recent, tp, teacherPersona(settingsRef.current.theme, settingsRef.current.teacher), facts)
       sessionId.current =
         (await db.sessions.add({
           scenario: scenario.id,
@@ -733,9 +738,21 @@ export default function Conversation({
     setReportError(null)
     try {
       // El informe no se cancela: la clase ya terminó y se está mostrando.
-      const report = await generateReport(settingsRef.current.geminiKey, { ...quick(), signal: undefined }, allTurns, s.metrics!, s.topic)
+      // 5.12 (P-11): con la memoria activada (y fuera de los roleplays), el informe apunta 0–3 datos personales.
+      const remember = settingsRef.current.teacherMemory && !s.mission
+      const known = remember ? (await listFacts().catch(() => [])).map((f) => f.text) : []
+      const { factsEs, ...report } = await generateReport(
+        settingsRef.current.geminiKey,
+        { ...quick(), signal: undefined },
+        allTurns,
+        s.metrics!,
+        s.topic,
+        undefined,
+        { facts: remember, known },
+      )
       await db.sessions.update(s.id!, { report })
       setSession({ ...s, report })
+      if (factsEs.length) setNewFacts(await rememberFacts(factsEs, s.id).catch(() => []))
     } catch (e) {
       setReportError(`No se pudo generar el informe: ${(e as Error).message}`)
     } finally {
@@ -973,6 +990,7 @@ export default function Conversation({
             ttsRate={settings.ttsRate}
             voiceIndex={settings.voiceIndex}
             hideHomework={!!session.homeworkFor}
+            newFacts={newFacts}
             onDoHomework={onStartHomework && session.id ? () => onStartHomework(session.id!) : undefined}
           />
           <button onClick={onExit} className="btn-acc mt-4 h-[54px] w-full rounded-full fs-16">

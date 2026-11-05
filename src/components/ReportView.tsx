@@ -30,6 +30,8 @@ interface Props {
   homeworkDone?: boolean
   /** 5.12 (P-05): informe de la propia clase de tarea: no se propone otra tarea encima. */
   hideHomework?: boolean
+  /** 5.12 (P-11): lo que el profe apuntó de esta clase para la próxima (se ve, se cambia y se borra en Ajustes). */
+  newFacts?: string[]
 }
 
 function formatSeconds(s: number) {
@@ -169,6 +171,18 @@ export default function ReportView(p: Props) {
             </button>
           )}
         </>
+      )}
+
+      {p.newFacts && p.newFacts.length > 0 && (
+        // 5.12 (P-11): a la vista, para que sepas qué recuerda tu profe (y dónde borrarlo).
+        <Card title="Tu profe se acordará de…" icon="bulb">
+          <ul className="list-disc space-y-1 pl-5">
+            {p.newFacts.map((f) => (
+              <li key={f}>{f}</li>
+            ))}
+          </ul>
+          <p className="txt-sub mt-2 fs-12.5 leading-snug">Solo en este teléfono. Lo puedes cambiar o borrar en Ajustes → Lo que recuerda tu profe.</p>
+        </Card>
       )}
 
       {grammarTopics.length > 0 && (

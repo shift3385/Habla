@@ -46,6 +46,7 @@ export interface Settings {
   grammarIntroSeen: boolean // v5.10: la mascota ya explicó la pestaña Gramática (la primera vez que entras)
   soundsIntroSeen: boolean // 5.11 (S-07): la mascota ya explicó la pestaña Sonidos (la primera vez que entras)
   reviewAutoGrade: boolean // 5.11 (M-10): «Que decida Habla» en el Repaso (aplica la nota sugerida y pasa sola a los 3 s)
+  teacherMemory: boolean // 5.12 (P-11): el profe recuerda datos tuyos de una clase a otra (Ajustes → Lo que recuerda tu profe)
   phoneticsUserOff: boolean // la apagaste tú: no se reactiva sola
   f0ExhaustedMonth: string // AAAA-MM en que Azure dijo que el F0 se agotó
   phoneticsAlertMonth: string // AAAA-MM del último aviso de la mascota
@@ -91,6 +92,7 @@ const DEFAULTS: Settings = {
   grammarIntroSeen: false,
   soundsIntroSeen: false,
   reviewAutoGrade: false, // apagado por defecto: decide el alumno (autonomía, M-10)
+  teacherMemory: true, // 5.12 (P-11): decisión del dueño: el profe recuerda (se puede apagar en Ajustes)
   phoneticsUserOff: false,
   f0ExhaustedMonth: '',
   phoneticsAlertMonth: '',

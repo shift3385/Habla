@@ -295,6 +295,18 @@ export interface Milestone {
   celebratedAt?: number // cuándo lo celebró la mascota (si ya lo hizo)
 }
 
+/**
+ * 5.12 (P-11): un dato personal que recuerda el profe («El viernes tiene una entrevista de trabajo»). Tabla `facts`;
+ * se ve, se edita y se borra en Ajustes → Lo que recuerda tu profe (memory.ts).
+ */
+export interface StudentFact {
+  id?: number
+  text: string // en español, una frase corta
+  createdAt: number
+  updatedAt?: number // lo cambiaste en Ajustes
+  sessionId?: number // la clase en la que salió
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
@@ -305,6 +317,7 @@ export const db = new Dexie('habla') as Dexie & {
   grammar: EntityTable<GrammarProgress, 'id'>
   sounds: EntityTable<SoundProgress, 'id'>
   milestones: EntityTable<Milestone, 'id'>
+  facts: EntityTable<StudentFact, 'id'>
 }
 
 db.version(1).stores({
@@ -335,4 +348,9 @@ db.version(5).stores({
   milestones: 'id, at',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones'] as const
+// 5.12 (P-11): lo que recuerda el profe. Igual que la v4 y la v5, solo añade una tabla: nada de lo anterior cambia.
+db.version(6).stores({
+  facts: '++id, createdAt',
+})
+
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts'] as const

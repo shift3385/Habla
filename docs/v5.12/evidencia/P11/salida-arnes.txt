@@ -1,0 +1,10 @@
+✔ migración v5 → v6 con datos: todo intacto y `facts` vacía {"sessions":1,"turns":2,"mistakes":1,"profile":1,"lookups":0,"cards":0,"grammar":1,"sounds":1,"milestones":3,"facts":0}
+✔ el informe apunta 2 datos (el de salud no) y los enseña
+✔ la clase siguiente recibe lo que recuerda el profe
+✔ cambiar un dato (y uno sensible no se guarda)
+✔ borrar uno
+✔ borrar todo
+✔ apagado: ni lo usa ni apunta nada nuevo
+✔ límite de 20 y copia versión 4 con la tabla (sin claves) {"version":4,"facts":20,"keys":false}
+✔ Ajustes en 320×640 y 780×360
+P-11: todo bien
