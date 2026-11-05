@@ -4,7 +4,7 @@ import type { CalibrationRecord, Profile } from '../lib/db'
 import { clearExhausted, clearNetLog, exhaustedList, getNetLog, KNOWN_MODELS, listModels, mergeModels, type NetLog } from '../lib/gemini'
 import { verifyGeminiKey } from '../lib/geminiKey'
 import { Share } from '@capacitor/share'
-import { askNotificationPermission, notificationsGranted, testReminder } from '../lib/reminders'
+import { askNotificationPermission, notificationsGranted, syncChallengeNudge, testReminder } from '../lib/reminders'
 import { openAudioPicker, openSoundTest } from '../lib/audioRoute'
 import ProfileForm from '../components/ProfileForm'
 import { ORIENTATIONS } from '../lib/orientation'
@@ -748,6 +748,24 @@ function GoalPage({ settings, update }: { settings: Settings; update: (p: Partia
           </button>
         )}
         {probe === 'sent' && <p className="txt-sub mt-2 text-center text-xs">Bloquea o sal de la app: tu mascota te avisará en unos segundos.</p>}
+        {/* 5.13 (Fase 6): el aviso del reto usa el mismo permiso y la misma hora. */}
+        <button
+          onClick={() => {
+            const on = !settings.challengeNudge
+            update({ challengeNudge: on })
+            if (!on) syncChallengeNudge(false, settings.reminderTime, settings.theme, null).catch(() => {})
+          }}
+          className="mt-3.5 flex w-full items-center justify-between gap-3 text-left fs-15"
+          data-setting="challengeNudge"
+        >
+          <span>
+            Aviso del reto de la semana
+            <span className="txt-sub block text-xs">
+              El jueves (o el sábado) a la hora del aviso, si aún no lo cumpliste. Usa el permiso de notificaciones del recordatorio
+            </span>
+          </span>
+          <Switch on={settings.challengeNudge} />
+        </button>
         {denied && (
           <p className="mt-3 text-sm" style={{ color: 'var(--bad)' }}>
             Android no dio permiso para notificaciones, así que no te llegará el aviso. Actívalo en los ajustes del teléfono:

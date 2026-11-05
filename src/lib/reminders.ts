@@ -10,6 +10,8 @@ import { THEME_INFO, type ThemeKey } from '../ui/theme'
 // una semana, los avisos ya no se acaban justo cuando más falta hacen.
 const DAILY_IDS = Array.from({ length: 30 }, (_, i) => 10 + i)
 const RETEST_ID = 2
+/** 5.13 (Fase 6): aviso del reto de la semana (uno solo, se reprograma al medir el reto). */
+const CHALLENGE_ID = 3
 
 const native = () => Capacitor.isNativePlatform()
 
@@ -143,6 +145,67 @@ export async function syncReminders(info: ReminderInfo): Promise<void> {
     }
 
     if (notifications.length) await LocalNotifications.schedule({ notifications })
+  } catch {
+    // Sin notificaciones no se rompe nada.
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 5.13 (Fase 6): aviso del reto de la semana
+
+export interface ChallengeNudgeInput {
+  title: string
+  progress: number
+  target: number
+  unit: string
+  done: boolean
+}
+
+/** Días del aviso: jueves y, si ya pasó, sábado (getDay: 4 y 6). */
+const NUDGE_DAYS = [4, 6]
+
+/**
+ * Cuándo y qué dice el aviso del reto (puro). El primer jueves o sábado de ESTA semana (lunes–domingo) a la hora del
+ * recordatorio que aún no haya pasado (con 10 min de margen); null si el reto está cumplido o ya no queda ninguno.
+ */
+export function challengeNudgePlan(now: Date, time: string, c: ChallengeNudgeInput | null): { at: Date; body: string } | null {
+  if (!c || c.done || c.progress >= c.target) return null
+  const [h, m] = /^\d{1,2}:\d{2}$/.test(time) ? time.split(':').map(Number) : [19, 0]
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7))
+  for (const day of NUDGE_DAYS) {
+    const at = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + ((day + 6) % 7), h, m)
+    if (at.getTime() > now.getTime() + 10 * 60e3) {
+      const left = c.target - c.progress
+      const falta = left === 1 ? `Te falta 1 ${c.unit.replace(/s$/, '')}` : `Te faltan ${left} ${c.unit}`
+      return { at, body: `${falta} para tu reto «${c.title}». ¡Tú puedes!` }
+    }
+  }
+  return null
+}
+
+/**
+ * Reprograma el aviso del reto (se llama al medirlo en el Inicio). No pide permiso: sin el de notificaciones (se da al
+ * activar el recordatorio diario), no hace nada. Con el reto cumplido o el ajuste apagado, lo quita.
+ */
+export async function syncChallengeNudge(enabled: boolean, time: string, theme: ThemeKey, c: ChallengeNudgeInput | null): Promise<void> {
+  if (!(await granted())) return
+  try {
+    await LocalNotifications.cancel({ notifications: [{ id: CHALLENGE_ID }] })
+    const plan = enabled ? challengeNudgePlan(new Date(), time, c) : null
+    if (!plan) return
+    const look = mascotLook(theme)
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: CHALLENGE_ID,
+          title: `${look.name}: tu reto de la semana`,
+          body: plan.body,
+          smallIcon: look.smallIcon,
+          largeIcon: look.largeIcon,
+          schedule: { at: plan.at, allowWhileIdle: true },
+        },
+      ],
+    })
   } catch {
     // Sin notificaciones no se rompe nada.
   }

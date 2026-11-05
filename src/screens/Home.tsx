@@ -16,7 +16,7 @@ import { homeworkPending } from '../lib/homework'
 import { FAV_COUNT, favoriteCategories, TOPIC_CATEGORIES } from '../lib/topics'
 import { getProfile } from '../lib/profile'
 import { speakingGoal } from '../lib/fluency'
-import { notificationsGranted } from '../lib/reminders'
+import { notificationsGranted, syncChallengeNudge } from '../lib/reminders'
 import AllTopicsView from '../components/AllTopicsView'
 import GrammarPanel from '../components/GrammarPanel'
 import MascotPage from '../components/MascotPage'
@@ -184,7 +184,17 @@ export default function Home({
         }),
       )
       .then((c) => measureChallenge(c))
-      .then((st) => alive && setChal(st))
+      .then((st) => {
+        // 5.13 (Fase 6): el aviso de mitad de semana, con lo que llevas ahora (o fuera, si ya está cumplido).
+        syncChallengeNudge(settings.challengeNudge, settings.reminderTime, settings.theme, {
+          title: st.challenge.titleEs,
+          progress: st.progress,
+          target: st.challenge.target,
+          unit: unitOf(st.challenge),
+          done: st.done,
+        }).catch(() => {})
+        if (alive) setChal(st)
+      })
       .catch(() => {})
     return () => {
       alive = false

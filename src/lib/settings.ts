@@ -30,6 +30,8 @@ export interface Settings {
   modelList: string[] // última lista de modelos que devolvió Google (por si luego no responde)
   reminderOn: boolean // aviso diario de la lección
   reminderTime: string // HH:MM
+  /** 5.13 (Fase 6): aviso a mitad de semana si el reto no está cumplido (jueves o sábado, a la hora del recordatorio). */
+  challengeNudge: boolean
   audioPrefs: Record<string, 'headset' | 'split' | 'phone'> // por auriculares: por dónde escuchar y hablar
   retestSnoozed: string // día (AAAA-MM-DD) en que dijo "Más tarde" al re-test
   homeworkSeen: number // fecha de la última tarea ya enseñada antes del Inicio
@@ -79,6 +81,7 @@ const DEFAULTS: Settings = {
   modelList: [],
   reminderOn: false,
   reminderTime: '19:00',
+  challengeNudge: true,
   audioPrefs: {},
   retestSnoozed: '',
   homeworkSeen: 0,
