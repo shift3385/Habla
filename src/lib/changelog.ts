@@ -52,6 +52,9 @@ export const RELEASES: Release[] = [
       'Aviso del reto: si aún no lo has cumplido, el jueves (o el sábado) te recuerdo cuánto te falta. Se apaga en Ajustes → Meta diaria',
     ],
     improved: [
+      'Línea de la semana en el Inicio: 7 puntos con los días que hablaste y tu próximo logro («3 días para tu racha de 7»). Sale abajo solo si cabe, sin que el Inicio se desplace',
+      'Al terminar una lección del plan, el informe te dice si cumpliste su misión: «Misión cumplida ✓», «¡casi!» o «la próxima vez»',
+      'Ajustes → Modelos: el consumo de Azure y Azure Monitor van juntos en «Avanzado», plegado, para quien no los usa',
       'Tus copias de seguridad llevan también tus retos y Mi familia. Las copias antiguas siguen valiendo; una copia con ellos necesita Habla 5.13 o posterior',
     ],
   },

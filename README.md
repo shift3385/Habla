@@ -103,6 +103,7 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
   - También da **consejos de uso**: qué significa cada nota (fluidez, ppm, pausas, las de Azure), dónde cambiar tus temas o decir para qué quieres el inglés, y trucos de la clase. Siguen por donde se quedaron la vez anterior.
   - **Ritmo:** el primer globo sale a los 5–9 s de abrir el Inicio; cada uno se queda lo que se tarda en leerlo (de 9 a 20 s) y entre uno y otro pasan de 40 a 75 s.
   - Avisos y consejos se activan o desactivan por separado en *Ajustes → Tema y mascota → Globos de tu mascota en el Inicio*.
+- **Línea de la semana** (5.13): abajo, en Temas y Prácticas, 7 puntos (lunes a domingo; con color, los días que hablaste; hoy, con aro) y tu próximo logro («3 días para tu racha de 7»). Solo sale si cabe: el Inicio nunca se desplaza (en pantallas pequeñas, en horizontal o con letra muy grande no aparece).
 - **Sorpréndeme** (icono de destello): un tema al azar, distinto de los últimos que usaste.
 - **Tarea**: la tarea para mañana de tu última sesión. Al abrir la app, la mascota te la enseña con **Hacerla ahora** (una clase corta con esa tarea) o **Luego**. Al hacerla con al menos 2 respuestas queda **✓ Hecha** y ya no se vuelve a proponer (5.12).
 - **Temas / Prácticas**: un selector entre tus temas y las 6 prácticas guiadas. Todo cabe en la pantalla, sin scroll (en vertical, también con letra Muy grande).
@@ -186,7 +187,7 @@ Gemini corrige **qué** dices; Azure Speech mide **cómo** lo pronuncias. Las do
 
 **Plan gratis agotado:** si Azure responde *cuota excedida*, la fonética se apaga hasta el mes siguiente (1 del mes, UTC), sigues con Gemini y la mascota te avisa una vez con lo que costaría un plan de pago. Un simple «demasiadas peticiones» solo se reintenta.
 
-**Consumo del mes (opcional):** para ver «≈ X de 5 h usadas», abre *Acceso a Azure Monitor* e introduce un **service principal** (Tenant ID, Client ID, Client Secret) con el rol *Monitoring Reader* sobre el recurso y su **Resource ID** (`/subscriptions/…/providers/Microsoft.CognitiveServices/accounts/…`). La app lee la métrica `AudioSecondsTranscribed` del mes. Es aproximada (Azure la actualiza con retraso) y se guarda 10 minutos.
+**Consumo del mes (opcional):** está en *Avanzado* (plegado; desde la 5.13 sale abierto si ya lo configuraste). Para ver «≈ X de 5 h usadas», abre *Acceso a Azure Monitor* e introduce un **service principal** (Tenant ID, Client ID, Client Secret) con el rol *Monitoring Reader* sobre el recurso y su **Resource ID** (`/subscriptions/…/providers/Microsoft.CognitiveServices/accounts/…`). La app lee la métrica `AudioSecondsTranscribed` del mes. Es aproximada (Azure la actualiza con retraso) y se guarda 10 minutos.
 
 ### Con auriculares
 Al conectar unos auriculares (o al abrir Habla con ellos puestos) aparece un selector: **¿por dónde quieres escuchar al profe y hablar?**
@@ -224,6 +225,7 @@ Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu
 - Cada semana tiene **un objetivo** (una estructura o una habilidad, por ejemplo contar experiencias con el *present perfect*) y un tema de la vida real. Al abrirla ves qué podrás hacer al terminarla.
 - Cada semana tiene **5 lecciones** que suben de dificultad: descubrir, practicar en situaciones, *role-play* y un reto libre. Cada lección trae una situación, 3 frases útiles (tócalas para oírlas) y una **misión** concreta.
 - Las lecciones de cada semana se preparan cuando esa semana empieza, así se adaptan a cómo vas.
+- Al terminar una lección, el informe te dice si cumpliste **su misión**: «Misión cumplida ✓», «¡casi!» o «la próxima vez», con una frase de por qué (5.13). También lo ves al abrir esa clase en *Progreso → Sesiones*.
 - **Lección de hoy** en el Inicio: la siguiente sin hacer. Cuenta como hecha cuando respondes al menos 3 veces. Puedes adelantar la semana siguiente o repetir cualquier lección desde **Mi plan**.
 - **Recordatorio diario** (Ajustes → Meta diaria): **tu mascota** te avisa (con su nombre y su imagen) a la hora que elijas, con la lección que toca; si ya la hiciste ese día, no avisa. **Probar el aviso** manda uno de prueba en 5 s. Con el recordatorio activado, al abrir la app se pide el permiso de notificaciones si Android aún no lo ha decidido; si lo bloqueó, **tu mascota te avisa en el Inicio** y te lleva a cómo arreglarlo (en Xiaomi/POCO: *Aplicaciones → Administrar aplicaciones → Habla → Notificaciones*, y *Ahorro de batería → Sin restricciones*). Activa también *Inicio automático* para Habla, para que el aviso sobreviva a un reinicio. Los avisos quedan programados para **30 días** aunque no abras la app.
 

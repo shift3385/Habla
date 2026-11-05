@@ -21,6 +21,8 @@ Plan y avance: `docs/v5.13/PLAN.md`. Probado en el navegador con IA falsa y dos 
 | Galaxy A11 | Vista previa de la tarjeta, «Pegar un código» y «Mi familia» en horizontal forzado y con el modo ligero | Teléfono de la madre (con permiso del dueño) |
 | Mi familia y practicar lo mismo | Mandarse la semana, proponer una Situación, hacerla con voz real («Practicar ahora» con clave) y mandarse la nota entre dos teléfonos | POCO + otro teléfono con la 5.13 + voz |
 | Escribir en inglés | Dictado y corrección con Gemini real de un mensaje en inglés y otro en español; mandarlo por WhatsApp | Clave real + voz |
+| Línea de la semana | Que salga en el hueco del Inicio del POCO y que en el Galaxy A11 (horizontal forzado) no aparezca ni haga desplazar | POCO + Galaxy A11 (con permiso del dueño) |
+| Misión de la lección | Con Gemini real y voz: que el veredicto («cumplida», «casi», «la próxima vez») sea justo | Clave real + varias lecciones del plan |
 | Aviso del reto | Que la notificación llegue el jueves (o el sábado) a la hora del recordatorio y desaparezca al cumplir el reto | POCO (varios días) |
 
 ## 5.12 «Situaciones», «Hacerla ahora» y «Lo que recuerda tu profe» (rama `claude/eloquent-newton-2cniyr`, build 44) — hecha en la nube, sin APK
