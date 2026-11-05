@@ -5,7 +5,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
 - **Dueño:** un ingeniero de software hispanohablante (nivel B1, habla A2) que aprende inglés. **Responde siempre en español.**
 - **Usuarios reales:** el dueño (teléfono POCO), su madre (Samsung Galaxy A11 con la pantalla dañada; usa horizontal forzado) y algunas amistades. Se distribuye **copiando el APK a mano**: no está en ninguna tienda.
 - **Alcance actual:** cada persona usa **su propia clave** de Gemini (y opcionalmente de Azure), que se guarda solo en su teléfono. No hay backend ni cuentas.
-- **Versión actual:** 5.10.1 (build 41), «Actualización de parches de seguridad y corrección de la v5.10», en la rama `v5.10.1-correcciones` (sale de `v5.10-gramatica`; **sin commitear ni fusionar en `main`** a 2026-10-21). Debug 5.10.1 instalado en el POCO; en el POCO, la release de uso diario sigue en la 5.10 (build 40); la madre y las amistades siguen en la 5.8. Regresión, correcciones y pruebas: `docs/pruebas/regresion-5.10/` (`INFORME.md`, `CORRECCION.md`, `REVISION-5.10.1.md`, `MOVIL.md`). La 5.10 «Gramática» está en `docs/v5.10/`. Repo privado: `https://github.com/shift3385/Habla`.
+- **Versión actual:** 5.12 (build 44, 2026-11-05), «Situaciones con misión, tareas al momento y un profe que se acuerda de ti» (P-12, P-05 y P-11): plan, avance y evidencias en `docs/v5.12/PLAN.md` y `docs/v5.12/evidencia/`. Hecha en la nube sobre la 5.11 (build 43) en la rama `claude/eloquent-newton-2cniyr`: **sin APK todavía** (se compila en el PC del dueño) y **sin probar en el teléfono** (pruebas aparcadas: `docs/pruebas/PENDIENTES.md`). `main` sigue en la 5.9.1. Historia anterior: 5.10 «Gramática» en `docs/v5.10/`, 5.10.1 en `docs/pruebas/regresion-5.10/`, 5.11 «Motivación» + «Sonidos» en `docs/v5.11/`. Repo privado: `https://github.com/shift3385/Habla`.
 
 ## Stack
 
@@ -14,7 +14,7 @@ Habla es una **app Android personal de práctica de inglés por voz**. El usuari
 | UI | React 19 + TypeScript ~6.0 + Tailwind CSS 4 (plugin `@tailwindcss/vite`), fuente Outfit (`@fontsource/outfit`) |
 | Build web | Vite 8 (`vite.config.ts` mínimo) |
 | App nativa | Capacitor 8 (Android 36, minSdk 24). Plugins: `app`, `preferences`, `filesystem`, `share`, `haptics`, `local-notifications`, `@capacitor-community/text-to-speech`, y **3 plugins Java propios** (ver abajo) |
-| Datos locales | Dexie 4 (IndexedDB `habla`), IndexedDB `habla-draft` sin Dexie (borradores del test), `@capacitor/preferences` (ajustes y clase guardada), `localStorage` (cachés pequeñas) |
+| Datos locales | Dexie 4 (IndexedDB `habla`, esquema v6 desde la 5.12: tabla `facts`), IndexedDB `habla-draft` sin Dexie (borradores del test), `@capacitor/preferences` (ajustes y clase guardada), `localStorage` (cachés pequeñas) |
 | Repaso espaciado | `ts-fsrs` 5 |
 | IA | Google Gemini (REST `generativelanguage.googleapis.com`) con la clave del usuario; Azure Speech REST (opcional); Azure Monitor (opcional) |
 | Lint | `oxlint` (`.oxlintrc.json`). **No hay Prettier configurado** (ver Convenciones) |
@@ -45,6 +45,9 @@ src/
     srs.ts             tarjetas de repaso (FSRS); «Ya me la sé» archiva (`archivedAt`) y se recupera en Palabras
     lookup.ts          consultas de palabras en contexto
     topics.ts, scenarios.ts   temas (con noticias reales vía Google Search) y prácticas guiadas
+    homework.ts        5.12 (P-05) «Hacerla ahora»: brief de la tarea, última tarea y marcarla hecha (`homeworkDoneAt`)
+    missions.ts        5.12 (P-12) «Situaciones»: catálogo con misión de respaldo, preparación con Gemini, brief, tachado (`goals_met`)
+    memory.ts          5.12 (P-11) «Lo que recuerda tu profe»: datos limpios y sin nada sensible, máx. 20, los 5 últimos al profe
     mascotTips.ts      avisos y consejos de los globos de la mascota del Inicio
     notices.ts         avisos a pantalla completa antes del Inicio (NoticeGate)
     reminders.ts       notificaciones locales (recordatorio diario y re-test)
@@ -55,9 +58,9 @@ src/
     viewport.ts        escala de la interfaz en pantallas pequeñas
     backup.ts          exportar/importar JSON (sin claves)
     changelog.ts       versión (lee version.json) y Novedades de cada versión
-    db.ts              esquema Dexie y tipos (Session, Turn, Mistake, Profile, Lookup, SrsCard)
+    db.ts              esquema Dexie y tipos (Session, Turn, Mistake, Profile, Lookup, SrsCard, StudentFact…); v6 = tabla `facts`
   screens/           una pantalla por archivo (Home, Conversation, Calibration, SettingsScreen, ProgressScreen, WordsScreen, Onboarding, NoticeGate, …)
-  components/        piezas reutilizables (TalkButton «toca para hablar» + talkGesture, PhoneticsToggle, PronunciationView, MascotBubble, InfiniteList, MascotPage, AzureSettings, …)
+  components/        piezas reutilizables (TalkButton «toca para hablar» + talkGesture, PhoneticsToggle, PronunciationView, MascotBubble, InfiniteList, MascotPage, AzureSettings, MemorySettings, …)
   ui/                sistema visual: theme.ts (4 temas × claro/oscuro, profes, mascotas), Mascot.tsx (mascota animada SVG), iconos
 android/             proyecto nativo. Plugins propios en app/src/main/java/com/shift/habla/:
                        AudioRoutePlugin (micro de auriculares Bluetooth), DeviceAuthPlugin (patrón/PIN/huella), OrientationPlugin (orientación forzada)
@@ -123,7 +126,7 @@ Desde la 5.8.2, `npm run apk` y `npm run apk:debug` usan `--offline` (con intern
 4. **Prueba antes de compilar** y solo compila un entregable cuando lo cambiado pase las revisiones. El dueño es muy exigente y quiere evidencias (capturas, medidas).
 5. **No pierdas datos de los usuarios:** instala siempre con `adb install -r`. Antes de cualquier cosa arriesgada en un teléfono ajeno (p. ej. el de su madre), haz copia del estado.
 6. **Política de niveles:** las lecciones solo **proponen**; solo el re-test cambia el nivel (70 % test + 30 % trayectoria). El primer test fija el nivel. Ver `docs/decisiones.md`.
-7. **Siguiente trabajo previsto (actualizado 2026-10-21, tarde):** el dueño aparcó todas las pruebas en el teléfono (lista única en `docs/pruebas/PENDIENTES.md`) y pidió: **terminar el modo ligero** de la 5.11 (`docs/v5.11/rendimiento/EVALUACION.md`) y **debatir la representación de la boca/lengua en Sonidos** (`docs/v5.11/sonidos-boca/DEBATE.md`). Lo anterior sigue valiendo cuando se retomen las pruebas: cerrar la **5.10.1**: lo que falta de `docs/pruebas/regresion-5.10/MOVIL-5.10.1.md` y `MOVIL.md` (pruebas con el dueño), APK release, aprobación de los commits y fusión. Después, la **5.11 «Motivación» + «Sonidos»** con el plan de `docs/v5.11/PLAN.md` (tablero `docs/v5.11/ESTADO.md`; diseño de Sonidos en `docs/fonemas/`). Hoja de ruta y decisiones recientes (varios proveedores de IA descartados, colaboración en la 5.12) en `BACKLOG.md` §5 y `docs/decisiones.md`. E3 de la 5.9.1 quedó **resuelto** en la regresión de la 5.10 (desconectar y reconectar los auriculares funciona).
+7. **Siguiente trabajo previsto (actualizado 2026-11-05):** la 5.12 está hecha (`docs/v5.12/PLAN.md`, fases 1–4): falta **compilar el APK en el PC** del dueño y, cuando se retomen las pruebas en el teléfono, probar con voz real «Situaciones», «Hacerla ahora» y «Lo que recuerda tu profe» (lista en `docs/v5.12/PLAN.md` § Pendiente en el teléfono). Después, por el orden recomendado: P-14, P-13, P-16, P-17 (`docs/v5.12/BACKLOG-resumen.md` §1). Nota anterior (2026-10-21, tarde): el dueño aparcó todas las pruebas en el teléfono (lista única en `docs/pruebas/PENDIENTES.md`) y pidió: **terminar el modo ligero** de la 5.11 (`docs/v5.11/rendimiento/EVALUACION.md`) y **debatir la representación de la boca/lengua en Sonidos** (`docs/v5.11/sonidos-boca/DEBATE.md`). Lo anterior sigue valiendo cuando se retomen las pruebas: cerrar la **5.10.1**: lo que falta de `docs/pruebas/regresion-5.10/MOVIL-5.10.1.md` y `MOVIL.md` (pruebas con el dueño), APK release, aprobación de los commits y fusión. Después, la **5.11 «Motivación» + «Sonidos»** con el plan de `docs/v5.11/PLAN.md` (tablero `docs/v5.11/ESTADO.md`; diseño de Sonidos en `docs/fonemas/`). Hoja de ruta y decisiones recientes (varios proveedores de IA descartados, colaboración en la 5.12) en `BACKLOG.md` §5 y `docs/decisiones.md`. E3 de la 5.9.1 quedó **resuelto** en la regresión de la 5.10 (desconectar y reconectar los auriculares funciona).
 8. **Con varios teléfonos conectados**, usa siempre `adb -s <serie>` o `ANDROID_SERIAL`. No toques el teléfono de otra persona sin que el dueño lo pida.
 9. **Privacidad del micro (dueño, 2026-10-20):** el micro y el modo llamada de los auriculares **solo con la app en uso** y en primer plano; todo se suelta al salir, minimizar o bloquear. Cualquier cambio en `recorder.ts`, `audioRoute.ts`, `AudioPicker.tsx` o `SoundTest.tsx` debe mantenerlo y tener test.
 

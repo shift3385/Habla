@@ -50,6 +50,7 @@ D:\My Apps\HABLA\apk\Habla-v<versión>.apk
 
 - **Exportar:** *Ajustes → Mi perfil y datos → ⬆️ Exportar*. Guarda `habla-backup-AAAA-MM-DD.json` en `Documentos/Habla` (si Android lo permite) y abre "Compartir" para que lo mandes a Drive, a tu correo o al PC.
 - **Importar:** *Ajustes → Mi perfil y datos → ⬇️ Importar* → elige el JSON. Primero se comprueba la copia entera (si está dañada, no se toca nada) y te dice cuántas sesiones y errores trae. **Sustituye** todo el progreso actual por el del archivo, pero antes **guarda sola una copia de lo que tenías** en `Documentos/Habla/habla-antes-de-importar-….json` (desde la 5.9).
+- Desde la 5.12 las copias llevan también **lo que recuerda tu profe**. Una copia con recuerdos solo se abre en Habla 5.12 o posterior (las anteriores dicen «versión más nueva» y no tocan nada); las copias antiguas, sin recuerdos, se siguen importando igual.
 - Las copias **no incluyen tus claves** (ni la de Gemini ni las de Azure). Tampoco entran en las copias automáticas de Android. Después de reinstalar tendrás que pegarlas de nuevo.
 
 Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o reinstalar.
@@ -97,18 +98,18 @@ Hazlo, por ejemplo, una vez por semana y siempre antes de cambiar de teléfono o
 ### Inicio
 - **Racha** (icono de llama): días seguidos practicando.
 - **Meta diaria**: los minutos que has hablado hoy (tu voz, no la duración de la clase). Cada tema la muestra a su manera: en Ember, junto a la mascota; en Lumi, la tarjeta "Charla libre"; en Marea y Nimbo, una barra junto a la mascota.
-- **Tu mascota te habla:** de vez en cuando sale un globo junto a ella con algo útil: tu clase a medias, la lección de hoy, cuánto te falta para la meta, las frases del repaso, tu racha, cuándo puedes repetir el test y que los temas con puntito traen noticias reales. Si el globo lleva una flecha, tócalo y lo hace (sigue la clase, abre el repaso o empieza la lección). Toca a la mascota para que te cuente lo siguiente.
+- **Tu mascota te habla:** de vez en cuando sale un globo junto a ella con algo útil: tu clase a medias, la lección de hoy, tu tarea pendiente («Hacerla ahora», 5.12), cuánto te falta para la meta, las frases del repaso, tu racha, cuándo puedes repetir el test y que los temas con puntito traen noticias reales. Si el globo lleva una flecha, tócalo y lo hace (sigue la clase, abre el repaso o empieza la lección). Toca a la mascota para que te cuente lo siguiente.
   - También da **consejos de uso**: qué significa cada nota (fluidez, ppm, pausas, las de Azure), dónde cambiar tus temas o decir para qué quieres el inglés, y trucos de la clase. Siguen por donde se quedaron la vez anterior.
   - **Ritmo:** el primer globo sale a los 5–9 s de abrir el Inicio; cada uno se queda lo que se tarda en leerlo (de 9 a 20 s) y entre uno y otro pasan de 40 a 75 s.
   - Avisos y consejos se activan o desactivan por separado en *Ajustes → Tema y mascota → Globos de tu mascota en el Inicio*.
 - **Sorpréndeme** (icono de destello): un tema al azar, distinto de los últimos que usaste.
-- **Tarea**: la tarea para mañana de tu última sesión. Tócala para leerla entera.
-- **Temas / Prácticas**: un selector entre tus temas y las 5 prácticas guiadas. Todo cabe en la pantalla, sin scroll.
+- **Tarea**: la tarea para mañana de tu última sesión. Al abrir la app, la mascota te la enseña con **Hacerla ahora** (una clase corta con esa tarea) o **Luego**. Al hacerla con al menos 2 respuestas queda **✓ Hecha** y ya no se vuelve a proponer (5.12).
+- **Temas / Prácticas**: un selector entre tus temas y las 6 prácticas guiadas. Todo cabe en la pantalla, sin scroll (en vertical, también con letra Muy grande).
   - **Tus 3 temas**: se eligen al crear el perfil (exactamente 3) y se cambian en *Más temas → Cambiar mis 3 temas* o en *Ajustes → Mi perfil*. Si vienes de una versión anterior con otro número de temas, la app te pide elegir tus 3 al abrirla.
   - **Tema libre**: escribes de qué quieres hablar y el profe prepara la clase sobre eso.
   - **Más temas**: las 12 categorías para hablar hoy de cualquiera (tus 3 llevan una estrella).
   - Los temas con puntito de color (noticias, IA, tecnología, negocios y mercados, startups, ciencia, cine, deportes) **buscan en Google una noticia real y reciente**. El profe nunca repite un tema de tus últimas sesiones.
-  - Las prácticas son: mis puntos débiles, entrevista de trabajo, explicar a qué me dedico, debate y contar una historia. En el **debate** eliges si el tema lo pone el profe o lo propones tú; el profe defiende la postura contraria.
+  - Las prácticas son: mis puntos débiles, **Situaciones** (5.12, ver abajo), entrevista de trabajo, explicar a qué me dedico, debate y contar una historia. En el **debate** eliges si el tema lo pone el profe o lo propones tú; el profe defiende la postura contraria.
 
 ### En la clase
 1. Arriba ves la **tarjeta del tema**. Empieza **plegada y brillando** hasta que la abres por primera vez; tócala para ver el objetivo, el resumen y el vocabulario. Las frases largas de la lección van cada una en su caja (inglés y español). Toca las palabras para oírlas.
@@ -130,6 +131,17 @@ Otros controles:
 - **En horizontal**, *¿Qué digo?* flota en la esquina del chat y el micrófono queda siempre a la vista.
 - **Batería:** en segundo plano la app se queda quieta: micrófono, voz y animaciones apagados.
 - **Terminar** (o el botón "atrás" de Android): cierra la clase y muestra tu informe. Si no llegaste a hablar, la sesión se descarta. Al salir se cancela lo que el profe estuviera preparando: no hay más reintentos ni respuesta ni voz (una petición que ya salió hacia Google puede contarse igualmente, pero no se reintenta).
+
+### 🎭 Situaciones: roleplays con misión (5.12)
+- En *Prácticas → Situaciones* eliges una situación de la lista (en el médico, en la farmacia, en el aeropuerto, en el hotel, en el restaurante, llamar a un fontanero, entrevista de trabajo, una reunión de trabajo, preguntar una dirección, comprar en una tienda) o tocas **Describir la mía** y la escribes (o la dictas) en una frase, en español.
+- Gemini (el modelo rápido) prepara la misión: título, la escena, quién es tu profe (médica, recepcionista…) y **3 objetivos**. Si no puede, se usa la misión de la lista: la clase empieza igual.
+- Los objetivos se ven en la tarjeta de la clase y **se tachan** cuando tu profe ve que los cumpliste (en horizontal, una línea con ✓ y el siguiente que te falta). Con los tres, la mascota te dice **«¡Lo conseguiste!»**: puedes terminar con tu informe o seguir hablando.
+- Las correcciones son las de siempre (todos los errores). Si sales a medias, la misión queda guardada con lo tachado. El informe dice **«¡Misión cumplida!»** o cuántos objetivos lograste.
+
+### 🧠 Lo que recuerda tu profe (5.12)
+- Al terminar cada clase, el profe apunta **hasta 3 cosas de tu vida** que le contaste («El viernes tiene una entrevista de trabajo», «Su nieta se llama Ana»). **Nunca** apunta nada de salud, dinero, política ni religión. Las ves en el informe, en *Tu profe se acordará de…*.
+- En la clase siguiente recibe **las 5 más recientes** y **puede** preguntarte por una al empezar. En las Situaciones no las usa (allí hace un papel).
+- *Ajustes → Lo que recuerda tu profe*: la lista (como mucho 20; las más antiguas salen solas), **cambiar** o **borrar** cada una, **Borrar todo** e interruptor para **apagarlo** (activado por defecto). Todo se queda en tu teléfono y viaja en tus copias.
 
 ### 🔤 Corrector fonético (Azure Speech, opcional)
 Gemini corrige **qué** dices; Azure Speech mide **cómo** lo pronuncias. Las dos llamadas salen a la vez y el resultado se une en un solo bloque:
@@ -203,7 +215,8 @@ Después del test de nivel, Habla crea un **plan de 12 semanas** a tu medida (tu
   - Tu **nota de fluidez (0–100)**, que combina velocidad, largo de respuestas, pausas y precisión.
   - Tu nivel al hablar ese día.
   - Lo que hiciste bien y lo que debes mejorar.
-  - La **tarea para mañana** y una **frase del día**.
+  - La **tarea para mañana** (con **Hacerla ahora**, o **✓ Hecha** si ya la hiciste) y una **frase del día**.
+  - **Tu profe se acordará de…**: lo que apuntó de esta clase (5.12).
 - **Progreso**: tus minutos de hoy, las barras de la semana y tres pestañas:
   - **Errores**: tus correcciones agrupadas, con cuántas veces repetiste cada error. Toca una para ver la explicación.
   - **Palabras**: el vocabulario de tus temas y las frases del día. Toca una para oírla.
@@ -256,7 +269,10 @@ src/
     topics.ts      12 categorías de temas; noticias reales con Google Search
     fluency.ts     métricas de fluidez, nota 0–100 e informe final
     stats.ts       racha, minutos de hoy, tarea pendiente
-    scenarios.ts   los 6 escenarios
+    homework.ts    «Hacerla ahora»: clase corta con la tarea del informe (5.12)
+    missions.ts    Situaciones: misiones con 3 objetivos (5.12)
+    memory.ts      lo que recuerda tu profe (5.12)
+    scenarios.ts   los escenarios (prácticas guiadas y clases internas)
     recorder.ts    MediaRecorder (webm/opus)
     wav.ts         webm → WAV 16 kHz mono (para Azure), máx. 60 s
     pronunciation.ts  Azure Pronunciation Assessment (REST) y frase del coach
@@ -265,7 +281,7 @@ src/
     placement.ts   test de nivel con el banco de 450 ítems
     deviceAuth.ts  patrón / PIN / huella para ver o cambiar claves
     tts.ts         voz nativa de Android
-    db.ts          IndexedDB (Dexie): sesiones, turnos, errores, perfil
+    db.ts          IndexedDB (Dexie): sesiones, turnos, errores, perfil… y lo que recuerda tu profe (v6)
     backup.ts      exportar / importar JSON
     settings.ts    clave, modelo y preferencias (@capacitor/preferences)
   screens/         Home, Conversation, ProgressScreen, SettingsScreen
@@ -290,3 +306,4 @@ keystore/          firma del APK (fuera de git; haz copia)
 - [x] **Banco de 450 ítems** para el test, nivel 70 % test + 30 % trayectoria, y hoja de problemas de Gemini (v5.6)
 - [x] **No conformidades v5.7:** batería, clase guardada, todas las correcciones, Ajustes rediseñado, claves con patrón/huella y orientación fija
 - [x] **Corrector fonético con Azure Speech** y límite de 60 s con cuenta atrás (v5.8)
+- [x] **Situaciones** (roleplays con misión), **Hacerla ahora** y **Lo que recuerda tu profe** (v5.12)

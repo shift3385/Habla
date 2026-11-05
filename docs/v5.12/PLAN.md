@@ -22,7 +22,7 @@ teléfono (`docs/pruebas/PENDIENTES.md`), tareas abiertas de la 5.11, dibujo de 
 | 1 | **P-05 «Hacerla ahora»** | ✅ hecha (2026-11-05): `src/lib/homework.ts`, escenario oculto `homework`, botón en el informe (clase y Progreso), en el aviso a pantalla completa y en el globo de la mascota; con 2+ respuestas la tarea queda «✓ Hecha». Test `tests/p05-homework.test.mjs`; navegador `docs/v5.12/evidencia/arnes-p05.mjs` (capturas en `evidencia/P05/`) |
 | 2 | **P-12 roleplays con misión** | ✅ hecha (2026-11-05): `src/lib/missions.ts` (10 situaciones con misión de respaldo sin IA, preparación con el modelo rápido, brief, tachado), práctica «Situaciones» (elegir o «Describir la mía», con dictado), `goals_met` en el esquema del profe solo en misiones, objetivos tachados en la tarjeta (en horizontal, una línea), «¡Lo conseguiste!» e informe «¡Misión cumplida!»; se guarda al salir y al continuar. Prácticas en cuadrícula de 6 (tarjetas de 86 px: el Inicio sigue sin desplazar en vertical, `evidencia/P12/medidas-practicas.txt`). Test `tests/p12-missions.test.mjs`; navegador `evidencia/arnes-p12.mjs` |
 | 3 | **P-11 memoria del alumno** | ✅ hecha (2026-11-05): `src/lib/memory.ts` (limpieza, filtro de lo sensible además del prompt, máx. 20, los 5 últimos al profe), tabla Dexie `facts` (`db.version(6)`, solo aditiva; migración v5→v6 con datos comprobada en el navegador), `facts_es` en el informe solo con la memoria activada y fuera de las misiones, tarjeta «Tu profe se acordará de…» en el informe, regla de `teacher.ts` abierta solo para esos datos (sin datos, el prompt es idéntico), Ajustes → «Lo que recuerda tu profe» (explicación de la mascota, interruptor `teacherMemory` activado por defecto, cambiar, borrar uno, borrar todo), copias versión 4 con la tabla (opcional al importar). Test `tests/p11-memory.test.mjs`; navegador `evidencia/arnes-p11.mjs` |
-| 4 | Entrega 5.12 (build 44): `version.json`, Novedades en `changelog.ts`, README/CLAUDE.md, capturas | pendiente |
+| 4 | Entrega 5.12 (build 44): `version.json`, Novedades en `changelog.ts`, README/CLAUDE.md, capturas | ✅ hecha (2026-11-05): `version.json` 5.12 / build 44, entrada 5.12 en `RELEASES`, README (Situaciones, Hacerla ahora, Lo que recuerda tu profe, copias), CLAUDE.md (versión y siguiente trabajo), `docs/pruebas/PENDIENTES.md`; capturas de Novedades en `evidencia/entrega/` y regresión de los tres arneses con la 5.12 (todo bien). `npx tsc -b`, lint (0 errores), `npm test` (384, 0 fallos), validadores y `npm run build` en verde. **Sin APK** (se compila en el PC del dueño) |
 
 ### Fase 1 · P-05 «Hacerla ahora» (barata)
 - Hoy el informe de la clase trae una tarea (`report.homeworkEs`: `src/lib/fluency.ts`, `src/components/ReportView.tsx`) y el
@@ -63,3 +63,26 @@ teléfono (`docs/pruebas/PENDIENTES.md`), tareas abiertas de la 5.11, dibujo de 
   falsa: hay ejemplos en `docs/v5.11/rendimiento/evidencia/perf.html` y `medir-pw.mjs`).
 - **Gastar poco:** nada de pruebas en el teléfono (aparcadas), capturas solo de lo cambiado, una revisión por fase.
 - Sin APK: no hay Android SDK en la nube (se compila en el PC del dueño cuando él quiera).
+
+## Pendiente en el teléfono (aparcado por el dueño; también en `docs/pruebas/PENDIENTES.md`)
+Todo se probó en el navegador (Playwright) con una IA falsa que responde según el esquema de cada llamada
+(`docs/v5.12/evidencia/arnes.html`, `comun.mjs` y `arnes-p05.mjs`, `arnes-p12.mjs`, `arnes-p11.mjs`; capturas en `P05/`, `P12/`, `P11/`).
+Falta, cuando el dueño retome las pruebas:
+1. Compilar en el PC el APK debug y el release de la 5.12 (build 44) e instalarlos con `adb -s <serie> install -r` (copia de los datos antes).
+2. **Migración real:** abrir la 5.12 sobre los datos de la 5.11 del POCO (Dexie v5 → v6). En el navegador se comprobó con una base v5 con datos (`evidencia/db-v5.ts`).
+3. **Situaciones** con Gemini real y voz: que la misión tenga sentido para el nivel, que `goals_met` tache cuando toca (ni antes ni nunca) y que el profe no salga del papel.
+4. **Hacerla ahora** con una tarea real del informe: que el profe la plantee bien en inglés sencillo y que con 2 respuestas quede «✓ Hecha».
+5. **Memoria:** que el informe real apunte datos útiles y nada sensible, y que el profe pregunte por uno al empezar sin forzarlo ni repetirlo.
+
+## Notas de la implementación
+- **Inicio · Prácticas:** con 6 prácticas, dos filas anchas hacían desplazar 33 px en 320×640. Quedan las 6 en una cuadrícula de 2 con
+  tarjetas de 86 px y «Mis puntos débiles» y «Situaciones» destacadas (icono en el color del tema). Medidas en `evidencia/P12/medidas-practicas.txt`.
+- **Situaciones en horizontal:** la lista de 3 objetivos tapaba el micro; en horizontal se resume en una línea (✓ y el siguiente objetivo).
+- **Sin mini-retos en las misiones:** la nota del turno de la 5.11 (M-06) no se manda en una misión (rompería la escena).
+  `tests/m2-turnstyle.test.mjs` se actualizó a la forma nueva de la llamada.
+- **Memoria:** además del prompt, `memory.ts` filtra salud, dinero, política, religión y sexualidad (mejor perder un dato inocente que
+  guardar uno sensible); no se usa ni se apunta en las misiones (el alumno hace un papel); interruptor `teacherMemory` activado por defecto.
+  Sin datos guardados, el prompt del profe es idéntico al de la 5.11.
+- **Copias:** versión 4 solo si hay datos en `facts` (la 5.11 dice «versión más nueva» y no toca nada); sin ellos, la copia es la de antes.
+- **Arnés:** no escribir archivos dentro del repo mientras corre (Vite vigila la carpeta y recarga la página): la salida va al scratchpad.
+

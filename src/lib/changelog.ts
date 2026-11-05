@@ -38,6 +38,20 @@ export function latestEntry(): Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '5.12',
+    date: '2026-11-05',
+    title: 'Situaciones con misión, tareas al momento y un profe que se acuerda de ti',
+    added: [
+      'Nueva práctica «Situaciones»: en el médico, la farmacia, el aeropuerto, el hotel, un restaurante, llamar a un fontanero, una entrevista, una reunión, preguntar una dirección o comprar en una tienda; o describe la tuya. Tu profe hace de la otra persona y tienes 3 objetivos que se tachan cuando los cumples hablando. Con los tres: «¡Lo conseguiste!»',
+      '«Hacerla ahora»: la tarea que te deja el informe la puedes hacer al momento, en una clase corta. Está en el informe, en el aviso de tu tarea y en los globos de tu mascota; al hacerla queda «✓ Hecha» y ya no te la vuelvo a proponer',
+      'Tu profe se acuerda de ti: al terminar cada clase apunta hasta 3 cosas de tu vida que le cuentes (nunca de salud, dinero, política ni religión) y en la siguiente puede preguntarte por una («¿Qué tal fue la entrevista?»). Lo ves en el informe y en Ajustes → Lo que recuerda tu profe, donde lo puedes cambiar, borrar o apagar. Solo se guarda en tu teléfono',
+    ],
+    improved: [
+      'Prácticas del Inicio en una cuadrícula de 6, con «Mis puntos débiles» y «Situaciones» destacadas. El Inicio sigue cabiendo sin desplazar',
+      'Tus copias de seguridad llevan también lo que recuerda tu profe. Las copias antiguas siguen valiendo; una copia con recuerdos necesita Habla 5.12 o posterior',
+    ],
+  },
+  {
     v: '5.11',
     date: '2026-10-21',
     title: 'Sonidos del inglés y más ganas de practicar',

@@ -80,7 +80,7 @@ export async function boot(page) {
         b.click()
         return false
       }
-      return !!document.querySelector('button[aria-label="Ajustes"]') || /Tu tarea de hoy|¡Hola de nuevo!/.test(document.body.innerText)
+      return !!document.querySelector('button[aria-label="Ajustes"]') || /Tu tarea de hoy|¡Hola de nuevo!|Novedades de la v/.test(document.body.innerText)
     })
     if (done) return
     await sleep(250)

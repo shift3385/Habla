@@ -1,0 +1,8 @@
+✔ aviso con «Hacerla ahora»
+✔ el prompt del profe lleva la tarea
+✔ la clase de origen queda ✓ hecha [{"id":1,"scenario":"free","homeworkDoneAt":true},{"id":2,"scenario":"homework","homeworkFor":1,"homeworkDoneAt":false}]
+✔ Progreso: «✓ Hecha»
+✔ globo de la mascota con «Hacerla ahora»
+✔ desde Progreso abre la clase de la tarea
+✔ aviso en horizontal
+P-05: todo bien

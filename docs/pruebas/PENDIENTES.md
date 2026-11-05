@@ -8,6 +8,17 @@
 Casi todas necesitan el **POCO X6 del dueño** (y algunas sus auriculares soundcore Liberty 4 Pro, su voz o su clave real).
 Desde una sesión en la nube solo se puede revisar código y documentación.
 
+## 5.12 «Situaciones», «Hacerla ahora» y «Lo que recuerda tu profe» (rama `claude/eloquent-newton-2cniyr`, build 44) — hecha en la nube, sin APK
+Lista completa: `docs/v5.12/PLAN.md` § «Pendiente en el teléfono». Probado en el navegador con IA falsa (`docs/v5.12/evidencia/`).
+
+| Prueba | Qué falta | Necesita |
+|---|---|---|
+| APK | Compilar debug y release de la 5.12 (`npm run apk:debug`, `npm run apk`) e instalar con `adb -s <serie> install -r` | PC + POCO |
+| Situaciones | Misión preparada por Gemini real, objetivos tachados con voz real y «¡Lo conseguiste!» | Dueño (voz) + clave real |
+| Hacerla ahora | Clase corta con una tarea real del informe y «✓ Hecha» | Dueño (voz) + clave real |
+| Memoria | Que el informe real apunte datos útiles (y nada sensible) y que el profe pregunte por uno sin forzarlo | Varias clases con clave real |
+| Migración | Abrir la 5.12 sobre los datos reales de la 5.11 del POCO (Dexie v5 → v6), con copia antes | POCO del dueño |
+
 ## 5.11 «Motivación» + «Sonidos» (rama `v5.11`, build 42) — aprobada en PC, falta el teléfono
 Lista completa: `docs/v5.11/REVISION.md` § «Regresión final 5.11» y `docs/v5.11/ESTADO.md` (filas S-00 y MOV).
 
