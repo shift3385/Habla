@@ -7,7 +7,6 @@ import { weekKey } from '../lib/stats'
 import { Icon } from '../ui/icons'
 import Mascot from '../ui/Mascot'
 import { THEME_INFO } from '../ui/theme'
-import InfiniteList from './InfiniteList'
 
 /** Tu semana, para tu fila y para el código que mandas. */
 export interface MyWeek {
@@ -117,10 +116,10 @@ export default function FamilyView({
       {members && members.length === 0 && (
         <div className="glass txt-sub rounded-[22px] p-5 text-center text-sm">Aún no te ha mandado nadie su semana. Mándales la tuya y pídeles la suya.</div>
       )}
+      {/* Lista corta (la familia): sin InfiniteList, que reserva el alto de la pantalla y dejaría un hueco. */}
       {sorted.length > 0 && (
-        <InfiniteList
-          items={sorted}
-          render={(m) => (
+        <div className="flex flex-col gap-2">
+          {sorted.map((m) => (
             <div key={m.id} className="glass flex flex-col gap-1.5 rounded-[20px] px-4 py-3" data-family-row={m.name} style={current(m) ? undefined : { opacity: 0.75 }}>
               <div className="flex items-center gap-3">
                 <span className="field grid h-10 w-10 flex-none place-items-center rounded-full fs-15 font-semibold">{m.name[0]?.toUpperCase()}</span>
@@ -156,8 +155,8 @@ export default function FamilyView({
               </div>
               {extra?.row?.(m)}
             </div>
-          )}
-        />
+          ))}
+        </div>
       )}
       {extra?.footer}
     </div>

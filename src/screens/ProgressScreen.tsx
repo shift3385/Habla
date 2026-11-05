@@ -6,6 +6,7 @@ import WeekCardSheet from '../components/WeekCardSheet'
 import PasteCodeSheet from '../components/PasteCodeSheet'
 import MessageSheet from '../components/MessageSheet'
 import FamilyView from '../components/FamilyView'
+import { PracticeRow, ProposePractice } from '../components/FamilyPractice'
 import { unitOf, weekLabel } from '../lib/challenge'
 import { progressMessage, progressToCode } from '../lib/shareCode'
 import { getProfile } from '../lib/profile'
@@ -45,6 +46,7 @@ export default function ProgressScreen({
   onReview,
   onStartHomework,
   initialPage,
+  onStartSituation,
 }: {
   settings: Settings
   /** 5.13 (P-17): colores del tema para la tarjeta de la semana. */
@@ -55,6 +57,8 @@ export default function ProgressScreen({
   onStartHomework?: (sessionId: number) => void
   /** 5.13 (P-14): abrir directamente el detalle del reto (desde el globo de la mascota o la celebración). */
   initialPage?: 'challenge' | null
+  /** 5.13 (Fase 8): «Practicar lo mismo»: empezar la Situación que os propusisteis. */
+  onStartSituation?: (situationId: string) => void
 }) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [week, setWeek] = useState<number[]>([0, 0, 0, 0, 0, 0, 0])
@@ -158,6 +162,7 @@ export default function ProgressScreen({
   const pasteSheet = pasteOpen && (
     <PasteCodeSheet
       settings={settings}
+      onStartSituation={onStartSituation}
       onClose={() => setPasteOpen(false)}
       onApplied={() => {
         chal.reload()
@@ -182,7 +187,11 @@ export default function ProgressScreen({
           }}
           onBack={() => setFamilyOpen(false)}
           onPaste={() => setPasteOpen(true)}
-          extra={{ reloadKey: familyKey }}
+          extra={{
+            reloadKey: familyKey,
+            row: (m) => <PracticeRow m={m} name={name} onStart={onStartSituation} />,
+            footer: <ProposePractice name={name} />,
+          }}
         />
         {pasteSheet}
       </>

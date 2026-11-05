@@ -9,13 +9,14 @@
 // Importarlo no llama a la IA. Módulo puro (sin Dexie ni Capacitor): se prueba en Node (tests/codes-513.test.mjs).
 import { CHALLENGE_PRACTICES, clampTarget, isCleanCategory, localGoal, localTitle } from './challenge'
 import type { ChallengeKind, LookupResult, MistakeCategory, WeeklyChallenge } from './db'
+import { findSituation } from './missions'
 
 export const CODE_PREFIX = 'HABLA'
 export const CODE_VERSION = 1
 /** Tope del código entero (unos 2 KB): uno normal ocupa 300–700 caracteres. */
 export const MAX_CODE_CHARS = 2048
-export type CodeType = 'challenge' | 'progress' | 'word' | 'week'
-const TYPES: readonly CodeType[] = ['challenge', 'progress', 'word', 'week']
+export type CodeType = 'challenge' | 'progress' | 'word' | 'week' | 'practice' | 'score'
+const TYPES: readonly CodeType[] = ['challenge', 'progress', 'word', 'week', 'practice', 'score']
 const KINDS: readonly ChallengeKind[] = ['minutes', 'classes', 'clean', 'review']
 
 export interface ChallengeCode {
@@ -64,7 +65,27 @@ export interface WeekCode {
   challenge?: { title: string; progress: number; target: number; done: boolean }
 }
 
-export type ShareCode = ChallengeCode | ProgressCode | WordCode | WeekCode
+/**
+ * 5.13 (Fase 8): «Practicar lo mismo». Solo una Situación de la lista (missions.ts › SITUATIONS), nunca texto libre: así no
+ * entra nada de otra persona en un prompt.
+ */
+export interface PracticeCode {
+  type: 'practice'
+  from: string
+  situation: string
+}
+
+/** 5.13 (Fase 8): tu nota en esa Situación (0–100) y los objetivos cumplidos. Necesita nombre. */
+export interface ScoreCode {
+  type: 'score'
+  from: string
+  situation: string
+  score: number
+  goals: number
+  total: number
+}
+
+export type ShareCode = ChallengeCode | ProgressCode | WordCode | WeekCode | PracticeCode | ScoreCode
 
 // ---------------------------------------------------------------------------
 // Texto seguro
@@ -187,6 +208,16 @@ export function parsePayload(data: unknown): CodeCheck {
         partOfSpeech: safeText(d.partOfSpeech, 24),
       },
     }
+  }
+  if (d.t === 'practice' || d.t === 'score') {
+    const situation = typeof d.situation === 'string' && findSituation(d.situation) ? d.situation : null
+    if (!situation) return { ok: false, error: DAMAGED }
+    if (d.t === 'practice') return { ok: true, code: { type: 'practice', from, situation } }
+    const score = intIn(d.score, 0, 100)
+    const total = intIn(d.total, 1, 3)
+    const goals = intIn(d.goals, 0, 3)
+    if (!from || score === null || total === null || goals === null || goals > total) return { ok: false, error: DAMAGED }
+    return { ok: true, code: { type: 'score', from, situation, score, goals, total } }
   }
   if (d.t === 'week') {
     // Sin nombre no se sabe de quién es la fila del tablero.
@@ -331,6 +362,16 @@ export function progressMessage(c: ProgressCode): string {
 export function weekMessage(c: WeekCode): string {
   const reto = c.challenge ? (c.challenge.done ? ` y cumplí mi reto «${c.challenge.title}»` : `; reto «${c.challenge.title}»: ${c.challenge.progress} de ${c.challenge.target}`) : ''
   return `Mi semana en Habla: ${c.minutes} min hablando inglés, racha de ${c.streak} ${c.streak === 1 ? 'día' : 'días'}${reto}.\n${HOW}\n${encodeCode(c)}`
+}
+
+export function practiceMessage(c: PracticeCode): string {
+  const s = findSituation(c.situation)!
+  return `¿Practicamos lo mismo en Habla? «${s.titleEs}»: una Situación con 3 objetivos. Hazla y comparamos la nota.\n${HOW}\n${encodeCode(c)}`
+}
+
+export function scoreMessage(c: ScoreCode): string {
+  const s = findSituation(c.situation)!
+  return `Hice «${s.titleEs}» en Habla: ${c.score} puntos (${c.goals} de ${c.total} objetivos).\n${HOW}\n${encodeCode(c)}`
 }
 
 export function wordMessage(c: WordCode): string {

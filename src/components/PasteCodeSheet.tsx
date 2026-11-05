@@ -12,7 +12,18 @@ import { THEME_INFO } from '../ui/theme'
  * cada tipo; al revisar, dice qué va a pasar y solo con «Aceptar» se guarda. Un código dañado, de otra versión o que no
  * encaja se explica en español y no se toca nada. Todo se pinta como texto (React), nunca como HTML.
  */
-export default function PasteCodeSheet({ settings, onClose, onApplied }: { settings: Settings; onClose: () => void; onApplied: () => void }) {
+export default function PasteCodeSheet({
+  settings,
+  onClose,
+  onApplied,
+  onStartSituation,
+}: {
+  settings: Settings
+  onClose: () => void
+  onApplied: () => void
+  /** 5.13 (Fase 8): tras pegar una práctica, «Practicar ahora». */
+  onStartSituation?: (situationId: string) => void
+}) {
   const info = THEME_INFO[settings.theme] ?? THEME_INFO.marea
   const [text, setText] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -99,7 +110,10 @@ export default function PasteCodeSheet({ settings, onClose, onApplied }: { setti
                   📖 <b>una palabra</b>: va a tus Palabras y a tu Repaso;
                 </span>
                 <span className="block">
-                  👨‍👩‍👧 <b>su semana</b>: sale en Mi familia.
+                  👨‍👩‍👧 <b>su semana</b> o <b>su nota</b> en una práctica: sale en Mi familia;
+                </span>
+                <span className="block">
+                  🎭 <b>una práctica</b>: la misma Situación para los dos.
                 </span>
                 <span className="mt-1.5 block">Pegar un código no gasta tu clave.</span>
               </>
@@ -158,8 +172,13 @@ export default function PasteCodeSheet({ settings, onClose, onApplied }: { setti
           </div>
         )}
 
+        {done && found?.code.type === 'practice' && onStartSituation && (
+          <button onClick={() => onStartSituation((found.code as { situation: string }).situation)} className="btn-acc h-12 rounded-full fs-15" data-practice-now>
+            Practicar ahora
+          </button>
+        )}
         {done && (
-          <button onClick={onClose} className="btn-acc h-12 rounded-full fs-15" autoFocus>
+          <button onClick={onClose} className={`${found?.code.type === 'practice' && onStartSituation ? 'glass font-semibold' : 'btn-acc'} h-12 rounded-full fs-15`} autoFocus>
             Hecho
           </button>
         )}

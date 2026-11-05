@@ -4,6 +4,7 @@
 import { boundsOfKey, currentChallenge } from './challenge'
 import { db } from './db'
 import { challengeFromCode, lookupFromCode, sameChallenge, sharedContext, whoOf, type ShareCode } from './shareCode'
+import { findSituation } from './missions'
 import { syncCards } from './srs'
 import { weekKey } from './stats'
 
@@ -30,6 +31,24 @@ export async function previewCode(c: ShareCode, now = new Date()): Promise<CodeP
       title: `${who} te pasa una palabra`,
       text: `«${c.headword}» = ${c.translation}.${c.meaningEs ? ` ${c.meaningEs}` : ''} Se guardará en tus Palabras y entrará en tu Repaso.`,
       cta: 'Guardar en mis palabras',
+    }
+  }
+  if (c.type === 'practice' || c.type === 'score') {
+    const s = findSituation(c.situation)!
+    if (c.type === 'practice') {
+      return {
+        ok: true,
+        title: `${who} te propone practicar lo mismo`,
+        text: `«${s.titleEs}»: una Situación con 3 objetivos. Hazla tú también y comparad la nota en Mi familia${c.from ? '' : ' (el código no trae nombre: no saldrá en Mi familia)'}.`,
+        cta: 'Guardar y practicar',
+      }
+    }
+    const mine = await myPracticeScore(c.situation)
+    return {
+      ok: true,
+      title: `La nota de ${who}`,
+      text: `${who} sacó ${c.score} en «${s.titleEs}» (${c.goals} de ${c.total} objetivos). ${mine ? `Tú: ${mine.score} (${mine.goals} de ${mine.total}).` : 'Tú aún no la has hecho.'}`,
+      cta: 'Guardar en Mi familia',
     }
   }
   if (c.type === 'week') {
@@ -93,6 +112,20 @@ export async function applyCode(c: ShareCode, now = new Date()): Promise<string>
     await syncCards().catch(() => 0)
     return `«${c.headword}» ya está en tus Palabras y en tu Repaso.`
   }
+  if (c.type === 'practice' || c.type === 'score') {
+    const s = findSituation(c.situation)!
+    if (!c.from) return `¡A practicar «${s.titleEs}»!`
+    const id = memberId(c.from)
+    const prev = await db.family.get(id)
+    // Una propuesta nueva de la misma Situación no borra la nota que ya te mandó.
+    const keep = prev?.practice?.situationId === c.situation ? prev.practice : undefined
+    const practice =
+      c.type === 'practice'
+        ? { ...(keep ?? {}), situationId: c.situation, at: now.getTime() }
+        : { situationId: c.situation, at: now.getTime(), score: c.score, goals: c.goals, total: c.total }
+    await db.family.put({ ...(prev ?? {}), id, name: c.from, at: now.getTime(), practice })
+    return c.type === 'practice' ? `Guardado en Mi familia. ¡A practicar «${s.titleEs}»!` : `Guardado: la nota de ${c.from} está en Mi familia.`
+  }
   if (c.type === 'week') {
     const id = memberId(c.from)
     const prev = await db.family.get(id)
@@ -115,3 +148,11 @@ export async function applyCode(c: ShareCode, now = new Date()): Promise<string>
 
 /** 5.13 (Fase 7): clave de una persona en «Mi familia» (su nombre, sin mayúsculas ni espacios de más). */
 export const memberId = (name: string) => name.trim().toLowerCase().replace(/\s+/g, ' ')
+
+/** 5.13 (Fase 8): tu última clase terminada de esa Situación (nota, objetivos cumplidos y cuántos había), o null. */
+export async function myPracticeScore(situationId: string): Promise<{ score: number; goals: number; total: number } | null> {
+  const all = await db.sessions.where('scenario').equals('mission').toArray()
+  const last = all.filter((x) => x.mission?.situationId === situationId && x.metrics && x.metrics.turns > 0).sort((a, b) => b.startedAt - a.startedAt)[0]
+  if (!last?.metrics || !last.mission) return null
+  return { score: last.metrics.score, goals: last.mission.done.length, total: last.mission.goals.length || 3 }
+}

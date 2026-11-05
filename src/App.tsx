@@ -771,6 +771,7 @@ export default function App() {
                 onReview={() => setReview(true)}
                 onStartHomework={(id) => (settings.geminiKey.trim() ? startHomework(id) : setTab('settings'))}
                 initialPage={progressPage}
+                onStartSituation={(id) => (settings.geminiKey.trim() ? start('mission', id) : setTab('settings'))}
               />
             )}
             {tab === 'settings' && (
