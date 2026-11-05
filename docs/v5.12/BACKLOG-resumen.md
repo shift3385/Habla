@@ -1,7 +1,8 @@
 # Resumen del backlog y decisiones (2026-11-05)
 
 Fuentes: `BACKLOG.md` §4–§5 y propuestas de `docs/pruebas/regresion-5.10/A5-usabilidad.md` (P-xx).
-**En curso:** P-05, P-12 y P-11 → plan en `docs/v5.12/PLAN.md` (sesión nueva).
+**Hecho en la 5.12 (2026-11-05):** P-05, P-12 y P-11 (`docs/v5.12/PLAN.md`; falta el APK y el teléfono).
+**Siguiente, aprobado por el dueño:** 5.13 «Retos en familia» = P-14 + P-17 + «Juntos» sin servidor (códigos para compartir) → plan en `docs/v5.13/PLAN.md` (sesión nueva).
 **Aparcado por el dueño (2026-11-05):** pruebas en el teléfono (`docs/pruebas/PENDIENTES.md`), tareas abiertas de la 5.11
 (S-00, S-04, S-09, S-10, I-4, MOV en `docs/v5.11/ESTADO.md`), dibujo de la boca en Sonidos (primera versión subida, no
 convence: `docs/v5.11/sonidos-boca/`) y preguntas de `docs/v5.11/PLAN.md` §10.
@@ -9,13 +10,13 @@ convence: `docs/v5.11/sonidos-boca/`) y preguntas de `docs/v5.11/PLAN.md` §10.
 ## 1. Propuestas grandes (orden recomendado: 5.12 = P-11 + P-05 + P-12 → luego P-14, P-13, P-16, P-17)
 | # | Qué es | Impacto | Esfuerzo | Ojo / estado |
 |---|---|---|---|---|
-| P-11 | Memoria del alumno: 1–3 datos personales por clase, editables y borrables en Ajustes; el profe pregunta por uno al empezar | Muy alto | Medio | **Aprobado: el profe recuerda (activado).** En el plan 5.12 |
-| P-05 | «Hacerla ahora»: la tarea del informe abre una clase corta para practicarla | Medio-alto | Bajo-medio | **En el plan 5.12** |
-| P-12 | Roleplays con misión: situación real o de una lista, 3 objetivos que se tachan, «¡Lo conseguiste!» | Alto | Medio | **En el plan 5.12** (idea C del backlog) |
-| P-14 | Retos semanales sacados de tus errores frecuentes, con barra de progreso | Alto | Medio | Una llamada a Gemini por semana |
+| P-11 | Memoria del alumno: 1–3 datos personales por clase, editables y borrables en Ajustes; el profe pregunta por uno al empezar | Muy alto | Medio | ✅ **Hecho en la 5.12** |
+| P-05 | «Hacerla ahora»: la tarea del informe abre una clase corta para practicarla | Medio-alto | Bajo-medio | ✅ **Hecho en la 5.12** |
+| P-12 | Roleplays con misión: situación real o de una lista, 3 objetivos que se tachan, «¡Lo conseguiste!» | Alto | Medio | ✅ **Hecho en la 5.12** (idea C del backlog) |
+| P-14 | Retos semanales sacados de tus errores frecuentes, con barra de progreso | Alto | Medio | **En el plan 5.13** (una llamada a Gemini por semana) |
 | P-13 | El plan de 12 semanas como viaje (mapa con paradas; la mascota gana cosas) | Alto | Medio-alto | Cuidar el rendimiento (modo ligero) |
 | P-16 | Shadowing y fonemas con la voz modelo y la nota de Azure | Alto | Alto | Gasta minutos de Azure; se cruza con Sonidos (aparcado) |
-| P-17 | Tarjeta de la semana para WhatsApp y reto entre dos por código, sin servidor | Medio | Medio | Encaja con «Juntos» |
+| P-17 | Tarjeta de la semana para WhatsApp y reto entre dos por código, sin servidor | Medio | Medio | **En el plan 5.13** (con «Juntos» sin servidor) |
 | P-15 | Primera charla de 2 min antes del test para la gente nueva | Medio | Medio | Toca la regla «el test va primero»: decide el dueño |
 
 ## 2. «Juntos»: practicar con otras personas que usan Habla (BACKLOG §5.1)
