@@ -1,5 +1,7 @@
 # Habla · Pendientes e ideas
 
+> **Resumen al día (2026-11-05):** qué está en curso, qué está aparcado y las propuestas pendientes, en `docs/v5.12/BACKLOG-resumen.md`. Plan de la 5.12 en `docs/v5.12/PLAN.md`.
+
 Anotado el 2026-10-01 para retomar más adelante. **No implementado todavía.**
 Estado de cada idea: 🟢 aprobada · 🟡 a debatir · 🔴 descartada
 
