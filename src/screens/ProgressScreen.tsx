@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { ChallengeCard, ChallengeView } from '../components/ChallengeCard'
+import { useWeekChallenge } from '../components/useWeekChallenge'
 import InfiniteList from '../components/InfiniteList'
 import ReportView from '../components/ReportView'
 import SpeakIcon from '../components/SpeakIcon'
@@ -33,12 +35,15 @@ export default function ProgressScreen({
   registerBack,
   onReview,
   onStartHomework,
+  initialPage,
 }: {
   settings: Settings
   registerBack: (h: (() => void) | null) => void
   onReview: () => void
   /** 5.12 (P-05): «Hacerla ahora» desde el informe de una clase pasada. */
   onStartHomework?: (sessionId: number) => void
+  /** 5.13 (P-14): abrir directamente el detalle del reto (desde el globo de la mascota o la celebración). */
+  initialPage?: 'challenge' | null
 }) {
   const [dash, setDash] = useState<Dashboard | null>(null)
   const [week, setWeek] = useState<number[]>([0, 0, 0, 0, 0, 0, 0])
@@ -55,6 +60,9 @@ export default function ProgressScreen({
   // 5.11 (M-03): «Tus logros» (lista con fecha; los que faltan, en gris con «Te faltan N»).
   const [logros, setLogros] = useState<MilestoneRow[] | null>(null)
   const [logrosOpen, setLogrosOpen] = useState(false)
+  // 5.13 (P-14): el reto de la semana (lo crea si aún no existe) y su detalle.
+  const chal = useWeekChallenge(settings)
+  const [chalOpen, setChalOpen] = useState(initialPage === 'challenge')
 
   useEffect(() => {
     loadDashboard().then(setDash)
@@ -72,9 +80,9 @@ export default function ProgressScreen({
 
   // Atrás (Android) desde el detalle de una sesión vuelve a la lista.
   useEffect(() => {
-    registerBack(open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : null)
+    registerBack(open ? () => setOpen(null) : logrosOpen ? () => setLogrosOpen(false) : chalOpen ? () => setChalOpen(false) : null)
     return () => registerBack(null)
-  }, [open, logrosOpen, registerBack])
+  }, [open, logrosOpen, chalOpen, registerBack])
 
   const openSession = async (s: Session) => {
     const turns = await db.turns.where('sessionId').equals(s.id!).toArray()
@@ -111,6 +119,7 @@ export default function ProgressScreen({
   }
 
   if (logrosOpen && logros) return <Logros rows={logros} onBack={() => setLogrosOpen(false)} />
+  if (chalOpen && chal.status) return <ChallengeView settings={settings} status={chal.status} history={chal.history} onBack={() => setChalOpen(false)} />
 
   const got = logros?.filter((r) => r.at).length ?? 0
   const goal = settings.dailyGoalMinutes
@@ -158,6 +167,8 @@ export default function ProgressScreen({
           ))}
         </div>
       </div>
+
+      {chal.status && <ChallengeCard status={chal.status} onOpen={() => setChalOpen(true)} />}
 
       {logros && logros.length > 0 && (
         <button onClick={() => setLogrosOpen(true)} className="glass flex items-center gap-3 rounded-[22px] px-4 py-3 text-left" data-logros>

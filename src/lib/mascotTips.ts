@@ -3,7 +3,7 @@
 //  - Avisos: lo de hoy (clase a medias, lección, meta, repaso, racha, test). Lo que pide acción va primero.
 //  - Consejos: cómo sacarle partido a la app y qué significa cada nota. Siguen por donde se quedaron la vez anterior.
 
-export type TipAction = 'resume' | 'lesson' | 'review' | 'notif' | 'homework'
+export type TipAction = 'resume' | 'lesson' | 'review' | 'notif' | 'homework' | 'challenge'
 
 export interface Tip {
   id: string
@@ -33,6 +33,8 @@ export interface TipInput {
   restedYesterday?: boolean
   /** 5.12 (P-05): la tarea de tu última clase, si está pendiente (homework.ts › homeworkPending). Opcional. */
   homework?: string
+  /** 5.13 (P-14): el reto de la semana y cuánto llevas (challenge.ts). Opcional. */
+  challenge?: { title: string; progress: number; target: number; unit: string }
 }
 
 const short = (s: string, max = 40) => (s.length > max ? s.slice(0, max - 2).trimEnd() + '…' : s)
@@ -78,6 +80,16 @@ export const NOTICE_VARIANTS = {
     () => 'Un poco cada día y empezamos una racha. ¡La llama de arriba cuenta tus días seguidos!',
     () => 'La llama de arriba cuenta tus días seguidos. ¿Empezamos una racha hoy?',
     () => 'Habla un poco cada día y verás crecer la llama de arriba. Un día de descanso por semana no la rompe.',
+  ],
+  // 5.13 (P-14): el reto de la semana («Reto de la semana: 4 de 8»). Tocarlo abre el detalle en Progreso.
+  challenge: [
+    (p: number, n: number, u: string, title: string) => `Reto de la semana: ${p} de ${n} ${u}. «${title}»: ¡a por él!`,
+    (p: number, n: number, u: string, title: string) => `Reto de la semana: ${p} de ${n} ${u}. Te ${plural(n - p, 'falta 1', `faltan ${n - p}`)} para cumplir «${title}».`,
+    (p: number, n: number, u: string, title: string) => `«${title}» — reto de la semana: ${p} de ${n} ${u}. Cada día suma.`,
+  ],
+  challengeDone: [
+    (title: string) => `¡Reto de la semana cumplido! «${title}». El lunes te propongo otro.`,
+    (title: string) => `Cumpliste «${title}», tu reto de la semana. ¡Qué bien lo has hecho!`,
   ],
   // 5.11 (M-04): el comodín de la racha, contado al día siguiente (riesgo «¿por qué no subió mi racha?»).
   rested: [
@@ -154,6 +166,15 @@ export function buildTips(i: TipInput): Tip[] {
   else tips.push({ id: 'goal', ...variant('goalDone') })
 
   if (i.dueCards > 0) tips.push({ id: 'review', ...variant('review', i.dueCards), action: 'review', cta: 'Repasar ahora' })
+
+  // 5.13 (P-14): el reto de la semana.
+  const c = i.challenge
+  if (c) {
+    const title = short(c.title, 48)
+    const p = Math.min(Math.floor(c.progress), c.target)
+    if (p >= c.target) tips.push({ id: 'challenge', ...variant('challengeDone', title), action: 'challenge', cta: 'Ver mis retos' })
+    else tips.push({ id: 'challenge', ...variant('challenge', p, c.target, c.unit, title), action: 'challenge', cta: 'Ver el reto' })
+  }
 
   if (i.restedYesterday && i.streak >= 1) tips.push({ id: 'streak', ...variant('rested', mins > 0) })
   else if (i.streak >= 2) tips.push({ id: 'streak', ...variant('streak', i.streak, mins > 0) })

@@ -20,8 +20,8 @@ export function dayKey(ts: number): string {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
 
-/** Lunes de la semana natural (lunes–domingo) del día, como `dayKey`. */
-const weekKey = (d: Date) => dayKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime())
+/** Lunes de la semana natural (lunes–domingo) del día, como `dayKey`. 5.13 (P-14): también es la clave del reto. */
+export const weekKey = (d: Date) => dayKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime())
 
 export interface StreakResult {
   streak: number
@@ -171,6 +171,22 @@ export async function weekMinutes(): Promise<number[]> {
     days[d] += (practice[dayKey(day.getTime())] ?? 0) / 60
   }
   return days.map((m) => Math.round(m * 10) / 10)
+}
+
+/**
+ * 5.13 (P-14): minutos hablando entre `start` y `end` (ms), con el mismo criterio que `weekMinutes`: las clases por el
+ * día en que empezaron y el repaso por su día (el contador del repaso solo guarda 60 días).
+ */
+export async function minutesBetween(start: number, end: number): Promise<number> {
+  const sessions = await db.sessions.where('startedAt').between(start, end, true, false).toArray()
+  let m = sessions.reduce((a, s) => a + (s.metrics ? s.metrics.speechSeconds / 60 : 0), 0)
+  const practice = practiceByDay()
+  // Día a día con Date (no sumando 24 h: con el cambio de hora un día dura 23 o 25).
+  const d0 = new Date(start)
+  for (let i = 0, day = d0; day.getTime() < end; i++, day = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + i)) {
+    m += (practice[dayKey(day.getTime())] ?? 0) / 60
+  }
+  return Math.round(m * 10) / 10
 }
 
 export interface ErrorSummary {

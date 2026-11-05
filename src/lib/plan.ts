@@ -142,8 +142,8 @@ function studentBrief(p: Profile, frequent: string[]): string {
 - Structures they often get wrong in class: ${frequent.length ? frequent.join('; ') : 'not enough data yet'}.`
 }
 
-/** Estructuras que más falla últimamente (de los errores corregidos en clase). */
-async function frequentStructures(): Promise<string[]> {
+/** Estructuras que más falla últimamente (de los errores corregidos en clase). 5.13 (P-14): también para el reto. */
+export async function frequentStructures(): Promise<string[]> {
   const recent = await db.mistakes.orderBy('createdAt').reverse().limit(40).toArray()
   const counts = new Map<string, number>()
   for (const m of recent) if (STRUCTURE_HINTS[m.category]) counts.set(m.category, (counts.get(m.category) ?? 0) + 1)

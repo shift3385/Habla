@@ -24,18 +24,19 @@ const OLD_STORES = {
 test('S-01: Dexie v5 solo añade `sounds` y `milestones`; las versiones 1–4 quedan idénticas y ninguna borra tablas', async () => {
   const { db, TABLES } = await loadFresh('/src/lib/db.ts')
   const versions = db._versions.map((v) => [v._cfg.version, v._cfg.storesSource])
-  // 5.12 (P-11): la v6 añade `facts` (tests/p11-memory.test.mjs); aquí se sigue comprobando que la v5 no cambió.
+  // 5.12 (P-11): la v6 añade `facts` (tests/p11-memory.test.mjs); 5.13 (P-14): la v7, `challenges`
+  // (tests/p14-challenge.test.mjs). Aquí se sigue comprobando que la v5 no cambió.
   assert.deepEqual(
     versions.map(([n]) => n),
-    [1, 2, 3, 4, 5, 6],
+    [1, 2, 3, 4, 5, 6, 7],
   )
   for (const [n, stores] of versions) {
     if (n <= 4) assert.deepEqual(stores, OLD_STORES[n], `versión ${n} sin cambios`)
     for (const [t, def] of Object.entries(stores)) assert.notEqual(def, null, `la versión ${n} no borra la tabla ${t}`)
   }
   assert.deepEqual(versions.find(([n]) => n === 5)[1], { sounds: 'id, lastAt', milestones: 'id, at' })
-  assert.equal(db.verno, 6)
-  assert.deepEqual([...TABLES], ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts'])
+  assert.equal(db.verno, 7)
+  assert.deepEqual([...TABLES], ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts', 'challenges'])
   // Las copias exportan y comprueban exactamente las mismas tablas que hay en la base.
   const { BACKUP_TABLES } = await loadFresh('/src/lib/backupCheck.ts')
   assert.deepEqual([...BACKUP_TABLES], [...TABLES])
@@ -72,7 +73,7 @@ const sound = (extra = {}) => ({
 
 test('S-01: una copia de la 5.10.1 (v2, sin Sonidos ni logros) se importa con esas tablas vacías', async () => {
   const { checkBackup, BACKUP_MAX_VERSION } = await loadFresh('/src/lib/backupCheck.ts')
-  assert.equal(BACKUP_MAX_VERSION, 4) // 5.12 (P-11): 4 con lo que recuerda el profe
+  assert.equal(BACKUP_MAX_VERSION, 5) // 5.12 (P-11): 4 con lo que recuerda el profe; 5.13 (P-14): 5 con retos
   const r = checkBackup(copy5101())
   assert.equal(r.ok, true, r.error)
   assert.deepEqual(r.backup.tables.sounds, [])

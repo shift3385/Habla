@@ -23,7 +23,7 @@ pareja, notas de voz entre dos, P-13, P-15 y P-16.
 ## Fases (en este orden; una fase = un commit con su test)
 | Fase | Qué | Estado |
 |---|---|---|
-| 1 | **P-14 reto semanal** sacado de tus errores, con barra de progreso medida en el teléfono | pendiente |
+| 1 | **P-14 reto semanal** sacado de tus errores, con barra de progreso medida en el teléfono | ✅ hecha (2026-11-05): `src/lib/challenge.ts` (4 tipos cerrados, cifra recortada a su rango, progreso puro medido en el teléfono, respaldo local sin IA, una llamada al modelo rápido por semana con `frequentStructures()`, semanas pasadas cerradas con su resultado), tabla Dexie `challenges` (`db.version(7)`, solo aditiva; migración v6→v7 con datos comprobada en el navegador), copia versión 5 solo con retos (`NEW_IN_513`); globo de la mascota «Reto de la semana: 3 de 4 respuestas» que abre el detalle; tarjeta y detalle con historial en Progreso; «¡Reto cumplido!» después de los logros (`HomeGates`), una sola vez. Test `tests/p14-challenge.test.mjs`; navegador `docs/v5.13/evidencia/arnes-p14.mjs` (capturas en `evidencia/P14/`) |
 | 2 | **P-17 tarjeta de la semana** (imagen para WhatsApp) | pendiente |
 | 3 | **Códigos para compartir:** reto entre dos y palabras compartidas | pendiente |
 | 4 | Entrega 5.13 (build 45): `version.json`, Novedades en `changelog.ts`, README/CLAUDE.md, capturas | pendiente |

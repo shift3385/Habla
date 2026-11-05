@@ -132,10 +132,11 @@ test('P-11: el informe pide facts_es solo con la memoria activada, con lo prohib
 test('P-11: Dexie v6 solo añade `facts`; ajuste activado por defecto', async () => {
   const { db, TABLES } = await loadFresh('/src/lib/db.ts')
   const versions = db._versions.map((v) => [v._cfg.version, v._cfg.storesSource])
-  assert.deepEqual(versions.at(-1), [6, { facts: '++id, createdAt' }])
-  assert.equal(db.verno, 6)
+  // 5.13 (P-14): después llega la v7 (`challenges`); la v6 sigue igual.
+  assert.deepEqual(versions.find(([n]) => n === 6), [6, { facts: '++id, createdAt' }])
+  assert.ok(db.verno >= 6)
   for (const [n, stores] of versions) for (const [t, def] of Object.entries(stores)) assert.notEqual(def, null, `la versión ${n} no borra ${t}`)
-  assert.equal(TABLES.at(-1), 'facts')
+  assert.ok(TABLES.includes('facts'))
   const settings = src('src/lib/settings.ts')
   assert.match(settings, /teacherMemory: boolean/)
   assert.match(settings.slice(settings.indexOf('const DEFAULTS')), /teacherMemory: true,/)
@@ -143,10 +144,10 @@ test('P-11: Dexie v6 solo añade `facts`; ajuste activado por defecto', async ()
 
 test('P-11: copias — con datos es versión 4 y se vuelve a leer; sin ellos no cambia; las antiguas valen sin la tabla', async () => {
   const { checkBackup, backupVersionFor, exportTables, BACKUP_TABLES, BACKUP_MAX_VERSION } = await loadFresh('/src/lib/backupCheck.ts')
-  assert.equal(BACKUP_MAX_VERSION, 4)
+  assert.ok(BACKUP_MAX_VERSION >= 4) // 5.13 (P-14): 5 con retos
   assert.ok(BACKUP_TABLES.includes('facts'))
   const profile = { id: 'me', levels: { overall: 'B1', grammar: 'B1', reading: 'B1', listening: 'B1', speaking: 'A2' }, startedAt: now, name: 'Ana' }
-  const base = { sessions: [], turns: [], mistakes: [], profile: [profile], lookups: [], cards: [], grammar: [], sounds: [], milestones: [] }
+  const base = { sessions: [], turns: [], mistakes: [], profile: [profile], lookups: [], cards: [], grammar: [], sounds: [], milestones: [], challenges: [] }
   // Sin datos: la tabla no se escribe (la 5.11 rechaza tablas que no conoce) y la versión es la de antes.
   const empty = exportTables({ ...base, facts: [] })
   assert.ok(!('facts' in empty))

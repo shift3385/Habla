@@ -42,7 +42,7 @@ import { discardSavedClass, getSavedClass, type SavedClass } from './lib/savedCl
 import MascotPage from './components/MascotPage'
 import GrammarSheet from './components/GrammarSheet'
 import { onOpenGrammarTopic } from './lib/grammarLink'
-import MilestoneGate from './components/MilestoneGate'
+import { HomeGates } from './components/ChallengeGate'
 import { onOpenSound } from './lib/soundLink'
 import { Icon, type IconName } from './ui/icons'
 import { cssVars, TEACHERS, THEME_INFO, themeVars } from './ui/theme'
@@ -84,6 +84,12 @@ export default function App() {
   const [planOpen, setPlanOpen] = useState(false)
   // Ajustes abiertos directamente en una sección (p. ej. Tema y mascota desde el Inicio).
   const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(null)
+  // 5.13 (P-14): Progreso abre directamente el detalle del reto (globo de la mascota, celebración).
+  const [progressPage, setProgressPage] = useState<'challenge' | null>(null)
+  const openChallenge = () => {
+    setProgressPage('challenge')
+    setTab('progress')
+  }
   const [retestAt, setRetestAt] = useState<number | null>(null)
   const [retestReady, setRetestReady] = useState(false)
   const [level, setLevel] = useState('B1')
@@ -753,6 +759,7 @@ export default function App() {
                 onResumeClass={resumeClass}
                 onFinishClass={finishSavedClass}
                 onStartHomework={(id) => (settings.geminiKey.trim() ? startHomework(id) : setTab('settings'))}
+                onOpenChallenge={openChallenge}
               />
             )}
             {tab === 'words' && <WordsScreen settings={settings} registerBack={registerBack} />}
@@ -762,6 +769,7 @@ export default function App() {
                 registerBack={registerBack}
                 onReview={() => setReview(true)}
                 onStartHomework={(id) => (settings.geminiKey.trim() ? startHomework(id) : setTab('settings'))}
+                initialPage={progressPage}
               />
             )}
             {tab === 'settings' && (
@@ -784,7 +792,8 @@ export default function App() {
       </div>
       {dialogs}
       {/* 5.11 (M-03, I-1): al volver al Inicio, la mascota celebra un hito nuevo (uno por vez; sin hitos no pinta nada). */}
-      {tab === 'home' && !about && !planOpen && <MilestoneGate settings={settings} onDone={() => {}} />}
+      {/* 5.13 (P-14): después, «¡Reto cumplido!» (HomeGates: nunca dos a la vez). */}
+      {tab === 'home' && !about && !planOpen && <HomeGates settings={settings} onOpenChallenge={openChallenge} />}
       <TabBar
         tab={tab}
         onChange={(k) => {
@@ -792,6 +801,7 @@ export default function App() {
           setAbout(null)
           setPlanOpen(false)
           setSettingsPage(null)
+          setProgressPage(null)
           setTab(k)
         }}
       />

@@ -195,11 +195,12 @@ test('SEG-501 / RES-704 / E2E-601: copias dañadas se rechazan con un mensaje en
 test('Versión más nueva: pide actualizar la app; JSON roto: lo dice', async () => {
   const { checkBackup, parseBackup } = await loadFresh('/src/lib/backupCheck.ts')
   // 5.10.1 (REG-A1-07): la 2 (copias con Gramática) ya se lee. 5.11 (S-01): la 3 (Sonidos, logros) también. 5.12 (P-11):
-  // la 4 (lo que recuerda el profe) también; la 5 es de una versión más nueva.
+  // la 4 (lo que recuerda el profe) también. 5.13 (P-14): la 5 (retos) también; la 6 es de una versión más nueva.
   assert.equal(checkBackup(mutate((b) => (b.version = 2))).ok, true)
   assert.equal(checkBackup(mutate((b) => (b.version = 3))).ok, true)
   assert.equal(checkBackup(mutate((b) => (b.version = 4))).ok, true)
-  assert.match(checkBackup(mutate((b) => (b.version = 5))).error, /más nueva/)
+  assert.equal(checkBackup(mutate((b) => (b.version = 5))).ok, true)
+  assert.match(checkBackup(mutate((b) => (b.version = 6))).error, /más nueva/)
   assert.match(parseBackup('{"format":').error, /JSON válido/)
   assert.equal(parseBackup(JSON.stringify(goodBackup())).ok, true)
 })

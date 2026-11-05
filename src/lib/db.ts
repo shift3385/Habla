@@ -307,6 +307,33 @@ export interface StudentFact {
   sessionId?: number // la clase en la que salió
 }
 
+/** 5.13 (P-14): tipos de reto semanal. Se miden en el teléfono, sin IA (challenge.ts › `challengeProgress`). */
+export type ChallengeKind = 'minutes' | 'classes' | 'clean' | 'review'
+
+/**
+ * 5.13 (P-14): el reto de una semana (tabla `challenges`, clave = `weekKey` del lunes, como `2026-11-2`). La IA solo
+ * elige tipo, cifra y textos; la app recorta la cifra y mide el progreso con tus datos. Nada de esto cambia el nivel.
+ */
+export interface WeeklyChallenge {
+  id: string // lunes de la semana (stats.ts › weekKey)
+  kind: ChallengeKind
+  target: number
+  /** `clean`: la categoría de error que no debes fallar. */
+  category?: MistakeCategory
+  /** `classes`: solo cuentan las clases de esta práctica (id de scenarios.ts); sin ella, cualquiera. */
+  scenario?: string
+  titleEs: string
+  goalEs: string
+  createdAt: number
+  source: 'ai' | 'local' | 'shared'
+  /** Lo último medido (para el historial de semanas pasadas). */
+  progress?: number
+  /** La semana ya terminó y `progress` es el resultado final. */
+  final?: boolean
+  doneAt?: number // cuándo se cumplió
+  celebratedAt?: number // cuándo lo celebró la mascota
+}
+
 export const db = new Dexie('habla') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   turns: EntityTable<Turn, 'id'>
@@ -318,6 +345,7 @@ export const db = new Dexie('habla') as Dexie & {
   sounds: EntityTable<SoundProgress, 'id'>
   milestones: EntityTable<Milestone, 'id'>
   facts: EntityTable<StudentFact, 'id'>
+  challenges: EntityTable<WeeklyChallenge, 'id'>
 }
 
 db.version(1).stores({
@@ -353,4 +381,9 @@ db.version(6).stores({
   facts: '++id, createdAt',
 })
 
-export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts'] as const
+// 5.13 (P-14): retos semanales. Igual que la v4–v6, solo añade una tabla: nada de lo anterior cambia.
+db.version(7).stores({
+  challenges: 'id, createdAt',
+})
+
+export const TABLES = ['sessions', 'turns', 'mistakes', 'profile', 'lookups', 'cards', 'grammar', 'sounds', 'milestones', 'facts', 'challenges'] as const

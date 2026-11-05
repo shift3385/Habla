@@ -122,7 +122,7 @@ export default function MascotBubble({
       {/* La acción va DENTRO del globo, como botón con texto y a la izquierda: no se confunde con los botones de al lado. */}
       {tip.action && tip.cta && (
         <span className="btn-acc relative flex items-center gap-1 rounded-full px-3 py-1 fs-12 font-semibold">
-          <Icon name={tip.action === 'review' ? 'cards' : 'mic'} size={12} />
+          <Icon name={tip.action === 'review' ? 'cards' : tip.action === 'challenge' ? 'bars' : 'mic'} size={12} />
           {tip.cta}
         </span>
       )}

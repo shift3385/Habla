@@ -3,12 +3,13 @@ import { Capacitor } from '@capacitor/core'
 import { SCENARIOS } from '../lib/scenarios'
 import { dueSummary, syncCards, type DueSummary } from '../lib/srs'
 import PlanCard from '../components/PlanCard'
-import { doneToday, todayLesson, type StudyPlan } from '../lib/plan'
+import { doneToday, frequentStructures, todayLesson, type StudyPlan } from '../lib/plan'
+import { ensureWeekChallenge, measureChallenge, unitOf, type ChallengeStatus } from '../lib/challenge'
 import { nextRetestAt } from '../lib/levels'
 import { buildAdvice, buildTips, interleave, newTipRound, noteTipShown, rotate, type Tip } from '../lib/mascotTips'
 import { hasAzure } from '../lib/phonetics'
 import MascotBubble from '../components/MascotBubble'
-import type { Settings } from '../lib/settings'
+import { fastModels, type Settings } from '../lib/settings'
 import type { SavedClass } from '../lib/savedClass'
 import { loadDashboard, type Dashboard } from '../lib/stats'
 import { homeworkPending } from '../lib/homework'
@@ -51,6 +52,8 @@ interface Props {
   onFinishClass?: () => void
   /** 5.12 (P-05): «Hacerla ahora»: clase corta con la tarea que dejó el informe de la clase `sessionId`. */
   onStartHomework?: (sessionId: number) => void
+  /** 5.13 (P-14): el globo del reto abre su detalle en Progreso. */
+  onOpenChallenge?: () => void
 }
 
 // 5.11 (Sonidos): las pantallas de Sonidos se cargan al abrir la pestaña (React.lazy): no pesan en el arranque.
@@ -86,6 +89,7 @@ export default function Home({
   onResumeClass,
   onFinishClass,
   onStartHomework,
+  onOpenChallenge,
 }: Props) {
   // 5.11 (M-09, REV-11-D1-05): cada vez que se monta el Inicio (al volver de una clase, del Repaso, de otra pestaña…)
   // empieza otra ronda de redacciones de los globos. En el inicializador: antes de calcular los avisos de esta visita.
@@ -164,6 +168,30 @@ export default function Home({
   )
 
   const [due, setDue] = useState<DueSummary | null>(null)
+  // 5.13 (P-14): el reto de la semana. La primera vez que se abre el Inicio en la semana se crea (modelo rápido, o el de
+  // respaldo sin clave); después solo se mide con tus datos, sin IA.
+  const [chal, setChal] = useState<ChallengeStatus | null>(null)
+  useEffect(() => {
+    let alive = true
+    getProfile()
+      .then((p) =>
+        ensureWeekChallenge({
+          apiKey: settings.geminiKey,
+          models: fastModels(settings),
+          dailyGoal: settings.dailyGoalMinutes,
+          level: p.levels.speaking || p.levels.overall,
+          frequent: frequentStructures,
+        }),
+      )
+      .then((c) => measureChallenge(c))
+      .then((st) => alive && setChal(st))
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+    // Una vez por visita al Inicio (los ajustes se leen en ese momento).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     loadDashboard().then(setDash)
@@ -229,14 +257,19 @@ export default function Home({
           remindersBlocked,
           restedYesterday: dash?.restedYesterday, // 5.11 (M-04, I-4): «Ayer descansaste; tu racha sigue a salvo»
           homework: homeworkPending(dash?.lastHomework) && onStartHomework ? dash!.lastHomework!.text : undefined, // 5.12 (P-05)
+          challenge:
+            chal && onOpenChallenge // 5.13 (P-14)
+              ? { title: chal.challenge.titleEs, progress: chal.done ? chal.challenge.target : chal.progress, target: chal.challenge.target, unit: unitOf(chal.challenge) }
+              : undefined,
         })
       : []
     const advice = settings.mascotAdvice ? rotate(buildAdvice({ hasPurpose, hasAzure: azureOn, wpmGoal: speakLevel ? speakingGoal(speakLevel) : undefined }), adviceCursor) : []
     return interleave(notices, advice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mins, goal, dash?.streak, dash?.restedYesterday, dash?.lastHomework, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel])
+  }, [mins, goal, dash?.streak, dash?.restedYesterday, dash?.lastHomework, due?.total, savedClass?.title, today?.lesson?.id, plan, favs, retestAt, settings.mascotNotices, settings.mascotAdvice, hasPurpose, azureOn, adviceCursor, remindersBlocked, speakLevel, chal])
   const onTip = (tip: Tip) => {
     if (tip.action === 'notif') onOpenGoal?.()
+    else if (tip.action === 'challenge') onOpenChallenge?.()
     else if (tip.action === 'resume') onResumeClass?.()
     else if (tip.action === 'review') onReview()
     else if (tip.action === 'homework' && dash?.lastHomework) {
