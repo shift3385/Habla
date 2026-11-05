@@ -256,9 +256,11 @@ export default function Home({
       element={THEME_INFO[settings.theme].mascot}
       t={t}
       onClose={() => setAsk(null)}
-      onStart={(text) => {
+      onStart={(text, situationId) => {
         setAsk(null)
-        start(ask === 'debate' ? 'debate' : 'free', undefined, text)
+        // 5.12 (P-12): «Situaciones»: la situación de la lista viaja como categoryId; la tuya, como tu tema.
+        if (ask === 'mission') start('mission', situationId, text)
+        else start(ask === 'debate' ? 'debate' : 'free', undefined, text)
       }}
     />
   )
@@ -521,26 +523,15 @@ export default function Home({
         </div>
       ) : (
         <div key="practices" className="anim-up mt-3 grid grid-cols-2 gap-2">
-          {PRACTICES.map((p, i) => {
-            const open = () => (p.id === 'debate' ? (keysReady ? setAsk('debate') : onGoSettings()) : start(p.id))
-            // La primera (tus puntos débiles) ocupa toda la fila; el resto, en cuadrícula de 2.
-            return i === 0 ? (
-              <button key={p.id} onClick={open} className="glass col-span-2 flex h-[60px] items-center gap-3 rounded-[30px] px-2.5 text-left">
-                <span className="btn-acc grid h-[40px] w-[40px] flex-none place-items-center rounded-full">
-                  <Icon name={p.icon} size={18} stroke={1.7} />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block fs-15 font-semibold">{p.title}</span>
-                  <span className="txt-sub block truncate fs-12.5">{p.subtitle}</span>
-                </span>
-                <span className="txt-sub grid w-[28px] flex-none place-items-center">
-                  <Icon name="arrowUR" size={16} />
-                </span>
-              </button>
-            ) : (
-              <button key={p.id} onClick={open} className="glass flex h-[88px] flex-col gap-1.5 rounded-[22px] px-2.5 py-2.5 text-left">
+          {PRACTICES.map((p) => {
+            const open = () => (p.id === 'debate' || p.id === 'mission' ? (keysReady ? setAsk(p.id) : onGoSettings()) : start(p.id))
+            // 5.12 (P-12): las 6 prácticas en cuadrícula de 2 con alto fijo de 86 px (así el Inicio no desplaza ni en 320×640, ni
+            // con letra grande); «Mis puntos débiles» y «Situaciones» se destacan con el icono en el color del tema.
+            const featured = p.id === 'weak' || p.id === 'mission'
+            return (
+              <button key={p.id} onClick={open} className="glass flex h-[86px] flex-col gap-1.5 rounded-[22px] px-2.5 py-2.5 text-left">
                 <span className="flex w-full items-center gap-2">
-                  <span className="field txt-acc2 grid h-[32px] w-[32px] flex-none place-items-center rounded-full">
+                  <span className={`${featured ? 'btn-acc' : 'field txt-acc2'} grid h-[32px] w-[32px] flex-none place-items-center rounded-full`}>
                     <Icon name={p.icon} size={16} stroke={1.6} />
                   </span>
                   <span className="line-clamp-2 min-w-0 flex-1 fs-13 leading-[1.15] font-semibold">{p.title}</span>

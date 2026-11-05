@@ -106,6 +106,8 @@ const SCHEMA: Record<BackupTable, Record<string, Rule>> = {
     grammarTopic: opt(str), // v5.10
     homeworkFor: opt(num), // 5.12 (P-05)
     homeworkDoneAt: opt(num), // 5.12 (P-05)
+    // 5.12 (P-12): la clase solo lee el título, los objetivos y los cumplidos.
+    mission: opt(shape({ titleEs: str, goals: (v) => Array.isArray(v) && v.every(shape({ es: str })), done: numArr })),
   },
   turns: {
     id,

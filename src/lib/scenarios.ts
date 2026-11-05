@@ -74,6 +74,16 @@ export const SCENARIOS: Scenario[] = [
       'Targeted practice of the student\'s weaknesses (see "Weaknesses found in their placement test" and "Structures this student often gets wrong"). Ask everyday questions designed so that answering them naturally FORCES the student to use those structures. Rotate between the targets, one per question, and keep it friendly.',
   },
   {
+    // 5.12 (P-12): roleplays con misión. Se elige la situación antes (TopicAskPage, kind 'mission'); el brief real es
+    // missionBrief(misión), que prepara Gemini (missions.ts).
+    id: 'mission',
+    title: 'Situaciones',
+    subtitle: 'Misiones de la vida real: médico, hotel, tienda…',
+    emoji: '🎭',
+    icon: 'star',
+    brief: 'Role-play mission: play the other person in a real-life situation and let the student achieve their 3 goals.',
+  },
+  {
     id: 'interview',
     title: 'Entrevista de trabajo',
     subtitle: 'Practica una entrevista en inglés para tu profesión',

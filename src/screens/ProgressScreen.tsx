@@ -24,6 +24,7 @@ function shortDate(ts: number) {
 
 function sessionTitle(s: Session) {
   if (s.topic) return s.topic.titleEs || s.topic.title
+  if (s.mission?.titleEs) return s.mission.titleEs // 5.12 (P-12)
   return getScenario(s.scenario).title
 }
 

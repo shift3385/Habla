@@ -176,6 +176,7 @@ export default function App() {
           lastTopic: last
             ? (last.topic?.titleEs ??
               last.topic?.title ??
+              last.mission?.titleEs ??
               (last.planLesson && p.plan ? findLesson(p.plan, last.planLesson)?.lesson.titleEs : undefined) ??
               getScenario(last.scenario).title)
             : null,

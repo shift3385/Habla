@@ -2,6 +2,7 @@ import Dexie, { type EntityTable } from 'dexie'
 import type { StudyPlan } from './plan'
 import type { TestSummary } from './testSummary'
 import type { PronResult } from './pronunciation'
+import type { Mission } from './missions'
 
 export type MistakeCategory =
   | 'article'
@@ -79,6 +80,8 @@ export interface Session {
   homeworkFor?: number
   /** 5.12 (P-05): en la clase que dejó la tarea, cuándo la hiciste (✓ hecha: ya no se vuelve a proponer). */
   homeworkDoneAt?: number
+  /** 5.12 (P-12): misión de «Situaciones» (con los objetivos cumplidos en `done`). */
+  mission?: Mission
 }
 
 export interface Turn {

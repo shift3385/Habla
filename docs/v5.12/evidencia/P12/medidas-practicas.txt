@@ -1,0 +1,13 @@
+Inicio · pestaña Prácticas: píxeles que desplaza (scrollHeight − clientHeight de .tab-content). 0 = cabe sin desplazar.
+Medido con docs/v5.12/evidencia/medir-practicas.mjs (Chromium, IA falsa) el 2026-11-05.
+
+                       antes (5.11, 5 prácticas)   5.12 (6 prácticas, tarjetas de 86 px)
+Normal     320×640     0                           0
+Normal     390×844     0                           0
+Normal     780×360     298 (ya desplazaba)         320
+Muy grande 320×640     0                           0   (con 88 px eran 3: por eso 86)
+Muy grande 390×844     0                           0
+Muy grande 780×360     305 (ya desplazaba)         327
+
+En horizontal el Inicio ya desplazaba antes de la 5.12 (lo que no cabe es la cabecera + plan + pestañas); la fila nueva
+añade 22 px. En vertical, la regla «sin scroll en el Inicio» se cumple en todos los casos.

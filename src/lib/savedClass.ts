@@ -2,6 +2,7 @@ import { Preferences } from '@capacitor/preferences'
 import { db, type Topic } from './db'
 import { sessionMetrics } from './fluency'
 import type { ChatMessage } from './gemini'
+import type { Mission } from './missions'
 
 // Clase en progreso (NC-16): una sola entrada que se sobrescribe. Los mensajes y las correcciones ya viven en
 // la base de datos (tabla turns, por sessionId); aquí se guarda lo necesario para retomar la clase en el mismo
@@ -15,6 +16,7 @@ export interface SavedClass {
   planLesson?: string
   grammarTopic?: string // v5.10: clase de «Practicar en una clase» (id del tema)
   homeworkFrom?: number // 5.12 (P-05): clase de «Hacerla ahora» (id de la clase que dejó la tarea)
+  mission?: Mission // 5.12 (P-12): misión de «Situaciones», con los objetivos ya tachados
   topic?: Topic
   system: string
   history: ChatMessage[]

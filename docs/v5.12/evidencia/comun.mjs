@@ -103,7 +103,21 @@ export async function clickText(page, re, { last = false } = {}) {
   )
   if (!ok) throw new Error(`no hay botón ${re}: ${(await bodyText(page)).slice(0, 300)}`)
 }
-export const clickLabel = (page, l) => page.locator(`button[aria-label="${l}"]`).first().click()
+/** Toca el botón con ese aria-label (clic en el DOM: el micro se vuelve a pintar con su animación y Playwright no lo
+ * da por «quieto»). Reintenta unos segundos si aún no está. */
+export async function clickLabel(page, l) {
+  for (let i = 0; i < 40; i++) {
+    const ok = await page.evaluate((l) => {
+      const b = document.querySelector(`button[aria-label="${l}"]`)
+      b?.click()
+      return !!b
+    }, l)
+    if (ok) return
+    await sleep(150)
+  }
+  await page.screenshot({ path: 'arnes-fallo.png' })
+  throw new Error(`no hay botón «${l}»: ${(await bodyText(page)).slice(0, 300)}`)
+}
 
 /** Espera a que el texto de la página encaje con la expresión. */
 export async function waitText(page, re, ms = 15000) {
@@ -117,7 +131,14 @@ export async function waitText(page, re, ms = 15000) {
 
 /** En la clase: responde escribiendo (teclado) y espera la respuesta del profe. */
 export async function typeAnswer(page, text) {
-  if (!(await page.locator('textarea').count())) await clickLabel(page, 'Escribir la respuesta')
+  for (let i = 0; i < 5 && !(await page.locator('textarea').count()); i++) {
+    await clickLabel(page, 'Escribir la respuesta')
+    await sleep(400)
+  }
+  if (!(await page.locator('textarea').count())) {
+    await page.screenshot({ path: 'arnes-fallo.png' })
+    throw new Error('no se abrió el teclado: ' + (await bodyText(page)).slice(0, 300))
+  }
   await page.locator('textarea').fill(text)
   const before = await page.evaluate(() => window.__AI.calls.length)
   await clickLabel(page, 'Enviar')

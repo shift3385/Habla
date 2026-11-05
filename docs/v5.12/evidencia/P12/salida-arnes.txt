@@ -1,0 +1,12 @@
+  Inicio · Prácticas 320×640: desplaza 0 px
+  Inicio · Prácticas 390×844: desplaza 0 px
+  Inicio · Prácticas 780×360: desplaza 320 px
+✔ Prácticas con «Situaciones» sin desplazar en vertical
+✔ misión preparada y objetivos a la vista
+✔ objetivo 1 tachado
+✔ «¡Lo conseguiste!» con los 3 (el 1 sigue tachado aunque el profe no lo repita)
+✔ informe y sesión guardada {"scenario":"mission","title":"Algo para el dolor de cabeza","done":[0,1,2]}
+✔ tu situación propia y clase en horizontal
+✔ al continuar la clase guardada, la misión sigue con su objetivo tachado
+✔ 320×640 en modo ligero: objetivos y micro a la vista
+P-12: todo bien

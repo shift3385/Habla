@@ -10,6 +10,7 @@ import {
   type RetryInfo,
 } from './gemini'
 import { topicIdsForPrompt, validTopicId } from './grammar'
+import { goalsMetOf } from './missions'
 import { describeStudent, getProfile } from './profile'
 import type { Scenario } from './scenarios'
 
@@ -70,6 +71,16 @@ export const TEACHER_SCHEMA: JsonSchema = {
   },
 }
 
+/**
+ * 5.12 (P-12): en las clases de «Situaciones», el profe además dice qué objetivos de la misión llevas cumplidos
+ * (`goals_met`, números 1–3). Solo en esas clases: en las demás el esquema es el de siempre.
+ */
+export const MISSION_TEACHER_SCHEMA: JsonSchema = {
+  ...TEACHER_SCHEMA,
+  required: [...TEACHER_SCHEMA.required!, 'goals_met'],
+  properties: { ...TEACHER_SCHEMA.properties, goals_met: { type: 'array', items: { type: 'integer' } } },
+}
+
 interface RawTeacherResponse {
   heard_speech: boolean
   transcript: string
@@ -84,6 +95,7 @@ interface RawTeacherResponse {
   }[]
   reply: string
   reply_es: string
+  goals_met?: unknown // 5.12 (P-12)
 }
 
 export interface TeacherResponse {
@@ -93,6 +105,8 @@ export interface TeacherResponse {
   replyEs: string
   /** Todos los errores de la respuesta, en el orden en que aparecen. */
   corrections: Correction[]
+  /** 5.12 (P-12): objetivos de la misión cumplidos hasta ahora (índices 0–2). Vacío fuera de «Situaciones». */
+  goalsMet: number[]
 }
 
 export const START_MESSAGE =
@@ -272,6 +286,8 @@ export async function teacherTurn(
    * solo en esta petición: no entra en el historial ni en la clase guardada, y con '' el prompt es el de siempre.
    */
   turnNote = '',
+  /** 5.12 (P-12): clase de «Situaciones»: el esquema pide además `goals_met`. */
+  opts: { mission?: boolean } = {},
 ): Promise<TeacherResponse> {
   const sys = turnNote ? `${system}\n\n${turnNote}` : system
   const contents: GeminiContent[] = toContents(history)
@@ -286,7 +302,7 @@ export async function teacherTurn(
 
   const raw = await withRetry(
     models,
-    (model) => askGemini<RawTeacherResponse>(apiKey, model, { system: sys, contents, schema: TEACHER_SCHEMA }),
+    (model) => askGemini<RawTeacherResponse>(apiKey, model, { system: sys, contents, schema: opts.mission ? MISSION_TEACHER_SCHEMA : TEACHER_SCHEMA }),
     onRetry,
   )
   // 5.10.1 (REG-A2-05): tipos defensivos. Con el esquema Gemini respeta los tipos, pero un modelo de respaldo o un
@@ -309,6 +325,7 @@ export async function teacherTurn(
     reply: tidyReply(str(raw.reply)),
     replyEs: tidyReply(str(raw.reply_es)),
     corrections,
+    goalsMet: opts.mission ? goalsMetOf(raw.goals_met) : [],
   }
 }
 

@@ -20,6 +20,7 @@ import { getProfile } from '../lib/profile'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { getScenario } from '../lib/scenarios'
 import { cleanHomework, homeworkBrief, homeworkCounts, HOMEWORK_MIN_TURNS, markHomeworkDone } from '../lib/homework'
+import { mergeGoals, missionBrief, missionComplete, MISSION_GOALS, prepareMission, type Mission } from '../lib/missions'
 import { findTopic, grammarBrief } from '../lib/grammar'
 import { findLesson, LESSON_MIN_TURNS, lessonBrief, markLessonDone, type PlanLesson, type PlanWeek } from '../lib/plan'
 import { fastModels, mainModels, type Settings } from '../lib/settings'
@@ -91,6 +92,7 @@ export default function Conversation({
   resume,
   finishNow,
   settings,
+  t,
   update,
   onExit,
   onStartHomework,
@@ -103,6 +105,14 @@ export default function Conversation({
   const hwFrom = homeworkFrom ?? resume?.homeworkFrom
   const [hwTask, setHwTask] = useState('')
   const [hwDone, setHwDone] = useState(false)
+  // 5.12 (P-12): misión de «Situaciones» (objetivos tachados en `done`) y «¡Lo conseguiste!» al cumplir los tres.
+  const [mission, setMissionState] = useState<Mission | null>(resume?.mission ?? null)
+  const missionRef = useRef<Mission | null>(resume?.mission ?? null)
+  const setMission = (m: Mission | null) => {
+    missionRef.current = m
+    setMissionState(m)
+  }
+  const [missionWon, setMissionWon] = useState(false)
   const [phase, setPhase] = useState<Phase>('starting')
   const [status, setStatus] = useState('Preparando la clase…')
   const [turns, setTurns] = useState<Turn[]>([])
@@ -284,7 +294,8 @@ export default function Conversation({
         // 5.11 (M-06): ~30 % de los turnos del profe son reacción + mini-reto en vez de pregunta, decidido en código por el
         // nº de turno (respuestas del profe ya dadas) y la sesión. Nunca en la clase de Gramática (manda GRAMMAR_OVERRIDES).
         const turnIndex = history.current.filter((m) => m.role === 'assistant').length
-        const note = turnNoteFor({ grammarClass: grammarClass.current, turnIndex, seed: sessionId.current ?? 0 })
+        // 5.12 (P-12): en una misión tampoco (el profe está en su papel: un mini-reto rompería la escena).
+        const note = missionRef.current ? '' : turnNoteFor({ grammarClass: grammarClass.current, turnIndex, seed: sessionId.current ?? 0 })
         const res = await teacherTurn(
           settingsRef.current.geminiKey,
           models(),
@@ -293,6 +304,7 @@ export default function Conversation({
           spoken ? { base64: spoken.base64, mimeType: spoken.mimeType } : typed ? { text: typed } : undefined,
           undefined,
           note,
+          { mission: !!missionRef.current },
         )
         giveReference(typed ?? res.transcript) // por si Azure necesita el texto como referencia
         if (gone()) return
@@ -345,6 +357,19 @@ export default function Conversation({
         }
         teacher.id = await db.turns.add(teacher)
         setTurns((ts) => [...ts, teacher])
+        // 5.12 (P-12): se tachan los objetivos que el profe da por cumplidos (nunca se «destachan»).
+        let won = false
+        const m = missionRef.current
+        if (m && answer) {
+          const done = mergeGoals(m.done, res.goalsMet)
+          if (done.length !== m.done.length) {
+            const next = { ...m, done }
+            setMission(next)
+            db.sessions.update(sid, { mission: next }).catch(() => {})
+            haptic(ImpactStyle.Light)
+            won = missionComplete(next)
+          }
+        }
         persist()
         if (prepRef.current === 'loading') {
           // Primera intervención: animación de "¡Clase lista!" y después el chat.
@@ -354,6 +379,7 @@ export default function Conversation({
           setPrep(null)
         }
         await say(res.reply)
+        if (won && !gone()) setMissionWon(true)
       } catch (e) {
         giveReference('')
         if (isAborted(e) || gone()) return
@@ -445,7 +471,21 @@ export default function Conversation({
       // 5.12 (P-05): «Hacerla ahora»: el brief es la tarea que dejó el informe de esa clase.
       const task = hwFrom ? cleanHomework((await db.sessions.get(hwFrom))?.report?.homeworkEs) : ''
       if (task) setHwTask(task)
-      titleRef.current = found ? found.lesson.titleEs : gramTopic ? gramTopic.name : task ? 'Tu tarea' : tp?.title ?? scenario.title
+      // 5.12 (P-12): «Situaciones»: Gemini prepara la misión (si falla, la del catálogo). categoryId = la situación.
+      let ms: Mission | null = null
+      if (scenario.id === 'mission') {
+        setStatus('Preparando tu misión…')
+        ms = await prepareMission(settingsRef.current.geminiKey, quick(), {
+          situationId: categoryId,
+          customEs: customTopic,
+          level: profile.levels.overall,
+          about: profile.about,
+        })
+        if (gone()) return
+        setMission(ms)
+        setStatus('')
+      }
+      titleRef.current = found ? found.lesson.titleEs : gramTopic ? gramTopic.name : task ? 'Tu tarea' : ms ? ms.titleEs : tp?.title ?? scenario.title
       // v5.10 (D3): en «Practicar en una clase» el profe recibe el foco, las fórmulas y el nombre del tema.
       const brief = found
         ? { ...scenario, brief: lessonBrief(found.week, found.lesson) }
@@ -453,7 +493,9 @@ export default function Conversation({
           ? { ...scenario, brief: grammarBrief(gramTopic) }
           : task
             ? { ...scenario, brief: homeworkBrief(task) }
-            : scenario
+            : ms
+              ? { ...scenario, brief: missionBrief(ms) }
+              : scenario
       system.current = buildSystemPrompt(profile, brief, recent, tp, teacherPersona(settingsRef.current.theme, settingsRef.current.teacher))
       sessionId.current =
         (await db.sessions.add({
@@ -463,6 +505,7 @@ export default function Conversation({
           ...(found ? { planLesson } : {}),
           ...(gramTopic ? { grammarTopic: gramTopic.id } : {}),
           ...(task && hwFrom ? { homeworkFor: hwFrom } : {}),
+          ...(ms ? { mission: ms } : {}),
         })) ?? null
       history.current = [{ role: 'user', content: START_MESSAGE }]
       await askTeacher()
@@ -491,6 +534,7 @@ export default function Conversation({
       planLesson,
       ...(gramTopic ? { grammarTopic: gramTopic.id } : {}),
       ...(hwFrom ? { homeworkFrom: hwFrom } : {}),
+      ...(missionRef.current ? { mission: missionRef.current } : {}),
       topic: topicRef.current,
       system: system.current,
       history: history.current,
@@ -745,9 +789,19 @@ export default function Conversation({
   // Botón "atrás" de Android: en el chat sale guardando la clase (Terminar, con informe, está en la cabecera);
   // en el informe vuelve al inicio.
   useEffect(() => {
-    registerBack(lookupReq ? () => lookupBack.current?.() || setLookupReq(null) : view === 'report' ? onExit : bye ? () => {} : () => leave())
+    registerBack(
+      lookupReq
+        ? () => lookupBack.current?.() || setLookupReq(null)
+        : view === 'report'
+          ? onExit
+          : bye
+            ? () => {}
+            : missionWon
+              ? () => setMissionWon(false)
+              : () => leave(),
+    )
     return () => registerBack(null)
-  }, [view, leave, onExit, registerBack, lookupReq, bye])
+  }, [view, leave, onExit, registerBack, lookupReq, bye, missionWon])
 
   const userTurns = turns.filter((x) => x.role === 'user')
   const mascotEl = THEME_INFO[settings.theme].mascot
@@ -784,6 +838,8 @@ export default function Conversation({
       ? { icon: 'book', label: `Gramática · ${gramTopic.level}`, title: gramTopic.name, sub: `${gramTopic.nameEs}: ${gramTopic.summaryEs}` }
       : hwTask
       ? { icon: 'flag', label: 'Tarea · clase corta', title: 'Tu tarea de hoy', sub: hwTask }
+      : mission
+      ? { icon: 'star', label: `Situación · ${mission.roleEs}`, title: mission.titleEs, sub: mission.contextEs }
       : scenario.id === 'open'
       ? { icon: 'mic', label: 'Charla libre', title: scenario.subtitle, sub: `${teacherName(settings.theme)} sigue tu conversación` }
       : scenario.topic
@@ -850,6 +906,25 @@ export default function Conversation({
                     : `Para que cuente, responde al menos ${LESSON_MIN_TURNS} veces. Puedes repetirla desde Mi plan.`}
                 </span>
               </span>
+            </div>
+          )}
+          {session.mission && (
+            // 5.12 (P-12): cómo fue la misión: cumplida o cuántos objetivos.
+            <div className="glass anim-up mb-3 rounded-[24px] p-3.5">
+              <div className="flex items-center gap-3">
+                <span className={`grid h-10 w-10 flex-none place-items-center rounded-full ${missionComplete(session.mission) ? 'btn-acc' : 'field txt-sub'}`}>
+                  <Icon name={missionComplete(session.mission) ? 'check' : 'star'} size={18} stroke={2} />
+                </span>
+                <span className="min-w-0 flex-1 text-sm leading-snug">
+                  <b className="block font-semibold">
+                    {missionComplete(session.mission) ? '¡Misión cumplida!' : `Misión: ${session.mission.done.length} de ${MISSION_GOALS} objetivos`}
+                  </b>
+                  <span className="txt-sub">{session.mission.titleEs}</span>
+                </span>
+              </div>
+              <div className="mt-2.5 pl-1">
+                <MissionGoals mission={session.mission} />
+              </div>
             </div>
           )}
           {session.homeworkFor && (
@@ -984,10 +1059,10 @@ export default function Conversation({
               <Icon name={card.icon} size={17} />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="txt-acc2 block fs-10.5 tracking-[1.2px] uppercase">{card.label}</span>
+              <span className="txt-acc2 block truncate fs-10.5 tracking-[1.2px] uppercase">{card.label}</span>
               <span className="fs-clamp block truncate text-base font-semibold">{card.title}</span>
               {!cardSeen && !cardOpen && (card.sub || chips.length) ? (
-                <span className="cv-card-hint txt-sub block fs-11.5">{planInfo ? 'Toca para ver el objetivo de esta clase' : hwTask ? 'Toca para ver tu tarea' : 'Toca para ver el objetivo de esta conversación'}</span>
+                <span className="cv-card-hint txt-sub block fs-11.5">{planInfo ? 'Toca para ver el objetivo de esta clase' : hwTask ? 'Toca para ver tu tarea' : mission ? 'Toca para ver la escena' : 'Toca para ver el objetivo de esta conversación'}</span>
               ) : null}
             </span>
             <span
@@ -997,6 +1072,8 @@ export default function Conversation({
               <Icon name="chevD" size={15} stroke={2} />
             </span>
           </button>
+          {mission && <MissionGoals mission={mission} />}
+          {mission && <MissionLine mission={mission} />}
           {cardOpen && (card.sub || chips.length) ? (
             <div className="anim-up pl-12">
               {topic?.titleEs && <div className="txt-sub mt-1 fs-13">{topic.titleEs}</div>}
@@ -1260,6 +1337,28 @@ export default function Conversation({
         )}
       </div>
 
+      {missionWon && mission && (
+        // 5.12 (P-12): los tres objetivos cumplidos: la mascota lo celebra y propone cerrar con el informe.
+        <MascotPage
+          overlay={{ t }}
+          element={mascotEl}
+          mood="happy"
+          title="¡Lo conseguiste!"
+          subtitle={`Cumpliste los ${MISSION_GOALS} objetivos de «${mission.titleEs}». ¡Así se habla!`}
+          primary={{
+            label: 'Terminar y ver mi informe',
+            onClick: () => {
+              setMissionWon(false)
+              finish()
+            },
+          }}
+          secondary={{ label: 'Seguir hablando un poco más', onClick: () => setMissionWon(false) }}
+        >
+          <div className="glass rounded-[24px] px-4 py-3">
+            <MissionGoals mission={mission} big />
+          </div>
+        </MascotPage>
+      )}
       {lookupReq && (
         <LookupSheet
           query={lookupReq.query}
@@ -1273,6 +1372,58 @@ export default function Conversation({
           backRef={lookupBack}
         />
       )}
+    </div>
+  )
+}
+
+/** 5.12 (P-12): los 3 objetivos de la misión; los cumplidos, con ✓ y tachados. */
+function MissionGoals({ mission, big }: { mission: Mission; big?: boolean }) {
+  return (
+    <ol className={`cv-goals flex flex-col ${big ? 'gap-2 fs-15' : 'mt-2 gap-1 fs-13'} leading-snug`} aria-label="Objetivos de la misión">
+      {mission.goals.map((g, k) => {
+        const ok = mission.done.includes(k)
+        return (
+          <li key={k} className="flex items-start gap-2">
+            <span
+              className={`mt-[1px] grid flex-none place-items-center rounded-full ${big ? 'h-[22px] w-[22px]' : 'h-[18px] w-[18px]'} ${ok ? 'btn-acc' : ''}`}
+              style={ok ? undefined : { border: '1.5px solid var(--gb)' }}
+            >
+              {ok && <Icon name="check" size={big ? 13 : 11} stroke={2.4} />}
+            </span>
+            <span className={`min-w-0 ${ok ? 'txt-sub line-through' : ''}`}>
+              <span className="sr-only">{ok ? 'Cumplido: ' : 'Pendiente: '}</span>
+              {g.es}
+            </span>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
+/**
+ * 5.12 (P-12): en horizontal (index.css) la lista no cabe sobre el micro: una línea con los 3 objetivos como puntos
+ * (✓ los cumplidos) y el siguiente que te falta.
+ */
+function MissionLine({ mission }: { mission: Mission }) {
+  const next = mission.goals.findIndex((_, k) => !mission.done.includes(k))
+  return (
+    <div className="cv-goals-line mt-1.5 items-center gap-2 fs-12.5 leading-tight">
+      <span className="flex flex-none gap-1" aria-label={`${mission.done.length} de ${mission.goals.length} objetivos`}>
+        {mission.goals.map((_, k) => {
+          const ok = mission.done.includes(k)
+          return (
+            <span
+              key={k}
+              className={`grid h-[15px] w-[15px] place-items-center rounded-full ${ok ? 'btn-acc' : ''}`}
+              style={ok ? undefined : { border: '1.5px solid var(--gb)' }}
+            >
+              {ok && <Icon name="check" size={9} stroke={2.6} />}
+            </span>
+          )
+        })}
+      </span>
+      <span className="min-w-0 truncate">{next < 0 ? '¡Misión cumplida!' : mission.goals[next].es}</span>
     </div>
   )
 }

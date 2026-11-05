@@ -109,7 +109,8 @@ test('REV-11-D2-03: la clase PASA la nota del turno a teacherTurn (con el nº de
   const fs = await import('node:fs/promises')
   const src = await fs.readFile(new URL('../src/screens/Conversation.tsx', import.meta.url), 'utf8')
   const call =
-    /const turnIndex = history\.current\.filter\(\(m\) => m\.role === 'assistant'\)\.length\s+const note = turnNoteFor\(\{ grammarClass: grammarClass\.current, turnIndex, seed: sessionId\.current \?\? 0 \}\)\s+const res = await teacherTurn\(([\s\S]*?)\)\s+giveReference/.exec(
+    // 5.12 (P-12): en una misión de «Situaciones» no hay nota (el profe está en su papel) y va un 8.º argumento (opts).
+    /const turnIndex = history\.current\.filter\(\(m\) => m\.role === 'assistant'\)\.length\s+(?:\/\/[^\n]*\s+)?const note = missionRef\.current \? '' : turnNoteFor\(\{ grammarClass: grammarClass\.current, turnIndex, seed: sessionId\.current \?\? 0 \}\)\s+const res = await teacherTurn\(([\s\S]*?)\)\s+giveReference/.exec(
       src,
     )
   assert.ok(call, 'askTeacher calcula la nota justo antes de llamar al profe')
@@ -117,8 +118,9 @@ test('REV-11-D2-03: la clase PASA la nota del turno a teacherTurn (con el nº de
     .split(/,\s*(?![^{]*\})/)
     .map((a) => a.trim())
     .filter(Boolean)
-  assert.equal(args.at(-1), 'note', 'la nota es el último argumento (turnNote)')
-  assert.equal(args.length, 7)
+  assert.equal(args[6], 'note', 'la nota es el 7.º argumento (turnNote)')
+  assert.equal(args.at(-1), '{ mission: !!missionRef.current }', '5.12: y después, si la clase es una misión')
+  assert.equal(args.length, 8)
 })
 
 test('M-06: el prompt de la clase de Gramática, el test y «Dilo tú» no dependen de turnStyle', async () => {

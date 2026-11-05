@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { whenBackground } from '../lib/lifecycle'
 import { dictate } from '../lib/dictation'
 import { isAborted } from '../lib/gemini'
+import { SITUATIONS } from '../lib/missions'
 import { distrustMic, MicError, Recorder } from '../lib/recorder'
 import { fastModels, type Settings } from '../lib/settings'
 import { analyzeSpeech, blobToBase64, isEmptyRecording } from '../lib/speech'
@@ -10,21 +11,25 @@ import type { MascotElement } from '../ui/Mascot'
 import type { ThemeVars } from '../ui/theme'
 import MascotPage from './MascotPage'
 
-export type AskKind = 'free' | 'debate'
+export type AskKind = 'free' | 'debate' | 'mission'
 
 interface Props {
   kind: AskKind
   settings: Settings
   element: MascotElement
   t: ThemeVars
-  /** customTopic vacío = que elija el profe (solo en debate). */
-  onStart: (customTopic?: string) => void
+  /**
+   * customTopic vacío = que elija el profe (solo en debate). 5.12 (P-12): en «Situaciones», `situationId` es la de la
+   * lista que elegiste; con la tuya, va en customTopic (tu frase).
+   */
+  onStart: (customTopic?: string, situationId?: string) => void
   onClose: () => void
 }
 
 const EXAMPLES: Record<AskKind, string[]> = {
   free: ['Mi trabajo', 'Una película que me encantó', 'Mis planes para el fin de semana', 'Un viaje que quiero hacer'],
   debate: ['El teletrabajo', 'Las redes sociales y los jóvenes', 'La IA en el arte', 'Los móviles en los colegios'],
+  mission: ['Devolver unos zapatos en una tienda', 'Pedir cita en la peluquería', 'Reservar mesa para un cumpleaños', 'Avisar al vecino de una fuga'],
 }
 
 /**
@@ -123,6 +128,40 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
     }
   }
 
+  if (step === 0 && kind === 'mission') {
+    // 5.12 (P-12): la lista de situaciones (dentro del área que desplaza de MascotPage) y, al final, «La mía».
+    return (
+      <MascotPage
+        overlay={{ t }}
+        element={element}
+        mood="idle"
+        step={{ i: 0, n: 2 }}
+        title="¿Qué situación practicamos?"
+        subtitle="Tendrás 3 objetivos; los tacho cuando los cumplas hablando."
+        onBack={close}
+      >
+        <div className="grid grid-cols-2 gap-2">
+          {SITUATIONS.map((x) => (
+            <button
+              key={x.id}
+              onClick={() => onStart(undefined, x.id)}
+              className="glass flex min-h-[52px] items-center gap-2 rounded-[22px] px-3 py-2 text-left fs-13.5 leading-tight font-medium"
+            >
+              <span aria-hidden className="flex-none fs-18">
+                {x.emoji}
+              </span>
+              <span className="min-w-0">{x.titleEs}</span>
+            </button>
+          ))}
+          <button onClick={() => setStep(1)} className="btn-acc col-span-2 flex h-[52px] items-center justify-center gap-2 rounded-[26px] px-4 fs-15 font-semibold">
+            <Icon name="pencil" size={17} />
+            Describir la mía
+          </button>
+        </div>
+      </MascotPage>
+    )
+  }
+
   if (step === 0) {
     const option = (icon: 'spark' | 'pencil', title: string, desc: string, onClick: () => void) => (
       <button onClick={onClick} className="glass flex w-full items-center gap-3.5 rounded-[26px] px-4 py-4 text-left">
@@ -156,17 +195,24 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
   }
 
   const debate = kind === 'debate'
+  const mission = kind === 'mission'
   return (
     <MascotPage
       overlay={{ t }}
       element={element}
       mood={mood}
-      step={debate ? { i: 1, n: 2 } : undefined}
-      title={debate ? '¿Qué tema quieres debatir?' : '¿De qué quieres hablar?'}
-      subtitle={debate ? 'Escríbelo como una pregunta o una idea. El profe tomará la postura contraria.' : 'Cualquier tema: el profe prepara la clase sobre lo que escribas.'}
-      onBack={debate ? () => goStep(0) : close}
+      step={debate || mission ? { i: 1, n: 2 } : undefined}
+      title={debate ? '¿Qué tema quieres debatir?' : mission ? '¿Qué situación quieres practicar?' : '¿De qué quieres hablar?'}
+      subtitle={
+        debate
+          ? 'Escríbelo como una pregunta o una idea. El profe tomará la postura contraria.'
+          : mission
+            ? 'Descríbela en una frase, en español. El profe hará de la otra persona y te preparo 3 objetivos.'
+            : 'Cualquier tema: el profe prepara la clase sobre lo que escribas.'
+      }
+      onBack={debate || mission ? () => goStep(0) : close}
       primary={{
-        label: debate ? 'Empezar el debate' : 'Empezar a hablar',
+        label: debate ? 'Empezar el debate' : mission ? 'Preparar mi misión' : 'Empezar a hablar',
         disabled: !ready,
         onClick: () => {
           if (!ready) return
@@ -180,7 +226,13 @@ export default function TopicAskPage({ kind, settings, element, t, onStart, onCl
         onChange={(e) => setText(e.target.value)}
         rows={3}
         maxLength={160}
-        placeholder={debate ? 'Ej.: ¿Deberían prohibir los móviles en los colegios?' : 'Ej.: mi viaje a Japón, el último partido, cómo aprender a cocinar…'}
+        placeholder={
+          debate
+            ? 'Ej.: ¿Deberían prohibir los móviles en los colegios?'
+            : mission
+              ? 'Ej.: devolver un abrigo que me queda pequeño'
+              : 'Ej.: mi viaje a Japón, el último partido, cómo aprender a cocinar…'
+        }
         className="glass w-full resize-none rounded-[26px] px-5 py-4 text-center fs-17 leading-snug outline-none"
         style={{ color: 'var(--tx)' }}
       />

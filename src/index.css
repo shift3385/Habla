@@ -601,6 +601,20 @@ html[data-landscape][data-fs] .cv-card-hint {
   /* clase en horizontal: que el micro no se salga por abajo */
   display: none;
 }
+/* 5.12 (P-12): objetivos de la misión en la tarjeta. En vertical, la lista; en horizontal no cabe sobre el micro: una
+   línea (puntos ✓ y el siguiente objetivo) y sin «Toca para ver la escena». */
+.cv-goals-line {
+  display: none;
+}
+html[data-landscape] .cv-card .cv-goals {
+  display: none;
+}
+html[data-landscape] .cv-card .cv-goals-line {
+  display: flex;
+}
+html[data-landscape] .cv-card:has(.cv-goals) .cv-card-hint {
+  display: none;
+}
 html[data-fs='xl'] .plan-mission {
   /* Muy grande: la misión de la lección se ve al abrirla; así el Inicio no desplaza */
   display: none;
