@@ -6,7 +6,9 @@ Fuentes: `docs/v5.12/BACKLOG-resumen.md` §1 (P-14, P-17) y §2 («Juntos», for
 (`docs/pruebas/PENDIENTES.md`), «Juntos» con servidor o en tiempo real (6.0), teléfonos cerca por Wi-Fi/Bluetooth, roleplay en
 pareja, notas de voz entre dos, P-13, P-15 y P-16.
 
-> **Estado (2026-11-05, fin de la sesión):** fases 1–12 hechas y subidas a `claude/inspiring-cori-7c7iax`. Falta el APK (PC del
+> **APK (2026-11-05, en el PC):** release compilado (`apk/Habla-v5.13.apk`) desde la rama `v5.13`; revisiones repetidas en el PC y en verde. Falta el debug y todo lo del teléfono.
+>
+> **Estado (2026-11-05, fin de la sesión en la nube):** fases 1–12 hechas y subidas a `claude/inspiring-cori-7c7iax`. Faltaba el APK (PC del
 > dueño) y las pruebas del teléfono (`docs/pruebas/PENDIENTES.md`). Para seguir: el dueño elige de la propuesta de
 > `docs/v5.12/BACKLOG-resumen.md` §5 (quedan ~25 USD); no se empieza nada sin su elección.
 >

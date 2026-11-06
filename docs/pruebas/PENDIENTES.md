@@ -8,12 +8,12 @@
 Casi todas necesitan el **POCO X6 del dueño** (y algunas sus auriculares soundcore Liberty 4 Pro, su voz o su clave real).
 Desde una sesión en la nube solo se puede revisar código y documentación.
 
-## 5.13 «Retos en familia» (rama `claude/inspiring-cori-7c7iax`, build 45) — hecha en la nube, sin APK
+## 5.13 «Retos en familia» (rama `v5.13`, build 45) — hecha en la nube, APK release compilado en el PC (2026-11-05), sin instalar
 Plan y avance: `docs/v5.13/PLAN.md`. Probado en el navegador con IA falsa y dos teléfonos simulados (`docs/v5.13/evidencia/`).
 
 | Prueba | Qué falta | Necesita |
 |---|---|---|
-| APK | Compilar debug y release de la 5.13 (`npm run apk:debug`, `npm run apk`) e instalar con `adb -s <serie> install -r` | PC + POCO |
+| APK | Release ya compilado (`apk/Habla-v5.13.apk`). Falta compilar el debug (`npm run apk:debug`) e instalar con `adb -s <serie> install -r` | PC + POCO |
 | WhatsApp de verdad | Entre **dos teléfonos con la 5.13**: «Retar a alguien», «Mandar mi progreso» y «Compartir» una palabra por WhatsApp; copiar el mensaje y pegarlo en *Progreso → Pegar un código* (también con el botón «Pegar», que lee el portapapeles) | POCO + otro teléfono con la 5.13 |
 | Tarjeta de la semana | «Compartir mi semana» manda la imagen PNG por WhatsApp (con texto) y la caché se limpia (`habla-semana-*.png`) | POCO |
 | Reto con IA real | Que el modelo rápido elija retos razonables con errores reales (la app recorta la cifra) y que la barra avance con voz real | Clave real + varias clases |
@@ -25,12 +25,12 @@ Plan y avance: `docs/v5.13/PLAN.md`. Probado en el navegador con IA falsa y dos 
 | Misión de la lección | Con Gemini real y voz: que el veredicto («cumplida», «casi», «la próxima vez») sea justo | Clave real + varias lecciones del plan |
 | Aviso del reto | Que la notificación llegue el jueves (o el sábado) a la hora del recordatorio y desaparezca al cumplir el reto | POCO (varios días) |
 
-## 5.12 «Situaciones», «Hacerla ahora» y «Lo que recuerda tu profe» (rama `claude/eloquent-newton-2cniyr`, build 44) — hecha en la nube, sin APK
+## 5.12 «Situaciones», «Hacerla ahora» y «Lo que recuerda tu profe» (rama `claude/eloquent-newton-2cniyr`, build 44) — hecha en la nube, incluida en el APK de la 5.13
 Lista completa: `docs/v5.12/PLAN.md` § «Pendiente en el teléfono». Probado en el navegador con IA falsa (`docs/v5.12/evidencia/`).
 
 | Prueba | Qué falta | Necesita |
 |---|---|---|
-| APK | Compilar debug y release de la 5.12 (`npm run apk:debug`, `npm run apk`) e instalar con `adb -s <serie> install -r` | PC + POCO |
+| APK | No hace falta uno propio: estas pruebas se hacen con el de la 5.13 | PC + POCO |
 | Situaciones | Misión preparada por Gemini real, objetivos tachados con voz real y «¡Lo conseguiste!» | Dueño (voz) + clave real |
 | Hacerla ahora | Clase corta con una tarea real del informe y «✓ Hecha» | Dueño (voz) + clave real |
 | Memoria | Que el informe real apunte datos útiles (y nada sensible) y que el profe pregunte por uno sin forzarlo | Varias clases con clave real |

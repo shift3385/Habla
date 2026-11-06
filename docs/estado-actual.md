@@ -1,14 +1,14 @@
 # Estado actual (2026-11-05, v5.13 build 45)
 
-> **v5.13 «Retos en familia»** (build 45, rama `claude/inspiring-cori-7c7iax`, hecha en la nube sobre la 5.12): reto de la semana,
+> **v5.13 «Retos en familia»** (build 45, rama `v5.13`, igual que `claude/inspiring-cori-7c7iax` más estos documentos; hecha en la nube sobre la 5.12): reto de la semana,
 > tarjeta de la semana para WhatsApp, códigos para compartir (retos, progreso, palabras), «Escribir en inglés», aviso del reto,
 > «Mi familia», practicar la misma Situación, línea de la semana en el Inicio, «Misión cumplida» en las lecciones del plan y
 > «Avanzado» de Azure. Probada en el navegador con IA falsa (`docs/v5.13/evidencia/`, 9 arneses + los 3 de la 5.12) y con
-> `npm test` (411, 0 fallos). **Sin APK y sin probar en el teléfono** (`docs/pruebas/PENDIENTES.md`). Plan y avance en
+> `npm test` (411: 410 pasan, 0 fallos, 1 `todo`; repetido en el PC el 2026-11-05). **APK release compilado en el PC** (`apk/Habla-v5.13.apk`, versionCode 45, misma firma que la 5.11), **sin instalar y sin probar en el teléfono** (`docs/pruebas/PENDIENTES.md`). Plan y avance en
 > `docs/v5.13/PLAN.md`; lo propuesto para la próxima sesión, en `docs/v5.12/BACKLOG-resumen.md` §5.
 >
 > **v5.12** (build 44, rama `claude/eloquent-newton-2cniyr`): Situaciones con misión, «Hacerla ahora» y «Lo que recuerda tu profe»
-> (`docs/v5.12/PLAN.md`). Sin APK. La 5.11 «Motivación» + «Sonidos» está en `docs/v5.11/`. `main` sigue en la 5.9.1.
+> (`docs/v5.12/PLAN.md`). Sin APK propio: va incluida en el de la 5.13. La 5.11 «Motivación» + «Sonidos» está en `docs/v5.11/`. `main` sigue en la 5.9.1.
 >
 > Lo que sigue es el estado anterior (2026-10-21, v5.10.1), que se mantiene como historia.
 
